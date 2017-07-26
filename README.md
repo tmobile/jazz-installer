@@ -96,9 +96,7 @@ Terraform will create the stack with the following AWS resources,
     Aws_elb_attachment.bitbucket
 
 # Stack Creation Scenarios
-# Provide access to the following AMIS for your account
-            ami-d284bec4
-            ami-d284bec4
+
             
 **Flow 1** : Build stack with new Bitbucket and Jenkins Server in existing VPC and Subnet
 * Download [ustglobal_rsa.ppk](https://github.com/tmobile/jazz-installer/blob/patch-5/installscripts/sshkeys/ustglobal_rsa.ppk) file.
