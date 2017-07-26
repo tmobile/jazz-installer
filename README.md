@@ -111,11 +111,11 @@ Terraform will create the stack with the following AWS resources,
 * Git clone SLF repo branch patch-5
  
         git clone -b patch-5 https://github.com/tmobile/jazz-installer.git
-![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/GitLab.png)
+![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitLab.jpg)
 * Change the permission for sshkeys in ./SLF/installscripts/sshkeys
 
         chmod 400 ./SLF/installscripts/sshkeys/*
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/chmod.png)            
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/chmod.jpg)            
 * Update AWS credentials (Access Key/Secret Key) in the ‘aws.sh’ file
 
         SLF/installscripts/cookbooks/jenkins/files/credentials/aws.sh
