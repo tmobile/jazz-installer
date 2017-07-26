@@ -101,9 +101,16 @@ Terraform will create the stack with the following AWS resources,
             ami-d284bec4
             
 **Flow 1** : Build stack with new Bitbucket and Jenkins Server in existing VPC and Subnet
+* Download [ustglobal_rsa.ppk](https://github.com/tmobile/jazz-installer/blob/patch-5/installscripts/sshkeys/ustglobal_rsa.ppk) file.
+* Use SSH client **PUTTY** to connect to the Installer box from Windows using the ustglobal_rsa.ppk file.
+
+            Installerbox IP : 54.172.171.204
+            Username : ec2-user
+* Checkout the git repository in /home/ec2-user directory
+
 * Git clone SLF repo branch patch-5
  
-        git clone -b patch-5 https://gitlab.com/ustslf/SLF.git
+        git clone -b patch-5 https://github.com/tmobile/jazz-installer.git
 ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/GitLab.png)
 * Change the permission for sshkeys in ./SLF/installscripts/sshkeys
 
