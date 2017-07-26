@@ -13,7 +13,7 @@ Jazz Serverless Development Framework: Developer Preview Installer
 * Create AWS account with necessary permissions and run aws configure to set the access key, secret key, region and output format      
 * The AWS account should have permission to AMIs and to create the following AWS Resources in us-east-1 region.
 * Update AWS credentials (Access Key/Secret Key) in the ‘aws.sh’ file
-SLF/installscripts/cookbooks/jenkins/files/credentials/aws.sh
+jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
 * Use RHEL 7 instance as your installer box. The software required on the installer box in listed below
 
         UnZip 6.00
@@ -108,7 +108,7 @@ Terraform will create the stack with the following AWS resources,
             Username : ec2-user
 * Checkout the git repository in /home/ec2-user directory
 
-* Git clone SLF repo branch patch-5
+* Git clone jazz-installer repo branch patch-5
  
         git clone -b patch-5 https://github.com/tmobile/jazz-installer.git
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitHub.png)
@@ -203,7 +203,7 @@ Terraform will create the stack with the following AWS resources,
         mv lamdbapermissions.tf lamdbapermissions.tf1
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/rename_file.png)        
 
-* Change to directory ./SLF/installscripts/terraform-unix-noinstances-jazz run command to bring the stack up
+* Change to directory ./jazz-installer/installscripts/terraform-unix-noinstances-jazz run command to bring the stack up
 
         nohup  terraform apply  &
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_terrafor_apply_no-instances.png)
