@@ -111,19 +111,19 @@ Terraform will create the stack with the following AWS resources,
 * Git clone SLF repo branch patch-5
  
         git clone -b patch-5 https://github.com/tmobile/jazz-installer.git
-![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitLab.jpg)
-* Change the permission for sshkeys in ./SLF/installscripts/sshkeys
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitHub.png)
+* Change the permission for sshkeys in ./jazz-installer/installscripts/sshkeys
 
-        chmod 400 ./SLF/installscripts/sshkeys/*
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/chmod.jpg)            
+        chmod 400 ./jazz-installer/installscripts/sshkeys/*
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/chmod.png)            
 * Update AWS credentials (Access Key/Secret Key) in the ‘aws.sh’ file
 
-        SLF/installscripts/cookbooks/jenkins/files/credentials/aws.sh
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/aws_key.png)
+        ./jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/aws_key.png)
       
 * Update the envPrefix, region, VPC ID, Subnet ID & CIDR Block  in variables.tf file.
     envPrefix is the tag used to tag all the artifacts in the stack being created.
-        ./SLF/installscripts/terraform-unix-demo-jazz/variables.tf
+        ./jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf
 
         variable "region" {
           type = "string"
@@ -145,18 +145,18 @@ Terraform will create the stack with the following AWS resources,
           type = "string"
           default = "xxxxxx"
         }
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/variables.png)        
-* Change to directory ./SLF/installscripts/terraform-unix-demo-jazz and run command to bring the stack up
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/variables.png)        
+* Change to directory ./jazz-installer/installscripts/terraform-unix-demo-jazz and run command to bring the stack up
 
         nohup  terraform apply  &
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/jazz_terraform_apply.png)        
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_terraform_apply.png)        
 * To check the stack building logs 
 
         tail -f nohup.out
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/jazz_tail_file.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file.png)
   
 **Flow 2**. Build Stack with Existing Bitbucket and Jenkins server
-* Cd /home/ec2-user/SLF/installscripts/terraform-unix-noinstances-jazz
+* cd /home/ec2-user/jazz-installer/installscripts/terraform-unix-noinstances-jazz
 * Provide the Existing Bitbucket Server/ Jenkins Server info in variables.tf
 
 
@@ -183,11 +183,11 @@ Terraform will create the stack with the following AWS resources,
             public_ip = "xxxxxxxx"
           }
         }
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/env-prefix.png)
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/bitbucket-elb.png)
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/jenkins-elb.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/env-prefix.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/bitbucket-elb.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jenkins-elb.png)
 * If the lambda permission is already applied to the billing account, please comment out the following in variable.tf file
-    ./SLF/installscripts/terraform-unix-noinstances-jazz/variables.tf
+    ./jazz-installer/installscripts/terraform-unix-noinstances-jazz/variables.tf
 
         variable "lambdaCloudWatchProps" {
           type = "map"
@@ -197,20 +197,20 @@ Terraform will create the stack with the following AWS resources,
                 function_name  = "cloud-logs-streamer-dev"
                 principal      = "logs.us-east-1.amazonaws.com"
           }
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/lambda_permissions.png)           
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/lambda_permissions.png)           
 * Rename the file lamdbapermissions.tf to lamdbapermissions.tf1
 
         mv lamdbapermissions.tf lamdbapermissions.tf1
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/rename_file.png)        
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/rename_file.png)        
 
 * Change to directory ./SLF/installscripts/terraform-unix-noinstances-jazz run command to bring the stack up
 
         nohup  terraform apply  &
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/jazz_terrafor_apply_no-instances.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_terrafor_apply_no-instances.png)
 * To check the stack building logs 
 
         tail -f nohup.out
-  ![font samples - light](https://gitlab.com/ustslf/SLF/raw/patch-5/screenshots/jazz_tail_file_no-instances.png)
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file_no-instances.png)
 * The following software should be installed on the existing bitbucket server
  
          chefdk - 1.4.3
