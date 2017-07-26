@@ -1,0 +1,12 @@
+#!/bin/sh
+export JAVA_OPTS=<%= node["tomcat8"]["java_options"] %>
+case "$1" in
+start)
+  <%= node["tomcat8"]["install_location"] %>/bin/startup.sh
+;;
+stop)
+  <%= node["tomcat8"]["install_location"] %>/bin/shutdown.sh
+;;
+*)
+  echo "Syntax: $0 <start|stop>"
+esac
