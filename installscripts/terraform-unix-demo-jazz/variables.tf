@@ -4,7 +4,7 @@ variable "region" {
 }
 variable "envPrefix" {
   type = "string"
-  default = "jazz12"
+  default = "Application: Jazz"
 }
 variable "vpc" {
   type = "string"
