@@ -37,5 +37,6 @@ sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
 npm
 ng version
 git clone -b patch-5 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
+chmod 400 ./jazz-installer/installscripts/sshkeys/*
 cd ./jazz-installer/installscripts/wizard
 aws configure
