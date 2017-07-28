@@ -116,12 +116,16 @@ Terraform will create the stack with the following AWS resources,
 
         chmod 400 ./jazz-installer/installscripts/sshkeys/*
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/chmod.png)            
-* Update AWS credentials (Access Key/Secret Key) in the ‘aws.sh’ file
+* Update the VPC ID, Subnet ID & CIDR Block  in variables.tf file.
 
-        ./jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/aws_key.png)
+        ./jazz-installer/installscripts/terraform-unix-demo-jazz/netvars.tf
+
+        variable "vpc" { type = "string"  default = "vpc-xxxxxx" }
+        variable "subnet" {type = "string" default = "subnet-xxxxxx" }
+        variable "cidrblocks" { type = "string" default = "10.0.0.0/16" }
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/netvars.png)
       
-* Update the envPrefix, region, VPC ID, Subnet ID & CIDR Block  in variables.tf file.
+* Update the envPrefix and region in variables.tf file.
     envPrefix is the tag used to tag all the artifacts in the stack being created.
         ./jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf
 
@@ -131,20 +135,9 @@ Terraform will create the stack with the following AWS resources,
         }
         variable "envPrefix" {
           type = "string"
-          default = "       jazz2"
+          default = "jazz2"
         }
-        variable "vpc" {
-          type = "string"
-          default = "xxxxxx"
-        }
-        variable "subnet" {
-          type = "string"
-          default = "xxxxxx"
-        }
-        variable "cidrblocks" {
-          type = "string"
-          default = "xxxxxx"
-        }
+        
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/variables.png)        
 * Change to directory ./jazz-installer/installscripts/terraform-unix-demo-jazz and run command to bring the stack up
 
