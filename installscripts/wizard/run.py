@@ -40,7 +40,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 
 		os.chdir("../terraform-unix-networkstack")
 		cmd = ["./scripts/createNetVars.sh", vpc, subnet, cidr, "../terraform-unix-demo-jazz/netvars.tf"]
-		subprocess.call(cmd,  shell=True)
+		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('pwd', shell=True)
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
