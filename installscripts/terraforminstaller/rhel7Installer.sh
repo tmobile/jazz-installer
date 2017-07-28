@@ -34,7 +34,7 @@ sudo npm -y install -g @angular/cli
 sudo npm -y install
 sudo ln -s /opt/node-v8.1.3-linux-x64/bin/ng /usr/bin/ng
 sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
-cd \
+cd /home/ec2-user
 pwd
 npm
 ng version
