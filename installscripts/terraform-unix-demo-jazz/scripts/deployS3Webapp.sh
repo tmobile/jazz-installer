@@ -1,6 +1,6 @@
 BUCKET_NAME=$1
 REGION=$2
-cd ./jazz-core/cloud-api-onboarding-webapp
+cd ./jazz-ui
 sudo npm install -g @angular/cli
 sudo npm install
 sudo ng build –prod
