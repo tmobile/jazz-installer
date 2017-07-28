@@ -4,26 +4,28 @@ variable "region" {
 }
 variable "envPrefix" {
   type = "string"
-  default = "Application: Jazz"
+  default = "jazz50"
 }
+/* moved to netVars.tf
 variable "vpc" {
   type = "string"
   // us-east-1
-  default = "vpc-e1b9b784"
+  default = "vpc-0b157572"
   //us-west-2 -- oregon
 //  default = "vpc-c7e4b0a2"
 }
 variable "subnet" {
   type = "string"
         // us-east-1
-  default = "subnet-c5caafee"
+  default = "subnet-3127b16b"
         // us-east-2
   //default = "subnet-24cfea41"
 }
 variable "cidrblocks" {
   type = "string"
-  default = "172.31.0.0/16"
+  default = "10.0.0.0/16"
 }
+*/
 variable "bitbucketserver_ami" {
   type = "string"
 	// ami in us-east1 with licenses and addons
