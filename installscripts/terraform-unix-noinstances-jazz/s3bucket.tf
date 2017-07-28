@@ -144,7 +144,7 @@ EOF
   }
   provisioner "local-exec" {
 	when = "destroy"
-    command = "sudo rm -rf ./jazz-core ./jazz-core-bitbucket"
+    command = "sudo rm -rf ./jazz-core ./jazz-core-bitbucket ./jazz-ui"
   }
 }
 
