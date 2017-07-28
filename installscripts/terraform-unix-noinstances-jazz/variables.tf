@@ -4,7 +4,7 @@ variable "region" {
 }
 variable "envPrefix" {
   type = "string"
-  default = "jazz13"
+  default = "jazz60"
 }
 variable "bitbucketserver_ami" {
   type = "string"
@@ -49,7 +49,7 @@ variable "jenkinsservermap" {
 
   default = {
     jenkins_elb = "jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com"
-    public_ip = "54.210.15.20"
+    jenkins_public_ip = "54.210.15.20"
     subnet = "subnet-c5caafee"
     security_group = "sg-9f725bee"
   }
@@ -59,7 +59,7 @@ variable "bitbucketservermap" {
 
   default = {
     bitbucket_elb = "jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com"
-    public_ip = "54.163.38.213"
+    bitbucket_public_ip = "54.163.38.213"
   }
 }
 variable "lambdaCloudWatchProps" {
