@@ -8,10 +8,10 @@ fullstack = raw_input("Do you need full stack including network(Y/N): ")
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
 	os.chdir("../terraform-unix-networkstack")
 	subprocess.call('pwd', shell=True)
-	subprocess.call('nohup terraform  apply &', shell=True)
+	subprocess.call('nohup ./scripts/create.sh &', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
 	subprocess.call('pwd', shell=True)
-	subprocess.call('nohup terraform  apply &', shell=True)
+	subprocess.call('nohup ./scripts/create.sh &', shell=True)
 elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
 	existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ") 
 	if existingJenkinsBitbucket == "y" or existingJenkinsBitbucket == "Y" :
@@ -24,7 +24,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf"]
 		os.chdir("../terraform-unix-noinstances-jazz")
 		subprocess.call('pwd', shell=True)
-		subprocess.call('nohup terraform  apply &', shell=True)
+		subprocess.call('nohup ./scripts/create.sh &', shell=True)
 	elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
 		print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
 		print(" Please have vpc,subnet and cidr blocks handy")
@@ -43,7 +43,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		subprocess.call(cmd,  shell=True)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('pwd', shell=True)
-		subprocess.call('nohup terraform  apply &', shell=True)
+		subprocess.call('nohup ./scripts/create.sh &', shell=True)
 	else :  # 
 		print("invalid input..please try again...")
 
