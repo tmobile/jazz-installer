@@ -98,7 +98,7 @@ Terraform will create the stack with the following AWS resources,
 # Stack Creation Scenarios
 
             
-**Flow 1** : Build stack with new Bitbucket and Jenkins Server in existing VPC and Subnet
+## Flow 1 : Build stack with new Bitbucket and Jenkins Server in existing VPC and Subnet
 * Download [ustglobal_rsa.ppk](https://github.com/tmobile/jazz-installer/blob/patch-5/installscripts/sshkeys/ustglobal_rsa.ppk) file.
 * Use SSH client **PUTTY** to connect to the Installer box from Windows using the ustglobal_rsa.ppk file.
 
@@ -148,7 +148,9 @@ Terraform will create the stack with the following AWS resources,
         tail -f nohup.out
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file.png)
   
-**Flow 2**. Build Stack with Existing Bitbucket and Jenkins server
+  
+  
+## Flow 2. Build Stack with Existing Bitbucket and Jenkins server
 * cd /home/ec2-user/jazz-installer/installscripts/terraform-unix-noinstances-jazz
 * Provide the Existing Bitbucket Server/ Jenkins Server info in variables.tf
 
