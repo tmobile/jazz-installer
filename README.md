@@ -31,7 +31,7 @@ jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
         Atlassian-cli-6.7.1
         jq-1.5
 
-* Use your Gitlab account to clone the repo     
+* Use your GitHab account to clone the repo     
 
 
 # AWS Resources 
