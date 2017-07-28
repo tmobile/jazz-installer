@@ -104,6 +104,9 @@ Terraform will create the stack with the following AWS resources,
 
             Installerbox IP : 54.172.171.204
             Username : ec2-user
+* Configure AWS credentials and region via **aws configure** command
+  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitHub.png)      
+
 * Checkout the git repository in /home/ec2-user directory
 
 * Git clone jazz-installer repo branch patch-5
