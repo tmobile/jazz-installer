@@ -148,6 +148,8 @@ Terraform will create the stack with the following AWS resources,
         tail -f nohup.out
   ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file.png)
   
+  
+  
 ## Flow 2. Build Stack with Existing Bitbucket and Jenkins server
 * cd /home/ec2-user/jazz-installer/installscripts/terraform-unix-noinstances-jazz
 * Provide the Existing Bitbucket Server/ Jenkins Server info in variables.tf
