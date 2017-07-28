@@ -8,7 +8,7 @@ fullstack = raw_input("Do you need full stack including network(Y/N): ")
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
 	os.chdir("../terraform-unix-networkstack")
 	subprocess.call('pwd', shell=True)
-	subprocess.call('nohup ./scripts/create.sh &', shell=True)
+	subprocess.call(' ./scripts/create.sh', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
 	subprocess.call('pwd', shell=True)
 	subprocess.call('nohup ./scripts/create.sh &', shell=True)
