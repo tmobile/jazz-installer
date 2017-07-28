@@ -71,4 +71,11 @@ variable "lambdaCloudWatchProps" {
         principal      = "logs.us-east-1.amazonaws.com"
   }
 }
-
+variable "cognito_pool_username" {
+  type = "string"
+  default = "jazzuser"
+}
+variable "cognito_pool_password" {
+  type = "string"
+  default = "Welcome@2Jazz"
+}
