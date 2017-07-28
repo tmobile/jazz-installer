@@ -28,8 +28,8 @@ cd /opt;pwd;sudo tar -xvzf  /tmp/node-v8.1.3-linux-x64.tar.gz
 sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
 sudo ln -s /opt/node-v8.1.3-linux-x64/bin/npm /usr/bin/npm
 sudo ln -s /opt/node-v8.1.3-linux-x64/bin/node /usr/bin/node
-npm config set unsafe-perm=true; npm install -g serverless
-sudo npm i aws-apigateway-importer
-sudo npm install -g @angular/cli
-sudo npm install
+npm config set unsafe-perm=true; npm -y install -g serverless
+sudo npm -y i aws-apigateway-importer
+sudo npm -y install -g @angular/cli
+sudo npm -y install
 sudo ln -s /opt/node-v8.1.3-linux-x64/bin/ng /usr/bin/ng
