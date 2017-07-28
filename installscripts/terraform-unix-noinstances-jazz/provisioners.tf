@@ -3,7 +3,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   depends_on = ["aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role" ]
 
   connection {
-    host = "${lookup(var.jenkinsservermap, "public_ip")}" 
+    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}" 
     user = "ec2-user"
     type = "ssh"
     private_key = "${file("${lookup(var.keypair, "private_key")}")}"
@@ -43,7 +43,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
           destination = "~/cookbooks/jenkins/"
   }
   provisioner "local-exec" {
-    command = "${var.apigatewayimporter_cmd}  ec2-user@${lookup(var.jenkinsservermap, "public_ip")} yes yes "
+    command = "${var.apigatewayimporter_cmd}  ec2-user@${lookup(var.jenkinsservermap, "jenkins_public_ip")} yes yes "
   }
   provisioner "remote-exec" {
     inline = [
@@ -61,7 +61,7 @@ resource "null_resource" "configureExistingBitbucketServer" {
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
 
   connection {
-    host = "${lookup(var.bitbucketservermap, "public_ip")}" 
+    host = "${lookup(var.bitbucketservermap, "bitbucket_public_ip")}" 
     user = "ec2-user"
     type = "ssh"
     private_key = "${file("${lookup(var.keypair, "private_key")}")}"
