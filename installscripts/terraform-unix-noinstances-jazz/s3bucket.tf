@@ -1,8 +1,3 @@
-provider "aws" {
-shared_credentials_file  = "/home/ec2-user/.aws/credentials"
-profile                  = "default"
-    region = "${var.region}"
-}
 
 resource "aws_s3_bucket" "cloudfrontlogs" {
   bucket = "${var.envPrefix}-cloudfrontlogs"
