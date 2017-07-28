@@ -34,3 +34,8 @@ sudo npm -y install -g @angular/cli
 sudo npm -y install
 sudo ln -s /opt/node-v8.1.3-linux-x64/bin/ng /usr/bin/ng
 sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
+npm
+ng version
+git clone -b patch-5 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
+cd ./jazz-installer/installscripts/wizard
+aws configure
