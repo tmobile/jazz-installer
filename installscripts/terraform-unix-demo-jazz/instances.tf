@@ -145,7 +145,13 @@ resource "aws_instance" "jenkinsserver" {
   vpc_security_group_ids = ["${aws_security_group.jenkins.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.jenkinselb","aws_elb.bitbucketelb","aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role" ]
-  tags {  Name = "${var.envPrefix}_jenkinsserver"  }
+  tags {  
+    Name = "${var.envPrefix}_jenkinsserver"
+    Application = ""
+    Environment = ""
+    Exempt = ""
+  }
+
   connection {
     user = "ec2-user"
 	type     = "ssh"
@@ -199,7 +205,11 @@ resource "aws_instance" "bitbucketserver" {
   vpc_security_group_ids = ["${aws_security_group.bitbucket.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.bitbucketelb"]
-  tags {  Name = "${var.envPrefix}_bitbucketserver"  }
+  tags {  Name = "${var.envPrefix}_bitbucketserver"
+    Application = ""
+    Environment = ""
+    Exempt = ""
+  }
   connection {
     user = "ec2-user"
 	type     = "ssh"

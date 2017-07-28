@@ -77,5 +77,11 @@ variable "jenkinsattribsfile" {
   type = "string"
   default = "../cookbooks/jenkins/attributes/default.rb"
 }
-
-
+variable "cognito_pool_username" {
+  type = "string"
+  default = "jazzuser"
+}
+variable "cognito_pool_password" {
+  type = "string"
+  default = "Welcome@2Jazz"
+}
