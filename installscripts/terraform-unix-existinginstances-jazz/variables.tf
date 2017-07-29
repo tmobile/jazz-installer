@@ -4,17 +4,11 @@ variable "region" {
 }
 variable "vpc" {
   type = "string"
-  // us-east-1
-  default = "vpc-e1b9b784"
-  //us-west-2 -- oregon
-//  default = "vpc-c7e4b0a2"
+  default = "vpc-e1b9b784"   // us-east-1
 }
 variable "subnet" {
   type = "string"
-        // us-east-1
-  default = "subnet-c5caafee"
-        // us-east-2
-  //default = "subnet-24cfea41"
+  default = "subnet-c5caafee"         // us-east-1
 }
 variable "cidrblocks" {
   type = "string"
@@ -24,14 +18,10 @@ variable "cidrblocks" {
 variable "bitbucketserver_ami" {
   type = "string"
   default = "ami-50c7cb46"
-	// amis copied to us-west-1
-  //default = "ami-74755c14"
 }
 variable "jenkinsserver_ami" {
   type = "string"
   default = "ami-d284bec4"
-	// amis copied to us-west-1
-  //default = "ami-ae745dce"
 }
 variable "jenkinsslave_ami" {
   type = "string"
