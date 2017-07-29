@@ -5,7 +5,7 @@ import subprocess
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
-tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- JAZZ10 ): ") 
+tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): ") 
 tagApplication="JAZZ"
 tagEnvironment="Development"
 tagExempt="09/01/2017"
