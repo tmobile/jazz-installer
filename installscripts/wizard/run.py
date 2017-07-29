@@ -9,7 +9,7 @@ tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- 
 tagApplication="JAZZ"
 tagEnvironment="Development"
 tagExempt="09/01/2017"
-tagOwner="sukesh.sugunan"
+tagOwner="sukeshsugunan"
 fullstack = raw_input("Do you need full stack including network(Y/N): ") 
 
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
