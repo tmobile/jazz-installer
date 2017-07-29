@@ -2,6 +2,9 @@
 from __future__ import print_function
 import os
 import subprocess
+def pause():
+    programPause = raw_input("Press the <ENTER> key to continue...")
+
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- JAZZ10 ): ") 
 tagApplication="JAZZ"
 tagEnvironment="Development"
@@ -23,6 +26,9 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
 	existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ") 
 	if existingJenkinsBitbucket == "y" or existingJenkinsBitbucket == "Y" :
+		print(" Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin")
+		print(" Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin")
+		pause()
 		jenkinsServerELB = raw_input("Please provide Jenkins Server ELB URL: ") 
 		jenkinsServerPublicIp = raw_input("Please provide Jenkins Server PublicIp: ") 
 		bitBucketServerELB = raw_input("Please provide Bitbuckket  Server ELB URL: ") 
