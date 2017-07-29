@@ -11,6 +11,9 @@ resource "aws_dynamodb_table" "dynamodb-table-dev" {
 
   tags {
     Name        = "${var.envPrefix}"
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   }
 }
 
@@ -27,6 +30,9 @@ resource "aws_dynamodb_table" "dynamodb-table-stg" {
 
   tags {
     Name        = "${var.envPrefix}"
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   }
 }
 
@@ -43,6 +49,9 @@ resource "aws_dynamodb_table" "dynamodb-table-prod" {
 
   tags {
     Name        = "${var.envPrefix}"
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   }
 }
 
