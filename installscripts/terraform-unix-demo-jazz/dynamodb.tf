@@ -14,6 +14,7 @@ resource "aws_dynamodb_table" "dynamodb-table-dev" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   }
 }
 
@@ -33,6 +34,7 @@ resource "aws_dynamodb_table" "dynamodb-table-stg" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   }
 }
 
@@ -52,6 +54,7 @@ resource "aws_dynamodb_table" "dynamodb-table-prod" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   }
 }
 

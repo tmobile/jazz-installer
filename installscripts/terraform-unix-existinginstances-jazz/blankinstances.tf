@@ -149,6 +149,7 @@ resource "aws_instance" "jenkinsserver" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   
 }
 resource "aws_instance" "bitbucketserver" {
@@ -162,6 +163,7 @@ resource "aws_instance" "bitbucketserver" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
 }
 resource "aws_elb" "jenkinselb" {
   name = "${var.envPrefix}-jenkinselb"
