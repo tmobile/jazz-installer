@@ -12,20 +12,20 @@ Jazz Serverless Development Framework: Developer Preview Installer
 * Use your GitHub account to clone the repo
 * Use RHEL 7 instance as your installer box. The software required on the installer box in listed below
 
-        UnZip 6.00
-        git 2.9.4
-        curl 7.29.0
-        apache-maven-3.5.0
-        Java version: 1.8.0_131
-        npm 5.0.3
-        node v8.1.3
-        aws cli
-        aws api gateway importer
-        install serverless using npm install
-        Terraform_0.9.11
-        Packer_1.0.2
-        Atlassian-cli-6.7.1
-        jq-1.5
+    UnZip 6.00
+    git 2.9.4
+    curl 7.29.0
+    apache-maven-3.5.0
+    Java version: 1.8.0_131
+    npm 5.0.3
+    node v8.1.3
+    aws cli
+    aws api gateway importer
+    install serverless using npm install
+    Terraform_0.9.11
+    Packer_1.0.2
+    Atlassian-cli-6.7.1
+    jq-1.5
 * Download the **rhel7Installer.sh** script file using the following command.
         curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
 * Grant execute permission to rhel7Installer.sh
@@ -104,10 +104,12 @@ Terraform will create the stack with the following AWS resources,
 * Change to directory **jazz-installer/installscripts**
 * Give envPrifix name in **jazz-installer/installscripts/terraform-unix-networkstack/variables.tf** and 
   **jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf**
+  
     variable "envPrefix" {
     type = "string"
     default = "xxxx"
     }
+    
 * Run the python script **run.py** to build the stack. Change to directory jazz-installer/installscripts/wizard 
     ./run.py     
   
