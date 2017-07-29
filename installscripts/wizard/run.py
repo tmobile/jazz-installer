@@ -15,9 +15,9 @@ fullstack = raw_input("Do you need full stack including network(Y/N): ")
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
 	os.chdir("../terraform-unix-networkstack")
 	subprocess.call('pwd', shell=True)
-	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-networkstack/envprefix.tf"]
+	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-networkstack/envprefix.tf"]
 	subprocess.call(cmd)
-	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
+	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 	subprocess.call(cmd)
 	subprocess.call(' ./scripts/create.sh', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
@@ -37,7 +37,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		os.chdir("../terraform-unix-networkstack")
 		cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf"]
 		subprocess.call(cmd)
-		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
+		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
 		subprocess.call('pwd', shell=True)
@@ -58,7 +58,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		os.chdir("../terraform-unix-networkstack")
 		cmd = ["./scripts/createNetVars.sh", vpc, subnet, cidr, "../terraform-unix-demo-jazz/netvars.tf"]
 		subprocess.call(cmd)
-		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
+		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('pwd', shell=True)
