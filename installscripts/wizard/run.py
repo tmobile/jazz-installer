@@ -3,12 +3,16 @@ from __future__ import print_function
 import os
 import subprocess
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- JAZZ10 ): ") 
+tagApplication="JAZZ"
+tagEnvironment="Development"
+tagExempt="09/01/2017"
+tagOwner="sukesh.sugunan@ust-global.com"
 fullstack = raw_input("Do you need full stack including network(Y/N): ") 
 
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
 	os.chdir("../terraform-unix-networkstack")
 	subprocess.call('pwd', shell=True)
-	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, "../terraform-unix-noinstances-jazz/variables.tf"]
+	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envPrefix.tf"]
 	subprocess.call(cmd)
 	subprocess.call(' ./scripts/create.sh', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
