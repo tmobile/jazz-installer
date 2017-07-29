@@ -43,11 +43,12 @@ resource "aws_instance" "installer" {
   key_name   = "${aws_key_pair.auth.key_name}"
   vpc_security_group_ids = ["${aws_security_group.installer.id}"]
   subnet_id = "${var.subnet}"
-  tags {  Name = "${var.envPrefix}"  }
+  tags {  Name = "${var.envPrefix}"
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
+  }
   root_block_device {
 	volume_type = "gp2"
 	volume_size = 20
