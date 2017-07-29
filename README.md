@@ -10,29 +10,26 @@ Jazz Serverless Development Framework: Developer Preview Installer
 * Create AWS account with necessary permissions.The AWS account should have privillage to create the following
   AWS Resources in us-east-1 region.
 * Use your GitHub account to clone the repo
-* Use RHEL 7 instance as your installer box. The software required on the installer box in listed below
+* Use RHEL 7 instance as your installer box.
+* SSH to RHEL 7 instance and follow steps below,
+ 
+ 1. curl -L    https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
+ 1. chmod +x rhel7Installer.sh
+ 2. ./rhel7Installer.sh 
+ This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
+		AWS Access Key ID [None]:
+		AWS Secret Access Key [None]:
+		Default region name [None]:
+		Default output format [None]: 
+		
+Example : 
 
-      UnZip 6.00
-      git 2.9.4
-      curl 7.29.0
-      apache-maven-3.5.0
-      Java version: 1.8.0_131
-      npm 5.0.3
-      node v8.1.3
-      aws cli
-      aws api gateway importer
-      install serverless using npm install
-      Terraform_0.9.11
-      Packer_1.0.2
-      Atlassian-cli-6.7.1
-      jq-1.5
-* Download the **rhel7Installer.sh** script file using the following command.
-        curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
-* Grant execute permission to rhel7Installer.sh
-        chmod +x rhel7Installer.sh
-* Run rhel7Installer.sh script, this will install the softwares required on the installer box, checkout the 
-  jazz-installer repo and ask for configuring AWS access key, secret key, region and output format.
-          ./rhel7Installer.sh
+    AWS Access Key ID = AKIAJ24MZSJQ7SYWXUNA
+    AWS Secret Access Key = 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
+    Default region name= us-east-1
+    Default output format=json
+		
+
 
 # AWS Resources 
     AWS AMIs
