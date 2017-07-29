@@ -1,0 +1,6 @@
+bitbucketelb= jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com
+bitbucket publicip = 54.163.38.213
+jenkinselb= jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com
+jenkins-publicip = 54.210.15.20
+jenkins-subnet = subnet-c5caafee
+jenkins-securitygroup = sg-9f725bee
