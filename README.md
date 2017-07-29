@@ -15,12 +15,14 @@ Jazz Serverless Development Framework: Developer Preview Installer
  
  1. curl -L    https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
  1. chmod +x rhel7Installer.sh
- 2. ./rhel7Installer.sh 
- This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
-		AWS Access Key ID [None]:
-		AWS Secret Access Key [None]:
-		Default region name [None]:
-		Default output format [None]: 
+ 2. ./rhel7Installer.sh
+ 
+This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
+
+    AWS Access Key ID [None]:
+    AWS Secret Access Key [None]:
+    Default region name [None]:
+    Default output format [None]: 
 		
 Example : 
 
@@ -29,8 +31,33 @@ Example :
     Default region name= us-east-1
     Default output format=json
 		
+cd ./jazz-installer/installscripts/wizard
 
+## Scenario 1 - Building full stack (Network, Instances and the rest of the stack).
+ 1. ./run.py
+ 
+ Follow the prompts:
+ 
+     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): **jazz123**
+     Do you need full stack including network(Y/N): **Y**
+     
+## Scenario 2 - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
+1. ./run.py
 
+Follow the prompts:
+
+     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
+     Do you need full stack including network(Y/N): n
+     Do you have existing Jenkins and Bitbucket Server(Y/N): n
+     We will create Jenkins and Bitbucket Servers using the Network Stack you provided
+     Please have vpc,subnet and cidr blocks handy
+     Please provide VPC id: vpc-e1b9b784
+     Please provide subnet id: subnet-c5caafee
+     Please provide CIDR BLOCK: 172.31.0.0/16
+     
+## Scenario 3 - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
+     
+     
 # AWS Resources 
     AWS AMIs
     AWS::ApiGateway
