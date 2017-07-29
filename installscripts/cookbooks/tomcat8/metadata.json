@@ -1,0 +1,42 @@
+{
+  "name": "tomcat8",
+  "description": "Installs/Configures tomcat8",
+  "long_description": "tomcat8 Cookbook\n================\nChef 11 compatible cookbook that installs tomcat8 in a basic configuration.\nPartially based on the tomcat_latest cookbook by Chendil Kumar Manoharan\n<mkchendil@gmail.com> under the Apache 2.0 license\n\nOnly been tested on Ubuntu and may only work on Ubuntu and perhaps Debian\n\nRequirements\n------------\n#### packages\n- `java` - tomcat8 needs java before it can be installed.\n\nAttributes\n----------\n#### tomcat8::default\n<table>\n  <tr>\n    <th>Key</th>\n    <th>Type</th>\n    <th>Description</th>\n    <th>Default</th>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['download_url']</tt></td>\n    <td>String</td>\n    <td>Where to download tomcat from</td>\n    <td><tt>http://archive.apache.org/dist/tomcat/tomcat-8/v8.0.33/bin/apache-tomcat-8.0.33.tar.gz</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['install_location']</tt></td>\n    <td>String</td>\n    <td>Default install location></td>\n    <td><tt>/var/tomcat8</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['port']</tt></td>\n    <td>Number</td>\n    <td>Default port for tomcat to use</td>\n    <td><tt>8080</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['ssl_port']</tt></td>\n    <td>Number</td>\n    <td>Default ssl port for tomcat</td>\n    <td><tt>8443</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['ajp_port']</tt></td>\n    <td>Number</td>\n    <td>Default ajp port for tomcat</td>\n    <td><tt>8009</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['tomcat_user']</tt></td>\n    <td>String</td>\n    <td>Default user for tomcat</td>\n    <td><tt>root</tt></td>\n  </tr>\n  <tr>\n    <td><tt>['tomcat8']['autostart']</tt></td>\n    <td>Boolean</td>\n    <td>Whether to autostart tomcat</td>\n    <td><tt>true></tt></td>\n  </tr>\n</table>\n\nUsage\n-----\n#### tomcat8::default\nJust include `tomcat8` in your node's `run_list`:\n\n```json\n{\n  \"name\":\"my_node\",\n  \"run_list\": [\n    \"recipe[tomcat8]\"\n  ]\n}\n```\n",
+  "maintainer": "Brandon Sharitt",
+  "maintainer_email": "bsharitt@franklinamerican.com",
+  "license": "Apache 2.0",
+  "platforms": {
+    "ubuntu": ">= 0.0.0"
+  },
+  "dependencies": {
+    "java": ">= 0.0.0"
+  },
+  "recommendations": {
+
+  },
+  "suggestions": {
+
+  },
+  "conflicting": {
+
+  },
+  "providing": {
+
+  },
+  "replacing": {
+
+  },
+  "attributes": {
+
+  },
+  "groupings": {
+
+  },
+  "recipes": {
+
+  },
+  "version": "0.1.0",
+  "source_url": "https://github.com/bsharitt/tomcat8",
+  "issues_url": "https://github.com/bsharitt/tomcat8/issues",
+  "privacy": false
+}
