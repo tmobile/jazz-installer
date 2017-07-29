@@ -145,12 +145,12 @@ resource "aws_instance" "jenkinsserver" {
   vpc_security_group_ids = ["${aws_security_group.jenkins.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.jenkinselb","aws_elb.bitbucketelb" ]
-  tags {  Name = "${var.envPrefix}_jenkinsserver"  }
+  tags {  Name = "${var.envPrefix}_jenkinsserver"
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
-  
+  }
 }
 resource "aws_instance" "bitbucketserver" {
   instance_type = "t2.medium"
@@ -159,11 +159,12 @@ resource "aws_instance" "bitbucketserver" {
   vpc_security_group_ids = ["${aws_security_group.bitbucket.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.bitbucketelb"]
-  tags {  Name = "${var.envPrefix}_bitbucketserver"  }
+  tags {  Name = "${var.envPrefix}_bitbucketserver"  
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
+  }
 }
 resource "aws_elb" "jenkinselb" {
   name = "${var.envPrefix}-jenkinselb"
