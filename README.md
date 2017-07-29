@@ -38,8 +38,8 @@ cd ./jazz-installer/installscripts/wizard
  
  Follow the prompts:
  
-     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): **jazz123**
-     Do you need full stack including network(Y/N): **Y**
+     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
+     Do you need full stack including network(Y/N): Y
      
 ## Scenario 2 - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
 1. ./run.py
