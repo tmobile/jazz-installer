@@ -2,10 +2,6 @@ variable "region" {
   type = "string"
   default = "us-east-1"
 }
-variable "envPrefix" {
-  type = "string"
-  default = "jazz60"
-}
 variable "bitbucketserver_ami" {
   type = "string"
   default = "ami-06360a10"

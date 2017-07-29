@@ -2,10 +2,6 @@ variable "region" {
   type = "string"
   default = "us-east-1"
 }
-variable "envPrefix" {
-  type = "string"
-  default = "jazz13"
-}
 variable "vpc" {
   type = "string"
   // us-east-1
