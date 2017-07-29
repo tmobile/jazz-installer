@@ -59,9 +59,8 @@ Follow the prompts:
 
 Note: 
 
-Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
-
-Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+* Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
+* Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
 1. ./run.py
 
 Follow the prompts:
