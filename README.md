@@ -56,7 +56,26 @@ Follow the prompts:
      Please provide CIDR BLOCK: 172.31.0.0/16
      
 ## Scenario 3 - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
-     
+
+Note: 
+
+Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
+
+Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+1. ./run.py
+
+Follow the prompts:
+
+     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
+     Do you need full stack including network(Y/N): n
+     Do you have existing Jenkins and Bitbucket Server(Y/N): y
+     Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
+     Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+     Press the <ENTER> key to continue...
+     Please provide Jenkins Server ELB URL: jazz121-jenkinselb-249111302.us-east-1.elb.amazonaws.com
+     Please provide Jenkins Server PublicIp: 54.88.1.198
+     Please provide Bitbuckket  Server ELB URL: jazz121-bitbucketelb-1289508647.us-east-1.elb.amazonaws.com
+     Please provide bitbucket Server PublicIp: 54.90.228.149
      
 # AWS Resources 
     AWS AMIs
