@@ -2,10 +2,6 @@ variable "region" {
   type = "string"
   default = "us-east-1"
 }
-variable "envPrefix" {
-  type = "string"
-  default = "jazz50"
-}
 /* moved to netVars.tf
 variable "vpc" {
   type = "string"
