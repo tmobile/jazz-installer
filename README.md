@@ -61,6 +61,8 @@ Note:
 
 * Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+* For your convenience we have provided scripts to create Jenkins/Bitbucket servers to test the scenario using existing network.
+Please follow 
 1. ./run.py
 
 Follow the prompts:
@@ -138,30 +140,6 @@ Terraform will create the stack with the following AWS resources,
     AWS::ElasticLoadBalancing::LoadBalancer
     Aws_elb_attachment.jenkins
     Aws_elb_attachment.bitbucket
-
-# Stack Creation Scenarios
-            
-## Flow 1 : Build stack with new VPC and Subnet
-
-* Change to directory **jazz-installer/installscripts**
-* Give envPrifix name in **jazz-installer/installscripts/terraform-unix-networkstack/variables.tf** and 
-  **jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf**
-  
-    variable "envPrefix" {
-    type = "string"
-    default = "xxxx"
-    }
-    
-* Run the python script **run.py** to build the stack. Change to directory jazz-installer/installscripts/wizard 
-    ./run.py     
-  
-  Do you need full stack including network(Y/N) 
-       Give 'y' to start building the stack
-
-
-
-
-
 
 * The following software should be installed on the existing bitbucket server
  
