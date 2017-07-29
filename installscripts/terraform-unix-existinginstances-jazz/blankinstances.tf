@@ -146,6 +146,9 @@ resource "aws_instance" "jenkinsserver" {
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.jenkinselb","aws_elb.bitbucketelb" ]
   tags {  Name = "${var.envPrefix}_jenkinsserver"  }
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   
 }
 resource "aws_instance" "bitbucketserver" {
@@ -156,6 +159,9 @@ resource "aws_instance" "bitbucketserver" {
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.bitbucketelb"]
   tags {  Name = "${var.envPrefix}_bitbucketserver"  }
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
 }
 resource "aws_elb" "jenkinselb" {
   name = "${var.envPrefix}-jenkinselb"

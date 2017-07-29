@@ -147,9 +147,9 @@ resource "aws_instance" "jenkinsserver" {
   depends_on = ["aws_elb.jenkinselb","aws_elb.bitbucketelb","aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role" ]
   tags {  
     Name = "${var.envPrefix}_jenkinsserver"
-    Application = ""
-    Environment = ""
-    Exempt = ""
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   }
 
   connection {
@@ -206,9 +206,9 @@ resource "aws_instance" "bitbucketserver" {
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.bitbucketelb"]
   tags {  Name = "${var.envPrefix}_bitbucketserver"
-    Application = ""
-    Environment = ""
-    Exempt = ""
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   }
   connection {
     user = "ec2-user"
