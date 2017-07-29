@@ -13,7 +13,7 @@ Jazz Serverless Development Framework: Developer Preview Installer
 * Use RHEL 7 instance as your installer box.
 * SSH to RHEL 7 instance and follow steps below,
  
- 1. curl -L    https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
+ 1. curl -L    https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLenmwbouJf97yJnDDi8dfVBjnR4Sks5ZhjtrwA%3D%3D -o rhel7Installer.sh
  1. chmod +x rhel7Installer.sh
  2. ./rhel7Installer.sh
  
