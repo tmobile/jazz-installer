@@ -150,6 +150,7 @@ resource "aws_instance" "jenkinsserver" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   }
 
   connection {

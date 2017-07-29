@@ -47,6 +47,7 @@ resource "aws_instance" "installer" {
     Application = "${var.tagsApplication}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
   root_block_device {
 	volume_type = "gp2"
 	volume_size = 20
