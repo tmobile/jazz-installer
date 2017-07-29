@@ -44,6 +44,9 @@ resource "aws_instance" "installer" {
   vpc_security_group_ids = ["${aws_security_group.installer.id}"]
   subnet_id = "${var.subnet}"
   tags {  Name = "${var.envPrefix}"  }
+    Application = "${var.tagsApplication}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
   root_block_device {
 	volume_type = "gp2"
 	volume_size = 20
