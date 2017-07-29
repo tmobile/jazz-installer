@@ -3,17 +3,13 @@ Jazz Serverless Development Framework: Developer Preview Installer
 
 ## Jazz Serverless Development Framework
 
+# Overview
+
+
 # Prerequisites
-# Setup Installer Box
-* Install aws cli
-* Install Terraform
-* Install Packer
-*  Install jdk1.8
-* Install git
-* Create AWS account with necessary permissions and run aws configure to set the access key, secret key, region and output format      
-* The AWS account should have permission to AMIs and to create the following AWS Resources in us-east-1 region.
-* Update AWS credentials (Access Key/Secret Key) in the ‘aws.sh’ file
-jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
+* Create AWS account with necessary permissions.The AWS account should have privillage to create the following
+  AWS Resources in us-east-1 region.
+* Use your GitHub account to clone the repo
 * Use RHEL 7 instance as your installer box. The software required on the installer box in listed below
 
         UnZip 6.00
@@ -30,9 +26,13 @@ jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
         Packer_1.0.2
         Atlassian-cli-6.7.1
         jq-1.5
-
-* Use your GitHab account to clone the repo     
-
+* Download the **rhel7Installer.sh** script file using the following command.
+        curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/patch-5/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLTIejEHt96NT1Z75fXG5jd_TN54Gks5ZhOSvwA%3D%3D -o rhel7Installer.sh
+* Grant execute permission to rhel7Installer.sh
+        chmod +x rhel7Installer.sh
+* Run rhel7Installer.sh script, this will install the softwares required on the installer box, checkout the 
+  jazz-installer repo and ask for configuring AWS access key, secret key, region and output format.
+          ./rhel7Installer.sh
 
 # AWS Resources 
     AWS AMIs
@@ -46,8 +46,10 @@ jazz-installer/installscripts/cookbooks/jenkins/files/credentials/aws.sh
     AWS::Lambda
     AWS::S3::Bucket
     AWS::Elasticsearch::Domain
+
 # Limitations
 We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
+
 # Stack Creation Flow
 Terraform will create the stack with the following AWS resources,
 
@@ -96,116 +98,27 @@ Terraform will create the stack with the following AWS resources,
     Aws_elb_attachment.bitbucket
 
 # Stack Creation Scenarios
-
             
-## Flow 1 : Build stack with new Bitbucket and Jenkins Server in existing VPC and Subnet
-* Download [ustglobal_rsa.ppk](https://github.com/tmobile/jazz-installer/blob/patch-5/installscripts/sshkeys/ustglobal_rsa.ppk) file.
-* Use SSH client **PUTTY** to connect to the Installer box from Windows using the ustglobal_rsa.ppk file.
+## Flow 1 : Build stack with new VPC and Subnet
 
-            Installerbox IP : 54.172.171.204
-            Username : ec2-user
-* Configure AWS credentials and region via **aws configure** command
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/aws_configure.png)      
-* Checkout the git repository in /home/ec2-user directory
-
-* Git clone jazz-installer repo branch patch-5
- 
-        git clone -b patch-5 https://github.com/tmobile/jazz-installer.git
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/GitHub.png)
-* Change the permission for sshkeys in ./jazz-installer/installscripts/sshkeys
-
-        chmod 400 ./jazz-installer/installscripts/sshkeys/*
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/chmod.png)            
-* Update the VPC ID, Subnet ID & CIDR Block  in variables.tf file.
-
-        ./jazz-installer/installscripts/terraform-unix-demo-jazz/netvars.tf
-
-        variable "vpc" { type = "string"  default = "vpc-xxxxxx" }
-        variable "subnet" {type = "string" default = "subnet-xxxxxx" }
-        variable "cidrblocks" { type = "string" default = "10.0.0.0/16" }
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/netvars.png)
-      
-* Update the envPrefix and region in variables.tf file.
-    envPrefix is the tag used to tag all the artifacts in the stack being created.
-        ./jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf
-
-        variable "region" {
-          type = "string"
-          default = "us-east-1"
-        }
-        variable "envPrefix" {
-          type = "string"
-          default = "jazz2"
-        }
-        
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/variables.png)        
-* Change to directory ./jazz-installer/installscripts/terraform-unix-demo-jazz and run command to bring the stack up
-
-        nohup  terraform apply  &
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_terraform_apply.png)        
-* To check the stack building logs 
-
-        tail -f nohup.out
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file.png)
+* Change to directory **jazz-installer/installscripts**
+* Give envPrifix name in **jazz-installer/installscripts/terraform-unix-networkstack/variables.tf** and 
+  **jazz-installer/installscripts/terraform-unix-demo-jazz/variables.tf**
+    variable "envPrefix" {
+    type = "string"
+    default = "xxxx"
+    }
+* Run the python script **run.py** to build the stack. Change to directory jazz-installer/installscripts/wizard 
+    ./run.py     
   
-  
-  
-## Flow 2. Build Stack with Existing Bitbucket and Jenkins server
-* cd /home/ec2-user/jazz-installer/installscripts/terraform-unix-noinstances-jazz
-* Provide the Existing Bitbucket Server/ Jenkins Server info in variables.tf
+  Do you need full stack including network(Y/N) 
+       Give 'y' to start building the stack
 
 
-        variable "envPrefix" {
-          type = "string"
-          default = "jazz3"
-        }
-        
-        variable "jenkinsservermap" {
-          type = "map"
-        
-          default = {
-            jenkins_elb = "xxxxxxxx"
-            public_ip = "xxxxxxxx"
-            subnet = "xxxxxxxx"
-            security_group = "xxxxxxxx"
-          }
-        }
-        variable "bitbucketservermap" {
-          type = "map"
-        
-          default = {
-            bitbucket_elb = "xxxxxxxx"
-            public_ip = "xxxxxxxx"
-          }
-        }
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/env-prefix.png)
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/bitbucket-elb.png)
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jenkins-elb.png)
-* If the lambda permission is already applied to the billing account, please comment out the following in variable.tf file
-    ./jazz-installer/installscripts/terraform-unix-noinstances-jazz/variables.tf
 
-        variable "lambdaCloudWatchProps" {
-          type = "map"
-          default = {
-                statement_id   = "lambdaFxnPermission"
-                action         = "lambda:*"
-                function_name  = "cloud-logs-streamer-dev"
-                principal      = "logs.us-east-1.amazonaws.com"
-          }
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/lambda_permissions.png)           
-* Rename the file lamdbapermissions.tf to lamdbapermissions.tf1
 
-        mv lamdbapermissions.tf lamdbapermissions.tf1
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/rename_file.png)        
 
-* Change to directory ./jazz-installer/installscripts/terraform-unix-noinstances-jazz run command to bring the stack up
 
-        nohup  terraform apply  &
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_terrafor_apply_no-instances.png)
-* To check the stack building logs 
-
-        tail -f nohup.out
-  ![font samples - light](https://github.com/tmobile/jazz-installer/blob/patch-5/screenshots/jazz_tail_file_no-instances.png)
 * The following software should be installed on the existing bitbucket server
  
          chefdk - 1.4.3
