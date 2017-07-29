@@ -2,6 +2,9 @@
 from __future__ import print_function
 import os
 import subprocess
+def pause():
+    programPause = raw_input("Press the <ENTER> key to continue...")
+
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- JAZZ10 ): ") 
 tagApplication="JAZZ"
 tagEnvironment="Development"
@@ -12,7 +15,9 @@ fullstack = raw_input("Do you need full stack including network(Y/N): ")
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
 	os.chdir("../terraform-unix-networkstack")
 	subprocess.call('pwd', shell=True)
-	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envPrefix.tf"]
+	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-networkstack/envprefix.tf"]
+	subprocess.call(cmd)
+	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 	subprocess.call(cmd)
 	subprocess.call(' ./scripts/create.sh', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
@@ -21,6 +26,9 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
 	existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ") 
 	if existingJenkinsBitbucket == "y" or existingJenkinsBitbucket == "Y" :
+		print(" Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin")
+		print(" Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin")
+		pause()
 		jenkinsServerELB = raw_input("Please provide Jenkins Server ELB URL: ") 
 		jenkinsServerPublicIp = raw_input("Please provide Jenkins Server PublicIp: ") 
 		bitBucketServerELB = raw_input("Please provide Bitbuckket  Server ELB URL: ") 
@@ -28,6 +36,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 
 		os.chdir("../terraform-unix-networkstack")
 		cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf"]
+		subprocess.call(cmd)
+		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
+		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
 		subprocess.call('pwd', shell=True)
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
@@ -46,6 +57,8 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 
 		os.chdir("../terraform-unix-networkstack")
 		cmd = ["./scripts/createNetVars.sh", vpc, subnet, cidr, "../terraform-unix-demo-jazz/netvars.tf"]
+		subprocess.call(cmd)
+		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagApplication, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('pwd', shell=True)
