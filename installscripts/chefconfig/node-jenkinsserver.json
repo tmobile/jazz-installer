@@ -1,0 +1,3 @@
+{
+    "run_list": [ "recipe[java::oracle]","recipe[jenkins]", "recipe[git]", "recipe[maven]", "recipe[npm]", "recipe[aws]"]
+}
