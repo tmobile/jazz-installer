@@ -62,7 +62,9 @@ Note:
 * Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
 * For your convenience we have provided scripts to create Jenkins/Bitbucket servers to test the scenario using existing network.
-Please follow 
+Please follow the section,
+Create Jenkins/Bitbucket servers for Scenario 3
+
 1. ./run.py
 
 Follow the prompts:
@@ -78,6 +80,37 @@ Follow the prompts:
      Please provide Bitbuckket  Server ELB URL: jazz121-bitbucketelb-1289508647.us-east-1.elb.amazonaws.com
      Please provide bitbucket Server PublicIp: 54.90.228.149
      
+## Create Jenkins/Bitbucket servers for Scenario 3
+
+      cd ./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/
+    
+* Change the text **"replace here"** with proper values in envprefix.tf
+
+      variable "envPrefix" { type = "string" default = "replace here" }
+      variable "tagsOwner" { type = "string" default = "replace here" }
+      
+* Change the VPC, Subnet and CIDR with proper values in variables.tf
+
+      variable "vpc" {
+      type = "string"
+      default = "**vpc-e1b9b784**"   // us-east-1
+      }
+      variable "subnet" {
+      type = "string"
+      default = "**subnet-c5caafee**"         // us-east-1
+      }
+      variable "cidrblocks" {
+      type = "string"
+      default = "**172.31.0.0/16**"
+      }
+      
+* Execute the following in ./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/       
+      
+      nohup ./scripts/create.sh &
+     
+* Once the script is complete, please pick the values from **./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/settings.txt**
+
+    
 # AWS Resources 
     AWS AMIs
     AWS::ApiGateway
