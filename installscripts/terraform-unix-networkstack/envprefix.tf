@@ -1,0 +1,1 @@
+variable "envPrefix" { type = "string" default = "replace here" }
