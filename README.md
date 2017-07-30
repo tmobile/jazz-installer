@@ -63,6 +63,7 @@ Note:
 
 * Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+* Please make sure the bitbucket http port is 7990 and Jenkins Server port is 8080
 * For your convenience we have provided scripts to create Jenkins/Bitbucket servers to test the scenario using existing network.
 Please follow the section,
 Create Jenkins/Bitbucket servers for Scenario 3
