@@ -37,7 +37,7 @@ cd ./jazz-installer/installscripts/wizard
  1. ./run.py
  
  Follow the prompts:
- (Please use only lowercase and only alphabets for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+ (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
  
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): Y
@@ -46,7 +46,8 @@ cd ./jazz-installer/installscripts/wizard
 1. ./run.py
 
 Follow the prompts:
-
+ (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+ 
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): n
      Do you have existing Jenkins and Bitbucket Server(Y/N): n
@@ -69,7 +70,8 @@ Create Jenkins/Bitbucket servers for Scenario 3
 1. ./run.py
 
 Follow the prompts:
-
+ (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+ 
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
      Do you need full stack including network(Y/N): n
      Do you have existing Jenkins and Bitbucket Server(Y/N): y
