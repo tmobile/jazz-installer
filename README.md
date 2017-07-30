@@ -1,26 +1,34 @@
-
 # jazz-installer
-Please Refer Wiki https://github.com/tmobile/jazz-installer/wiki
-
 Jazz Serverless Development Framework: Developer Preview Installer
 
+For more details on Jazz Serverless Development Framework, Please refer [here](https://github.com/tmobile/jazz-core/wiki)
 
-## Jazz Serverless Development Framework
+To run the installer - its a two step process. (Run the commands in below steps)
+ 1. STEP 1 - [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
+ 2. STEP 2 - Choose one of the stack build scenarios
+        
+    a) [Scenario 1](https://github.com/tmobile/jazz-installer/wiki#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
 
-# Overview
+    b) [Scenario 2](https://github.com/tmobile/jazz-installer/wiki#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
+
+    c) [Scenario 3](https://github.com/tmobile/jazz-installer/wiki#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack) - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
 
 
 # Prerequisites
-* Create AWS account with necessary permissions.The AWS account should have privillage to create the following
-  AWS Resources in us-east-1 region. https://github.com/tmobile/jazz-installer#aws-resources
-* Use your GitHub account to clone the repo
-* Use RHEL 7 instance as your installer box.
-* SSH to RHEL 7 instance and follow steps below,
- 
+* Create AWS account with permissions/privileges to create the 
+  [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
+* Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
+* SSH to RHEL 7 instance and follow steps with 4 commands
+
+# Setup the RHEL 7 server with the installer
+
+Execute the below 4-Commands. The first command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server
+And will also clone the repository.
+
  1. curl -L    https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLenmwbouJf97yJnDDi8dfVBjnR4Sks5ZhjtrwA%3D%3D -o rhel7Installer.sh
- 1. chmod +x rhel7Installer.sh
- 2. ./rhel7Installer.sh
- 
+ 2. chmod +x rhel7Installer.sh
+ 3. ./rhel7Installer.sh
+  
 This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
 
     AWS Access Key ID [None]:
@@ -35,13 +43,13 @@ Example :
     Default region name= us-east-1
     Default output format=json
 		
-cd ./jazz-installer/installscripts/wizard
+ 4. cd ./jazz-installer/installscripts/wizard
 
 ## Scenario 1 - Building full stack (Network, Instances and the rest of the stack).
  1. ./run.py
- 
- Follow the prompts:
- (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+
+ Follow the prompts: (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+
  
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): Y
@@ -50,8 +58,7 @@ cd ./jazz-installer/installscripts/wizard
 1. ./run.py
 
 Follow the prompts:
- (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
- 
+
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): n
      Do you have existing Jenkins and Bitbucket Server(Y/N): n
@@ -67,7 +74,6 @@ Note:
 
 * Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
-* Please make sure the bitbucket http port is 7990 and Jenkins Server port is 8080
 * For your convenience we have provided scripts to create Jenkins/Bitbucket servers to test the scenario using existing network.
 Please follow the section,
 Create Jenkins/Bitbucket servers for Scenario 3
@@ -75,8 +81,7 @@ Create Jenkins/Bitbucket servers for Scenario 3
 1. ./run.py
 
 Follow the prompts:
- (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
- 
+
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
      Do you need full stack including network(Y/N): n
      Do you have existing Jenkins and Bitbucket Server(Y/N): y
