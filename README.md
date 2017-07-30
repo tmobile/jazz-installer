@@ -4,8 +4,9 @@ Jazz Serverless Development Framework: Developer Preview Installer
 For more details on Jazz Serverless Development Framework, Please refer [here](https://github.com/tmobile/jazz-core/wiki)
 
 To run the installer - its a two step process. (Run the commands in below steps)
- 1. STEP 1 - [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
- 2. STEP 2 - Choose one of the stack build scenarios
+ 1. [Make sure Prerequisites are met](#Prerequisites) 
+ 2. [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
+ 3. Installer supports the following Scenario's
         
     a) [Scenario 1](https://github.com/tmobile/jazz-installer/wiki#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
 
