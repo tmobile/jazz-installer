@@ -8,11 +8,11 @@ To run the installer - its a two step process. (Run the commands in below steps)
  2. [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
  3. Installer supports the following Scenario's
         
-    a) [Scenario 1](https://github.com/tmobile/jazz-installer/wiki#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
+    a) [Scenario 1](#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
 
-    b) [Scenario 2](https://github.com/tmobile/jazz-installer/wiki#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
+    b) [Scenario 2](#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
 
-    c) [Scenario 3](https://github.com/tmobile/jazz-installer/wiki#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack) - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
+    c) [Scenario 3](#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack) - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
 
 
 # Prerequisites
