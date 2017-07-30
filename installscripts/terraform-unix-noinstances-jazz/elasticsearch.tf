@@ -1,6 +1,6 @@
 resource "aws_elasticsearch_domain" "elasticsearch_domain" {
 	depends_on = ["null_resource.configureExistingJenkinsServer"]
-	domain_name           = "${var.envPrefix}-elasticsearch-domain"
+	domain_name           = "${var.envPrefix}"
 	elasticsearch_version = "5.1"
 	cluster_config {
 		instance_type = "m3.medium.elasticsearch"
