@@ -16,9 +16,6 @@ resource "null_resource" "outputVariables" {
     command = "echo jenkins-subnet = ${var.subnet} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo jenkins-securitygroup = ${aws_security_group.jenkins.id} >> settings.txt"
-  }
-  provisioner "local-exec" {
     command = "echo cloudfront url = http://${aws_cloudfront_distribution.jazz.domain_name}/index.html >> settings.txt"
   }
 }
