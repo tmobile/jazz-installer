@@ -6,4 +6,15 @@ sed -i "s|AWS_SECRET_KEY=.*.$|AWS_SECRET_KEY=$aws_secret_access_key|g" ../cookbo
 date
 terraform apply
 date
-
+echo " ======================================================="
+echo " The following Stack has been created in AWS"
+echo " ________________________________________________"
+terraform state list
+echo " ======================================================="
+echo "Please use the following values for checking out JAZZ"
+echo " ________________________________________________"
+cat ./settings.txt
+echo " ======================================================="
+echo " Once checkout is done Please execute nohup ./destroy.sh & in the following directory . This will cleanup the entire Stack"
+pwd
+echo " ======================================================="
