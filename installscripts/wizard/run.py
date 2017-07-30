@@ -40,8 +40,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
-		subprocess.call('pwd', shell=True)
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		print("\n\nPlease execute  tail -f nohup.out in the below directory to see the stack creation progress ")
+		subprocess.call('pwd', shell=True)
 	elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
 		print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
 		print(" Please have vpc,subnet and cidr blocks handy")
@@ -61,8 +62,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
-		subprocess.call('pwd', shell=True)
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		print("\n\nPlease execute  tail -f nohup.out in the below directory to see the stack creation progress")
+		subprocess.call('pwd', shell=True)
 	else :  # 
 		print("invalid input..please try again...")
 
