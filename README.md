@@ -8,7 +8,7 @@ Jazz Serverless Development Framework: Developer Preview Installer
 
 # Prerequisites
 * Create AWS account with necessary permissions.The AWS account should have privillage to create the following
-  AWS Resources in us-east-1 region.
+  AWS Resources in us-east-1 region. https://github.com/tmobile/jazz-installer#aws-resources
 * Use your GitHub account to clone the repo
 * Use RHEL 7 instance as your installer box.
 * SSH to RHEL 7 instance and follow steps below,
