@@ -6,7 +6,7 @@ For more details on Jazz Serverless Development Framework, Please refer [here](h
 To run the installer - its a two step process. (Run the commands in below steps)
  1. [Make sure Prerequisites are met](#Prerequisites) 
  2. [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
- 3. Installer supports the following Scenario's
+ 3. Installer supports the following Scenario's. Please choose your scenario.
         
     a) [Scenario 1](#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
 
