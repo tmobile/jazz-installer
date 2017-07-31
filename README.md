@@ -4,10 +4,10 @@ Jazz Serverless Development Framework: Developer Preview Installer
 For more details on Jazz Serverless Development Framework, Please refer [here](https://github.com/tmobile/jazz-core/wiki)
 
 
-*Note: Please go throuh [Limitations](#Limitations) before you proceed.*
+*Note: Please go throuh [Limitations](#limitations) before you proceed.*
 
 To run the installer - its a two step process. (Run the commands in below steps)
- 1. [Make sure Prerequisites are met](#Prerequisites) 
+ 1. [Make sure Prerequisites are met](#prerequisites) 
  2. [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
  3. Installer supports the following Scenario's. Please choose your scenario.
         
