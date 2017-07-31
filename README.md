@@ -3,7 +3,8 @@ Jazz Serverless Development Framework: Developer Preview Installer
 
 For more details on Jazz Serverless Development Framework, Please refer [here](https://github.com/tmobile/jazz-core/wiki)
 
-Note: Please go throuh [Limitations](#Limitations) before you proceed.
+
+*Note: Please go throuh [Limitations](#Limitations) before you proceed.*
 
 To run the installer - its a two step process. (Run the commands in below steps)
  1. [Make sure Prerequisites are met](#Prerequisites) 
