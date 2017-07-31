@@ -15,6 +15,6 @@ echo "Please use the following values for checking out JAZZ"
 echo " ________________________________________________"
 cat ./settings.txt
 echo " ======================================================="
-echo " Once checkout is done Please execute nohup ./destroy.sh & in the following directory . This will cleanup the entire Stack"
+echo " Once checkout is done Please execute nohup ./scripts/destroy.sh & in the following directory . This will cleanup the entire Stack"
 pwd
 echo " ======================================================="
