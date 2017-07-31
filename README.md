@@ -139,7 +139,8 @@ Follow the prompts:
     AWS::Elasticsearch::Domain
 
 # Limitations
-We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
+* We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
+* We have limitation of one stack on a region for an account.
 
 # Stack Creation Flow
 Terraform will create the stack with the following AWS resources,
