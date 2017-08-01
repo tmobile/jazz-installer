@@ -41,5 +41,5 @@ ng version
 git clone https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
 chmod -R +x ./jazz-installer/installscripts/*
 chmod 400 ./jazz-installer/installscripts/sshkeys/*
-cd ./jazz-installer/installscripts/wizard
+cd /home/ec2-user/jazz-installer/installscripts/wizard
 aws configure
