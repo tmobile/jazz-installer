@@ -38,7 +38,7 @@ cd /home/ec2-user
 pwd
 npm
 ng version
-git clone https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
+git clone -b patch-6 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
 chmod -R +x ./jazz-installer/installscripts/*
 chmod 400 ./jazz-installer/installscripts/sshkeys/*
 cd /home/ec2-user/jazz-installer/installscripts/wizard
