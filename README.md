@@ -29,7 +29,7 @@ To run the installer - its a two step process. (Run the commands in below steps)
 Execute the below 4-Commands. The first command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server
 And will also clone the repository.
 
- 1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLenmwbouJf97yJnDDi8dfVBjnR4Sks5ZhjtrwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard
+ 1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLenmwbouJf97yJnDDi8dfVBjnR4Sks5ZhjtrwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
   
 This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
 
@@ -47,9 +47,7 @@ Example :
 		
  
 ## Scenario 1 - Building full stack (Network, Instances and the rest of the stack).
- 1. ./run.py
-
- Follow the prompts: (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
+  Follow the prompts: (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
 
  
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
