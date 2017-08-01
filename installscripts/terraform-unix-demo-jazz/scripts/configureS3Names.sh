@@ -18,5 +18,5 @@ sed -i "s/jazz_bucket_dev.*.$/jazz_bucket_dev=$jazz_bucket_dev/g" $jenkinspropsf
 sed -i "s/jazz_bucket_stg.*.$/jazz_bucket_stg=$jazz_bucket_stg/g" $jenkinspropsfile
 sed -i "s/jazz_bucket_prod.*.$/jazz_bucket_prod=$jazz_bucket_prod/g" $jenkinspropsfile
 sed -i "s/jazz_bucket_cloudfrontlogs.*.$/jazz_bucket_cloudfrontlogs=$jazz_bucket_cloudfrontlogs/g" $jenkinspropsfile
-sed -i "s/jazz_bucket_dev.*.$/jazz_bucket_dev=$jazz_bucket_dev/g" $jenkinspropsfile
+sed -i "s/jazz_bucket_web.*.$/jazz_bucket_web=$jazz_bucket_web/g" $jenkinspropsfile
 
