@@ -1,6 +1,6 @@
 
 resource "aws_s3_bucket" "cloudfrontlogs" {
-  bucket = "${var.envPrefix}-cloudfrontlogs"
+  bucket_prefix = "${var.envPrefix}-cloudfrontlogs"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "cloudfrontlogs" {
 }
 
 resource "aws_s3_bucket" "oab-apis-deployment-dev" {
-  bucket = "${var.envPrefix}-apis-deployment-dev"
+  bucket_prefix = "${var.envPrefix}-apis-deployment-dev"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
 
 }
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
-  bucket = "${var.envPrefix}-apis-deployment-stg"
+  bucket_prefix = "${var.envPrefix}-apis-deployment-stg"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -64,7 +64,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
 
 }
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
-  bucket = "${var.envPrefix}-apis-deployment-prod"
+  bucket_prefix = "${var.envPrefix}-apis-deployment-prod"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -107,7 +107,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
 }
 resource "aws_s3_bucket" "jazz-web" {
-  bucket = "${var.envPrefix}-web"
+  bucket_prefix = "${var.envPrefix}-web"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
