@@ -1,3 +1,7 @@
+variable "configureS3Names_cmd" {
+  type = "string"
+  default = "./scripts/configureS3Names.sh"
+}
 variable "sets3acl_cmd" {
   type = "string"
   default = "./scripts/sets3acl.sh"
