@@ -144,7 +144,7 @@ EOF
   }  
 
   provisioner "local-exec" {
-    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket.id} ${aws_s3_bucket.oab-apis-deployment-stg.bucket.id} ${aws_s3_bucket.oab-apis-deployment-prod.bucket.id} ${aws_s3_bucket.cloudfrontlogs.bucket.id} ${aws_s3_bucket.jazz-web.bucket.id} ${var.jenkinspropsfile} "
+    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinspropsfile} "
   }
 
   provisioner "local-exec" {
