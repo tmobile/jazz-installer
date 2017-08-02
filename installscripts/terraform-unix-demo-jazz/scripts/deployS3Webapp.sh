@@ -1,11 +1,6 @@
 BUCKET_NAME=$1
 REGION=$2
-cd ./jazz-ui
-sudo npm install -g @angular/cli
-sudo npm install
-sudo ng build –prod
-ls -l ./dist
-cd ./dist
+cd ./jazz-core/jazz-web
 aws s3 cp . s3://$BUCKET_NAME  --recursive --region $REGION
 
 IFS=$(echo -en "\n\b")
