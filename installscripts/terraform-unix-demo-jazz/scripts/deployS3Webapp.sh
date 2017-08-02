@@ -3,7 +3,6 @@ REGION=$2
 cd ./jazz-ui
 sudo npm install -g @angular/cli
 sudo npm install
-sudo npm install debug-log
 sudo ng build –prod
 ls -l ./dist
 cd ./dist
