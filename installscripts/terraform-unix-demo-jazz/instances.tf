@@ -186,8 +186,9 @@ resource "aws_instance" "jenkinsserver" {
 	  source      = "${var.cookbooksDir}/jenkins/attributes"
 	  destination = "~/cookbooks/jenkins/"
   }
-  provisioner "local-exec" {
-    command = "${var.apigatewayimporter_cmd}  ec2-user@${aws_instance.jenkinsserver.public_ip} yes yes "
+  provisioner "file" {
+          source      = "jazz-core/aws-apigateway-importer"
+          destination = "/tmp"
   }
   provisioner "remote-exec" {
     inline = [
