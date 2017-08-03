@@ -42,10 +42,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
           source      = "${var.cookbooksDir}/jenkins/attributes"
           destination = "~/cookbooks/jenkins/"
   }
-  provisioner "local-exec" {
-    command = "${var.apigatewayimporter_cmd}  ec2-user@${lookup(var.jenkinsservermap, "jenkins_public_ip")} yes yes "
+  provisioner "file" {
+          source      = "jazz-core/aws-apigateway-importer"
+          destination = "/tmp"
   }
-  provisioner "remote-exec" {
+ provisioner "remote-exec" {
     inline = [
           "sudo chef-client --local-mode -c ~/chefconfig/client.rb --override-runlist jenkins::configureblankjenkins"
     ]
