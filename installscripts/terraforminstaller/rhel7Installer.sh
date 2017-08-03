@@ -3,13 +3,6 @@ export PS1='$PWD:>'
 
 #---git
 sudo yum install -y git
-#----java
-curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm > jdk-8u112-linux-x64.rpm
-sudo rpm -ivh ./jdk-8u112-linux-x64.rpm
-#------maven
-sudo curl -L http://mirror.olnevhost.net/pub/apache/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz -o /tmp/apache-maven-3.5.0-bin.tar.gz
-cd /opt; sudo tar xzvf /tmp/apache-maven-3.5.0-bin.tar.gz
-sudo ln -s /opt/apache-maven-3.5.0/bin/mvn /usr/bin/mvn
 #-----------aws
 sudo yum install -y unzip
 sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o /tmp/awscli-bundle.zip
@@ -22,22 +15,7 @@ sudo curl -L https://releases.hashicorp.com/packer/1.0.2/packer_1.0.2_linux_amd6
 sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq; sudo chmod 755 /usr/local/bin/jq
 cd /usr/bin; sudo unzip /tmp/terraform.zip; sudo unzip /tmp/packer.zip
 cd /home/ec2-user; sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o /tmp/atlassian-cli-6.7.1-distribution.zip; sudo unzip /tmp/atlassian-cli-6.7.1-distribution.zip
-#----------npm
-curl -L https://nodejs.org/download/release/v8.1.3/node-v8.1.3-linux-x64.tar.gz -o /tmp/node-v8.1.3-linux-x64.tar.gz
-cd /opt;pwd;sudo tar -xvzf  /tmp/node-v8.1.3-linux-x64.tar.gz
-sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
-sudo ln -s /opt/node-v8.1.3-linux-x64/bin/npm /usr/bin/npm
-sudo ln -s /opt/node-v8.1.3-linux-x64/bin/node /usr/bin/node
-sudo npm config set unsafe-perm=true; sudo npm -y install -g serverless
-sudo npm -y i aws-apigateway-importer
-sudo npm -y install -g @angular/cli
-sudo npm -y install
-sudo ln -s /opt/node-v8.1.3-linux-x64/bin/ng /usr/bin/ng
-sudo chmod -R 755 /opt/node-v8.1.3-linux-x64
-cd /home/ec2-user
-pwd
-npm
-ng version
+
 git clone -b patch-6 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
 chmod -R +x ./jazz-installer/installscripts/*
 chmod 400 ./jazz-installer/installscripts/sshkeys/*
