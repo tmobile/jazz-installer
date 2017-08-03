@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "cloudfrontlogs" {
 
   provisioner "local-exec" {
         when = "destroy"
-    command = " aws s3 rm s3://${var.envPrefix}-cloudfrontlogs --recursive"
+    command = " aws s3 rm s3://${aws_s3_bucket.cloudfrontlogs.bucket} --recursive"
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   }
   provisioner "local-exec" {
 	when = "destroy"
-    command = "	aws s3 rm s3://${var.envPrefix}-apis-deployment-dev --recursive"
+    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
   }
 
 }
@@ -59,7 +59,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   }
   provisioner "local-exec" {
 	when = "destroy"
-    command = "	aws s3 rm s3://${var.envPrefix}-apis-deployment-stg --recursive"
+    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
   }
 
 }
@@ -80,7 +80,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   }
   provisioner "local-exec" {
 	when = "destroy"
-    command = "	aws s3 rm s3://${var.envPrefix}-apis-deployment-prod --recursive"
+    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
   }
   
 }
