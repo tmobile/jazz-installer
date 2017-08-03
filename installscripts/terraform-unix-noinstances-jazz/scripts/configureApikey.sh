@@ -23,3 +23,6 @@ sed -i "s/default\['region'\].*.$/default['region']='$region'/g"  $jenkinsattrib
 sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_DEV/g" ./jazz-core/cloud-api-onboarding-webapp/src/config/config.json
 sed -i "s/{inst_region}/$region/g" ./jazz-core/cloud-api-onboarding-webapp/src/config/config.json
 
+# Changing jazz-web config.json
+sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_DEV/g" ./jazz-core/jazz-web/config/config.json
+sed -i "s/{inst_region}/$region/g" ./jazz-core/jazz-web/config/config.json
