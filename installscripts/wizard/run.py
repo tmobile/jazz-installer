@@ -22,7 +22,7 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 	subprocess.call(' ./scripts/create.sh', shell=True)
 	os.chdir("../terraform-unix-demo-jazz")
 	subprocess.call('nohup ./scripts/create.sh &', shell=True)
-	print("\n\nPlease execute  tail -f nohup.out |grep 'Creation Complete' in the below directory to see the stack creation progress ")
+	print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
 	subprocess.call('pwd', shell=True)
 	print("\n\n")
 elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
@@ -43,7 +43,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
-		print("\n\nPlease execute  tail -f nohup.out | grep 'Creation Complete' in the below directory to see the stack creation progress ")
+		print("\n\nPlease execute  tail -f nohup.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
 	elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
@@ -66,7 +66,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
-		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation Complete' in the below directory to see the stack creation progress")
+		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
 	else :  # 
