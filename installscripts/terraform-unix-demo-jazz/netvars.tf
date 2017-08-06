@@ -1,1 +1,1 @@
-variable "vpc" { type = "string"  default = "vpc-0ce49175" }
+variable "subnet" {type = "string" default = "subnet-7491e678" }
