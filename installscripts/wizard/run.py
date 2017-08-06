@@ -49,18 +49,14 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 	elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
 		print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
 		print(" Please have vpc,subnet and cidr blocks handy")
-		vpc = raw_input("Please provide VPC id: ") 
 		subnet = raw_input("Please provide subnet id: ") 
-		cidr  = raw_input("Please provide CIDR BLOCK: ") 
 
 		print("\n\n--------------------------------------------------")
 		print("The stack will be built using the following info")
-		print("VPC : ",vpc)
 		print("SUBNET : ",subnet)
-		print("CIDR BLOCK : ",cidr)
 
 		os.chdir("../terraform-unix-networkstack")
-		cmd = ["./scripts/createNetVars.sh", vpc, subnet, cidr, "../terraform-unix-demo-jazz/netvars.tf"]
+		cmd = ["./scripts/createNetVars.sh",  subnet "../terraform-unix-demo-jazz/netvars.tf"]
 		subprocess.call(cmd)
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
