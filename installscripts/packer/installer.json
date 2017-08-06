@@ -38,7 +38,7 @@
                 "type": "shell",
                 "inline_shebang": "/bin/bash -x",
                 "inline": [
-                  "chmod 755 ~/rhel7Installer.sh; ~/rhel7Installer.sh",
+                  "chmod 755 ~/rhel7AmiInstaller.sh; ~/rhel7AmiInstaller.sh",
                   "echo . ./aws.sh >> /home/ec2-user/.bash_profile",
                   "chmod 755 /home/ec2-user/aws.sh"
                 ]
