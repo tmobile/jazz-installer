@@ -56,7 +56,7 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		print("SUBNET : ",subnet)
 
 		os.chdir("../terraform-unix-networkstack")
-		cmd = ["./scripts/createNetVars.sh",  subnet "../terraform-unix-demo-jazz/netvars.tf"]
+		cmd = ["./scripts/createNetVars.sh",  subnet, "../terraform-unix-demo-jazz/netvars.tf"]
 		subprocess.call(cmd)
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
