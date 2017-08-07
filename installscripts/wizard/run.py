@@ -24,7 +24,7 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 	subprocess.call(cmd)
 	cmd = [cidrcheck]
 	subprocess.call(cmd)
-	if os.stat("./cidrexists").st_size !== 0
+	if os.stat("./cidrexists").st_size == 0
 		cmd = ["./scripts/create.sh", cidr]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
