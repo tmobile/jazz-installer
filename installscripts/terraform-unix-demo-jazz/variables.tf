@@ -24,8 +24,8 @@ variable "cidrblocks" {
 */
 variable "bitbucketserver_ami" {
   type = "string"
-	// ami in us-east1 with licenses and addons
-  default = "ami-50c7cb46"
+	// ami in us-east1 with licenses and addons licenses
+  default = "ami-9ba986e0"
 	// ami copied to us-west-1 with licenses and addons
   //default = "ami-74755c14"
 }
