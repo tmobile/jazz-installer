@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import sys
 import subprocess
+def is_non_zero_file(fpath):  
+    return os.path.isfile(fpath) and os.path.getsize(fpath) > 0
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
@@ -24,7 +26,7 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 	subprocess.call(cmd)
 	cmd = [cidrcheck]
 	subprocess.call(cmd)
-	if os.stat("./cidrexists").st_size == 0
+	if is_non_zero_file("./cidrexists")
 		cmd = ["./scripts/create.sh", cidr]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
