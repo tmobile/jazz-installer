@@ -17,7 +17,7 @@ variable "cidrblocks" {
 
 variable "bitbucketserver_ami" {
   type = "string"
-  default = "ami-50c7cb46"
+  default = "ami-9ba986e0"
 }
 variable "jenkinsserver_ami" {
   type = "string"
