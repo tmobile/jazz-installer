@@ -24,9 +24,10 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 	subprocess.call(cmd)
 	cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 	subprocess.call(cmd)
+	print (" cidrcheck command = ",cidrcheck)
 	cmd = [cidrcheck]
 	subprocess.call(cmd)
-	if is_non_zero_file("./cidrexists")
+	if is_non_zero_file("./cidrexists") != True : 
 		cmd = ["./scripts/create.sh", cidr]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
