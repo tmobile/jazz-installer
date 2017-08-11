@@ -53,6 +53,13 @@ Example :
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): Y
      
+ Note: 
+ * If the CIDR already exists, the script will exit with the following message,
+ 
+     **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
+     default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
+    
+     
 ## Scenario 2 - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
 1. ./run.py
 
