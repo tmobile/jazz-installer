@@ -4,11 +4,14 @@ resource "aws_key_pair" "auth" {
   public_key = "${file("${lookup(var.keypair, "public_key")}")}"
 }
 */
+data "aws_subnet" "selected" {
+  id = "${var.subnet}"
+}	
 # A security group for the ELB so it is accessible via the web
 resource "aws_security_group" "jenkinselb" {
   name        = "${var.envPrefix}_jenkinselb_sg"
   description = "Used for jenkins elb"
-  vpc_id      = "${var.vpc}"
+  vpc_id      = "${data.aws_subnet.selected.vpc_id}"
   tags {  Name = "${var.envPrefix}_jenkinselb"  }
 
   # HTTP access from anywhere
@@ -31,7 +34,7 @@ resource "aws_security_group" "jenkinselb" {
 resource "aws_security_group" "bitbucketelb" {
   name        = "${var.envPrefix}_bitbucketelb_sg"
   description = "Used for bitbucketelb demo"
-  vpc_id      = "${var.vpc}"
+  vpc_id      = "${data.aws_subnet.selected.vpc_id}"
   tags {  Name = "${var.envPrefix}_bitbucketelb"  }
 
   
@@ -69,7 +72,7 @@ resource "aws_security_group" "bitbucketelb" {
 resource "aws_security_group" "jenkins" {
   name        = "${var.envPrefix}_jenkins_sg"
   description = "Used for jenkins server"
-  vpc_id      = "${var.vpc}"
+  vpc_id      = "${data.aws_subnet.selected.vpc_id}"
   tags {  Name = "${var.envPrefix}_jenkins_server"}
 
   # SSH access from anywhere
@@ -85,7 +88,7 @@ resource "aws_security_group" "jenkins" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["${var.cidrblocks}"]
+    cidr_blocks = ["${data.aws_subnet.selected.cidr_block}"]
   }
 
   # outbound internet access
@@ -100,7 +103,7 @@ resource "aws_security_group" "jenkins" {
 resource "aws_security_group" "bitbucket" {
   name        = "${var.envPrefix}_bitbucketserver_sg"
   description = "Used for bitbuckerserver"
-  vpc_id      = "${var.vpc}"
+  vpc_id      = "${data.aws_subnet.selected.vpc_id}"
   tags {  Name = "${var.envPrefix}_bitbucket_server" }
 
   # SSH access from anywhere
@@ -115,19 +118,19 @@ resource "aws_security_group" "bitbucket" {
     from_port   = 7990
     to_port     = 7990
     protocol    = "tcp"
-    cidr_blocks = ["${var.cidrblocks}"]
+    cidr_blocks = ["${data.aws_subnet.selected.cidr_block}"]
   }
   ingress {
     from_port   = 7992
     to_port     = 7992
     protocol    = "tcp"
-    cidr_blocks = ["${var.cidrblocks}"]
+    cidr_blocks = ["${data.aws_subnet.selected.cidr_block}"]
   }
   ingress {
     from_port   = 7993
     to_port     = 7993
     protocol    = "tcp"
-    cidr_blocks = ["${var.cidrblocks}"]
+    cidr_blocks = ["${data.aws_subnet.selected.cidr_block}"]
   }
 
   # outbound internet access

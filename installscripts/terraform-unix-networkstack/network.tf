@@ -1,6 +1,6 @@
 # Create a VPC to launch our instances into
 resource "aws_vpc" "demo" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "${var.cidrblocks}"
   tags {  Name = "${var.envPrefix}_VPC"  }
 }
 
@@ -20,7 +20,7 @@ resource "aws_route" "internet_access" {
 # Create a subnet to launch our instances into
 resource "aws_subnet" "demo" {
   vpc_id                  = "${aws_vpc.demo.id}"
-  cidr_block              = "10.0.0.0/24"
+  cidr_block              = "${var.cidrblocks}"
   map_public_ip_on_launch = true
   tags {  Name = "${var.envPrefix}_subnet"  }
   

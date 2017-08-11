@@ -6,3 +6,4 @@ variable "netVarsfile" {
   type = "string"
   default = "../terraform-unix-demo-jazz/netvars.tf"
 }
+variable "cidrblocks" {}
