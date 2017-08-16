@@ -29,7 +29,7 @@ To run the installer - its a two step process. (Run the commands in below steps)
 Execute the below 4-Commands. The first command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server
 And will also clone the repository.
 
- 1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLdMMiyXJBRyGk0rTutNybdC4Zv0jks5ZlqZ4wA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
+ 1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
   
 This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
 
