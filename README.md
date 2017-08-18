@@ -7,13 +7,13 @@
        Also Make sure [prerequisites](#prerequisites) are met before you proceed with the installation.
        Currently we are supporting the Linux based Installer and Windows based jazz installer is coming soon. 
 
-# Prerequisites
+## Prerequisites
 * Create AWS account with permissions/privileges to create the 
   [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
 * Use RHEL 7 instance as your installer box. [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 
 
-# Installation steps
+## Installation steps
 1) SSH to RHEL 7 instance
 2) Run the below command to run the installation Wizard and provide prompted AWS configurations
 
@@ -28,11 +28,11 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
     
 
-# Limitations
+## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
 * We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
 
-# AWS Resources 
+## AWS Resources 
     AWS AMIs
     AWS::ApiGateway
     AWS::CloudFront
@@ -45,7 +45,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
     AWS::S3::Bucket
     AWS::Elasticsearch::Domain
 
-# Wiki - For more details visit our wiki page
+## Wiki
 Please refer to the [wiki pages](https://github.com/tmobile/jazz-installer/wiki) for more details.
 
 Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
