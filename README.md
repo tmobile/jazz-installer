@@ -39,9 +39,9 @@ Example :
  
   Follow the prompts to Install the Framework: 
   
-  (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
- 
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
+ 
+  (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
  
  ### 3. Installer Prompt 2:
    
@@ -49,12 +49,12 @@ Example :
    
      Do you need full stack including network(Y/N): Y
      
-   If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installer execution starts 
+   If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
-   If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installer execution starts 
+   If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
  Note: 
- * If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
+ * In option Y - If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
  
      **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
      default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
