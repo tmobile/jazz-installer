@@ -16,7 +16,7 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 
 ## Installer - Steps
 1) [Setup the RHEL 7 server with the Jazz installer](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#setup-the-rhel-7-server-with-the-jazz-installer)
-2) [Provide Stack Prefix Name ](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#2-installer-prompt-1---stack-prefix-name-prompt)
+2) [Provide Stack Prefix Name ](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#2-installer-prompt---stack-prefix-name-prompt)
 3) Installer Wizard 3 options (opt for either of the three options)
 
      a) Full Stack Installation - [Installer Prompt - Full Stack installation = Y](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#3-installer-prompt---full-stack-installation--y)
@@ -106,8 +106,8 @@ Follow the prompts:
      Please provide subnet id: subnet-c5caafee
      Please provide CIDR BLOCK: 172.31.0.0/16
      
-### Building stack using existing jenkins/BitBucket instances
-Provide existing bitbucket/jenkins information to create the rest of the stack.
+### Installer prompt - existing Jenkins and Bitbucket Server
+Building stack using existing jenkins/BitBucket instances and Provide existing bitbucket/jenkins information to create the rest of the stack. Read more about [Scenario-3](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack)
 
 Note: 
 
@@ -115,9 +115,10 @@ Note:
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
 * For your convenience we have provided scripts to create Jenkins/Bitbucket servers to test the scenario using existing network.
 Please follow the section,
-Create Jenkins/Bitbucket servers for Scenario 3
+        [Create Jenkins/Bitbucket servers for Scenario 3](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#create-jenkinsbitbucket-servers-for-scenario-3)
 
 In case if you have had to to run ./run.py manually please ensure you have entered first the below two prompts
+
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
      Do you need full stack including network(Y/N): n
 
