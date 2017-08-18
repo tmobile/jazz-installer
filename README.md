@@ -30,19 +30,19 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
   4) Installation - status
   
-  The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
+  1. The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
   
   Note: the nohop.out will be in ~/jazz-installer/installscripts/terraform-unix-demo-jazz or for Installation with existing servers in ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz
   
-  To ensure Installation completion, please execute the below statement
+  1. To ensure Installation completion, please execute the below statement
 
          tail -f nohup.out | grep 'Installation Completed!!!'
 
-  On Installation completion you would - you should be able to see the below text:
+  1. On Installation completion you would - you should be able to see the below text:
   
    **Installation Completed!!!**
 
-  Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
+  1. Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
 
        cat settings.txt
 
