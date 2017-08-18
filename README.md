@@ -106,7 +106,8 @@ Follow the prompts:
      Please provide subnet id: subnet-c5caafee
      Please provide CIDR BLOCK: 172.31.0.0/16
      
-## Scenario 3 - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
+### Building stack using existing jenkins/BitBucket instances
+Provide existing bitbucket/jenkins information to create the rest of the stack.
 
 Note: 
 
@@ -116,12 +117,12 @@ Note:
 Please follow the section,
 Create Jenkins/Bitbucket servers for Scenario 3
 
-1. ./run.py
+In case if you have had to to run ./run.py manually please ensure you have entered first the below two prompts
+     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
+     Do you need full stack including network(Y/N): n
 
 Follow the prompts:
 
-     Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz700
-     Do you need full stack including network(Y/N): n
      Do you have existing Jenkins and Bitbucket Server(Y/N): y
      Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
      Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
