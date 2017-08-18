@@ -1,4 +1,4 @@
-# Jazz - Developer Preview - Overview
+# Jazz (Developer Preview) Installer - Overview
 
 Jazz Installer - sets up the Jazz Serverless Developer Framework for API Services in AWS Cloud.
 For more details on Jazz Serverless Development Framework, please refer [here](https://github.com/tmobile/jazz-core/wiki).
@@ -7,29 +7,14 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 
  *[Make sure prerequisites are met before you proceed with the installation](#prerequisites)* 
 
-
-# jazz-installer
-
-Installation is a two step process.
-
- 1. [Setup the RHEL 7 server with the installer](#setup-the-rhel-7-server-with-the-installer)
- 2. Run the Installation Wizard to install the Framework.
-   Choose from the one of the following supported scenario's:
-        
-    a) [Scenario 1](#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack)- Building full stack (Network, Instances and the rest of the stack).
-
-    b) [Scenario 2](#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
-
-    c) [Scenario 3](#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack) - Building stack using existing jenkins/BitBucket instances(provide existing bitbucket/jenkins information to create the rest of the stack).
-
-
 # Prerequisites
 * Create AWS account with permissions/privileges to create the 
   [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
 * Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 * SSH to RHEL 7 instance and follow steps with 4 commands
 
-# Setup the RHEL 7 server with the installer
+
+# Setup the RHEL 7 server with the Jazz installer
 
 Execute the below Command. The first command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server and will also clone the repository.
 
@@ -102,36 +87,13 @@ Follow the prompts:
      Please provide Jenkins Server PublicIp: 54.88.1.198
      Please provide Bitbuckket  Server ELB URL: jazz121-bitbucketelb-1289508647.us-east-1.elb.amazonaws.com
      Please provide bitbucket Server PublicIp: 54.90.228.149
-     
-## Create Jenkins/Bitbucket servers for Scenario 3
 
-      cd ./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/
-    
-* Change the text **"replace here"** with proper values in envprefix.tf
 
-      variable "envPrefix" { type = "string" default = "replace here" }
-      variable "tagsOwner" { type = "string" default = "replace here" }
-      
-* Change the VPC, Subnet and CIDR with proper values in variables.tf
 
-      variable "vpc" {
-      type = "string"
-      default = "**vpc-e1b9b784**"   // us-east-1
-      }
-      variable "subnet" {
-      type = "string"
-      default = "**subnet-c5caafee**"         // us-east-1
-      }
-      variable "cidrblocks" {
-      type = "string"
-      default = "**172.31.0.0/16**"
-      }
-      
-* Execute the following in ./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/       
-      
-      nohup ./scripts/create.sh &
-     
-* Once the script is complete, please pick the values from **./jazz-installer/installscripts/terraform-unix-existinginstances-jazz/settings.txt**
+
+## Additional Information
+
+To know how to "Create Jenkins/Bitbucket servers for Scenario 3' refer here
 
     
 # AWS Resources 
@@ -150,51 +112,4 @@ Follow the prompts:
 # Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
 * We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
-
-# Stack Creation Flow
-Terraform will create the stack with the following AWS resources,
-
-    AWS::Cognito
-    Cognito_user_pool
-    AWS::EC2::SecurityGroup
-    Aws_security_group.bitbucketelb
-    Aws_security_group.jenkins
-    Aws_security_group.bitbucket
-    Aws_security_group.jenkinselb
-    AWS::S3::Bucket
-    Aws_s3_bucket.cloudfrontlogs
-    AWS::DynamoDB
-    Aws_dynamodb_table.dynamodb-table-stg
-    Aws_dynamodb_table.dynamodb-table-dev
-    Aws_dynamodb_table.dynamodb-table-prod
-    AWS::ApiGateway
-    Aws_api_gateway_rest_api.jazz-dev
-    Aws_api_gateway_rest_api.jazz-prod
-    Aws_api_gateway_rest_api.jazz-stag
-    AWS::Lambda
-    Aws_iam_role.lambda_role
-    AWS::S3::Bucket
-    Aws_s3_bucket.oab-apis-deployment-dev
-    Aws_s3_bucket.oab-apis-deployment-stg
-    Aws_s3_bucket.oab-apis-deployment-prod
-    Aws_s3_bucket.jazz-web
-    AWS::CloudFront
-    Aws_cloudfront_origin_access_identity.origin_access_identity
-    Aws_cloudfront_distribution.jazz
-    AWS::IAM::Policy
-    Aws_iam_role_policy_attachment.apigatewayinvokefullAccess
-    Aws_iam_role_policy_attachment.lambdafullaccess
-    Aws_iam_role_policy_attachment.cloudwatchlogaccess
-    AWS::ElasticLoadBalancing::LoadBalancer
-    Aws_elb.bitbucketelb
-    Aws_elb.jenkinselb
-    AWS::Elasticsearch::Domain
-    Aws_elasticsearch_domain
-    Aws_elasticsearch_domain_policy.elasticsearchdomain_policy
-    AWS::EC2::Instance
-    Aws_instance.bitbucketserver
-    Aws_instance.jenkinsserver
-    AWS::ElasticLoadBalancing::LoadBalancer
-    Aws_elb_attachment.jenkins
-    Aws_elb_attachment.bitbucket
 
