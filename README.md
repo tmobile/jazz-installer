@@ -13,19 +13,19 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 * Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 * SSH to RHEL 7 instance and follow steps with 4 commands
 
-# Install Jazz Framework using the RHEL 7 installer - with all new Full Stack installation
+## Installer - with all new Full Stack installation
 1) [Setup the RHEL 7 server with the Jazz installer]()
 2) [Provide Stack Prefix Name ]()
 3) Installer Wizard options - [Installer Prompt - Full Stack installation = Y]
 With the above the Framework Installation is completed with new stack/network/servers.
 
-# Install Jazz Framework using the RHEL 7 installer - with Existing network Stack installation
+## Installer - with Existing network Stack installation
 1) [Setup the RHEL 7 server with the Jazz installer]()
 2) [Provide Stack Prefix Name ]()
 3) Installer Wizard options - [Installer Prompt - Full Stack installation = N]
 With the above the Framework Installation is completed with existing Network and newly installer servers.
 
-# Install Jazz Framework using the RHEL 7 installer - with Existing network Stack installation
+# Installer - with Existing network Stack & Existing Jenkins/BitBucket installation 
 1) [Setup the RHEL 7 server with the Jazz installer]()
 2) [Provide Stack Prefix Name ]()
 3) Installer Wizard options - [Installer Prompt - Full Stack installation = N]
