@@ -43,7 +43,9 @@ Example :
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
  
  3. Installer Prompt 2:
-
+   
+   Provide prompt details
+   
      Do you need full stack including network(Y/N): Y
      
      If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installer execution starts 
