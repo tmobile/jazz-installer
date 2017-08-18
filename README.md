@@ -34,20 +34,29 @@ Example :
     Default region name= us-east-1
     Default output format=json
 		
+ 2. Installer Prompt 1:
  
-## Scenario 1 - Building full stack (Network, Instances and the rest of the stack).
-  Follow the prompts: (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
-
+  Follow the prompts to Install the Framework: 
+  
+  (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
  
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
+ 
+ 3. Installer Prompt 2:
+
      Do you need full stack including network(Y/N): Y
      
+     If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installer execution starts 
+
+     If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installer execution starts 
+
  Note: 
- * If the CIDR already exists, the script will exit with the following message,
+ * If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
  
      **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
      default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
     
+ 4. Installer CIDR Already exists - then run below command to proceed:
      
 ## Scenario 2 - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
 1. ./run.py
@@ -93,7 +102,9 @@ Follow the prompts:
 
 ## Additional Information
 
-To know how to "Create Jenkins/Bitbucket servers for Scenario 3' refer here
+To know how to 
+Create Jenkins/Bitbucket servers for Scenario 3' refer [here](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#create-jenkinsbitbucket-servers-for-scenario-3)
+
 
     
 # AWS Resources 
