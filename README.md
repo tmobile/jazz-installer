@@ -4,8 +4,8 @@ Jazz Installer - sets up the Jazz Serverless Developer Framework for API Service
 For more details on Jazz Serverless Development Framework, please refer [here](https://github.com/tmobile/jazz-core/wiki).
 
 *Note: Please go through [limitations](#limitations) before you proceed.*
-
- *[Make sure prerequisites are met before you proceed with the installation](#prerequisites)* 
+       Also Make sure prerequisites are met before you proceed with the installation.
+       Currently we are supporting the Linux based Installer and Windows based jazz installer is coming soon. 
 
 # Prerequisites
 * Create AWS account with permissions/privileges to create the 
@@ -16,7 +16,7 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 
 # Setup the RHEL 7 server with the Jazz installer
 
-Execute the below Command. The first command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server and will also clone the repository.
+Execute the below Command. The command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server and will also clone the repository and continue setup the framework in the AWS Account.
 
  1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
   
