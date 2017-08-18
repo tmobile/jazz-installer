@@ -27,9 +27,9 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 
      c) Existing Network/Servers reuse 
 
-	 i) Existing Network reuse -  [Installer Prompt - Full Stack installation = N](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#4-installer-prompt---full-stack-installation--n)
+            i) Existing Network reuse -  [Installer Prompt - Full Stack installation = N](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#4-installer-prompt---full-stack-installation--n)
 	 
-	 ii) Existing Servers reuse - [Installer Prompt - xisting Jenkins and Bitbucket Server]()
+            ii) Existing Servers reuse - [Installer Prompt - xisting Jenkins and Bitbucket Server]()
      With the above the Framework Installation is completed with existing Network and existing jenkins/bitbucket servers.
 
 
