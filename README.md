@@ -12,7 +12,7 @@
 * Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 
 
-## Installation steps
+# Installation steps
 1) SSH to RHEL 7 instance
 2) Run the below command to run the installation Wizard and provide prompted AWS configurations
 
