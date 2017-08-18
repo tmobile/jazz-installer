@@ -18,7 +18,8 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 
 Execute the below Command. The command to be executed inside RHEL 7 instance, which will install all required softwares in the RHEL server and will also clone the repository and continue setup the framework in the AWS Account.
 
- 1. curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
+### 1. Run below command
+    curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py
   
 This will prompt to enter AWS credentials (Access key, Secret key, Region and output format)
 
@@ -34,7 +35,7 @@ Example :
     Default region name= us-east-1
     Default output format=json
 		
- 2. Installer Prompt 1:
+ ### 2. Installer Prompt 1:
  
   Follow the prompts to Install the Framework: 
   
@@ -42,7 +43,7 @@ Example :
  
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
  
- 3. Installer Prompt 2:
+ ### 3. Installer Prompt 2:
    
    Provide prompt details
    
@@ -58,10 +59,12 @@ Example :
      **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
      default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
     
- 4. Installer CIDR Already exists - then run below command to proceed:
-     
-## Scenario 2 - Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
-1. ./run.py
+ ### 4. Installer CIDR Already exists - then run below command to proceed:
+ 
+ Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
+
+ Run the below command
+    ./run.py
 
 Follow the prompts:
 
