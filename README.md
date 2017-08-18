@@ -34,37 +34,37 @@ Example :
     AWS Secret Access Key = 2CZO1VgW4XdX/bg+tzHEc0E9NZY1J3omY6Uw/N+c
     Default region name= us-east-1
     Default output format=json
-		
- ### 2. Installer Prompt 1:
- 
+
   Follow the prompts to Install the Framework: 
   
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
  
   (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
  
- ### 3. Installer Prompt 2:
-   
-   Provide prompt details
-   
+
+ ### 2. Installer Option 1: Full Stack installation
+
+ Follow the prompts to Install the Framework: 
+ 
      Do you need full stack including network(Y/N): Y
      
    If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
-   If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installion flow is executed.
-
  Note: 
- * In option Y - If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
+ * If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
  
      **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
      default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
-    
- ### 4. Installer CIDR Already exists - then run below command to proceed:
- 
- Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
 
- Run the below command
-    ./run.py
+   Then run the below command to proceed with installation. Which is that the installer will follow the Option 2 flow:
+     ./run.py
+
+ ### 3. Installer Option 2: Existing network Stack installation or Installer CIDR Already exists
+
+ Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
+ 
+     
+   If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
 Follow the prompts:
 
