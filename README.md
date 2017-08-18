@@ -1,4 +1,5 @@
-# Jazz (Developer Preview) Installer - Overview
+# Jazz Installer (Developer Preview)
+## Overview
 
 **Jazz Installer** - Installs [Jazz Serverless Developer Framework in AWS Cloud](https://github.com/tmobile/jazz-core/wiki).
 
