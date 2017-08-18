@@ -36,6 +36,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
          tail -f nohup.out |grep 'Installation Completed!!!'
 
   On Installation completion you would - you should be able to see the below text:
+  
    **Installation Completed!!!**
 
   Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
