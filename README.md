@@ -12,14 +12,15 @@
 * Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 
 
-## Installation - (SSH to RHEL 7 instance and follow steps)
-1) Run the below command to run the installation Wizard and provide prompted AWS configurations
+## Installation steps
+1) SSH to RHEL 7 instance
+2) Run the below command to run the installation Wizard and provide prompted AWS configurations
 
 ```
 curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
 
-2) The installer supports the following installations. Please follow the installation wizard prompts.
+3) The installer supports the following installations. Please follow the installation wizard prompts.
      1. [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
      
      1. [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
