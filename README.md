@@ -9,7 +9,7 @@
 # Prerequisites
 * Create AWS account with permissions/privileges to create the 
   [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
-* Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
+* Use RHEL 7 instance as your installer box. [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 
 
 # Installation steps
