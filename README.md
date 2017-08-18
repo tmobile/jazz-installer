@@ -58,7 +58,7 @@ Example :
     Default region name= us-east-1
     Default output format=json
 
- ### 2. Installer Prompt 1 - Stack Prefix Name Prompt
+ ### 2. Installer Prompt - Stack Prefix Name Prompt
   Follow the prompts to Install the Framework: 
   
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
