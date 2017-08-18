@@ -29,6 +29,11 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
      1. [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack.
 
     
+
+# Limitations
+* We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
+* We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
+
 # AWS Resources 
     AWS AMIs
     AWS::ApiGateway
@@ -42,11 +47,7 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
     AWS::S3::Bucket
     AWS::Elasticsearch::Domain
 
-# Limitations
-* We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
-* We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
-
-# Additonal Information
+# Wiki - For more details visit our wiki page
 Please refer to the [wiki pages](https://github.com/tmobile/jazz-installer/wiki) for more details.
 
 Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
