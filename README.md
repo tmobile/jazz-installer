@@ -46,7 +46,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
             cat settings.txt
        
-    B. If the installation does not complete in 40 mins or so, please review the nohop.out for any error messages.
+     B. If the installation does not complete in 40 mins or so, please review the nohop.out for any error messages.
 
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
