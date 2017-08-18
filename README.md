@@ -128,15 +128,6 @@ Follow the prompts:
      Please provide Bitbuckket  Server ELB URL: jazz121-bitbucketelb-1289508647.us-east-1.elb.amazonaws.com
      Please provide bitbucket Server PublicIp: 54.90.228.149
 
-
-
-
-## Additional Information
-
-To know how to 
-Create Jenkins/Bitbucket servers for Scenario 3' refer [here](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#create-jenkinsbitbucket-servers-for-scenario-3)
-
-
     
 # AWS Resources 
     AWS AMIs
@@ -154,4 +145,7 @@ Create Jenkins/Bitbucket servers for Scenario 3' refer [here](https://github.com
 # Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
 * We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
+
+# Additonal Information
+Please refer to the [wiki pages](https://github.com/tmobile/jazz-installer/wiki) for more details.
 
