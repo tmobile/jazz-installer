@@ -48,9 +48,9 @@ Example :
    
      Do you need full stack including network(Y/N): Y
      
-     If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installer execution starts 
+   If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installer execution starts 
 
-     If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installer execution starts 
+   If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installer execution starts 
 
  Note: 
  * If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
