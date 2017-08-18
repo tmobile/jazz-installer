@@ -35,6 +35,7 @@ Example :
     Default region name= us-east-1
     Default output format=json
 
+ ### 2. Installer Prompt 1 - Stack Prefix Name Prompt
   Follow the prompts to Install the Framework: 
   
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
@@ -42,7 +43,7 @@ Example :
   (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)
  
 
- ### 2. Installer Option 1: Full Stack installation
+ ### 3. Installer Prompt 2: Full Stack installation = Y
 
  Follow the prompts to Install the Framework: 
  
@@ -50,16 +51,19 @@ Example :
      
    If Y is the option then - [scenario 1](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-1---building-full-stack-network-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
+   **The installer would take some time to install the the framework and once completed settings.txt would contain the Framework's related URLs (Jenkins, BitBucket, Jazz Web Application).**
+
+
  Note: 
  * If the CIDR already exists, the script will exit with the following message and indicates further installer steps are to be followed
  
      **cidrcheck command =  aws ec2 describe-subnets --filters Name=cidrBlock,Values=10.0.0.0/16 --output=text > ./cidrexists
      default CIDR 10.0.0.0/16 already exists. Please try creating the stack again by providing own subnet**
 
-   Then run the below command to proceed with installation. Which is that the installer will follow the Option 2 flow:
+   **Then run the below command to proceed with installation. Which is that the installer will follow the Option 2 flow:**
      ./run.py
 
- ### 3. Installer Option 2: Existing network Stack installation or Installer CIDR Already exists
+ ### 4. Installer Option 2: Existing network Stack installation or Installer CIDR Already exists
 
  Building stack in an existing Network (provide Network information to create instances and the rest of the stack).
  
