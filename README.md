@@ -21,12 +21,23 @@
 curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
 
-3) The installer supports the following installations. Please follow the installation wizard prompts.
+3) The installer supports the following installations. Please follow the installation wizard prompts. (The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.)
+
      1. [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.   
      1. [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.     
      1. [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack.
 
-    
+
+  4) Installation - status
+  The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
+To ensure Installation completion, please execute the below statement
+       tail -f nohup.out |grep 'Installation Completed!!!'
+On Installation completion you would - you should be able to see the below text:
+       Installation Completed!!!
+
+Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
+        cat settings.txt
+
 
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
