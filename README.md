@@ -2,9 +2,9 @@
 
 **Jazz Installer** - Installs [Jazz Serverless Developer Framework in AWS Cloud](https://github.com/tmobile/jazz-core/wiki).
 
-**Note** : _Please go through [limitations](#limitations) before you proceed.*
+**Note** : Please go through [limitations](#limitations) before you proceed.*
        Also Make sure [prerequisites](#prerequisites) are met before you proceed with the installation.
-       Currently we are supporting the Linux based Installer and Windows based jazz installer is coming soon _. 
+       Currently we are supporting the Linux based Installer and Windows based jazz installer is coming soon. 
 
 # Prerequisites
 * Create AWS account with permissions/privileges to create the 
