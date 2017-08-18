@@ -29,6 +29,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
 
   4) Installation - status
+  
   The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
   To ensure Installation completion, please execute the below statement
 
