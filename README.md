@@ -11,10 +11,9 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 * Create AWS account with permissions/privileges to create the 
   [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
 * Use RHEL 7 instance as your installer box. More details please refer [here](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
-* SSH to RHEL 7 instance and follow steps with 4 commands
 
 
-## Installer - Steps
+## Installation - (SSH to RHEL 7 instance and follow steps)
 1) [Setup the RHEL 7 server with the Jazz installer](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#setup-the-rhel-7-server-with-the-jazz-installer)
 2) [Provide Stack Prefix Name ](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#2-installer-prompt---stack-prefix-name-prompt)
 3) Installer Wizard 3 options (opt for either of the three options)
