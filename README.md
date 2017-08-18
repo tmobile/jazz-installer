@@ -90,10 +90,13 @@ Example :
      
    If N is the option then - [scenario 2](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-2---building-stack-in-an-existing-network-provide-network-information-to-create-instances-and-the-rest-of-the-stack) Installion flow is executed.
 
-Follow the prompts:
+You might have already entered the below prompt options;
 
      Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
      Do you need full stack including network(Y/N): n
+
+Then follow the prompts:
+
      Do you have existing Jenkins and Bitbucket Server(Y/N): n
      We will create Jenkins and Bitbucket Servers using the Network Stack you provided
      Please have vpc,subnet and cidr blocks handy
