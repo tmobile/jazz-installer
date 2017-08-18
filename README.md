@@ -1,7 +1,6 @@
 # Jazz (Developer Preview) Installer - Overview
 
-**Jazz Installer** - Installs Jazz Serverless Developer Framework in AWS Cloud.
-For more details on Jazz Serverless Development Framework, please refer [here](https://github.com/tmobile/jazz-core/wiki).
+**Jazz Installer** - Installs [Jazz Serverless Developer Framework in AWS Cloud](https://github.com/tmobile/jazz-core/wiki).
 
 *Note: Please go through [limitations](#limitations) before you proceed.*
        Also Make sure prerequisites are met before you proceed with the installation.
