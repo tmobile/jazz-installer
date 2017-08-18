@@ -148,5 +148,7 @@ Follow the prompts:
 
 # Additonal Information
 Please refer to the [wiki pages](https://github.com/tmobile/jazz-installer/wiki) for more details.
+
 Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
+
 Please refer to [Jazz-Core Wiki](https://github.com/tmobile/jazz-core/wiki)
