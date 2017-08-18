@@ -31,12 +31,15 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
   4) Installation - status
   The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
 To ensure Installation completion, please execute the below statement
+
        tail -f nohup.out |grep 'Installation Completed!!!'
+
 On Installation completion you would - you should be able to see the below text:
-       Installation Completed!!!
+   **Installation Completed!!!**
 
 Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
-        cat settings.txt
+
+      cat settings.txt
 
 
 ## Limitations
