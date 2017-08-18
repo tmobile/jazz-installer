@@ -17,21 +17,23 @@ For more details on Jazz Serverless Development Framework, please refer [here](h
 ## Installer - Steps
 1) [Setup the RHEL 7 server with the Jazz installer](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#setup-the-rhel-7-server-with-the-jazz-installer)
 2) [Provide Stack Prefix Name ](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#2-installer-prompt-1---stack-prefix-name-prompt)
-3) Installer Wizard 3 options
+3) Installer Wizard 3 options (opt for either of the three options)
 
      a) Full Stack Installation - [Installer Prompt - Full Stack installation = Y](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#3-installer-prompt---full-stack-installation--y)
+     
      With the above the Framework Installation is completed with new stack/network/servers.
 
      b) Existing Network reuse - [Installer Prompt - Full Stack installation = N](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#4-installer-prompt---full-stack-installation--n)
+     
      With the above the Framework Installation is completed with existing Network and newly jenkins/bitbucket servers.
 
      c) Existing Network/Servers reuse 
      
-          Flow below steps:
+        Flow below steps:
 	  
-          i) Existing Network reuse -  [Installer Prompt - Full Stack installation = N](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#4-installer-prompt---full-stack-installation--n)
+        i) Existing Network reuse -  [Installer Prompt - Full Stack installation = N](https://github.com/tmobile/jazz-installer/blob/patch-9/README.md#4-installer-prompt---full-stack-installation--n)
 	 
-          ii) Existing Servers reuse - [Installer Prompt - xisting Jenkins and Bitbucket Server]()
+        ii) Existing Servers reuse - [Installer Prompt - xisting Jenkins and Bitbucket Server]()
      With the above the Framework Installation is completed with existing Network and existing jenkins/bitbucket servers.
 
 
