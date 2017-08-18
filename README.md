@@ -106,7 +106,7 @@ Follow the prompts:
      Please provide subnet id: subnet-c5caafee
      Please provide CIDR BLOCK: 172.31.0.0/16
      
-### Installer prompt - existing Jenkins and Bitbucket Server
+### 5. Installer Prompt - existing Jenkins and Bitbucket Server = Y
 Building stack using existing jenkins/BitBucket instances and Provide existing bitbucket/jenkins information to create the rest of the stack. Read more about [Scenario-3](https://github.com/tmobile/jazz-installer/wiki/Jazz-Installation-scenarios#scenario-3---building-stack-using-existing-jenkinsbitbucket-instancesprovide-existing-bitbucketjenkins-information-to-create-the-rest-of-the-stack)
 
 Note: 
