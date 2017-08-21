@@ -76,7 +76,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
 ## Installation - status
   
-  Note: the nohop.out will be in ~/jazz-installer/installscripts/terraform-unix-demo-jazz or for Installation with existing servers in ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz
+  Note: Installation logs will be collected in nohop.out file. This file can be found in  ~/jazz-installer/installscripts/terraform-unix-demo-jazz while installer takes the route of "Full Stack Installation" or in ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz for Installation with existing stack.
 
      A. The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
      
