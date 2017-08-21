@@ -28,13 +28,21 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
         
    ** (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)**
 
-4) Provide Full Stack Installation - option (Y/N)
+4) Provide Full Stack Installation - option (Y)
 
         Do you need full stack including network(Y/N): Y
 
    If Y - is the option then 
      1. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
-     1. The installer would take some time to install the the framework and once completed the settings.txt would contain the Framework's related URLs (Jenkins, BitBucket, Jazz Web Application).
+     1. The installer will complete the framework installation in some time
+     1. Once Installation is completed, the settings.txt would contain the Framework's related URLs (Jenkins, BitBucket, Jazz Web Application).
+
+5)  Provide Full Stack Installation - option (N)
+
+        Do you need full stack including network(Y/N): N
+
+   If N - is the option then 
+      1. For more information on [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
 
 5) The installer supports the following installations. Please follow the installation wizard prompts. (The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.)
 
