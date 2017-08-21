@@ -34,9 +34,9 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
    If Y - is the option then **The Installer Wizard will trigger the Installation of the Framework.**
    
-     a. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
+     4.1.  For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
      
-     b. **Please refer [Installation Status](#installation---status) section to know the Installation status.**
+     4.2.  **Please refer [Installation Status](#installation---status) section to know the Installation status.**
 
 5) Provide Full Stack Installation - option (N)
 
@@ -44,35 +44,34 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
    Follow the further Wizard prompts to install the Framework with existing stack.
 
-6) Provide use existing Jenkins and Bitbucket Server option = N
+6) Use existing Jenkins and Bitbucket Server option = N
+
+   Then follow the prompts to provide further details:
 
         Do you have existing Jenkins and Bitbucket Server(Y/N): N
+        We will create Jenkins and Bitbucket Servers using the Network Stack you provided
+        Please have vpc,subnet and cidr blocks handy
+        Please provide VPC id: vpc-e1b9b784
+        Please provide subnet id: subnet-c5caafee
+        Please provide CIDR BLOCK: 172.31.0.0/16
+      
+      **With the above details - the Installer Wizard will trigger the Installation of the Framework.**
  
       If N - is the option then
 
-      a. Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
+      6.1.  Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
       
-      b. And provide more Wizard options.
-      
-          Do you have existing Jenkins and Bitbucket Server(Y/N): n
-          We will create Jenkins and Bitbucket Servers using the Network Stack you provided
-          Please have vpc,subnet and cidr blocks handy
-          Please provide VPC id: vpc-e1b9b784
-          Please provide subnet id: subnet-c5caafee
-          Please provide CIDR BLOCK: 172.31.0.0/16
-      
-      **With the above details - the Installer Wizard will trigger the Installation of the Framework.**
-      
-      c. **Please refer [Installation Status](#installation---status) section to know the Installation status.**
+      6.2.  **Please refer [Installation Status](#installation---status) section to know the Installation status.**
  
-7) Provide use existing Jenkins and Bitbucket Server option = Y
+7) Use existing Jenkins and Bitbucket Server option = Y
 
         Do you have existing Jenkins and Bitbucket Server(Y/N): Y
  
-      If N - is the option then
+      If Y - is the option then
 
-      1. Please refer [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. And provide more Wizard options.
-      1. Please refer [Installation Status](#installation---status) section to know the Installation status.
+      7.1.  Please refer [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. **And provide more Wizard options.**
+      
+      7.2. Please refer [Installation Status](#installation---status) section to know the Installation status.
  
 
 ## Installation - status
