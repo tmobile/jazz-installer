@@ -37,9 +37,9 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
       
       then the installer will go for [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack. 
       
-      **No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.**
+      **_No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework._**
     
-      **Please refer [Installation Status](#installation---status) section to know the Installater status.**
+      **_Please refer [Installation Status](#installation---status) section to know the Installater status._**
 
     * If N
       
