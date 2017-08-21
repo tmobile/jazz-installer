@@ -34,8 +34,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
    If Y - is the option then 
      1. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
-     1. The installer will complete the framework installation in some time
-     1. Once Installation is completed, the settings.txt would contain the Framework's related URLs (Jenkins, BitBucket, Jazz Web Application).
+     1. Plesae refer [Installation Status](#installation---status) section.
 
 5) Provide Full Stack Installation - option (N)
 
