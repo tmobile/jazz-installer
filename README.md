@@ -26,22 +26,21 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
         Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
         
-   ** (Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name)**
+   **Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name**
 
 4) Provide Full Stack Installation - option (Y)
 
         Do you need full stack including network(Y/N): Y
 
-   If Y - is the option then 
-   **with the above - the Installer Wizard will trigger the Installation of the Framework.**
-     1. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
-     1. Please refer [Installation Status](#installation---status) section to know the Installation status.
+   If Y - is the option then **The Installer Wizard will trigger the Installation of the Framework.**
+     a. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
+     b. **Please refer [Installation Status](#installation---status) section to know the Installation status.**
 
 5) Provide Full Stack Installation - option (N)
 
         Do you need full stack including network(Y/N): N
 
-   Follow the further Wizard prompts to install the Framework with using the existing network stack or Jenkins/BitBucket servers.
+   Follow the further Wizard prompts to install the Framework with existing stack.
 
 6) Provide use existing Jenkins and Bitbucket Server option = N
 
@@ -49,19 +48,19 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
  
       If N - is the option then
 
-      1. Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
-      1. And provide more Wizard options.
+      a. Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
+      b. And provide more Wizard options.
       
-       Do you have existing Jenkins and Bitbucket Server(Y/N): n
-       We will create Jenkins and Bitbucket Servers using the Network Stack you provided
-       Please have vpc,subnet and cidr blocks handy
-       Please provide VPC id: vpc-e1b9b784
-       Please provide subnet id: subnet-c5caafee
-       Please provide CIDR BLOCK: 172.31.0.0/16
+          Do you have existing Jenkins and Bitbucket Server(Y/N): n
+          We will create Jenkins and Bitbucket Servers using the Network Stack you provided
+          Please have vpc,subnet and cidr blocks handy
+          Please provide VPC id: vpc-e1b9b784
+          Please provide subnet id: subnet-c5caafee
+          Please provide CIDR BLOCK: 172.31.0.0/16
       
-      With the above details - the Installer Wizard will trigger the Installation of the Framework.
+      **With the above details - the Installer Wizard will trigger the Installation of the Framework.**
       
-      1. Please refer [Installation Status](#installation---status) section to know the Installation status.
+      c. Please refer [Installation Status](#installation---status) section to know the Installation status.
  
 7) Provide use existing Jenkins and Bitbucket Server option = Y
 
