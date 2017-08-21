@@ -39,7 +39,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
       
       **_No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework._**
     
-      **_Please refer [Installation Status](#installation---status) section to know the Installater status._**
+      **_Please refer [Installation Status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status) section to know the Installater status._**
 
     * If N
       
@@ -53,37 +53,9 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
       
       then the installer will go for [Installation with existing Network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network). 
 
-      **No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.**
-    
-      **Please refer [Installation Status](#installation---status) section to know the Installater status.**
-     
     * If Y
       
       then the installer will go for [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. 
-      
-      **No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.**
-    
-      **Please refer [Installation Status](#installation---status) section to know the Installater status.**
-
-## Installation - status
-  
-  Note: Installation logs will be collected in nohop.out file. This file can be found in  ~/jazz-installer/installscripts/terraform-unix-demo-jazz while installer takes the route of "Full Stack Installation" or in ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz for Installation with existing stack.
-
-     A. The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.
-     
-       a. To ensure Installation completion, please execute the below statement
-
-              tail -f nohup.out | grep 'Installation Completed!!!'
-
-       b. On Installation completion - you should be able to see the below text as response to above command:
-  
-              Installation Completed!!!
-
-       c. Then run below statement: to get the Jazz Stack details (Jenkins, Bitbucket, Jazz Web Application URLs)
-
-            cat settings.txt
-       
-     B. If the installation does not complete in 40 mins or so, please review the nohop.out for any error messages.
 
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
