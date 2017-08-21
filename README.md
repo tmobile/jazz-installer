@@ -63,7 +63,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
       
       **With the above details - the Installer Wizard will trigger the Installation of the Framework.**
       
-      c. Please refer [Installation Status](#installation---status) section to know the Installation status.
+      c. **Please refer [Installation Status](#installation---status) section to know the Installation status.**
  
 7) Provide use existing Jenkins and Bitbucket Server option = Y
 
