@@ -20,23 +20,24 @@
 ```
 curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=AcuYLfUy56QFj_7wyw-tWDapxZV-triUks5ZnYtmwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
-Follow the Installer Wizard prompts to Install the Framework, starting by providing the AWS Configurations.
 
-3) Provide the Stack-Prefix-Name in the Installer Wizard prompt
+3) Follow the Installer Wizard prompts to Install the Framework, starting by providing the AWS Configurations.
+
+   3.1) Provide the Stack-Prefix-Name in the Installer Wizard prompt
 
         Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): jazz123
         
-   **Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name**
+     **Please use only lowercase alphabets & numbers for tag Name. Some of the artifacts are named using this and AWS has restrictions on the name. Please check AWS console if there are artifacts created with this name. If yes please choose another name**
 
-4) Provide Full Stack Installation - option (Y)
+   3.2) Do you want Full Stack Installation including network & Servers(Jenkins, BitBucket) creation
 
         Do you need full stack including network(Y/N): Y
 
-   If Y - is the option then **The Installer Wizard will trigger the Installation of the Framework.**
-   
-     4.1.  For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
-     
-     4.2.  **Please refer [Installation Status](#installation---status) section to know the Installation status.**
+      If Y - then the installer will go for [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack. 
+      
+      **No futher steps are need and the Installer Wizard will trigger the Installation of the Framework.**
+    
+      **Please refer [Installation Status](#installation---status) section to know the Installation status.**
 
 5) Provide Full Stack Installation - option (N)
 
