@@ -33,7 +33,9 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
         Do you need full stack including network(Y/N): Y
 
    If Y - is the option then **The Installer Wizard will trigger the Installation of the Framework.**
+   
      a. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
+     
      b. **Please refer [Installation Status](#installation---status) section to know the Installation status.**
 
 5) Provide Full Stack Installation - option (N)
@@ -49,6 +51,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
       If N - is the option then
 
       a. Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
+      
       b. And provide more Wizard options.
       
           Do you have existing Jenkins and Bitbucket Server(Y/N): n
