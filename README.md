@@ -49,7 +49,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
         Do you have existing Jenkins and Bitbucket Server(Y/N): N
 
-     If N
+     * If N
       
       then the installer will go for [Installation with existing Network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network). 
 
@@ -57,7 +57,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
     
       **Please refer [Installation Status](#installation---status) section to know the Installater status.**
      
-    If Y
+    * If Y
       
       then the installer will go for [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. 
       
