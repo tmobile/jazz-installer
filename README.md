@@ -42,6 +42,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
         Do you need full stack including network(Y/N): N
 
    If N - is the option then 
+   
      1. For more information on [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
 
 5) The installer supports the following installations. Please follow the installation wizard prompts. (The installer will take around 20-30mins (for a AWS RHEL T2.micro instance) to complete.)
