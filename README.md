@@ -57,7 +57,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
      1. [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack.
 
 
-##Installation - status
+## Installation - status
   
      Note: the nohop.out will be in ~/jazz-installer/installscripts/terraform-unix-demo-jazz or for Installation with existing servers in ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz
 
