@@ -35,11 +35,11 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
      * If Y
       
-      then the installer will go for [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack. 
+       then the installer will go for [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack. 
       
-      **_No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework._**
-    
-      **_Please refer [Installation Status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status) section to know the Installater status._**
+       No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.
+      
+       **Go to Final Step-4.**
 
     * If N
       
@@ -56,6 +56,11 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
     * If Y
       
       then the installer will go for [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. 
+
+4. Final Step
+
+      Please refer [Installation Status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status) section to know the Installater status.
+
 
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
