@@ -35,19 +35,15 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
       If Y - then the installer will go for [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack. 
       
-      **No futher steps are need and the Installer Wizard will trigger the Installation of the Framework.**
+      **No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.**
     
-      **Please refer [Installation Status](#installation---status) section to know the Installation status.**
+      **Please refer [Installation Status](#installation---status) section to know the Installater status.**
 
-5) Provide Full Stack Installation - option (N)
+      If N - then follow the further Wizard prompts to install the Framework with existing network.
 
-        Do you need full stack including network(Y/N): N
+    3.3) Do you want to make use existing Jenkins and Bitbucket Server
 
-   Follow the further Wizard prompts to install the Framework with existing stack.
-
-6) Use existing Jenkins and Bitbucket Server option = N
-
-   Then follow the prompts to provide further details:
+      Then follow the prompts to provide further details:
 
         Do you have existing Jenkins and Bitbucket Server(Y/N): N
         We will create Jenkins and Bitbucket Servers using the Network Stack you provided
