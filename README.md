@@ -34,7 +34,7 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
 
    If Y - is the option then 
      1. For more information on [Full Stack Installation](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#full-stack-installation)- Creates Network and the rest of the stack.
-     1. Plesae refer [Installation Status](#installation---status) section to know the Installation status.
+     1. Please refer [Installation Status](#installation---status) section to know the Installation status.
 
 5) Provide Full Stack Installation - option (N)
 
@@ -48,8 +48,8 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
  
       If N - is the option then
 
-      1. For more information on [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.
-      1. Plesae refer [Installation Status](#installation---status) section to know the Installation status.
+      1. Please refer [Installation with existing network](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-network) - Uses existing network to build the stack.  And provide more Wizard options.
+      1. Please refer [Installation Status](#installation---status) section to know the Installation status.
  
 7) Provide use existing Jenkins and Bitbucket Server option = Y
 
@@ -57,8 +57,8 @@ Follow the Installer Wizard prompts to Install the Framework, starting by provid
  
       If N - is the option then
 
-      1. [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack.
-      1. Plesae refer [Installation Status](#installation---status) section to know the Installation status.
+      1. Please refer [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. And provide more Wizard options.
+      1. Please refer [Installation Status](#installation---status) section to know the Installation status.
  
 
 ## Installation - status
