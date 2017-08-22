@@ -9,7 +9,7 @@
 
 ## Prerequisites
 * Create AWS account with permissions/privileges to create the 
-  [AWS Resources](#aws-resources) (listed below) in us-east-1 region. 
+  [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) (as listed) in us-east-1 region. 
 * Use RHEL 7 instance as your installer box. [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
 
 
@@ -65,19 +65,6 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
 * We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
-
-## AWS Resources 
-    AWS AMIs
-    AWS::ApiGateway
-    AWS::CloudFront
-    AWS::Cognito
-    AWS::DynamoDB
-    AWS::IAM::Policy
-    AWS::EC2::Instance
-    AWS::ElasticLoadBalancing::LoadBalancer
-    AWS::Lambda
-    AWS::S3::Bucket
-    AWS::Elasticsearch::Domain
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
