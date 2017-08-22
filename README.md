@@ -60,7 +60,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
        Keep updated on [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
 ## Post Installation - Start using Jazz Framework - Create Developer API services
-Jazz Framework provides Jazz-UI to create the Developer API Services, displays the Services Catalog to manage the API services.
+Jazz Framework provides Jazz-UI to create the Developer API Services and also displays the Services Catalog to manage the API services.
 
 Post successful Installation, the Framework is ready to use and the start with using the [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create Developer API Services and refer [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
 
