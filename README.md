@@ -39,13 +39,13 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
       
        No futher steps are needed and the Installer Wizard will trigger the Installation of the Framework.
       
-       **Go to Final Step-4.**
+       Keep updated on [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
     * If N
       
       then follow the further Wizard prompts to install the Framework with existing network. (Follow step 3.3).
 
-    3.3) Do you want to make use existing Jenkins and Bitbucket Server [Final Step]
+    3.2.1) Do you want to make use existing Jenkins and Bitbucket Server [Final Step]
 
         Do you have existing Jenkins and Bitbucket Server(Y/N): N
 
@@ -57,9 +57,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
       
       then the installer will go for [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack.  Please follow link Wizard prompts to complete the installation.
 
-4. Final Step
-
-      Please refer [Installation Status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status) section to know the Installater status.
+       Keep updated on [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
 
 ## Limitations
