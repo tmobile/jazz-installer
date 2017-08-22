@@ -62,9 +62,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 ## Post Installation - Start using Jazz Framework - Create Developer API services
 Jazz Framework provides Jazz-UI to create the Developer API Services, displays the Services Catalog to manage the API services.
 
-Post successful Installation, the Framework is ready to use and the starting point is the [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview).
-
-For further readings please refer [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
+Post successful Installation, the Framework is ready to use and the start with using the [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create Developer API Services and refer [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
 
 ## Limitations
 * We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
