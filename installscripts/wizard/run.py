@@ -29,14 +29,15 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 	print (" cidrcheck command = ",cidrcheck)
 	subprocess.call(cidrcheck, shell=True)
 	if is_non_zero_file("./cidrexists") != True : 
-		cmd = ["./scripts/create.sh", cidr]
+		cmd = ["./scripts/create.sh >>../wizard/stack_reation.out", cidr]
 		subprocess.call(cmd)
-		os.chdir("../terraform-unix-demo-jazz")
-		subprocess.call('nohup ./scripts/create.sh &', shell=True)
 		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
-		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
-		os.chdir("../wizard")
-		subprocess.call('pwd', shell=True)
+		
+		os.chdir("../terraform-unix-demo-jazz")
+		subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_reation.out &', shell=True)
+		
+		print("\n\nPlease execute  tail -f stack_reation.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
+		print os.path.realpath('../wizard')
 		print("\n\n")
 	else :  # 
 		print("default CIDR "+cidr+" already exists. Please try creating the stack again by providing own subnet ")
@@ -58,9 +59,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
-		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_reation.out&', shell=True)
 		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
-		print("\n\nPlease execute  tail -f nohup.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
+		print("\n\nPlease execute  tail -f stack_reation.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
 		os.chdir("../wizard")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
@@ -79,9 +80,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
-		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_reation.out&', shell=True)
 		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
-		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress")
+		print("\n\nPlease execute  tail -f stack_reation.out |grep 'Creation complete' in the below directory to see the stack creation progress")
 		os.chdir("../wizard")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
