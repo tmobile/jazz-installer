@@ -32,7 +32,7 @@ resource "aws_security_group" "installer" {
 }
 
 resource "aws_key_pair" "auth" {
-  key_name   = "${lookup(var.keypair, "key_name")}-${var.envPrefix}"
+  key_name   = "${var.envPrefix}-${lookup(var.keypair, "key_name")}"
   public_key = "${file("${lookup(var.keypair, "public_key")}")}"
 }
 
