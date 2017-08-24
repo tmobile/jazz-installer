@@ -19,6 +19,6 @@ else
 fi
 echo teststs
 pwd
-ssh -i "../sshkeys/ustglobal_rsa.pem"  -o "StrictHostKeyChecking=no" $JENKINS_SERVER "mkdir -p  $TARGET_LOC"
-scp -i "../sshkeys/ustglobal_rsa.pem" -o "StrictHostKeyChecking=no" /tmp/aws-apigateway-importer/*.jar $JENKINS_SERVER:$TARGET_LOC
-ssh -i "../sshkeys/ustglobal_rsa.pem"  -o "StrictHostKeyChecking=no" $JENKINS_SERVER "chmod -R 777  $TARGET_LOC"
+ssh -i "../sshkeys/ec2_rsa.pem"  -o "StrictHostKeyChecking=no" $JENKINS_SERVER "mkdir -p  $TARGET_LOC"
+scp -i "../sshkeys/ec2_rsa.pem" -o "StrictHostKeyChecking=no" /tmp/aws-apigateway-importer/*.jar $JENKINS_SERVER:$TARGET_LOC
+ssh -i "../sshkeys/ec2_rsa.pem"  -o "StrictHostKeyChecking=no" $JENKINS_SERVER "chmod -R 777  $TARGET_LOC"
