@@ -1,5 +1,5 @@
 resource "aws_key_pair" "auth" {
-  key_name   = "${lookup(var.keypair, "key_name")}-${var.envPrefix}"
+  key_name   = "${var.envPrefix}-${lookup(var.keypair, "key_name")}"
   public_key = "${file("${lookup(var.keypair, "public_key")}")}"
 }
 
@@ -143,7 +143,7 @@ resource "aws_security_group" "bitbucket" {
 resource "aws_instance" "jenkinsserver" {
   instance_type = "t2.medium"
   ami = "${var.jenkinsserver_ami}"
-  key_name   = "${lookup(var.keypair, "key_name")}-${var.envPrefix}"
+  key_name   = "${var.envPrefix}-${lookup(var.keypair, "key_name")}"
   vpc_security_group_ids = ["${aws_security_group.jenkins.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.jenkinselb","aws_elb.bitbucketelb","aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role" ]
@@ -205,7 +205,7 @@ resource "aws_instance" "jenkinsserver" {
 resource "aws_instance" "bitbucketserver" {
   instance_type = "t2.medium"
   ami = "${var.bitbucketserver_ami}"
-  key_name   = "${lookup(var.keypair, "key_name")}-${var.envPrefix}"
+  key_name   = "${var.envPrefix}-${lookup(var.keypair, "key_name")}"
   vpc_security_group_ids = ["${aws_security_group.bitbucket.id}"]
   subnet_id = "${var.subnet}"
   depends_on = ["aws_elb.bitbucketelb"]
