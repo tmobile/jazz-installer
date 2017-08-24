@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import sys
 import subprocess
+import datetime
+
 def is_non_zero_file(fpath):  
     return os.path.isfile(fpath) and os.path.getsize(fpath) > 0
 def pause():
@@ -11,8 +13,8 @@ def pause():
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): ") 
 tagApplication="JAZZ"
 tagEnvironment="Development"
-tagExempt="09/01/2017"
-tagOwner="sukeshsugunan"
+tagExempt=(datetime.datetime.today()+datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+tagOwner=tagEnvPrefix+"-Admin"
 cidr="10.0.0.0/16"
 cidrcheck="aws ec2 describe-subnets --filters Name=cidrBlock,Values="+cidr+" --output=text > ./cidrexists"
 fullstack = raw_input("Do you need full stack including network(Y/N): ") 
@@ -31,7 +33,9 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
 		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
+		os.chdir("../wizard")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
 	else :  # 
@@ -55,7 +59,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-noinstances-jazz")
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
 		print("\n\nPlease execute  tail -f nohup.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
+		os.chdir("../wizard")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
 	elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
@@ -74,7 +80,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
 		subprocess.call(cmd)
 		os.chdir("../terraform-unix-demo-jazz")
 		subprocess.call('nohup ./scripts/create.sh &', shell=True)
+		subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
 		print("\n\nPlease execute  tail -f nohup.out |grep 'Creation complete' in the below directory to see the stack creation progress")
+		os.chdir("../wizard")
 		subprocess.call('pwd', shell=True)
 		print("\n\n")
 	else :  # 
