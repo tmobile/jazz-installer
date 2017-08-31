@@ -10,6 +10,7 @@ sudo rpm -ivh ./jdk-8u112-linux-x64.rpm
 sudo yum install -y unzip
 sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o /tmp/awscli-bundle.zip
 cd /tmp; sudo rm -rf awscli-bundle; sudo unzip awscli-bundle.zip
+cd /home/ec2-user/
 sudo rm -rf /usr/local/aws
 sudo rm -f /usr/local/bin/aws
 sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
