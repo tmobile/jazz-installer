@@ -25,4 +25,4 @@ nohup terraform destroy --force >>../wizard/stack_deletion.out &&
 cd ../terraform-unix-networkstack
 
 nohup terraform destroy -var "cidrblocks=$cidr" --force >>../wizard/network_stack_deletion.out &&
-date
+
