@@ -23,8 +23,8 @@ variable "keypair" {
   type = "map"
 
   default = {
-    key_name = "ustglobal_rsa"
-    public_key = "../sshkeys/ustglobal_rsa.pub"
-    private_key = "../sshkeys/ustglobal_rsa.pem"
+    key_name = "ec2_rsa"
+    public_key = "../sshkeys/ec2_rsa.pub"
+    private_key = "../sshkeys/ec2_rsa.pem"
   }
 }
