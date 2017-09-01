@@ -65,8 +65,8 @@ Jazz Framework provides Jazz-UI to create the Developer API Services and also di
 Post successful Installation, the Framework is ready to use and the start with using the [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create Developer API Services and refer [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
 
 ## Limitations
-* We are creating the stack on us-east-1 region. Because us-east-2 has permission issue with s3 Bucket and Cognito resource is not available in us-west-1 region.
-* We have limitation of one stack on a region for an account. (coming soon - this limitation will be removed)
+* Jazz stack will be created in us-east-1 region (we see few permission issues (s3 & cognito) when we use us-east-2 region)
+* Only one stack can be created in one region per account (this limitation will be removed in the next version)
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
