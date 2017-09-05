@@ -102,7 +102,7 @@ execute 'createJob-delete-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']}"
 end
 execute 'createJob-job_pack_java_api' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_api.sh localhost build_pack_api #{node['bitbucketelb']}"
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_pack_api #{node['bitbucketelb']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']}"
