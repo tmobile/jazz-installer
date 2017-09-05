@@ -101,17 +101,11 @@ end
 execute 'createJob-delete-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']}"
 end
-execute 'createJob-job_build_java_api' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_java_api #{node['bitbucketelb']}"
+execute 'createJob-job_pack_java_api' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_api.sh localhost build_pack_api #{node['bitbucketelb']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']}"
-end
-execute 'job_inst_deploy_createservice' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_inst_deploy_createservice.sh localhost inst_deploy_createservice #{node['bitbucketelb']}"
-end
-execute 'job_inst_deploy_deleteservice' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_inst_deploy_deleteservice.sh localhost inst_deploy_deleteservice #{node['bitbucketelb']}"
 end
 execute 'job_build-deploy-platform-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}"
@@ -159,5 +153,5 @@ service "jenkins" do
   action [:restart]
 end
 execute 'copyJob' do
-  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_java_api build_java_api_dev"
+  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_pack_api build_pack_api_dev"
 end

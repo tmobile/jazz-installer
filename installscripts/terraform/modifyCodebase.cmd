@@ -18,3 +18,8 @@ sed -i 's/securityGroupIds.*.$/securityGroupIds: %securityGroupIds%/g' ./jazz-co
 sed -i 's/subnetIds.*.$/subnetIds: %subnetIds%/g' ./jazz-core/create-serverless-service/deployment-env.yml
 sed -i 's=iamRoleARN.*.$=iamRoleARN: %iamRoleARN%=g' ./jazz-core/create-serverless-service/deployment-env.yml
 sed -i 's/region.*.$/region: %region%/g' ./jazz-core/create-serverless-service/deployment-env.yml
+
+sed -i 's/securityGroupIds.*.$/securityGroupIds: %securityGroupIds%/g' ./jazz-core/api-template-python/deployment-env.yml
+sed -i 's/subnetIds.*.$/subnetIds: %subnetIds%/g' ./jazz-core/api-template-python/deployment-env.yml
+sed -i 's=iamRoleARN.*.$=iamRoleARN: %iamRoleARN%=g' ./jazz-core/api-template-python/deployment-env.yml
+sed -i 's/region.*.$/region: %region%/g' ./jazz-core/api-template-python/deployment-env.yml
