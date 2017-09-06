@@ -23,6 +23,16 @@ execute 'installplugins' do
   cwd '/var/lib/jenkins/'
 end
 
+execute 'installpip' do
+  command "curl -O https://bootstrap.pypa.io/get-pip.py&& sudo python get-pip.py"
+  cwd '/var/lib/jenkins/'
+end
+
+execute 'addpermissions' do
+  command "chmod -R o+w /usr/lib/python2.7/site-packages/ /usr/bin/"
+  cwd '/var/lib/jenkins/'
+end
+
 service "jenkins" do
   supports [:stop, :start, :restart]
   action [:stop]

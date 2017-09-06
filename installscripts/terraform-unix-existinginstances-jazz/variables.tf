@@ -21,7 +21,7 @@ variable "bitbucketserver_ami" {
 }
 variable "jenkinsserver_ami" {
   type = "string"
-  default = "ami-7a121a01"
+  default = "ami-5a293a21"
 }
 variable "jenkinsslave_ami" {
   type = "string"
