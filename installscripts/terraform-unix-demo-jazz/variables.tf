@@ -32,7 +32,7 @@ variable "bitbucketserver_ami" {
 variable "jenkinsserver_ami" {
   type = "string"
 	// ami in us-east-1
-  default = "ami-7a121a01"
+  default = "ami-5a293a21"
 	// amis copied to us-west-1
  // default = "ami-ae745dce"
 }
