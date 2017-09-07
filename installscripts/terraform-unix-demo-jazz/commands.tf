@@ -59,4 +59,7 @@ variable "dynamodb_cmd" {
   type = "string"
   default = "./scripts/dynamodb.sh"
 }
-
+variable "modifyPropertyFile_cmd" {
+  type = "string"
+  default = "./scripts/modifyPropertyFile.sh"
+}
