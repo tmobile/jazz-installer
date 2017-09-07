@@ -107,6 +107,9 @@ end
 execute 'createJob-job-pack-lambda' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh localhost build-pack-lambda #{node['bitbucketelb']}"
 end
+execute 'createJob-job-build-pack-website' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_website.sh localhost build-pack-website #{node['bitbucketelb']}"
+end
 link '/usr/bin/aws-api-import' do
   to '/home/ec2-user/jazz-core/aws-apigateway-importer/aws-api-import.sh'
   owner 'jenkins'
