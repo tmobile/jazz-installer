@@ -39,7 +39,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB:7990/scm/slf/jenkins-build-pack-api.git</url>
+          <url>http://$BITBUCKET_ELB:7990/scm/slf/jenkins-build-pack-lambda.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -56,7 +56,8 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-java-api-build-101</authToken>
+  <authToken>slf-lambda-build-101</authToken>
   <disabled>false</disabled>
 </flow-definition>
+
 EOF
