@@ -150,3 +150,6 @@ end
 execute 'copyJobBuildPackLambda' do
   command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-lambda build-pack-lambda-dev"
 end
+execute 'copyJobBuildPackLambda' do
+  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-website build-pack-website-dev"
+end
