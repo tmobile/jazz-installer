@@ -256,25 +256,6 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
-  website {
-    index_document = "index.html"
-
-    routing_rules = <<EOF
-[{
-    "Condition": {
-        "KeyPrefixEquals": "docs/"
-    },
-    "Redirect": {
-        "ReplaceKeyPrefixWith": "documents/"
-    }
-}]
-EOF
-  }
-
-  provisioner "local-exec" {
-    command = "${var.sets3acl_cmd} ${aws_s3_bucket.dev-serverless-static.bucket}"
-  } 
 
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
@@ -293,25 +274,6 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
-  website {
-    index_document = "index.html"
-
-    routing_rules = <<EOF
-[{
-    "Condition": {
-        "KeyPrefixEquals": "docs/"
-    },
-    "Redirect": {
-        "ReplaceKeyPrefixWith": "documents/"
-    }
-}]
-EOF
-  }
-
-  provisioner "local-exec" {
-    command = "${var.sets3acl_cmd} ${aws_s3_bucket.stg-serverless-static.bucket}"
-  } 
 
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
@@ -330,25 +292,6 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
-  website {
-    index_document = "index.html"
-
-    routing_rules = <<EOF
-[{
-    "Condition": {
-        "KeyPrefixEquals": "docs/"
-    },
-    "Redirect": {
-        "ReplaceKeyPrefixWith": "documents/"
-    }
-}]
-EOF
-  }
-
-  provisioner "local-exec" {
-    command = "${var.sets3acl_cmd} ${aws_s3_bucket.prod-serverless-static.bucket}"
-  } 
 
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_S3BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinspropsfile}"
