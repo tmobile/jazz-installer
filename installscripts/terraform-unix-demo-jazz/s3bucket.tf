@@ -240,6 +240,10 @@ resource "aws_iam_role_policy_attachment" "cloudwatchlogaccess" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "${aws_iam_policy.basic_execution_policy.arn}"
 }
+resource "aws_iam_role_policy_attachment" "kinesisaccess" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
+}
 
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-serverless-static-website-"
