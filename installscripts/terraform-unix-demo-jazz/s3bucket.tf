@@ -161,6 +161,8 @@ EOF
 
 
 
+
+
 resource "aws_iam_policy" "basic_execution_policy" {
   name        = "${var.envPrefix}_execution_aws_logs"
   path        = "/"
@@ -260,6 +262,11 @@ resource "aws_s3_bucket" "dev-serverless-static" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
+  }
 
 }
 
@@ -277,6 +284,11 @@ resource "aws_s3_bucket" "stg-serverless-static" {
 
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
   }
 
 }
@@ -296,5 +308,85 @@ resource "aws_s3_bucket" "prod-serverless-static" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_S3BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
+  }
 
 }
+
+resource "aws_iam_policy" "dev-serverless-static-policy" {
+  name        = "${var.envPrefix}_dev_serverless_static_policy"
+  path        = "/"
+  description = "access policy to dev serverless static bucket"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "${aws_s3_bucket.dev-serverless-static.arn}"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "stg-serverless-static-policy" {
+  name        = "${var.envPrefix}_stg_serverless_static_policy"
+  path        = "/"
+  description = "access policy to stg serverless static bucket"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "${aws_s3_bucket.stg-serverless-static.arn}"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "prod-serverless-static-policy" {
+  name        = "${var.envPrefix}_prod_serverless_static_policy"
+  path        = "/"
+  description = "access policy to prod serverless static bucket"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "${aws_s3_bucket.prod-serverless-static.arn}"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "dev-serverless-static-bucket-policy-attachment" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "${dev-serverless-static-policy.policy.arn}"
+	
+resource "aws_iam_role_policy_attachment" "stg-serverless-static-bucket-policy-attachment" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "${stg-serverless-static-policy.policy.arn}"
+	
+resource "aws_iam_role_policy_attachment" "prod-serverless-static-bucket-policy-attachment" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "${prod-serverless-static-policy.policy.arn}"
