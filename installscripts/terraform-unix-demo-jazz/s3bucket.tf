@@ -248,7 +248,7 @@ resource "aws_iam_role_policy_attachment" "kinesisaccess" {
 }
 
 resource "aws_s3_bucket" "dev-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-dev-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-dev-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -271,7 +271,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-stg-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-stg-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -294,7 +294,7 @@ resource "aws_s3_bucket" "stg-serverless-static" {
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-prod-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-prod-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
