@@ -316,77 +316,106 @@ resource "aws_s3_bucket" "prod-serverless-static" {
 
 }
 
-resource "aws_iam_policy" "dev-serverless-static-policy" {
-  name        = "${var.envPrefix}_dev_serverless_static_policy"
-  path        = "/"
-  description = "access policy to dev serverless static bucket"
+data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
+  statement {
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.dev-serverless-static.arn}/*"
+        ]
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": "${aws_s3_bucket.dev-serverless-static.arn}"
-        }
-    ]
-}
-EOF
-}
+  }
+   statement {
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.dev-serverless-static.arn}"
+        ]
 
-resource "aws_iam_policy" "stg-serverless-static-policy" {
-  name        = "${var.envPrefix}_stg_serverless_static_policy"
-  path        = "/"
-  description = "access policy to stg serverless static bucket"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": "${aws_s3_bucket.stg-serverless-static.arn}"
-        }
-    ]
+  }
 }
-EOF
+resource "aws_s3_bucket_policy" "dev-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.dev-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.dev-serverless-static-policy-data-contents.json}"
 }
 
-resource "aws_iam_policy" "prod-serverless-static-policy" {
-  name        = "${var.envPrefix}_prod_serverless_static_policy"
-  path        = "/"
-  description = "access policy to prod serverless static bucket"
+data "aws_iam_policy_document" "stg-serverless-static-policy-data-contents" {
+  statement {
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.stg-serverless-static.arn}/*"
+        ]
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": "${aws_s3_bucket.prod-serverless-static.arn}"
-        }
-    ]
-}
-EOF
+  }
+  statement {
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.stg-serverless-static.arn}"
+        ]
+
+  }
 }
 
-resource "aws_iam_role_policy_attachment" "dev-serverless-static-bucket-policy-attachment" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "${dev-serverless-static-policy.policy.arn}"
-	
-resource "aws_iam_role_policy_attachment" "stg-serverless-static-bucket-policy-attachment" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "${stg-serverless-static-policy.policy.arn}"
-	
-resource "aws_iam_role_policy_attachment" "prod-serverless-static-bucket-policy-attachment" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "${prod-serverless-static-policy.policy.arn}"
+resource "aws_s3_bucket_policy" "stg-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.stg-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.stg-serverless-static-policy-data-contents.json}"
+}
+
+data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
+  statement {
+        sid = "1"
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.prod-serverless-static.arn}/*"
+        ]
+
+  }
+  statement {
+        sid = "ListBucket"
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.prod-serverless-static.arn}"
+        ]
+
+  }
+
+}
+resource "aws_s3_bucket_policy" "prod-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.prod-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.prod-serverless-static-policy-data-contents.json}"
+}
+
