@@ -338,6 +338,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
 }
 
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
+  policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
         actions = [
                         "s3:*"
@@ -371,6 +372,7 @@ resource "aws_s3_bucket_policy" "dev-serverless-static-bucket-contents-policy" {
 }
 
 data "aws_iam_policy_document" "stg-serverless-static-policy-data-contents" {
+  policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
         actions = [
                         "s3:*"
@@ -405,6 +407,7 @@ resource "aws_s3_bucket_policy" "stg-serverless-static-bucket-contents-policy" {
 }
 
 data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
+  policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
         sid = "1"
         actions = [
