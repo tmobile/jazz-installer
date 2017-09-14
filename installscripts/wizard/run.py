@@ -23,7 +23,7 @@ tagOwner=tagEnvPrefix+"-Admin"
 cidr="10.0.0.0/16"
 cidrcheck="aws ec2 describe-subnets --filters Name=cidrBlock,Values="+cidr+" --output=text > ./cidrexists"
 fullstack = raw_input("Do you need full stack including network(Y/N): ")
-
+error_in_cidr = False
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
     os.chdir("../terraform-unix-networkstack")
     subprocess.call('pwd', shell=True)
@@ -46,9 +46,11 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
         print(os.path.realpath('../wizard'))
         print("\n\n")
     else :
-        print("default CIDR "+cidr+" already exists. Please try creating the stack again by providing own subnet ")
-        sys.exit()
-elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
+        print("default CIDR "+cidr+" already exists.")
+		print(" Please have vpc,subnet and cidr blocks handy")
+		subnet = raw_input("Please provide subnet id: ")
+        error_in_cidr = True
+elif fullstack == "n" or  fullstack == "N" or error_in_cidr: # use client provided network stack as if jenkins/bitbucket servers exist
     existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ")
     if existingJenkinsBitbucket == "y" or existingJenkinsBitbucket == "Y" :
         print(" Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin")
@@ -72,8 +74,9 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
         print("\n\n")
     elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
         print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
-        print(" Please have vpc,subnet and cidr blocks handy")
-        subnet = raw_input("Please provide subnet id: ")
+		if not error_in_cidr:
+            print(" Please have vpc,subnet and cidr blocks handy")
+            subnet = raw_input("Please provide subnet id: ")
 
         print("\n\n--------------------------------------------------")
         print("The stack will be built using the following info")
