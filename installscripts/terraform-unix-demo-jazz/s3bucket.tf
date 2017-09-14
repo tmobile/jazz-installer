@@ -223,8 +223,21 @@ EOF
 	on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AWSLambdaFullAccess"
   }
-
-
+  provisioner "local-exec" {
+        when = "destroy"
+	on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
+  }
+  provisioner "local-exec" {
+        when = "destroy"
+	on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
+  }
+  provisioner "local-exec" {
+        when = "destroy"
+	on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
+  }  
 }
 
 
@@ -245,6 +258,14 @@ resource "aws_iam_role_policy_attachment" "cloudwatchlogaccess" {
 resource "aws_iam_role_policy_attachment" "kinesisaccess" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
+}
+resource "aws_iam_role_policy_attachment" "networkadminaccess" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
+}
+resource "aws_iam_role_policy_attachment" "vpccrossaccountaccess" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
 }
 
 resource "aws_s3_bucket" "dev-serverless-static" {
