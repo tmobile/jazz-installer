@@ -237,7 +237,12 @@ EOF
         when = "destroy"
 	on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
-  }  
+  }
+  provisioner "local-exec" {
+        when = "destroy"
+	on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  }
 }
 
 
@@ -266,6 +271,10 @@ resource "aws_iam_role_policy_attachment" "networkadminaccess" {
 resource "aws_iam_role_policy_attachment" "vpccrossaccountaccess" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
+}
+resource "aws_iam_role_policy_attachment" "s3fullaccess" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 resource "aws_s3_bucket" "dev-serverless-static" {
