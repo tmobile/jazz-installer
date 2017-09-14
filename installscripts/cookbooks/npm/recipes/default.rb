@@ -11,7 +11,7 @@ execute 'getnode' do
    #cwd "/usr/local"
 end
 execute 'installnodeandnpm' do
-   command 'yum -y install nodejs'
+   command 'yum -y install nodejs-8.1.3'
    #cwd "/usr/local"
 end
 execute 'npmversion' do
