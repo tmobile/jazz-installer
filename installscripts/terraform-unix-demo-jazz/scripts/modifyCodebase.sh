@@ -63,3 +63,33 @@ sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/cognito-authorizer/
 sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/cognito-authorizer/deployment-env.yml
 sed -i "s/region.*.$/region: $region/g" ./jazz-core/cognito-authorizer/deployment-env.yml
  
+ 
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/api-template-python/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-python/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/api-template-python/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/api-template-python/deployment-env.yml
+
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform-services-handler/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform-services-handler/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform-services-handler/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform-services-handler/deployment-env.yml
+
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_events/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_events/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_events/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_events/deployment-env.yml
+
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/lambda-template-java/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/lambda-template-java/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/lambda-template-java/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-java/deployment-env.yml
+
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/lambda-template-nodejs/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/lambda-template-nodejs/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/lambda-template-nodejs/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-nodejs/deployment-env.yml
+
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/lambda-template-python/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/lambda-template-python/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/lambda-template-python/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-python/deployment-env.yml
