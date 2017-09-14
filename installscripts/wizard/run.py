@@ -47,8 +47,8 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
         print("\n\n")
     else :
         print("default CIDR "+cidr+" already exists.")
-		print(" Please have vpc,subnet and cidr blocks handy")
-		subnet = raw_input("Please provide subnet id: ")
+        print(" Please have vpc,subnet and cidr blocks handy")
+        subnet = raw_input("Please provide subnet id: ")
         error_in_cidr = True
 elif fullstack == "n" or  fullstack == "N" or error_in_cidr: # use client provided network stack as if jenkins/bitbucket servers exist
     existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ")
@@ -74,7 +74,7 @@ elif fullstack == "n" or  fullstack == "N" or error_in_cidr: # use client provid
         print("\n\n")
     elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
         print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
-		if not error_in_cidr:
+        if not error_in_cidr:
             print(" Please have vpc,subnet and cidr blocks handy")
             subnet = raw_input("Please provide subnet id: ")
 
