@@ -1,5 +1,8 @@
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "${var.envPrefix}-origin_access_identity"
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinspropsfile}"
+  }
 }
 resource "aws_cloudfront_distribution" "jazz" {
   origin {
@@ -18,7 +21,6 @@ resource "aws_cloudfront_distribution" "jazz" {
   logging_config {
     include_cookies = true
     bucket          = "${aws_s3_bucket.cloudfrontlogs.bucket_domain_name}"
-    //bucket          = ""
     prefix          = ""
   }
 

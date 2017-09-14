@@ -161,6 +161,8 @@ EOF
 
 
 
+
+
 resource "aws_iam_policy" "basic_execution_policy" {
   name        = "${var.envPrefix}_execution_aws_logs"
   path        = "/"
@@ -246,7 +248,7 @@ resource "aws_iam_role_policy_attachment" "kinesisaccess" {
 }
 
 resource "aws_s3_bucket" "dev-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-dev-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-dev-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -260,11 +262,16 @@ resource "aws_s3_bucket" "dev-serverless-static" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
+  }
 
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-stg-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-stg-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -278,11 +285,16 @@ resource "aws_s3_bucket" "stg-serverless-static" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
+  }
 
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
-  bucket_prefix = "${var.envPrefix}-prod-serverless-static-website-"
+  bucket_prefix = "${var.envPrefix}-prod-web-"
   acl    = "public-read-write"
   request_payer = "BucketOwner"
   region = "${var.region}"
@@ -296,5 +308,114 @@ resource "aws_s3_bucket" "prod-serverless-static" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_S3BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
+  }
 
 }
+
+data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
+  statement {
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.dev-serverless-static.arn}/*"
+        ]
+
+  }
+   statement {
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.dev-serverless-static.arn}"
+        ]
+
+  }
+}
+resource "aws_s3_bucket_policy" "dev-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.dev-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.dev-serverless-static-policy-data-contents.json}"
+}
+
+data "aws_iam_policy_document" "stg-serverless-static-policy-data-contents" {
+  statement {
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.stg-serverless-static.arn}/*"
+        ]
+
+  }
+  statement {
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.stg-serverless-static.arn}"
+        ]
+
+  }
+}
+
+resource "aws_s3_bucket_policy" "stg-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.stg-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.stg-serverless-static-policy-data-contents.json}"
+}
+
+data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
+  statement {
+        sid = "1"
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.prod-serverless-static.arn}/*"
+        ]
+
+  }
+  statement {
+        sid = "ListBucket"
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.prod-serverless-static.arn}"
+        ]
+
+  }
+
+}
+resource "aws_s3_bucket_policy" "prod-serverless-static-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.prod-serverless-static.id}"
+        policy = "${data.aws_iam_policy_document.prod-serverless-static-policy-data-contents.json}"
+}
+
