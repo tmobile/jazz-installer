@@ -26,7 +26,6 @@ fullstack = raw_input("Do you need full stack including network(Y/N): ")
 error_in_cidr = False
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
     os.chdir("../terraform-unix-networkstack")
-    subprocess.call('pwd', shell=True)
     cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-networkstack/envprefix.tf"]
     subprocess.call(cmd)
     cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
@@ -35,13 +34,11 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
     if is_non_zero_file("./cidrexists") != True :
         cmd = "./scripts/create.sh "+cidr+" >>../../stack_creation.out"
         subprocess.call(cmd,shell=True)
-        
         subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
         update_destroy_script_with_cidr('../../destroy.sh',cidr)
         
         os.chdir("../terraform-unix-demo-jazz")
         subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out &', shell=True)
-
         print("\n\nPlease execute  tail -f stack_creation.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
         print(os.path.realpath('../../'))
         print("\n\n")
@@ -96,5 +93,6 @@ if fullstack == "n" or  fullstack == "N" or error_in_cidr: # use client provided
         print("invalid input..please try again...")
 
 else:
-    print("in valid input..please try again...")
-    subprocess.call(['df', '-h'], shell=True)
+    if(fullstack != "y" and  fullstack != "Y"):
+        print("in valid input..please try again...")
+        subprocess.call(['df', '-h'], shell=True)
