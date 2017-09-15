@@ -19,6 +19,7 @@ echo " ======================================================="
 
 nohup terraform destroy --force >>../../stack_deletion.out &&
 cd $currentDir
+shopt -s extglob
 sudo rm -rf !(*.out)
 sudo rm -rf ../rhel7Installer.sh ../atlassian-cli* 
 date

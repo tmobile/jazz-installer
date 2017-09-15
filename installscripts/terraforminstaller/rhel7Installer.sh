@@ -6,7 +6,7 @@ sudo yum install -y git
 #----java
 curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm > jdk-8u112-linux-x64.rpm
 sudo rpm -ivh ./jdk-8u112-linux-x64.rpm
-sudo rm -rf jdk-8u112-linux-x64.rpm3
+sudo rm -rf jdk-8u112-linux-x64.rpm
 #-----------aws
 sudo yum install -y unzip
 sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o /tmp/awscli-bundle.zip
