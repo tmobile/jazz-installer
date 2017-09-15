@@ -17,5 +17,5 @@ echo " ________________________________________________"
 cat ./settings.txt
 echo " ======================================================="
 echo " Installation Completed!!! Once checkout is done Please execute nohup ./destroy.sh & in the following directory . This will cleanup the entire Stack"
-realpath ../wizard/
+realpath ../../
 echo " ======================================================="
