@@ -6,7 +6,7 @@ currentDir=`pwd`
 echo " ======================================================="
 echo " The following Stack has been marked for deletion in AWS"
 echo " ________________________________________________"
-cd ../terraform-unix-noinstances-jazz
+cd installscripts/terraform-unix-noinstances-jazz
 terraform state list
 
 echo " ======================================================="
@@ -17,6 +17,9 @@ echo $currentDir
 
 echo " ======================================================="
 
-nohup terraform destroy --force >>../wizard/stack_deletion.out &&
-
+nohup terraform destroy --force >>../../stack_deletion.out &&
+cd $currentDir
+shopt -s extglob
+sudo rm -rf !(*.out)
+sudo rm -rf ../rhel7Installer.sh ../atlassian-cli* 
 date
