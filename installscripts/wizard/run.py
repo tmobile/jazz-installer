@@ -34,14 +34,11 @@ if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create n
     if is_non_zero_file("./cidrexists") != True :
         cmd = "./scripts/create.sh "+cidr+" >>../../stack_creation.out"
         subprocess.call(cmd,shell=True)
-        print ('1')
         subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
-        print ('2')
         update_destroy_script_with_cidr('../../destroy.sh',cidr)
         
         os.chdir("../terraform-unix-demo-jazz")
         subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out &', shell=True)
-        print ('3')
         print("\n\nPlease execute  tail -f stack_creation.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
         print(os.path.realpath('../../'))
         print("\n\n")
