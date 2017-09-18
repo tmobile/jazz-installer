@@ -70,7 +70,7 @@ Jazz Installer scripts also includes the destroy Jazz Framework scripts.
 
 Please execute ./destroy.sh & in the directory (/home/ec2-user/jazz-installer). This will cleanup the entire Stack. The deletion/destroy logs are outputted into stack_deletion.out file.
 
-tail -f stack_deletion.out
+tail -f stack_deletion.out | grep 'Destroy Completed!'
 
 
 ## Wiki
