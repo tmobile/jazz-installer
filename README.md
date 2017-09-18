@@ -60,9 +60,18 @@ Jazz provides management UI to create and manage serverless services.
 
 Post successful Installation, framework is ready to use! Start using [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create your services! Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
 
+
 ## Limitations
 * Jazz stack will be created in us-east-1 region (we see few permission issues (s3 & cognito) when we use us-east-2 region)
 * Only one stack can be created in one region per account (this limitation will be removed in the next version)
+
+## Destroy Jazz Framework AWS stack in your AWS Account
+Jazz Installer scripts also includes the destroy Jazz Framework scripts.
+
+Please execute ./destroy.sh & in the directory (/home/ec2-user/jazz-installer). This will cleanup the entire Stack. The deletion/destroy logs are outputted into stack_deletion.out file.
+
+tail -f stack_deletion.out
+
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
