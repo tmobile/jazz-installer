@@ -23,7 +23,7 @@ cd /usr/bin; sudo unzip -o /tmp/terraform.zip; sudo unzip -o /tmp/packer.zip
 cd /home/ec2-user; sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o /tmp/atlassian-cli-6.7.1-distribution.zip; sudo unzip -o /tmp/atlassian-cli-6.7.1-distribution.zip
 
 sudo rm -rf jazz-installer
-git clone -b development https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
+git clone -b uat https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
 chmod -R +x ./jazz-installer/installscripts/*
 chmod -R 400 ./jazz-installer/installscripts/sshkeys/*
 cd /home/ec2-user/jazz-installer/installscripts/wizard
