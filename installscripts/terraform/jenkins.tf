@@ -89,7 +89,7 @@ resource "aws_api_gateway_rest_api" "jazz-dev" {
   description = "API for Tmobile demo1"
   provisioner "local-exec" {
 //    command = "git clone -b Alpha-R1 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
-    command = "git clone -b phase3-dev https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
+    command = "git clone -b uat https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
   }
   provisioner "local-exec" {
     command = "configureApikey.cmd ${aws_api_gateway_rest_api.jazz-dev.id} us-east-1 ${var.jenkinspropsfile}"
