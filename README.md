@@ -18,7 +18,7 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/development/installscripts/terraforminstaller/rhel7Installer.sh?token=Ad0zYqvnb6EHKQaRXcro4K6ttJlHqPJ2ks5ZxTWbwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/uat/installscripts/terraforminstaller/rhel7Installer.sh?token=Ad0zYjpvm_uV8LTeE6SnLsLviuiWLdgwks5Zyl2cwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
 
 3) Follow the installer wizard. It prompts for few AWS configurations which needs to be filled in.
