@@ -68,7 +68,7 @@ Post successful Installation, framework is ready to use! Start using [Jazz UI](h
 ## Destroy Jazz Framework AWS stack in your AWS Account
 Jazz Installer scripts also includes the destroy Jazz Framework scripts.
 
-To clean up the Jazz Framework please refer [Jazz-Framework-Stack-Destroy](tmobile/jazz-installer/wiki/Jazz-Framework-Stack-Destroy)
+To clean up the Jazz Framework please refer [Jazz-Framework-Stack-Destroy](https://github.com/tmobile/jazz-installer/wiki/Jazz-Framework-Stack-Destroy)
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
