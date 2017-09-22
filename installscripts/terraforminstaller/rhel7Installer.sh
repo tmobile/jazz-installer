@@ -1,6 +1,6 @@
 #!/bin/bash
 export PS1='$PWD:>'
-logfilename=installer_setup.log
+logfilename=installer_setup.out
 logfile=`realpath $logfilename`
 spin_wheel()
 {
@@ -96,6 +96,7 @@ chmod -R +x ./jazz-installer/installscripts/*
 chmod -R 400 ./jazz-installer/installscripts/sshkeys/*
 cd /home/ec2-user/jazz-installer/installscripts/wizard
 
+mv $logfile /home/ec2-user/jazz-installer/
 
 setterm -term linux -fore default
 
