@@ -5,8 +5,9 @@ logfile=`realpath $logfilename`
 spin_wheel()
 {
 RED='\033[0;31m'
+GREEN='\033[0;32m'
 NC='\033[0m'
-setterm -term linux -fore green
+#setterm -term linux -fore green
 pid=$1 # Process Id of the previous running command
 message=$2
 spin='-\|/'
@@ -17,7 +18,7 @@ while ps -p $pid > /dev/null
 do
   #echo $pid $i
   i=$(( (i+1) %4 ))
-  printf "\r$message....${spin:$i:1}"
+  printf "\r${GREEN}$message....${spin:$i:1}"
   sleep .05
 done
 #setterm -term linux -fore default
@@ -29,12 +30,13 @@ then
     printf "\r${RED}$message....Failed${NC}\n"
     exit
 else
-    printf "\r$message....Completed\n"
+    printf "\r${GREEN}$message....Completed${NC}\n"
 
 fi
 }
 
-
+trap 'printf "${RED}\nCancelled....\n${NC}"; exit' 2
+trap '' 20
 #---git
 sudo yum install -y git >>$logfile&
 spin_wheel $! "Installing git"
@@ -88,6 +90,7 @@ sudo unzip -o /tmp/atlassian-cli-6.7.1-distribution.zip  >>$logfile 2>&1 &
 spin_wheel $! "Installing atlassian-cli"
 
 #--cloning from github
+
 sudo rm -rf jazz-installer
 git clone -b development https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git >>$logfile 2>&1 &
 spin_wheel $! "Downloading jazz Installer"
