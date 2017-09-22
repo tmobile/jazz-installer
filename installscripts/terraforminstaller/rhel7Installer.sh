@@ -29,7 +29,13 @@ chmod -R 400 ./jazz-installer/installscripts/sshkeys/*
 cd /home/ec2-user/jazz-installer/installscripts/wizard
 read -p 'AWS Access Key ID :' access_key
 read -p 'AWS Secret Access Key :' secret_key
-aws_config="[default]
+aws_credentials="[default]
 aws_access_key_id = $access_key
 aws_secret_access_key = $secret_key"
-echo "$aws_config">~/.aws/credentials
+aws_config="[default]
+output = json
+region = us-east-1"
+mkdir -p ~/.aws
+echo "$aws_credentials">~/.aws/credentials
+echo "$aws_config">~/.aws/config
+
