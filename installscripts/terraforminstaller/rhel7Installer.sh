@@ -2,6 +2,7 @@
 export PS1='$PWD:>'
 logfilename=installer_setup.out
 logfile=`realpath $logfilename`
+jazz_branch=$1
 spin_wheel()
 {
 RED='\033[0;31m'
@@ -92,12 +93,21 @@ spin_wheel $! "Installing atlassian-cli"
 #--cloning from github
 
 sudo rm -rf jazz-installer
-git clone -b development https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git >>$logfile 2>&1 &
+git clone -b $jazz_branch https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git >>$logfile 2>&1 &
+
 spin_wheel $! "Downloading jazz Installer"
 
 chmod -R +x ./jazz-installer/installscripts/*
 chmod -R 400 ./jazz-installer/installscripts/sshkeys/*
 cd /home/ec2-user/jazz-installer/installscripts/wizard
+
+#--modifying props to use correct branch
+
+sed -i "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"$jazz_branch\" \}|g" ../terraform-unix-demo-jazz/variables.tf
+sed -i "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"$jazz_branch\" \}|g" ../terraform-unix-noinstances-jazz/variables.tf
+
+sed -i 's/\JAZZBRANCH\b/$jazz_branch/g' ../cookbooks/jenkins/recipes/startjenkins.rb
+sed -i 's/\JAZZBRANCH\b/$jazz_branch/g' ../cookbooks/jenkins/recipes/configureblankjenkins.rb
 
 mv $logfile /home/ec2-user/jazz-installer/
 
@@ -117,3 +127,4 @@ echo "$aws_config">~/.aws/config
 
 setterm -term linux -fore green
 setterm -term linux -fore default
+
