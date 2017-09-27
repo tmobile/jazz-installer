@@ -60,7 +60,7 @@ end
 #end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
+  command "/usr/local/git/bin/git clone -b uat https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
   cwd '/home/ec2-user'
 end
 # downloading and running mvn assembly will be don on installer box. This will be uploaded to jenkins master using scp
@@ -101,23 +101,24 @@ end
 execute 'createJob-delete-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']}"
 end
-execute 'createJob-job_build_java_api' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_java_api #{node['bitbucketelb']}"
+execute 'createJob-job_pack_java_api' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_pack_api #{node['bitbucketelb']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']}"
-end
-execute 'job_inst_deploy_createservice' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_inst_deploy_createservice.sh localhost inst_deploy_createservice #{node['bitbucketelb']}"
-end
-execute 'job_inst_deploy_deleteservice' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_inst_deploy_deleteservice.sh localhost inst_deploy_deleteservice #{node['bitbucketelb']}"
 end
 execute 'job_build-deploy-platform-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}"
 end
 execute 'job_deploy-all-platform-services' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh localhost deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']}"
+end
+execute 'createJob-job-pack-lambda' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh localhost build-pack-lambda #{node['bitbucketelb']}"
+end
+
+execute 'createJob-job-build-pack-website' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_website.sh localhost build-pack-website #{node['bitbucketelb']}"
 end
 
 link '/usr/bin/aws-api-import' do
@@ -158,6 +159,12 @@ service "jenkins" do
   supports [:stop, :start, :restart]
   action [:restart]
 end
-execute 'copyJob' do
-  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_java_api build_java_api_dev"
+execute 'copyJobBuildPackApi' do
+  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_pack_api build_pack_api_dev"
+end
+execute 'copyJobBuildPackLambda' do
+  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-lambda build-pack-lambda-dev"
+end
+execute 'copyJobBuildPackLambda' do
+  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-website build-pack-website-dev"
 end
