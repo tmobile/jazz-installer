@@ -23,32 +23,31 @@ tagOwner=tagEnvPrefix+"-Admin"
 cidr="10.0.0.0/16"
 cidrcheck="aws ec2 describe-subnets --filters Name=cidrBlock,Values="+cidr+" --output=text > ./cidrexists"
 fullstack = raw_input("Do you need full stack including network(Y/N): ")
-
+error_in_cidr = False
 if fullstack == "y" or  fullstack == "Y" : # no inputs fomr the client. Create network stack and Jenkins and bitbucket servers
     os.chdir("../terraform-unix-networkstack")
-    subprocess.call('pwd', shell=True)
     cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-networkstack/envprefix.tf"]
     subprocess.call(cmd)
     cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
     subprocess.call(cmd)
     subprocess.call(cidrcheck, shell=True)
     if is_non_zero_file("./cidrexists") != True :
-        cmd = "./scripts/create.sh "+cidr+" >>../wizard/stack_creation.out"
+        cmd = "./scripts/create.sh "+cidr+" >>../../stack_creation.out"
         subprocess.call(cmd,shell=True)
-        
-        subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
-        update_destroy_script_with_cidr('../wizard/destroy.sh',cidr)
+        subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
+        update_destroy_script_with_cidr('../../destroy.sh',cidr)
         
         os.chdir("../terraform-unix-demo-jazz")
-        subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_creation.out &', shell=True)
-
+        subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out &', shell=True)
         print("\n\nPlease execute  tail -f stack_creation.out |grep 'Creation complete' in the below directory to see the stack creation progress ")
-        print(os.path.realpath('../wizard'))
+        print(os.path.realpath('../../'))
         print("\n\n")
     else :
-        print("default CIDR "+cidr+" already exists. Please try creating the stack again by providing own subnet ")
-        sys.exit()
-elif fullstack == "n" or  fullstack == "N" : # use client provided network stack as if jenkins/bitbucket servers exist
+        print("default CIDR "+cidr+" already exists.")
+        print(" Please have vpc,subnet and cidr blocks handy")
+        subnet = raw_input("Please provide subnet id: ")
+        error_in_cidr = True
+if fullstack == "n" or  fullstack == "N" or error_in_cidr: # use client provided network stack as if jenkins/bitbucket servers exist
     existingJenkinsBitbucket = raw_input("Do you have existing Jenkins and Bitbucket Server(Y/N): ")
     if existingJenkinsBitbucket == "y" or existingJenkinsBitbucket == "Y" :
         print(" Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin")
@@ -65,16 +64,16 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
         cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
         subprocess.call(cmd)
         os.chdir("../terraform-unix-noinstances-jazz")
-        subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_creation.out&', shell=True)
-        subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
+        subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
+        subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
         print("\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
-        print(os.path.realpath('../wizard'))
+        print(os.path.realpath('../../'))
         print("\n\n")
     elif existingJenkinsBitbucket == "n" or  existingJenkinsBitbucket == "N" :
         print(" We will create Jenkins and Bitbucket Servers using the Network Stack you provided")
-        print(" Please have vpc,subnet and cidr blocks handy")
-        subnet = raw_input("Please provide subnet id: ")
-
+        if not error_in_cidr:
+            print(" Please have vpc,subnet and cidr blocks handy")
+            subnet = raw_input("Please provide subnet id: ")
         print("\n\n--------------------------------------------------")
         print("The stack will be built using the following info")
         print("SUBNET : ",subnet)
@@ -85,14 +84,15 @@ elif fullstack == "n" or  fullstack == "N" : # use client provided network stack
         cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-demo-jazz/envprefix.tf"]
         subprocess.call(cmd)
         os.chdir("../terraform-unix-demo-jazz")
-        subprocess.call('nohup ./scripts/create.sh >>../wizard/stack_creation.out&', shell=True)
-        subprocess.call('cp ./scripts/destroy.sh ../wizard/', shell=True)
+        subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
+        subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
         print("\n\nPlease execute  tail -f stack_creation.out |grep 'Creation complete' in the below directory to see the stack creation progress")
-        print(os.path.realpath('../wizard'))
+        print(os.path.realpath('../../'))
         print("\n\n")
     else :  #
         print("invalid input..please try again...")
 
 else:
-    print("in valid input..please try again...")
-    subprocess.call(['df', '-h'], shell=True)
+    if(fullstack != "y" and  fullstack != "Y"):
+        print("in valid input..please try again...")
+        subprocess.call(['df', '-h'], shell=True)
