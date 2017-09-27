@@ -89,3 +89,4 @@ variable "github_password" {
   type = "string"
   default = "Tmobiledemo1"
 }
+variable "github_branch" { type = "string" default = "development" }
