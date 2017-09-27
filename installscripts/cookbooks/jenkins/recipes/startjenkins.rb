@@ -60,7 +60,8 @@ end
 #end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b uat https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
+  command "/usr/local/git/bin/git clone -b JAZZBRANCH https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
+
   cwd '/home/ec2-user'
 end
 # downloading and running mvn assembly will be don on installer box. This will be uploaded to jenkins master using scp
