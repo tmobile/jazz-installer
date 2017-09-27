@@ -55,4 +55,11 @@ variable "deployS3Webapp_cmd" {
   type = "string"
   default = "./scripts/deployS3Webapp.sh"
 }
-
+variable "dynamodb_cmd" {
+  type = "string"
+  default = "./scripts/dynamodb.sh"
+}
+variable "modifyPropertyFile_cmd" {
+  type = "string"
+  default = "./scripts/modifyPropertyFile.sh"
+}
