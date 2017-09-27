@@ -18,7 +18,8 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh?token=Ad0zYkdvlN1TXwKMD4y_GSR1m1XA6wkpks5Z1He6wA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh && cd ./jazz-installer/installscripts/wizard && ./run.py 
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/uat/installscripts/terraforminstaller/rhel7Installer.sh?token=Ad0zYlsx6TrPtSG0DZhhSPAlnS-BmkYKks5Z1IVdwA%3D%3D -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh uat&& cd ./jazz-installer/installscripts/wizard && ./run.py 
+
  ```
 
 3) Follow the installer wizard. It prompts for few AWS configurations which needs to be filled in.
@@ -68,10 +69,7 @@ Post successful Installation, framework is ready to use! Start using [Jazz UI](h
 ## Destroy Jazz Framework AWS stack in your AWS Account
 Jazz Installer scripts also includes the destroy Jazz Framework scripts.
 
-Please execute ./destroy.sh & in the directory (/home/ec2-user/jazz-installer). This will cleanup the entire Stack. The deletion/destroy logs are outputted into stack_deletion.out file.
-
-tail -f stack_deletion.out | grep 'Destroy Completed!'
-
+To clean up the Jazz Framework please refer [Jazz-Framework-Stack-Destroy](https://github.com/tmobile/jazz-installer/wiki/Jazz-Framework-Stack-Destroy)
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
