@@ -100,6 +100,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   description = "PROD API for Tmobile demo"
   provisioner "local-exec" {
     command = "git clone -b ${var.github_branch} https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz-core.git"
+
   }
   provisioner "local-exec" {
     command = "git clone https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz-ui.git"
