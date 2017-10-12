@@ -488,6 +488,20 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
         ]
 
   }
+  statement {
+        sid = "jazzwebsite"
+        actions = [
+                        "s3:GetObject"
+        ]
+        principals  {
+                        type="*",
+                        identifiers = ["*"]
+                        }
+        resources = [
+                "${aws_s3_bucket.jazz-web.arn}/*"
+        ]
+
+  }
 
 }
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
