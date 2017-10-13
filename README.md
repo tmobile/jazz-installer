@@ -73,6 +73,5 @@ To clean up the Jazz Framework please refer [Jazz-Framework-Stack-Destroy](https
 
 ## Wiki
 * [Installer](https://github.com/tmobile/jazz-installer/wiki)
-* [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview)
-* [Jazz-Core](https://github.com/tmobile/jazz-core/wiki)
+* [Jazz Core](https://github.com/tmobile/jazz-core/wiki)
 * [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
