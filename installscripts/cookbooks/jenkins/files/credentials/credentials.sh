@@ -15,14 +15,14 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-crede
           <id>642cdc8d-a9f4-4f80-b73c-863ccd522765</id>
           <description>user created on bitbucket</description>
           <username>jenkins1</username>
-          <password>{AQAAABAAAAAQ3xUYEheZyvXW1lwQwAo9SXLAvFdExghI11bRoUCFNaw=}</password>
+          <password>REPLACE/password>
         </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
         <com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl plugin="aws-credentials@1.21">
           <scope>GLOBAL</scope>
           <id>2c88b8e9-52f7-467a-b276-b29fe38bc95f2213</id>
           <description>AWS Credentials</description>
-          <accessKey>AKIAI3PSMBAWFO25T2XQ</accessKey>
-          <secretKey>{AQAAABAAAAAwdr81k7zPdmG5hvAljPxIeNQfBHRjPr7ngUpXF1DyfWsVQTF8pqUdno/IZH9XjsjXVHcC9X/FqJFK4dDm0ku/Qw==}</secretKey>
+          <accessKey>{--REPLACE--}</accessKey>
+          <secretKey>{--REPLACE}</secretKey>
           <iamRoleArn></iamRoleArn>
           <iamMfaSerialNumber></iamMfaSerialNumber>
         </com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl>
