@@ -10,11 +10,11 @@
 ## Prerequisites
 * AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the 
   [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region. 
-* Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer)
+* Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
 
 
 ## Installation steps
-1) SSH to the installer machine (RHEL 7 instance as mentioned in the Prerequisites).
+1) SSH to the installer machine (RHEL 7 instance as mentioned in the prerequisites).
 2) Run the below command to run the installation wizard.
 
 ```
@@ -56,22 +56,22 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
 Check the status through [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
-## Post Installation - Start using Jazz Framework - Create your first service!
+## Post Installation - Start using Jazz to create your first service!
 Jazz provides management UI to create and manage serverless services.
 
-Post successful Installation, framework is ready to use! Start using [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create your services! Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
+Post successful installation, start using [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create your services! Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
 
 
 ## Limitations
-* Jazz stack will be created in us-east-1 region (we see few permission issues (s3 & cognito) when we use us-east-2 region)
+* In this developer preview version, Jazz stack will be created in us-east-1 region (we've seen few restrictions when using us-east-2 region)
 * Only one stack can be created in one region per account (this limitation will be removed in the next version)
 
-## Destroy Jazz Framework AWS stack in your AWS Account
-Jazz Installer scripts also includes the destroy Jazz Framework scripts.
+## Cleanup - Removing Jazz components from your AWS Account
+Jazz Installer includes the scripts to destroy Jazz Framework & remove all its components from your AWS account.
 
-To clean up the Jazz Framework please refer [Jazz-Framework-Stack-Destroy](https://github.com/tmobile/jazz-installer/wiki/Jazz-Framework-Stack-Destroy)
+To clean up Jazz components, please refer to [Jazz Framework - Cleanup](https://github.com/tmobile/jazz-installer/wiki/Cleanup:-Jazz-Framework)
 
 ## Wiki
-* [Installer](https://github.com/tmobile/jazz-installer/wiki)
-* [Jazz Core](https://github.com/tmobile/jazz-core/wiki)
+* [Jazz Framework](https://github.com/tmobile/jazz-core/wiki)
 * [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
+* [Installer](https://github.com/tmobile/jazz-installer/wiki)
