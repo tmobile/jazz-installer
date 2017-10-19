@@ -12,7 +12,7 @@
   [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region. 
 * Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
 * Make sure that you have **Jenkins and Bitbucket** as Jenkins/Bitbucket URL and their public IPs must be provided as you proceed with the installation part.
-  * Note: Please note that AWS resources are created from Jenkins/Bitbucket, so make sure that they are accessible to AWS account.
+  * Note: Please note that AWS resources are created from Jenkins/Bitbucket, so make sure that Jenkins/Bitbucket are accessible to AWS account.
 
 
 ## Installation steps
