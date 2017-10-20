@@ -4,9 +4,9 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
   connection {
     host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}" 
-    user = "ec2-user"
+    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
     type = "ssh"
-    private_key = "${file("${lookup(var.keypair, "private_key")}")}"
+    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }   
   provisioner "local-exec" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd}"
@@ -63,9 +63,9 @@ resource "null_resource" "configureExistingBitbucketServer" {
 
   connection {
     host = "${lookup(var.bitbucketservermap, "bitbucket_public_ip")}" 
-    user = "ec2-user"
+    user = "${lookup(var.bitbucketservermap, "bitbucket_ssh_login")}"
     type = "ssh"
-    private_key = "${file("${lookup(var.keypair, "private_key")}")}"
+    private_key = "${file("${lookup(var.bitbucketservermap, "bitbucket_ssh_key")}")}"
   }   
   provisioner "file" {
           source      = "${var.chefconfigDir}/bitbucketelbconfig.json"
