@@ -16,3 +16,7 @@ sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/cloud-logs
 curl -X POST --url https://$ES_ENDPOINT/_template/apilogs  --data-binary @./jazz-core/cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
 
 curl -X POST --url https://$ES_ENDPOINT/_template/applicationlogs  --data-binary @./jazz-core/cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
+
+curl -XPUT https://$ES_ENDPOINT/apilogs?pretty --data-binary @./jazz-core/cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
+
+curl -XPUT https://$ES_ENDPOINT/applicationlogs?pretty --data-binary @./jazz-core/cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
