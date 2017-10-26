@@ -11,8 +11,8 @@
 * AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the 
   [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region. 
 * Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
-* Make sure that you have **Jenkins and Bitbucket** as Jenkins/Bitbucket URL and their public IPs must be provided as you proceed with the installation part.
-  * Note: Please note that AWS resources are acessed from Jenkins, so make sure that Jenkins/Bitbucket are accessible to AWS account.
+* Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
+  * Note: Please note that some of the AWS resources are acessed through Jenkins during some of the internal orchestration activities.
 
 
 ## Installation steps
@@ -30,10 +30,7 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
 
         Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): myjazz
 
-Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please find the below prompts to provide the Jenkins and Bitbucket server details:
-   
-        
-Please follow link Wizard prompts to complete the installation.
+Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please ensure that you provide these details correctly during this process. Not doing so would result in installation failure. Please follow the wizard prompts to complete the installation.
 
 Check the status through [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
@@ -44,11 +41,11 @@ Post successful installation, start using [Jazz UI](https://github.com/tmobile/j
 
 
 ## Limitations
-* In this developer preview version, Jazz stack will be created in us-east-1 region (we've seen few restrictions when using us-east-2 region)
-* Only one stack can be created in one region per account (this limitation will be removed in the next version)
+* In this version, Jazz platform components will be created in us-east-1 region (we've seen few restrictions when using us-east-2 region).
+* Only one stack can be created in one region per account (this limitation will be removed soon).
 
 ## Cleanup - Removing Jazz components from your AWS Account
-Jazz Installer includes the scripts to destroy Jazz Framework & remove all its components from your AWS account.
+Jazz installer contains the scripts to cleanup Jazz framework & remove all its components from your AWS account.
 
 To clean up Jazz components, please refer to [Jazz Framework - Cleanup](https://github.com/tmobile/jazz-installer/wiki/Cleanup:-Jazz-Framework)
 
