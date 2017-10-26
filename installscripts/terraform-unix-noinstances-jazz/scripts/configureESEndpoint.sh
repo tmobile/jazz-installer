@@ -12,7 +12,10 @@ sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/cloud-logs
 #--action lambda:* \
 #--principal logs.$region.amazonaws.com
 
+#Sleeping for policies to be applied
+sleep 120
 # Configure ElasticSearch Template via json
+
 curl -X POST --url https://$ES_ENDPOINT/_template/apilogs  --data-binary @./jazz-core/cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
 
 curl -X POST --url https://$ES_ENDPOINT/_template/applicationlogs  --data-binary @./jazz-core/cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
