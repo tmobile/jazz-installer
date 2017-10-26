@@ -80,7 +80,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "jazz2-prod"
   description = "PROD API for Tmobile demo"
   provisioner "local-exec" {
-    command = "git clone https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-core.git"
+    command = "git clone https://ustharin:Tmobiledemo1@github.com/tmobile/jazz.git jazz-core"
   }
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}"
