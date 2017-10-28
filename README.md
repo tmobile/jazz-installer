@@ -17,6 +17,9 @@
   * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
   * Bitbucket Web Post Hooks Plugin
 * Make sure that jenkins is installed as a service.
+* Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
+* Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+* Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
   * Note: Please note that some of the AWS resources are acessed through Jenkins during some of the internal orchestration activities.
 
