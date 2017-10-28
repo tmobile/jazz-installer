@@ -16,7 +16,7 @@ remote_file "/tmp/awscli-bundle.zip" do
   action :create
 end
 execute 'unzipaws' do
-  command 'unzip awscli-bundle.zip'
+  command 'unzip -o awscli-bundle.zip'
   cwd '/tmp'
 end
 execute 'installaws' do
