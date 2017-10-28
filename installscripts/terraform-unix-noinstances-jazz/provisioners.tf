@@ -15,11 +15,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${var.chefconfigDir}/bitbucketelbconfig.json ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix}"
   }
    provisioner "file" {
-          source      = "${var.cookbooksDir}/"
+          source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
   }
   provisioner "file" {
-          source      = "${var.chefconfigDir}/"
+          source      = "${var.chefconfigDir}"
           destination = "~/chefconfig"
   } 
 
@@ -36,45 +36,50 @@ resource "null_resource" "configureExistingJenkinsServer" {
     ]
   }
      provisioner "file" {
-          source      = "${var.cookbooksDir}/"
+          source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
   }
  
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/recipes/"
+          source      = "${var.cookbooksDir}/jenkins/recipes"
           destination = "~/cookbooks/jenkins"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/default/"
+          source      = "${var.cookbooksDir}/jenkins/files/default"
           destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/jobs/"
+          source      = "${var.cookbooksDir}/jenkins/files/jobs"
           destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/node/"
+          source      = "${var.cookbooksDir}/jenkins/files/node"
           destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/scriptapproval/"
+          source      = "${var.cookbooksDir}/jenkins/files/scriptapproval"
           destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/credentials/"
+          source      = "${var.cookbooksDir}/jenkins/files/credentials"
           destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/attributes/"
-          destination = "~/cookbooks/jenkins/"
+          source      = "${var.cookbooksDir}/jenkins/attributes"
+          destination = "~/cookbooks/jenkins"
   }
   provisioner "file" {
           source      = "${var.cookbooksDir}/jenkins/attributes/"
           destination = "~/cookbooks/blankJenkins/attributes/"
   }
   provisioner "file" {
-          source      = "jazz-core/aws-apigateway-importer/"
+          source      = "jazz-core/aws-apigateway-importer"
           destination = "/tmp"
+  }
+
+  provisioner "file" {
+          source      = "${var.chefconfigDir}/"
+          destination = "~/chefconfig"
   }
 
  provisioner "remote-exec" {
@@ -104,7 +109,7 @@ resource "null_resource" "configureExistingBitbucketServer" {
   }
   provisioner "remote-exec" {
     inline = [
-          "sudo chef-client --local-mode -c ~/chefconfig/client.rb -j ~/chefconfig/bitbucketelbconfig.json --override-runlist bitbucket::startserver"
+          "pwd"
     ]
   }
   provisioner "local-exec" {
