@@ -27,11 +27,11 @@ print(" Please make sure that you have the ssh login user names of jenkins and b
 print(" Please create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user")
 pause()
 
-jenkinsServerELB = raw_input("Please provide Jenkins Server ELB URL: ")
+jenkinsServerELB = raw_input("Please provide Jenkins URL (Please ignore http and port number from URL): ")
 jenkinsServerPublicIp = raw_input("Please provide Jenkins Server PublicIp: ")
 jenkinsServerSSHLogin = raw_input("Please provide Jenkins SSH login name: ")
 
-bitBucketServerELB = raw_input("Please provide Bitbuckket  Server ELB URL: ")
+bitBucketServerELB = raw_input("Please provide Bitbuckket URL (Please ignore http and port number from URL): ")
 bitBucketServerPublicIp = raw_input("Please provide bitbucket Server PublicIp: ")
 bitBucketServerSSHLogin = raw_input("Please provide bitbucket SSH login name: ")
 
