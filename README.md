@@ -11,18 +11,12 @@
 * AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the 
   [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region. 
 * Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
-* Jenkins server should be having below dependencies.
-  * git
-  * maven
-  * npm
-  * aws cli
-  * python-pip
-  
 * Make sure that the BitBucket server has below addons installed.
   * Atlassian Universal Plugin Manager Plugin
   * bitbucket-webhooks
   * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
   * Bitbucket Web Post Hooks Plugin
+* Make sure that jenkins is installed as a service.
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
   * Note: Please note that some of the AWS resources are acessed through Jenkins during some of the internal orchestration activities.
 
