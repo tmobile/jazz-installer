@@ -16,7 +16,7 @@
   * bitbucket-webhooks
   * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
   * Bitbucket Web Post Hooks Plugin
-* Make sure that jenkins is installed as a service.
+* Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
 * Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
 * Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
 * Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user
