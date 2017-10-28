@@ -21,7 +21,7 @@ file '/etc/profile.d/maven.sh' do
   content "export PATH=$PATH:/opt/apache-maven-3.5.0/bin"
 end
 execute 'createsymlink' do
-  command 'sudo ln -s /opt/apache-maven-3.5.0/bin/mvn /usr/bin/mvn'
+  command 'sudo ln -sf /opt/apache-maven-3.5.0/bin/mvn /usr/bin/mvn'
 end
 
 
