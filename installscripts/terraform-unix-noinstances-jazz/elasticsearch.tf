@@ -1,5 +1,4 @@
 resource "aws_elasticsearch_domain" "elasticsearch_domain" {
-        depends_on = ["null_resource.configureExistingJenkinsServer"]
         domain_name           = "${var.envPrefix}"
         elasticsearch_version = "5.1"
         cluster_config {
@@ -15,11 +14,7 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
         }
 
         tags { Domain = "${var.envPrefix}_elasticsearch_domain"  }
-}
-resource "aws_elasticsearch_domain_policy" "elasticsearchdomain_policy" {
-  domain_name = "${aws_elasticsearch_domain.elasticsearch_domain.domain_name}"
-
-  access_policies = <<POLICIES
+		  access_policies = <<POLICIES
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -28,13 +23,14 @@ resource "aws_elasticsearch_domain_policy" "elasticsearchdomain_policy" {
             "Principal": {
                 "AWS": "*"
                 },
-            "Effect": "Allow",
-            "Resource": "${aws_elasticsearch_domain.elasticsearch_domain.arn}/*"
+            "Effect": "Allow"
         }
     ]
 }
 POLICIES
-    provisioner "local-exec" {
-    command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.region}"
-  }
+
+		provisioner "local-exec" {
+		command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.region}"
+	  }
+  
 }
