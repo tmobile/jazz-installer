@@ -81,12 +81,4 @@ variable "cognito_pool_password" {
   type = "string"
   default = "Welcome@2Jazz"
 }
-variable "github_username" {
-  type = "string"
-  default = "ustharin"
-}
-variable "github_password" {
-  type = "string"
-  default = "Tmobiledemo1"
-}
 variable "github_branch" { type = "string" default = "development" }
