@@ -10,6 +10,9 @@ resource "aws_s3_bucket" "cloudfrontlogs" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.cloudfrontlogs.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -30,6 +33,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     allowed_methods = ["GET"]
     allowed_origins = ["*"]
     max_age_seconds = 3000
+  }
+  tags {
+	Application = "${var.tagsApplication}"
   }
   
   provisioner "local-exec" {
@@ -52,7 +58,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -73,7 +81,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -118,7 +128,9 @@ resource "aws_s3_bucket" "jazz-web" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   website {
     index_document = "index.html"
 
@@ -294,7 +306,9 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
@@ -319,7 +333,9 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-
+  tags {
+	Application = "${var.tagsApplication}"
+  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
@@ -340,6 +356,9 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     allowed_methods = ["GET"]
     allowed_origins = ["*"]
     max_age_seconds = 3000
+  }
+  tags {
+	Application = "${var.tagsApplication}"
   }
 
   provisioner "local-exec" {
