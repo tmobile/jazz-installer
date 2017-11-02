@@ -13,7 +13,10 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
                 volume_size = 10
         }
 
-        tags { Domain = "${var.envPrefix}_elasticsearch_domain"  }
+        tags { 
+			Domain = "${var.envPrefix}_elasticsearch_domain"
+			Application = "${var.tagsApplication}"
+		}
 		  access_policies = <<POLICIES
 {
     "Version": "2012-10-17",
