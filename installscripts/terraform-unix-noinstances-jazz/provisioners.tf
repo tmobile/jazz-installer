@@ -72,10 +72,6 @@ resource "null_resource" "configureExistingJenkinsServer" {
           source      = "${var.cookbooksDir}/jenkins/attributes/"
           destination = "~/cookbooks/blankJenkins/attributes/"
   }
-  provisioner "file" {
-          source      = "jazz-core/aws-apigateway-importer"
-          destination = "/tmp"
-  }
 
   provisioner "file" {
           source      = "${var.chefconfigDir}/"

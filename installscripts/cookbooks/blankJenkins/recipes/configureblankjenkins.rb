@@ -12,7 +12,7 @@ execute 'resizeJenkinsMemorySettings' do
 end
 
 execute 'chmodservices' do
-  command "chmod -R 755 /home/ec2-user/cookbooks/jenkins/files;"
+  command "chmod -R 755 ~/cookbooks/jenkins/files;"
 end
 directory '/var/lib/jenkins/workspace' do
   owner 'jenkins'
@@ -25,22 +25,22 @@ execute 'startjenkins' do
   command "sudo service jenkins start"
 end
 execute 'copyJenkinsClientJar' do
-  command "cp #{node['client']['jar']} /home/ec2-user/jenkins-cli.jar; chmod 755 /home/ec2-user/jenkins-cli.jar"
+  command "cp #{node['client']['jar']} ~/jenkins-cli.jar; chmod 755 ~/jenkins-cli.jar"
 end
 execute 'createJobExecUser' do
   command "sleep 30;echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['client']['jar']} -auth @#{node['authfile']} -s http://localhost:8080/ groovy ="
 end
 
 execute 'copyXmls' do
-  command "tar -xvf /home/ec2-user/cookbooks/jenkins/files/default/xmls.tar"
+  command "tar -xvf ~/cookbooks/jenkins/files/default/xmls.tar"
   cwd "/var/lib/jenkins"
 end
 execute 'copyConfigXml' do
-  command "cp /home/ec2-user/cookbooks/jenkins/files/node/config.xml ."
+  command "cp ~/cookbooks/jenkins/files/node/config.xml ."
   cwd "/var/lib/jenkins"
 end
 execute 'copyCredentialsXml' do
-  command "cp /home/ec2-user/cookbooks/jenkins/files/credentials/credentials.xml ."
+  command "cp ~/cookbooks/jenkins/files/credentials/credentials.xml ."
   cwd "/var/lib/jenkins"
 end
 # script approvals going in with  xmls.tar will be overwritten
@@ -53,9 +53,9 @@ service "jenkins" do
 end
 
 
-if (File.exist?("/home/ec2-user/jazz-core"))
+if (File.exist?("~/jazz-core"))
 	execute 'downloadgitproj' do
-  		command "rm -rf /home/ec2-user/jazz-core"
+  		command "rm -rf ~/jazz-core"
   		cwd '/home/ec2-user'
 	end
 end
@@ -64,54 +64,50 @@ execute 'downloadgitproj' do
 
   cwd '/home/ec2-user'
 end
-# downloading and running mvn assembly will be don on installer box. This will be uploaded to jenkins master using scp
-#execute 'runAwsgatewayImporter' do
-#  command "/opt/apache-maven-3.5.0/bin/mvn assembly:assembly -Dmaven.test.skip=true "
-#  cwd '/home/ec2-user/jazz-core/aws-apigateway-importer'
-#end
+
 execute 'copylinkdir' do
-  command "cp -rf /home/ec2-user/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
+  command "cp -rf ~/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
 end
 
 
 execute 'createcredentials-jenkins1' do
-  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/jenkins1.sh localhost "
+  command "sleep 30;~/cookbooks/jenkins/files/credentials/jenkins1.sh localhost "
 end
 execute 'createcredentials-jobexecutor' do
-  command "/home/ec2-user/cookbooks/jenkins/files/credentials/jobexec.sh localhost "
+  command "~/cookbooks/jenkins/files/credentials/jobexec.sh localhost "
 end
 execute 'createcredentials-aws' do
-  command "/home/ec2-user/cookbooks/jenkins/files/credentials/aws.sh localhost "
+  command "~/cookbooks/jenkins/files/credentials/aws.sh localhost "
 end
 
 
 
 execute 'createJob-create-service' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_create-service.sh localhost create-service #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_create-service.sh localhost create-service #{node['bitbucketelb']}"
 end
 execute 'createJob-delete-service' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']}"
 end
 execute 'createJob-job_build_pack_api' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_pack_api #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_pack_api #{node['bitbucketelb']}"
 end
 execute 'createJob-bitbucketteam_newService' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']}"
 end
 execute 'job_build-deploy-platform-service' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}"
+  command "~/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}"
 end
 execute 'job_deploy-all-platform-services' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh localhost deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']}"
+  command "~/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh localhost deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']}"
 end
 execute 'createJob-job-pack-lambda' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh localhost build-pack-lambda #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh localhost build-pack-lambda #{node['bitbucketelb']}"
 end
 execute 'createJob-job-build-pack-website' do
-  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build_pack_website.sh localhost build-pack-website #{node['bitbucketelb']}"
+  command "~/cookbooks/jenkins/files/jobs/job_build_pack_website.sh localhost build-pack-website #{node['bitbucketelb']}"
 end
 link '/usr/bin/aws-api-import' do
-  to '/home/ec2-user/jazz-core/aws-apigateway-importer/aws-api-import.sh'
+  to '~/jazz-core/aws-apigateway-importer/aws-api-import.sh'
   owner 'jenkins'
   group 'jenkins'
   mode '0777'
@@ -124,11 +120,11 @@ link '/usr/bin/aws' do
 end
 
 execute 'configureJenkinsProperites' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configureJenkinsProps.sh localhost "
+  command "~/cookbooks/jenkins/files/node/configureJenkinsProps.sh localhost "
 end
 
 execute 'configJenkinsLocConfigXml' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} "
+  command "~/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} "
 end
 
 
@@ -145,11 +141,11 @@ service "jenkins" do
   action [:restart]
 end
 execute 'copyJobBuildPackApi' do
-  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_pack_api build_pack_api_dev"
+  command "sleep 20;~/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_pack_api build_pack_api_dev"
 end
 execute 'copyJobBuildPackLambda' do
-  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-lambda build-pack-lambda-dev"
+  command "sleep 20;~/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-lambda build-pack-lambda-dev"
 end
 execute 'copyJobBuildPackLambda' do
-  command "sleep 20;/home/ec2-user/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-website build-pack-website-dev"
+  command "sleep 20;~/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-website build-pack-website-dev"
 end
