@@ -70,11 +70,11 @@ variable "lambdaCloudWatchProps" {
 }
 variable "cognito_pool_username" {
   type = "string"
-  default = "jazzuser"
+  default = "cognito_pool_username"
 }
 variable "cognito_pool_password" {
   type = "string"
-  default = "Welcome@2Jazz"
+  default = "cognito_pool_password"
 }
 variable "github_username" {
   type = "string"
