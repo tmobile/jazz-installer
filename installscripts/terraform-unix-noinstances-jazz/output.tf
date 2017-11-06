@@ -18,4 +18,7 @@ resource "null_resource" "outputVariables" {
   provisioner "local-exec" {
     command = "echo cloudfront url = http://${aws_cloudfront_distribution.jazz.domain_name}/index.html >> settings.txt"
   }
+  provisioner "local-exec" {
+    command = "echo Access Credentials:\n Username: $var.cognito_pool_username\n Password:  $var.cognito_pool_password >> settings.txt"
+  }
 }
