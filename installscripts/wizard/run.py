@@ -19,8 +19,17 @@ def update_destroy_script_with_cidr(fpath,cidr):
             writehandler.write(originalText.replace('CIDRPLACEHOLDER',cidr))
 			
 #Random password generator for jazz-ui admin email ID login:			
-def passwd_generator(size=9, chars=string.ascii_uppercase + string.ascii_letters + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+def passwd_generator():
+    length = 10
+    pwd = []
+    pwd.append(random.choice(string.ascii_lowercase))
+    pwd.append(random.choice(string.ascii_uppercase))
+    pwd.append(random.choice(string.digits))
+    pwd.append(random.choice(string.punctuation))
+    for x in range(6):
+        pwd.append(random.choice(string.letters))
+    random.shuffle(pwd)
+    return ''.join(pwd)
 	
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): ")
 tagApplication="JAZZ"
