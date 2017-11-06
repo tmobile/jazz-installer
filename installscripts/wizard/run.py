@@ -4,6 +4,9 @@ import os
 import sys
 import subprocess
 import datetime
+import string
+import random
+
 
 def is_non_zero_file(fpath):
     return os.path.isfile(fpath) and os.path.getsize(fpath) > 0
@@ -14,7 +17,11 @@ def update_destroy_script_with_cidr(fpath,cidr):
         originalText = readhandler.read()
         with open(fpath,'w') as writehandler:
             writehandler.write(originalText.replace('CIDRPLACEHOLDER',cidr))
-            
+			
+#Random password generator for jazz-ui admin email ID login:			
+def passwd_generator(size=9, chars=string.ascii_uppercase + string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+	
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): ")
 tagApplication="JAZZ"
 tagEnvironment="Development"
@@ -44,6 +51,12 @@ cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp,
 subprocess.call(cmd)
 cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 subprocess.call(cmd)
+
+cognito_emailID = raw_input("Please provide valid email ID to login to Jazz Application: ")
+cognito_passwd = passwd_generator()
+subprocess.call(['sed', '-i', "s|default = \"cognito_pool_username\"|default = \"%s\"|g" %(cognito_emailID), "../terraform-unix-noinstances-jazz/variables.tf"])
+subprocess.call(['sed', '-i', "s|default = \"cognito_pool_password\"|default = \"%s\"|g" %(cognito_passwd), "../terraform-unix-noinstances-jazz/variables.tf"])
+
 os.chdir("../terraform-unix-noinstances-jazz")
 subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
 subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
