@@ -25,7 +25,7 @@ def passwd_generator():
     pwd.append(random.choice(string.ascii_lowercase))
     pwd.append(random.choice(string.ascii_uppercase))
     pwd.append(random.choice(string.digits))
-    pwd.append(random.choice(string.punctuation))
+    pwd.append("@")
     for x in range(6):
         pwd.append(random.choice(string.letters))
     random.shuffle(pwd)
