@@ -63,3 +63,7 @@ variable "modifyPropertyFile_cmd" {
   type = "string"
   default = "./scripts/modifyPropertyFile.sh"
 }
+variable "ses_cmd" {
+  type = "string"
+  default = "./scripts/ses.sh"
+}

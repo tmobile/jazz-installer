@@ -82,3 +82,5 @@ variable "cognito_pool_password" {
   default = "Welcome@2Jazz"
 }
 variable "github_branch" { type = "string" default = "development" }
+variable "aws_access_key" { type = "string" default = "aws_access_key" }
+variable "aws_secret_key" { type = "string" default = "aws_secret_key" }
