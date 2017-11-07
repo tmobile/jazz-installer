@@ -8,7 +8,7 @@ jenkinspropsfile=$5
 
 
 #Create the userpool
-aws cognito-idp create-user-pool --pool-name $POOL_NAME  --username-attributes email --schema '{"Name": "email", "AttributeDataType": "String", "Required": true}' > /tmp/$POOL_NAME-user-pool
+aws cognito-idp create-user-pool --pool-name $POOL_NAME  --username-attributes email --schema '{"Name": "email", "AttributeDataType": "String", "Required": true}' --user-pool-tags Application=$POOL_NAME --policies PasswordPolicy=\{MinimumLength=8,RequireUppercase=false,RequireLowercase=true,RequireNumbers=false,RequireSymbols=false\}> /tmp/$POOL_NAME-user-pool
 USER_POOL_ID=$(grep -E '"Id":' /tmp/$POOL_NAME-user-pool | awk -F'"' '{print $4}')
 echo "Created User Pool: " $USER_POOL_ID
 
@@ -22,6 +22,8 @@ aws cognito-idp add-custom-attributes --user-pool-id $USER_POOL_ID --custom-attr
 aws cognito-idp create-user-pool-client --user-pool-id $USER_POOL_ID --no-generate-secret --client-name $CLIENT_NAME > /tmp/$POOL_NAME-app-client
 CLIENT_ID=$(grep -E '"ClientId":' /tmp/$POOL_NAME-app-client | awk -F'"' '{print $4}')
 echo "Created App Client: " $CLIENT_ID
+
+
 
 #Create a domain for the userpool
 aws cognito-idp create-user-pool-domain --domain $POOL_NAME --user-pool-id $USER_POOL_ID
