@@ -30,6 +30,9 @@ end
 execute 'createJobExecUser' do
   command "sleep 30;echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['client']['jar']} -auth @#{node['authfile']} -s http://localhost:8080/ groovy ="
 end
+execute 'copyEncryptGroovyScript' do
+  command "cp /home/ec2-user/cookbooks/jenkins/files/default/encrypt.groovy /home/ec2-user/encrypt.groovy"
+end
 
 execute 'copyXmls' do
   command "tar -xvf /home/ec2-user/cookbooks/jenkins/files/default/xmls.tar"
@@ -127,6 +130,9 @@ execute 'configJenkinsLocConfigXml' do
   command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} "
 end
 
+execute 'configJenkinsEmailExtXml' do
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']}"
+end
 
 execute 'copyJenkinsPropertyfile' do
   command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
