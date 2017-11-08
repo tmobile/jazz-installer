@@ -13,9 +13,9 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
                 volume_size = 10
         }
 
-        tags { 
+        tags {
 			Domain = "${var.envPrefix}_elasticsearch_domain"
-			Application = "${var.tagsApplication}"
+			Application = "${var.envPrefix}"
 		}
 		  access_policies = <<POLICIES
 {
@@ -35,5 +35,5 @@ POLICIES
 		provisioner "local-exec" {
 		command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.region}"
 	  }
-  
+
 }
