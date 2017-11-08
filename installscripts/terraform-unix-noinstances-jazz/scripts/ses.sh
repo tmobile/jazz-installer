@@ -17,7 +17,7 @@ aws ses verify-email-identity --email-address $EMAIL_ADDRESS
 sed -i "s/default\['jenkins'\]\['SES-defaultSuffix'\].*.$/default['jenkins']['SES-defaultSuffix']='$EMAIL_ADDRESS'/g"  $JENKINSATTRIBSFILE
 
 #<smtpHost>email-smtp.us-east-1.amazonaws.com</smtpHost>
-SMTP_HOST = 'email-smtp.'$REGION'.amazonaws.com'
+SMTP_HOST='email-smtp.'$REGION'.amazonaws.com'
 sed -i "s/default\['jenkins'\]\['SES-smtpHost'\].*.$/default['jenkins']['SES-smtpHost']='$SMTP_HOST'/g"  $JENKINSATTRIBSFILE
 
 # <smtpAuthUsername>AKIAI4IYTDWX3W5QHHTA</smtpAuthUsername>
