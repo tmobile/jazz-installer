@@ -11,7 +11,7 @@ resource "aws_dynamodb_table" "dynamodb-table-dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -31,7 +31,7 @@ resource "aws_dynamodb_table" "dynamodb-table-stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -51,7 +51,7 @@ resource "aws_dynamodb_table" "dynamodb-table-prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -71,15 +71,15 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
   }
-  
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Dev"
-  }  
+  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
@@ -95,7 +95,7 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -118,7 +118,7 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -141,7 +141,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -165,7 +165,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -188,7 +188,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -211,7 +211,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -234,7 +234,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -257,7 +257,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -280,7 +280,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -303,7 +303,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -326,7 +326,7 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -349,7 +349,7 @@ resource "aws_dynamodb_table" "dynamodb-Events_Dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -369,7 +369,7 @@ resource "aws_dynamodb_table" "dynamodb-Events_Stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -389,7 +389,7 @@ resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
