@@ -11,9 +11,9 @@ resource "aws_s3_bucket" "cloudfrontlogs" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
-  
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.cloudfrontlogs.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -35,9 +35,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
-  
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -59,7 +59,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -82,7 +82,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -92,7 +92,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
   }
-  
+
 }
 
 resource "aws_api_gateway_rest_api" "jazz-dev" {
@@ -110,7 +110,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
     command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
 
   }
-  
+
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
@@ -127,7 +127,7 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
   website {
     index_document = "index.html"
@@ -146,7 +146,7 @@ EOF
 
   provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
-  }  
+  }
 
   provisioner "local-exec" {
     command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinspropsfile} "
@@ -300,7 +300,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
@@ -327,7 +327,7 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
@@ -351,7 +351,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.tagsApplication}"
+	Application = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {
