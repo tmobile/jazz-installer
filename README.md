@@ -29,7 +29,7 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/development/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1 && cd ./jazz-installer/installscripts/wizard && ./run.py 
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1 && cd ./jazz-installer/installscripts/wizard && ./run.py 
 
  ```
 
