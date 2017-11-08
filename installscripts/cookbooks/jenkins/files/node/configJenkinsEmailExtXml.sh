@@ -7,7 +7,7 @@ SMTP_AUTH_PASSWORD=$3
 SMTP_HOST=$4
 SMTP_USE_SSL=$5
 SMTP_PORT=$6
-JENKINS_URL=$7
+JENKINS_URL=http://$7:8080/
 
 
 #Jenkins ExtendedEmailPublisher XML
