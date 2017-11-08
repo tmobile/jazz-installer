@@ -12,11 +12,9 @@ aws cognito-idp create-user-pool --pool-name $POOL_NAME  --username-attributes e
 USER_POOL_ID=$(grep -E '"Id":' /tmp/$POOL_NAME-user-pool | awk -F'"' '{print $4}')
 echo "Created User Pool: " $USER_POOL_ID
 
-#Update the userpool with email verification information
-aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID  --auto-verified-attributes email --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' > /tmp/$POOL_NAME-user-pool
-
-#Update Userpool with password policies
-aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID --policies PasswordPolicy=\{MinimumLength=8,RequireUppercase=false,RequireLowercase=true,RequireNumbers=false,RequireSymbols=false\}
+#Update the userpool with password policy and email verification information
+aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID  --policies PasswordPolicy=\{MinimumLength=8,RequireUppercase=false,RequireLowercase=true,RequireNumbers=false,RequireSymbols=false\}
+ --auto-verified-attributes email --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' > /tmp/$POOL_NAME-user-pool
 
 #Update the custom attributes
 aws cognito-idp add-custom-attributes --user-pool-id $USER_POOL_ID --custom-attributes '{"Name": "reg-code", "AttributeDataType": "String", "StringAttributeConstraints":{"MinLength": "1"}}'
