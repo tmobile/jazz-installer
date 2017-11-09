@@ -46,6 +46,8 @@ def check_jenkins_user(url, username, passwd):
         os.remove('jenkins-cli.jar')
         return 1
     else:
+        os.remove('output')
+        os.remove('jenkins-cli.jar')
         return 0
 
 def check_bitbucket_user(url, username, passwd):
@@ -62,6 +64,7 @@ def check_bitbucket_user(url, username, passwd):
     else:
         cmd = [bitbucket, '--action', 'deleteproject', '--project', 'test000', '--server', url, '--user', username, '--password', passwd]
         subprocess.call(cmd, stdout=devnull, stderr=devnull)
+        os.remove("out_bitbucket")
         return 1
 
 
