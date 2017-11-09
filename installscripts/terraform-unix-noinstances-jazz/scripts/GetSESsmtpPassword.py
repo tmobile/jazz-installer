@@ -5,7 +5,7 @@ import hashlib
 import sys
 import os
 
-SMTP_FILE = 'smtppassword.txt'
+DEFAULT_RB_FILE = "../cookbooks/jenkins/attributes/default.rb"
 
 if(len(sys.argv) != 2):
     print ("Error - Please provide secret key")
@@ -15,11 +15,10 @@ secret = sys.argv[1] # # replace with the secret key to be hashed
 #get the aws Secret key 
 print "aws_secret:" + secret
 
-if os.path.isfile(SMTP_FILE):
-	os.remove(SMTP_FILE)
-	
 def get_ses_smtp_password(secret):
-	#Generate the SES SMTP password	
+	"""
+		Method will generate SES SMTP password	. 
+	"""
 	message = "SendRawEmail"
 	sig_bytes = bytearray(b'\x02')  # init with version
 
@@ -29,9 +28,22 @@ def get_ses_smtp_password(secret):
 	retstr = base64.b64encode(sig_bytes).decode('ascii')
 	return retstr
 
+def write_ses_smtp_password_to_defaultrb(ses_smtp_password):	
+	"""
+		Method will change the 'smtpAuthPasswordValue' in file default.db
+		present in the jenkins cookbook. 
+	"""
+	with open(DEFAULT_RB_FILE, 'r+') as fd:
+		line = fd.read()
+		
+		if line.find('smtpAuthPasswordValue') > 0:
+				line = line.replace('smtpAuthPasswordValue', ses_smtp_password)
+		fd.seek(0)
+		fd.write(line)
+	fd.close()
+
 ses_smtp_password = get_ses_smtp_password(secret)
 print "ses_smtp_password:" + ses_smtp_password
+write_ses_smtp_password_to_defaultrb(ses_smtp_password)
 
-f = open(SMTP_FILE, 'w')
-f.write(ses_smtp_password)  # python will convert \n to os.linesep
-f.close() 
+
