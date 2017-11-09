@@ -5,7 +5,8 @@ JENKINSATTRIBSFILE=$3
 AWS_ACCESS_KEY=$4
 AWS_SECRET_KEY=$5
 
-# Python Script to get the SMTP PASSWORD of the access key using the secret key
+# Python Script create SMTP AUTH PASSWORD of the access key using the secret key
+# the write to default.db in the cook book
 python scripts/GetSESsmtpPassword.py $AWS_SECRET_KEY
 
 # SES Validate and register email address
@@ -18,17 +19,5 @@ SMTP_HOST='email-smtp.'$REGION'.amazonaws.com'
 sed -i "s/default\['jenkins'\]\['SES-smtpHost'\].*.$/default['jenkins']['SES-smtpHost']='$SMTP_HOST'/g"  $JENKINSATTRIBSFILE
 
 sed -i "s/default\['jenkins'\]\['SES-smtpAuthUsername'\].*.$/default['jenkins']['SES-smtpAuthUsername']='$AWS_ACCESS_KEY'/g"  $JENKINSATTRIBSFILE
-
-SMTP_AUTH_PASSWORD=`cat smtppassword.txt`
-sed -i "s/default\['jenkins'\]\['SES-smtpAuthPassword'\].*.$/default['jenkins']['SES-smtpAuthPassword']='$SMTP_AUTH_PASSWORD'/g"  $JENKINSATTRIBSFILE
-
-
-
-
-
-
-
-
-
 
 
