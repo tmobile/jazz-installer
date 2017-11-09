@@ -12,7 +12,6 @@ JENKINS_URL=http://$7:8080/
 
 #Jenkins ExtendedEmailPublisher XML
 JENKINS_EMAIL_EXT_CONFIG_XML=/var/lib/jenkins/hudson.plugins.emailext.ExtendedEmailPublisher.xml
-JENKINS_PROPFILE=/home/ec2-user/cookbooks/jenkins/files/node/jenkins-conf.properties
 JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
 ENCRYPT_PASSWORD_SCRIPT=/home/ec2-user/encrypt.groovy
 
