@@ -109,6 +109,7 @@ sed -i "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"
 
 sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/jenkins/recipes/startjenkins.rb
 sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/jenkins/recipes/configureblankjenkins.rb
+sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/blankjenkins/recipes/configureblankjenkins.rb
 
 mv $logfile /home/ec2-user/jazz-installer/
 
