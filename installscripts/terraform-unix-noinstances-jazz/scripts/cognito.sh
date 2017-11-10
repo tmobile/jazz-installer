@@ -8,12 +8,12 @@ jenkinspropsfile=$5
 
 
 #Create the userpool
-aws cognito-idp create-user-pool --pool-name $POOL_NAME  --username-attributes email --schema '{"Name": "email", "AttributeDataType": "String", "Required": true}' --auto-verified-attributes email --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' > /tmp/$POOL_NAME-user-pool
+aws cognito-idp create-user-pool --pool-name $POOL_NAME  --username-attributes email --schema '{"Name": "email", "AttributeDataType": "String", "Required": true}' --auto-verified-attributes email  > /tmp/$POOL_NAME-user-pool
 USER_POOL_ID=$(grep -E '"Id":' /tmp/$POOL_NAME-user-pool | awk -F'"' '{print $4}')
 echo "Created User Pool: " $USER_POOL_ID
 
 #Update the userpool with password policy and email verification information
-aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID  --user-pool-tags Application=$POOL_NAME --policies PasswordPolicy=\{MinimumLength=8,RequireUppercase=false,RequireLowercase=true,RequireNumbers=false,RequireSymbols=false\} > /tmp/$POOL_NAME-user-pool
+aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID  --user-pool-tags Application=$POOL_NAME --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' --policies PasswordPolicy=\{MinimumLength=8,RequireUppercase=false,RequireLowercase=true,RequireNumbers=false,RequireSymbols=false\} > /tmp/$POOL_NAME-user-pool
 
 #Update the custom attributes
 aws cognito-idp add-custom-attributes --user-pool-id $USER_POOL_ID --custom-attributes '{"Name": "reg-code", "AttributeDataType": "String", "StringAttributeConstraints":{"MinLength": "1"}}'
