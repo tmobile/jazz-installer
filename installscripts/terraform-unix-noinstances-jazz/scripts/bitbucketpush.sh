@@ -1,9 +1,11 @@
 #!/bin/bash
 
 BITBUCKETELB=%1
+bitbucketuser=$2
+bitbucketpasswd=$3
 
 git config --global user.email "harin.jose@ust-global.com"
-git config --global user.name "jenkins1"
+git config --global user.name "$bitbucketuser"
 
 mkdir ./jazz-core-bitbucket
 cd ./jazz-core
@@ -15,13 +17,13 @@ for path in ./*; do
 
     echo $dirname
 
-    curl -X POST -k -v -u "jenkins1:jenkinsadmin" -H "Content-Type: application/json" "http://$1:7990/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$dirname\", \"scmId\": \"git\", \"forkable\": \"true\"}"
+    curl -X POST -k -v -u "$bitbucketuser:$bitbucketpasswd" -H "Content-Type: application/json" "http://$1:7990/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$dirname\", \"scmId\": \"git\", \"forkable\": \"true\"}"
 
     pwd
     cd ../jazz-core-bitbucket
     pwd
 
-    git clone http://jenkins1:jenkinsadmin@$1:7990/scm/SLF/$dirname.git
+    git clone http://$bitbucketuser:$bitbucketpasswd@$1:7990/scm/SLF/$dirname.git
 
     pwd
     cp -rf ../jazz-core/$dirname/* $dirname

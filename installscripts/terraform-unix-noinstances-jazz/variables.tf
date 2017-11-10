@@ -41,6 +41,9 @@ variable "jenkinsservermap" {
     jenkins_public_ip = "replace IP here"
     subnet = "subnet-c5caafee"
     security_group = "sg-9f725bee"
+    jenkinsuser = "replace"
+    jenkinspasswd = "replace"
+
 	jenkins_ssh_login = "ec2-user"
 	jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   }
@@ -51,6 +54,8 @@ variable "bitbucketservermap" {
   default = {
     bitbucket_elb = "jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com"
     bitbucket_public_ip = "replace IP here"
+    bitbucketuser = "replace"
+    bitbucketpasswd = "replace"
 	bitbucket_ssh_login = "ec2-user"
 	bitbucket_ssh_key = "../sshkeys/bitbucketkey.pem"
   }
