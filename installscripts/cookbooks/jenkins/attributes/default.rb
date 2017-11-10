@@ -22,6 +22,7 @@ default['jenkins']['scriptApprovalfiletarget']="#{node['jenkins']['home']}/scrip
 default['bitbucketelb']='jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com'
 default['jenkinselb']='jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com'
 default['region']='us-east-1'
+default['git_branch']='master'
 default['jenkins']['SES-defaultSuffix']='defaultSuffixValue'
 default['jenkins']['SES-smtpAuthUsername']='smtpAuthUsernameValue'
 default['jenkins']['SES-smtpAuthPassword']='smtpAuthPasswordValue'
