@@ -8,7 +8,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-crede
   <scope>GLOBAL</scope>
   <id>jenkins1cred</id>
   <description>user created on bitbucket</description>
-  <username>jenkins1</username>
-  <password>jenkinsadmin</password>
+  <username>bitbucketuser</username>
+  <password>bitbucketpasswd</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
 EOF
