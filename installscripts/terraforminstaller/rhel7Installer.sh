@@ -93,7 +93,7 @@ spin_wheel $! "Installing atlassian-cli"
 #--cloning from github
 
 sudo rm -rf jazz-installer
-git clone -b $jazz_branch https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git >>$logfile 2>&1 &
+git clone -b $jazz_branch https://github.com/tmobile/jazz-installer.git >>$logfile 2>&1 &
 
 spin_wheel $! "Downloading jazz Installer"
 
