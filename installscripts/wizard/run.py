@@ -114,6 +114,9 @@ cognito_passwd = passwd_generator()
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_username\"|default = \"%s\"|g" %(cognito_emailID), "../terraform-unix-noinstances-jazz/variables.tf"])
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_password\"|default = \"%s\"|g" %(cognito_passwd), "../terraform-unix-noinstances-jazz/variables.tf"])
 
+# Providing stack name to destroy script.
+subprocess.call(['sed', '-i', "s|stack_name=\"\"|stack_name\"%s\"|g" %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
+
 os.chdir("../terraform-unix-noinstances-jazz")
 subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
 subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
