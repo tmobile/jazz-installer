@@ -106,10 +106,7 @@ cd /home/ec2-user/jazz-installer/installscripts/wizard
 
 sed -i "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"$jazz_branch\" \}|g" ../terraform-unix-demo-jazz/variables.tf
 sed -i "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"$jazz_branch\" \}|g" ../terraform-unix-noinstances-jazz/variables.tf
-
-sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/jenkins/recipes/startjenkins.rb
-sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/jenkins/recipes/configureblankjenkins.rb
-sed -i "s/\JAZZBRANCH\b/$jazz_branch/g" ../cookbooks/blankJenkins/recipes/configureblankjenkins.rb
+sed -i "s/default\['git_branch'\].*.$/default['git_branch']='$jazz_branch'/g" ../cookbooks/jenkins/attributes/default.rb
 
 mv $logfile /home/ec2-user/jazz-installer/
 
