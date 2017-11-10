@@ -32,7 +32,7 @@ execute 'configurenode' do
 end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b Alpha-R1 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b Alpha-R1 https://github.com/tmobile/jazz.git jazz-core"
   cwd '/home/ec2-user'
 end
 execute 'runAwsgatewayImporter' do
