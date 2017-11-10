@@ -2,8 +2,8 @@ default['jenkins']['home'] = '/var/lib/jenkins'
 default['jenkinsadmin']['file'] = "#{node['jenkins']['home']}/users/jenkinsadmin/config.xml"
 default['jenkinsadmin']['fullName'] = 'Jenkins Admin'
 default['jenkinsadmin']['email'] = 'harin.jose@ust-global.com'
-default['jenkins']['user']['jenkinsadmin']['pass'] = 'Jazzadmin01'
 default['jenkins']['user'] = 'jenkinsadmin'
+default['jenkins']['user']['pass'] = 'Jazzadmin01'
 default['server']['privateip']='10.0.0.59'
 default['slave']['publicip']='10.0.0.33'
 default['client']['url'] = "http://#{node['server']['privateip']}:8080/jnlpJars/jenkins-cli.jar"
@@ -28,5 +28,3 @@ default['jenkins']['SES-smtpAuthPassword']='smtpAuthPasswordValue'
 default['jenkins']['SES-smtpHost']='email-smtp.us-east-1.amazonaws.com'
 default['jenkins']['SES-useSsl']='true'
 default['jenkins']['SES-smtpPort']='25'
-
-

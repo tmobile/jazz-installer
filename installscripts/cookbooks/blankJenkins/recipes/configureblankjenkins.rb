@@ -21,7 +21,7 @@ directory '/var/lib/jenkins/workspace' do
   recursive true
   action :create
 end
-execute 'startjenkins' do 
+execute 'startjenkins' do
   command "sudo service jenkins start"
 end
 execute 'copyJenkinsClientJar' do
@@ -74,7 +74,7 @@ end
 
 
 execute 'createcredentials-jenkins1' do
-  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/jenkins1.sh localhost "
+  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/jenkins1.sh localhost"
 end
 execute 'createcredentials-jobexecutor' do
   command "/home/ec2-user/cookbooks/jenkins/files/credentials/jobexec.sh localhost "
@@ -132,7 +132,7 @@ end
 
 
 execute 'configJenkinsEmailExtXml' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']}"
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['user']['pass']}"
 end
 
 execute 'configJenkinsTaskMailerXml' do

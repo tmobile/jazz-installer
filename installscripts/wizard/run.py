@@ -104,7 +104,7 @@ subprocess.call('cp -f ../../../bitbucketkey.pem ../sshkeys/ && sudo chmod 400 .
 
 
 os.chdir("../terraform-unix-networkstack")
-cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf",jenkinsServerSSHLogin,bitBucketServerSSHLogin]
+cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf",jenkinsServerSSHLogin,bitBucketServerSSHLogin,jenkinsuser, jenkinspasswd, bitbucketuser, bitbucketpasswd]
 subprocess.call(cmd)
 cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 subprocess.call(cmd)
@@ -116,6 +116,9 @@ subprocess.call(['sed', '-i', "s|default = \"cognito_pool_password\"|default = \
 
 # Providing stack name to destroy script.
 subprocess.call(['sed', '-i', "s|stack_name=\"\"|stack_name\"%s\"|g" %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
+subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(bitbucketuser), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
+subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(bitbucketpasswd), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
+subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(jenkinsuser, jenkinspasswd), "../cookbooks/jenkins/default/authfile"])
 
 os.chdir("../terraform-unix-noinstances-jazz")
 subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)

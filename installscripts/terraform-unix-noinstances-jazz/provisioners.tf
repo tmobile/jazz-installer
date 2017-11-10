@@ -9,7 +9,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
   provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd}"
+    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
     command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${var.chefconfigDir}/bitbucketelbconfig.json ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix}"
@@ -109,7 +109,7 @@ resource "null_resource" "configureExistingBitbucketServer" {
     ]
   }
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region}"
+    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
 
 }
