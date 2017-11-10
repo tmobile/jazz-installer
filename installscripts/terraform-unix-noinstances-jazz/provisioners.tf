@@ -1,6 +1,6 @@
 resource "null_resource" "configureExistingJenkinsServer" {
 
-  depends_on = ["aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role","aws_elasticsearch_domain.elasticsearch_domain","ses_setup" ]
+  depends_on = ["aws_api_gateway_rest_api.jazz-dev","aws_s3_bucket.jazz-web","aws_iam_role.lambda_role","aws_elasticsearch_domain.elasticsearch_domain","null_resource.ses_setup" ]
 
   connection {
     host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
