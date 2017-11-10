@@ -60,7 +60,7 @@ if (File.exist?("/home/ec2-user/jazz-core"))
 	end
 end
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b master https://ustharin:Tmobiledemo1@github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b master https://github.com/tmobile/jazz.git jazz-core"
 
   cwd '/home/ec2-user'
 end

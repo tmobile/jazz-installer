@@ -60,7 +60,7 @@ end
 #end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b JAZZBRANCH https://ustharin:Tmobiledemo1@github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b JAZZBRANCH https://github.com/tmobile/jazz.git jazz-core"
 
   cwd '/home/ec2-user'
 end
