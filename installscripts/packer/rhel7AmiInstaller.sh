@@ -17,6 +17,6 @@ sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 
 cd /usr/bin; sudo unzip /tmp/terraform.zip; sudo unzip /tmp/packer.zip
 cd /home/ec2-user; sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o /tmp/atlassian-cli-6.7.1-distribution.zip; sudo unzip /tmp/atlassian-cli-6.7.1-distribution.zip
 
-git clone -b patch-6 https://ustharin:Tmobiledemo1@github.com/tmobile/jazz-installer.git
+git clone -b patch-6 https://github.com/tmobile/jazz-installer.git
 chmod -R +x ./jazz-installer/installscripts/*
 chmod 400 ./jazz-installer/installscripts/sshkeys/*
