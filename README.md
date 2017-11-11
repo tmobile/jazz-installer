@@ -17,7 +17,7 @@
   * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
   * Bitbucket Web Post Hooks Plugin
 * Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
-* Please make sure that provided jenkins & bitbucket user have admin rights.
+* Please make sure that provided jenkins usern has 'admin' and the bitbucket user has 'create project' permisions.
 * Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
   * Note: Please note that some of the AWS resources are accessed through Jenkins during some of the internal orchestration activities.
@@ -28,7 +28,7 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/jenkins-changes/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh jenkins-changes && cd ./jazz-installer/installscripts/wizard && ./run.py 
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1 && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
 
 3) Follow the installer wizard. It prompts for few AWS configurations which needs to be filled in.
