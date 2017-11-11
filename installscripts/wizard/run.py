@@ -119,7 +119,7 @@ subprocess.call(['sed', '-i', "s|stack_name=\"\"|stack_name\"%s\"|g" %(tagEnvPre
 subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(bitbucketuser), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
 subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(bitbucketpasswd), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
 subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(jenkinsuser, jenkinspasswd), "../cookbooks/jenkins/files/default/authfile"])
-subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(tagEnvPrefix), "destroy.sh"])
+subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
 
 os.chdir("../terraform-unix-noinstances-jazz")
 subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
