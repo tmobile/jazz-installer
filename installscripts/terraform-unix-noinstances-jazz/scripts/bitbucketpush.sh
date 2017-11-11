@@ -23,7 +23,9 @@ for path in ./*; do
     cd ../jazz-core-bitbucket
     pwd
 
-    git clone http://$bitbucketuser:$bitbucketpasswd@$1:7990/scm/SLF/$dirname.git
+    bitbucketuser_encoded=`python -c "import urllib; print(urllib.quote_plus('$bitbucketuser'))"`
+    bitbucketpasswd_encoded=`python -c "import urllib; print(urllib.quote_plus('$bitbucketpasswd'))"`
+    git clone http://$bitbucketuser_encoded:$bitbucketpasswd_encoded@$1:7990/scm/SLF/$dirname.git
 
     pwd
     cp -rf ../jazz-core/$dirname/* $dirname
