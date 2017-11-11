@@ -8,8 +8,8 @@ jenkinsServerSSHLogin=$6
 bitBucketServerSSHLogin=$7
 jenkinsuser=$8
 jenkinspasswd=$9
-bitbucketuser=$10
-bitbucketpasswd=$11
+bitbucketuser=${10}
+bitbucketpasswd=${11}
 
 sed -i "s|jenkins_public_ip.*.$|jenkins_public_ip=\"$jenkinsServerPublicIp\"|g" $NETVARSFILE
 sed -i "s|bitbucket_public_ip.*.$|bitbucket_public_ip=\"$bitBucketServerPublicIp\"|g" $NETVARSFILE
