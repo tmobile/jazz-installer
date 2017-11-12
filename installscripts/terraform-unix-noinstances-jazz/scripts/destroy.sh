@@ -21,8 +21,10 @@ echo " ======================================================="
 nohup terraform destroy --force >>../../stack_deletion.out &&
 cd $currentDir
 shopt -s extglob
+
 # Calling the Delete platform services py script
-/usr/bin/python installscripts/terraform-unix-noinstances-jazz/scripts/DeleteStackPlatformServices.py $stack_name
+/usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name
+
 sudo rm -rf !(*.out)
 sudo rm -rf ../rhel7Installer.sh ../atlassian-cli*
 date
