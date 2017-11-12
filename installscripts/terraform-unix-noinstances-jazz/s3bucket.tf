@@ -506,8 +506,8 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
                         "s3:GetObject"
         ]
         principals  {
-                        type="*",
-                        identifiers = ["*"]
+                        type="AWS",
+                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
                         }
         resources = [
                 "${aws_s3_bucket.jazz-web.arn}/*"
