@@ -8,7 +8,7 @@ jenkinspasswd=$5
 
 sed -i "s/default\['jenkinselb'\].*.$/default['jenkinselb']='$JENKINSELB'/g"  $jenkinsattribsfile
 sed -i "s/default\['jenkins'\]\['user'\].*.$/default['jenkins']['user']='$jenkinsuser'/g"  $jenkinsattribsfile
-sed -i "s/default\['jenkins'\]\['user'\]\['$jenkinsuser'\].*.$/default['jenkins']['user']['pass']='$jenkinspasswd'/g"  $jenkinsattribsfile
+sed -i "s/default\['jenkins'\]\['password'\].*.$/default['jenkins']['password']='$jenkinspasswd'/g"  $jenkinsattribsfile
 
 sed -i "s/JENKINSELB=.*.$/JENKINSELB=$JENKINSELB/g" $bitbucketclient
 
