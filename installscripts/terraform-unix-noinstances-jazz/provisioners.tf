@@ -35,7 +35,21 @@ resource "null_resource" "configureExistingJenkinsServer" {
                   "sudo chef-client --local-mode -c ~/chefconfig/client.rb -j ~/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
-     provisioner "file" {
+  
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} BITBUCKET_PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinspropsfile}"
+  }
+
+  provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
   }
