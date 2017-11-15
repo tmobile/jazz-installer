@@ -1,14 +1,3 @@
-#
-# Cookbook Name:: git
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
-#yum_package 'git' do
-#  action :install
-#end
 execute 'gitprereq' do
   command 'yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel'
   #cwd '~/'

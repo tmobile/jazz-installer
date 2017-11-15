@@ -1,12 +1,3 @@
-#
-# Cookbook Name:: maven
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
-
 remote_file '/tmp/apache-maven-3.5.2-bin.tar.gz' do
   source 'http://mirror.olnevhost.net/pub/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz'
   mode '0755'

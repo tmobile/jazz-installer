@@ -1,11 +1,3 @@
-#
-# Cookbook Name:: hadoop
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
 yum_package 'openssh-server'
 yum_package 'openssh-clients'
 

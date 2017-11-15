@@ -1,11 +1,3 @@
-#
-# Cookbook Name:: jenkins
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
 execute 'chmodservices' do
   command "chmod -R 755 /home/ec2-user/cookbooks/jenkins/files"
   cwd '/home/ec2-user'  
