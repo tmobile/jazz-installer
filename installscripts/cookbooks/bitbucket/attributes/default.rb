@@ -1,5 +1,5 @@
 default['bitbucket']['responsefile']    = '/home/ec2-user/cookbooks/bitbucket/files/default/responsefile'
-default['bitbucket']['installer']    = '/tmp/atlassian-bitbucket-5.0.2-x64.bin'
+default['bitbucket']['installer']    = '/jazz_tmp/atlassian-bitbucket-5.0.2-x64.bin'
 default['bitbucket']['installerUrl']    = 'https://www.atlassian.com/software/stash/downloads/binary/atlassian-bitbucket-5.0.2-x64.bin'
 default['bitbucket']['bitbucketHome']    = '/home/ec2-user/atlassian/application-data/bitbucket'
 default['bitbucket']['defaultInstallDir']    = '/home/ec2-user/atlassian/bitbucket/5.2'

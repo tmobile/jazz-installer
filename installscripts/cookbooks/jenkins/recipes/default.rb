@@ -1,11 +1,3 @@
-#
-# Cookbook Name:: jenkins
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
 yum_repository 'jenkins' do
   description 'jenkins'
   baseurl 'http://pkg.jenkins.io/redhat'
