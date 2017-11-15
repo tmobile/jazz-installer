@@ -68,7 +68,7 @@ def check_bitbucket_user(url, username, passwd):
 
 #Get the Tag Name from the user - Should not exceed 13 character. It may break the S3 bucket creation
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
-while(len(tagEnvPrefix) > 13):
+while(len(tagEnvPrefix) > 13 or len(tagEnvPrefix) == 0):
         tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
 tagEnvPrefix = tagEnvPrefix.lower()
 
