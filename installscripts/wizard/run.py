@@ -52,7 +52,6 @@ def check_jenkins_user(url, username, passwd):
 
 def check_bitbucket_user(url, username, passwd):
     url = 'http://' + bitbucketServerELB + ':7990'
-
     bitbucket = os.path.realpath("/home/ec2-user/atlassian-cli-6.7.1/bitbucket.sh")
     subprocess.call(['sudo', 'chmod', '+x', bitbucket])
     cmd = [ bitbucket , '--action', 'createproject', '--project', 'test000', '--name', 'test000', '--server', url, '--user', username, '--password', passwd]
@@ -67,13 +66,18 @@ def check_bitbucket_user(url, username, passwd):
         os.remove("out_bitbucket")
         return 1
 
+#Get the Tag Name from the user - Should not exceed 13 character. It may break the S3 bucket creation
+tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
+while(len(tagEnvPrefix) > 13):
+        tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
+tagEnvPrefix = tagEnvPrefix.lower()
 
-tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): ")
 tagApplication="JAZZ"
 tagEnvironment="Development"
 tagExempt=(datetime.datetime.today()+datetime.timedelta(days=1)).strftime("%m/%d/%Y")
 tagOwner=tagEnvPrefix+"-Admin"
 
+#Get Jenkins Details
 jenkinsServerELB = raw_input("Please provide Jenkins URL (Please ignore http and port number from URL): ")
 jenkinsuser = raw_input("Please provide username for Jenkins:")
 jenkinspasswd = raw_input("Please provide password for Jenkins:")
@@ -84,6 +88,7 @@ else:
 jenkinsServerPublicIp = raw_input("Please provide Jenkins Server PublicIp: ")
 jenkinsServerSSHLogin = raw_input("Please provide Jenkins Server SSH login name: ")
 
+#Get Bitbucket Details
 bitbucketServerELB = raw_input("Please provide Bitbucket URL (Please ignore http and port number from URL): ")
 bitbucketuser = raw_input("Please provide username for Bitbucket:")
 bitbucketpasswd = raw_input("Please provide password for Bitbucket:")
@@ -94,7 +99,6 @@ else:
 bitBucketServerPublicIp = raw_input("Please provide bitbucket Server PublicIp: ")
 bitBucketServerSSHLogin = raw_input("Please provide bitbucket SSH login name: ")
 
-
 print(" Please make sure that you have the ssh login user names of jenkins and bitbucket servers.")
 print(" Please create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user")
 pause()
@@ -102,13 +106,13 @@ pause()
 subprocess.call('cp -f ../../../jenkinskey.pem ../sshkeys && sudo chmod 400 ../sshkeys/jenkinskey.pem', shell=True)
 subprocess.call('cp -f ../../../bitbucketkey.pem ../sshkeys/ && sudo chmod 400 ../sshkeys/bitbucketkey.pem', shell=True)
 
-
 os.chdir("../terraform-unix-networkstack")
 cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf",jenkinsServerSSHLogin,bitBucketServerSSHLogin,jenkinsuser, jenkinspasswd, bitbucketuser, bitbucketpasswd]
 subprocess.call(cmd)
 cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 subprocess.call(cmd)
 
+#Get Cognito details
 cognito_emailID = raw_input("Please provide valid email ID to login to Jazz Application: ")
 cognito_passwd = passwd_generator()
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_username\"|default = \"%s\"|g" %(cognito_emailID), "../terraform-unix-noinstances-jazz/variables.tf"])
