@@ -12,7 +12,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${var.chefconfigDir}/bitbucketelbconfig.json ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix}"
+    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${var.chefconfigDir}/bitbucketelbconfig.json ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
    provisioner "file" {
           source      = "${var.cookbooksDir}"
@@ -35,7 +35,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
                   "sudo chef-client --local-mode -c ~/chefconfig/client.rb -j ~/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
-  
+
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinspropsfile}"
   }
@@ -48,7 +48,12 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} BITBUCKET_PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinspropsfile}"
   }
-
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN_PASSWD ${var.cognito_pool_password} ${var.jenkinspropsfile}"
+  }
   provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
