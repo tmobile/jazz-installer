@@ -119,7 +119,6 @@ subprocess.call(['sed', '-i', "s|default = \"cognito_pool_username\"|default = \
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_password\"|default = \"%s\"|g" %(cognito_passwd), "../terraform-unix-noinstances-jazz/variables.tf"])
 
 # Providing stack name to destroy script.
-subprocess.call(['sed', '-i', "s|stack_name=\"\"|stack_name\"%s\"|g" %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
 subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(bitbucketuser), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
 subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(bitbucketpasswd), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
 subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(jenkinsuser, jenkinspasswd), "../cookbooks/jenkins/files/default/authfile"])
