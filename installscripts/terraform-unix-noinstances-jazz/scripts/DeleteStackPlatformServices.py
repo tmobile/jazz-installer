@@ -1,26 +1,20 @@
+import json
 import sys
 import subprocess
-
-#return_code = subprocess.call("aws cloudformation list-stack-resources --stack-name test2-stack", shell=True)
-#/print (return_code)
+import os
+import os.path
 
 def checkCFServiceAvailable(servicename):
     return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 def deleteCFService(servicename):
-    return subprocess.call("aws cloudformation delete-stack --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #return subprocess.call("aws cloudformation delete-stack --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-if(len(sys.argv) != 2):
-    print ("Error - Please provide stack name")
-    exit(1)
+def getServicesList():
+    return subprocess.call('aws cloudformation list-stacks --stack-status-filter "CREATE_IN_PROGRESS" "CREATE_FAILED" "CREATE_COMPLETE" "UPDATE_IN_PROGRESS" "UPDATE_COMPLETE" >> listservice.json', shell=True)
 
-print (str(sys.argv))
-
-stackName = sys.argv[1] + "-"
-
-platformServices = ['hndlr-dev', 'events-dev', 'services-dev', 'logout-dev', 'login-dev', 'cloud-logs-streamer-dev', 'is-service-available-dev', 'delete-serverless-service-dev', 'create-serverless-service-dev', 'cognito-authorizer-dev']
-for pservice in platformServices:
-    service_name = stackName + pservice
+def deleteCloudFormationService(service_name):
     return_code = checkCFServiceAvailable(service_name)
     if return_code == 0 :
         print ("Service::" + service_name + ": exists. Service deletion started.........")
@@ -31,3 +25,49 @@ for pservice in platformServices:
             print ("\tError while Deleting service " + service_name + " errorcode=" + delete_return_code)
     else:
         print ('Error Service not found::' + service_name)
+
+
+if(len(sys.argv) != 3):
+    print ("Error - Please provide Argument1='stack name' and Argument1='Delete Client servies option true or false' ")
+    print ("Argument1=<StackName> Argument2=<true/false>")
+    exit(1)
+
+print (str(sys.argv))
+
+stackName = sys.argv[1].lower() + "-"
+deleteClientServices = sys.argv[2]
+
+platformServices = ['hndlr-dev', 'events-dev', 'services-dev', 'logout-dev', 'login-dev', 'cloud-logs-streamer-dev', 'is-service-available-dev', 'delete-serverless-service-dev', 'create-serverless-service-dev', 'cognito-authorizer-dev']
+for pservice in platformServices:
+    deleteCloudFormationService(stackName + pservice)
+
+print ("\r\n\r\nCompleted Deletion Platform services.")
+
+if (deleteClientServices.lower() != 'true'):
+    exit(0)
+
+print ("\r\nStarting deletions of Client Services\r\n\r\n")
+
+## Delete user services Cloud formations 
+fname = 'listservice.json'
+if os.path.isfile(fname):
+    os.remove(fname)
+valresp = getServicesList()
+if (valresp != 0):
+    exit(1)
+
+jsonFile = open(fname, 'r')
+values = json.load(jsonFile)
+jsonFile.close()
+
+ss = values['StackSummaries']
+
+
+spLen = len(stackName)
+
+inval = 0;
+for item in ss:
+    if (item['StackName'].startswith(stackName)):
+        #print(item['StackName'][spLen:len(item['StackName'])])
+        if item['StackName'][spLen:len(item['StackName'])] not in platformServices:
+            deleteCloudFormationService(item['StackName'])
