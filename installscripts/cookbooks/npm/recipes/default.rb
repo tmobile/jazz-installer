@@ -1,11 +1,3 @@
-#
-# Cookbook Name:: npm
-# Recipe:: default
-#
-# Copyright 2017, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
-#
 execute 'getnode' do
    command 'curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -'
    #cwd "/usr/local"
