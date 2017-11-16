@@ -113,7 +113,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "security_group")} ${lookup(var.jenkinsservermap, "subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
+    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
   }
 
 }
