@@ -82,6 +82,9 @@ end
 execute 'createcredentials-aws' do
   command "/home/ec2-user/cookbooks/jenkins/files/credentials/aws.sh localhost "
 end
+execute 'createcredentials-jenkins1' do
+  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/cognitouser.sh localhost"
+end
 
 
 
