@@ -54,6 +54,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinspropsfile}"
   }
+
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinspropsfile}"
+  }
+
   provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
