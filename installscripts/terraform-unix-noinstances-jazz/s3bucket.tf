@@ -188,10 +188,6 @@ EOF
   }
 }
 
-
-
-
-
 resource "aws_iam_policy" "basic_execution_policy" {
   name        = "${var.envPrefix}_execution_aws_logs"
   path        = "/"
@@ -237,6 +233,10 @@ resource "aws_iam_role" "lambda_role" {
    ]
 }
 EOF
+
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_roleId ${aws_iam_role.lambda_role.arn} ${var.jenkinspropsfile}"
+  }
   provisioner "local-exec" {
         when = "destroy"
 	on_failure = "continue"
