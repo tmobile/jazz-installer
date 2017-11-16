@@ -40,7 +40,7 @@ variable "jenkinsservermap" {
     jenkins_elb = "jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com"
     jenkins_public_ip = "replace IP here"
     subnet = "subnet-c5caafee"
-    security_group = "sg-9f725bee"
+    security_group = "replace"
     jenkinsuser = "replace"
     jenkinspasswd = "replace"
 
