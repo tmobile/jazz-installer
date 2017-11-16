@@ -130,7 +130,7 @@ sed -i "s|variable \"aws_access_key\".*.$|variable \"aws_access_key\" \{ type = 
 sed -i "s|variable \"aws_secret_key\".*.$|variable \"aws_secret_key\" \{ type = \"string\" default = \"$secret_key\" \}|g" ../terraform-unix-demo-jazz/variables.tf
 sed -i "s|variable \"aws_secret_key\".*.$|variable \"aws_secret_key\" \{ type = \"string\" default = \"$secret_key\" \}|g" ../terraform-unix-noinstances-jazz/variables.tf
 
-var_jazz_accountid=`aws sts get-caller-identity --output text --query 'Account'`
+var_jazz_accountid=`/usr/local/bin/aws sts get-caller-identity --output text --query 'Account'`
 sed -i "s|variable \"jazz_accountid\".*.$|variable \"jazz_accountid\" \{ type = \"string\" default = \"$var_jazz_accountid\" \}|g" ../terraform-unix-noinstances-jazz/variables.tf
 
 setterm -term linux -fore green
