@@ -117,6 +117,9 @@ cognito_emailID = raw_input("Please provide valid email ID to login to Jazz Appl
 cognito_passwd = passwd_generator()
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_username\"|default = \"%s\"|g" %(cognito_emailID), "../terraform-unix-noinstances-jazz/variables.tf"])
 subprocess.call(['sed', '-i', "s|default = \"cognito_pool_password\"|default = \"%s\"|g" %(cognito_passwd), "../terraform-unix-noinstances-jazz/variables.tf"])
+subprocess.call(['sed', '-i', "s|<username>cognitouser</username>|<username>%s</username>|g" %(cognito_emailID), "../cookbooks/jenkins/files/credentials/cognitouser.sh"])
+subprocess.call(['sed', '-i', "s|<password>cognitopasswd</password>|<password>%s</password>|g" %(cognito_passwd), "../cookbooks/jenkins/files/credentials/cognitouser.sh"])
+
 
 # Providing stack name to destroy script.
 subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(bitbucketuser), "../cookbooks/jenkins/files/credentials/jenkins1.sh"])
