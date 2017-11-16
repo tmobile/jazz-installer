@@ -88,6 +88,10 @@ else:
 jenkinsServerPublicIp = raw_input("Please provide Jenkins Server PublicIp: ")
 jenkinsServerSSHLogin = raw_input("Please provide Jenkins Server SSH login name: ")
 
+#TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
+jenkinsServerSecurityGroup = raw_input("Please provide Jenkins Server Security Group Name: ")
+
+
 #Get Bitbucket Details
 bitbucketServerELB = raw_input("Please provide Bitbucket URL (Please ignore http and port number from URL): ")
 bitbucketuser = raw_input("Please provide username for Bitbucket:")
@@ -107,7 +111,8 @@ subprocess.call('cp -f ../../../jenkinskey.pem ../sshkeys && sudo chmod 400 ../s
 subprocess.call('cp -f ../../../bitbucketkey.pem ../sshkeys/ && sudo chmod 400 ../sshkeys/bitbucketkey.pem', shell=True)
 
 os.chdir("../terraform-unix-networkstack")
-cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitBucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf",jenkinsServerSSHLogin,bitBucketServerSSHLogin,jenkinsuser, jenkinspasswd, bitbucketuser, bitbucketpasswd]
+cmd = ["./scripts/createServerVars.sh", jenkinsServerELB, jenkinsServerPublicIp, bitbucketServerELB, bitBucketServerPublicIp, "../terraform-unix-noinstances-jazz/variables.tf",jenkinsServerSSHLogin,bitBucketServerSSHLogin,jenkinsuser, jenkinspasswd, bitbucketuser, bitbucketpasswd,jenkinsServerSecurityGroup]
+
 subprocess.call(cmd)
 cmd = ["./scripts/createTags.sh", tagEnvPrefix, tagApplication, tagEnvironment, tagExempt, tagOwner, "../terraform-unix-noinstances-jazz/envprefix.tf"]
 subprocess.call(cmd)
