@@ -10,7 +10,7 @@ jenkinsuser=$8
 jenkinspasswd=$9
 bitbucketuser=${10}
 bitbucketpasswd=${11}
-jenkinsServerSecurityGroup=${12]
+jenkinsServerSecurityGroup=${12}
 jenkinsServerSubnet=${13}
 
 #Add Jenkins details
