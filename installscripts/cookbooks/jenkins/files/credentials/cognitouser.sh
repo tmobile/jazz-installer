@@ -7,7 +7,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-crede
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
   <scope>GLOBAL</scope>
   <id>SVC_ADMIN</id>
-  <description>user created on bitbucket</description>
+  <description>Jazz Admin User</description>
   <username>cognitouser</username>
   <password>cognitopasswd</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
