@@ -13,7 +13,7 @@ resource "null_resource" "outputVariables" {
     command = "echo jenkins-publicip = ${lookup(var.jenkinsservermap, "jenkins_public_ip")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo jenkins-subnet = ${lookup(var.jenkinsservermap, "subnet")} >> settings.txt"
+    command = "echo jenkins-subnet = ${lookup(var.jenkinsservermap, "jenkins_subnet")} >> settings.txt"
   }
   provisioner "local-exec" {
     command = "echo cloudfront url = http://${aws_cloudfront_distribution.jazz.domain_name}/index.html >> settings.txt"
