@@ -39,8 +39,8 @@ variable "jenkinsservermap" {
   default = {
     jenkins_elb = "jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com"
     jenkins_public_ip = "replace IP here"
-    subnet = "subnet-c5caafee"
-    security_group = "replace"
+    jenkins_subnet = "replace"
+    jenkins_security_group = "replace"
     jenkinsuser = "replace"
     jenkinspasswd = "replace"
 

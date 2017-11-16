@@ -10,7 +10,8 @@ jenkinsuser=$8
 jenkinspasswd=$9
 bitbucketuser=${10}
 bitbucketpasswd=${11}
-jenkinsServerSecurityGroup=$12
+jenkinsServerSecurityGroup=${12]
+jenkinsServerSubnet=${13}
 
 #Add Jenkins details
 sed -i "s|jenkins_public_ip.*.$|jenkins_public_ip=\"$jenkinsServerPublicIp\"|g" $NETVARSFILE
@@ -18,7 +19,9 @@ sed -i "s|jenkins_elb.*.$|jenkins_elb=\"$jenkinsServerELB\"|g" $NETVARSFILE
 sed -i "s|jenkins_ssh_login.*.$|jenkins_ssh_login=\"$jenkinsServerSSHLogin\"|g" $NETVARSFILE
 sed -i "s|jenkinsuser.*.$|jenkinsuser=\"$jenkinsuser\"|g" $NETVARSFILE
 sed -i "s|jenkinspasswd.*.$|jenkinspasswd=\"$jenkinspasswd\"|g" $NETVARSFILE
-sed -i "s|security_group.*.$|security_group=\"$jenkinsServerSecurityGroup\"|g" $NETVARSFILE
+sed -i "s|jenkins_security_group.*.$|jenkins_security_group=\"$jenkinsServerSecurityGroup\"|g" $NETVARSFILE
+sed -i "s|jenkins_subnet.*.$|jenkins_subnet=\"$jenkinsServerSubnet\"|g" $NETVARSFILE
+
 
 #Add Bitbucket details 
 sed -i "s|bitbucket_ssh_login.*.$|bitbucket_ssh_login=\"$bitBucketServerSSHLogin\"|g" $NETVARSFILE
