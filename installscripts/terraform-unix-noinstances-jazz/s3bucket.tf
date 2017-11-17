@@ -115,6 +115,9 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} jazz_s3_api_doc ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+    command = "${var.configureapidoc_cmd} "
+  }
 
   provisioner "local-exec" {
 	when = "destroy"
@@ -141,7 +144,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
 
   provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix} ${aws_s3_bucket.jazz_s3_api_doc.id}"
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
 }
 resource "aws_s3_bucket" "jazz-web" {
