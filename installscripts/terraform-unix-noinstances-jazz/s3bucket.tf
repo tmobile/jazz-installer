@@ -109,7 +109,9 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   tags {
 	Application = "${var.envPrefix}"
   }
-
+  website {
+  index_document = "index.html"
+  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} jazz_s3_api_doc ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinspropsfile}"
   }
@@ -139,7 +141,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
 
   provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix} ${aws_s3_bucket.jazz_s3_api_doc.id}"
   }
 }
 resource "aws_s3_bucket" "jazz-web" {
@@ -543,7 +545,30 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
   }
 
 }
+
+data "aws_iam_policy_document" "jazz-s3-api-doc-bucket-contents" {
+  policy_id = "jazz-s3-api-doc-bucket-contents"
+  statement {
+        sid = "jazz-s3-api-doc"
+        actions = [
+                        "s3:GetObject"
+        ]
+        principals  {
+                        type="*",
+                        identifiers = ["*"]
+                        }
+        resources = [
+                "${aws_s3_bucket.jazz-s3-api-doc.arn}/*"
+        ]
+
+  }
+
+}
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
         bucket = "${aws_s3_bucket.jazz-web.id}"
         policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
+}
+resource "aws_s3_bucket_policy" "jazz-s3-api-doc-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.jazz_s3_api_doc.id}"
+        policy = "${data.aws_iam_policy_document.jazz-s3-api-doc-bucket-contents.json}"
 }
