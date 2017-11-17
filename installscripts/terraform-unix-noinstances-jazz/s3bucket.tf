@@ -284,8 +284,6 @@ EOF
 }
 
 
-
-
 resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
@@ -545,8 +543,12 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
   }
 
 }
+resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.jazz-web.id}"
+        policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
+}
 
-data "aws_iam_policy_document" "jazz-s3-api-doc-bucket-contents" {
+data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
   policy_id = "jazz-s3-api-doc-bucket-contents"
   statement {
         sid = "jazz-s3-api-doc"
@@ -558,17 +560,11 @@ data "aws_iam_policy_document" "jazz-s3-api-doc-bucket-contents" {
                         identifiers = ["*"]
                         }
         resources = [
-                "${aws_s3_bucket.jazz-s3-api-doc.arn}/*"
+                "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
         ]
-
   }
-
-}
-resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
-        bucket = "${aws_s3_bucket.jazz-web.id}"
-        policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
 }
 resource "aws_s3_bucket_policy" "jazz-s3-api-doc-bucket-contents-policy" {
         bucket = "${aws_s3_bucket.jazz_s3_api_doc.id}"
-        policy = "${data.aws_iam_policy_document.jazz-s3-api-doc-bucket-contents.json}"
+        policy = "${data.aws_iam_policy_document.jazz_s3_api_doc_bucket_contents.json}"
 }
