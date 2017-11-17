@@ -7,6 +7,7 @@ region=$4
 jenkinspropsfile=$5
 jenkinsattribsfile=$6
 env_name_prefix=$7
+s3_api_doc_name=$8
 
 #Both API_KEY and API_ID_DEV are needed and should have the same value
 sed -i "s/API_KEY=.*.$/API_KEY=$API_ID_DEV/g" $jenkinspropsfile
@@ -22,3 +23,6 @@ sed -i "s/{inst_region}/$region/g" ./jazz-core/jazz-web/config/config.json
 sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_DEV/g" ./jazz-core/jazz-web/config/config.prod.json
 sed -i "s/{inst_region}/$region/g" ./jazz-core/jazz-web/config/config.prod.json
 
+#Adding s3-api-doc bucket name
+sed -i 's/{api_doc_name}/'$s3_api_doc_name'/g' ./jazz-core/jazz-web/config/config.json
+sed -i 's/{api_doc_name}/'$s3_api_doc_name'/g' ./jazz-core/jazz-web/config/config.prod.json

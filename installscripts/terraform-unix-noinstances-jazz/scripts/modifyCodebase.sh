@@ -5,6 +5,7 @@ subnetIds=$2
 iamRoleARN=$3
 region=$4
 stackprefix=$5
+s3_api_doc_name=$6
 
 sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/api-template-java/deployment-env.yml
 sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-java/deployment-env.yml
@@ -98,3 +99,7 @@ sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-python/deplo
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-java.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-nodejs.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-python.yml
+
+#Adding s3-api-doc bucket name
+sed -i 's/"api_doc_name".*.$/"api_doc_name": "'$s3_api_doc_name'"/g' ./jazz-core/jazz-web/config/config.json
+sed -i 's/"api_doc_name".*.$/"api_doc_name": "'$s3_api_doc_name'"/g' ./jazz-core/jazz-web/config/config.prod.json
