@@ -99,6 +99,7 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
   region = "${var.region}"
+  acl = "public-read"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET", "PUT", "POST"]
@@ -107,9 +108,6 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   }
   tags {
 	Application = "${var.envPrefix}"
-  }
-  provisioner "local-exec" {
-    command = "${var.sets3acl_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${data.aws_canonical_user_id.current.id}"
   }
 
   provisioner "local-exec" {
