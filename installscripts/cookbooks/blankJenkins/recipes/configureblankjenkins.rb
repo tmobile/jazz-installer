@@ -139,7 +139,7 @@ execute 'configJenkinsEmailExtXml' do
 end
 
 execute 'configJenkinsTaskMailerXml' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']}"
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']}"
 end
 
 execute 'copyJenkinsPropertyfile' do
