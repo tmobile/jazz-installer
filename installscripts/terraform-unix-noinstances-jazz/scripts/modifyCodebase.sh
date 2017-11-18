@@ -99,7 +99,3 @@ sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-python/deplo
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-java.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-nodejs.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-python.yml
-
-#Adding s3-api-doc bucket name
-sed -i 's/"api_doc_name".*.$/"api_doc_name": "'$s3_api_doc_name'"/g' ./jazz-core/jazz-web/config/config.json
-sed -i 's/"api_doc_name".*.$/"api_doc_name": "'$s3_api_doc_name'"/g' ./jazz-core/jazz-web/config/config.prod.json
