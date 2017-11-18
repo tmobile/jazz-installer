@@ -5,7 +5,6 @@ subnetIds=$2
 iamRoleARN=$3
 region=$4
 stackprefix=$5
-s3_api_doc_name=$6
 
 sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/api-template-java/deployment-env.yml
 sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-java/deployment-env.yml
