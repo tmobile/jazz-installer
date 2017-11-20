@@ -40,6 +40,12 @@ sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_services/d
 sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_services/deployment-env.yml
 sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_services/deployment-env.yml
 
+# Modify platform_logs deployment-env.yml file
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_logs/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_logs/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_logs/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_logs/deployment-env.yml
+
 # Modify is-service-available deployment-env.yml file
 sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/is-service-available/deployment-env.yml
 sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/is-service-available/deployment-env.yml
