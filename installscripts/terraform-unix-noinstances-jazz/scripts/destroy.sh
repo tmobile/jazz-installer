@@ -42,8 +42,8 @@ if [ "$1" == "frameworkonly" ]; then
 fi
 
 if [ "$1" == "all" ]; then
-    nohup terraform destroy --force >>../../stack_deletion.out &
-
+    nohup terraform destroy --force >>../../stack_deletion.out &&
+    shopt -s extglob
 fi
 
 if [ "$1" == "frameworkonly" ]; then
