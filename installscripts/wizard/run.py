@@ -55,17 +55,20 @@ def check_bitbucket_user(url, username, passwd):
     bitbucket = os.path.realpath("/home/ec2-user/atlassian-cli-6.7.1/bitbucket.sh")
     subprocess.call(['sudo', 'chmod', '+x', bitbucket])
     cmd = [ bitbucket , '--action', 'createproject', '--project', 'test000', '--name', 'test000', '--server', url, '--user', username, '--password', passwd]
-    subprocess.call(cmd, stdout=open("out_bitbucket", 'w'), stderr=open("out_bitbucket", 'w'))
 
-    if 'Remote' in open("out_bitbucket").read():
-        os.remove("out_bitbucket")
+    try:
+        output = subprocess.check_output(cmd)
+
+        if not output.find("created"):
+            print output
+            return 0
+        else:
+            cmd = [bitbucket, '--action', 'deleteproject', '--project', 'test000', '--server', url, '--user', username, '--password', passwd]
+            subprocess.check_output(cmd)
+            return 1
+    except:
         return 0
-    else:
-        cmd = [bitbucket, '--action', 'deleteproject', '--project', 'test000', '--server', url, '--user', username, '--password', passwd]
-        subprocess.call(cmd, stdout=devnull, stderr=devnull)
-        os.remove("out_bitbucket")
-        return 1
-
+        
 #Get the Tag Name from the user - Should not exceed 13 character. It may break the S3 bucket creation
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
 while(len(tagEnvPrefix) > 13 or len(tagEnvPrefix) == 0):
