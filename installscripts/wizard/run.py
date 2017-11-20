@@ -60,7 +60,6 @@ def check_bitbucket_user(url, username, passwd):
         output = subprocess.check_output(cmd)
 
         if not output.find("created"):
-            print output
             return 0
         else:
             cmd = [bitbucket, '--action', 'deleteproject', '--project', 'test000', '--server', url, '--user', username, '--password', passwd]
@@ -68,7 +67,7 @@ def check_bitbucket_user(url, username, passwd):
             return 1
     except:
         return 0
-        
+
 #Get the Tag Name from the user - Should not exceed 13 character. It may break the S3 bucket creation
 tagEnvPrefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
 while(len(tagEnvPrefix) > 13 or len(tagEnvPrefix) == 0):
