@@ -21,7 +21,7 @@ directory '/var/lib/jenkins/workspace' do
   recursive true
   action :create
 end
-execute 'startjenkins' do 
+execute 'startjenkins' do
   command "sudo service jenkins start"
 end
 execute 'copyJenkinsClientJar' do
@@ -29,6 +29,9 @@ execute 'copyJenkinsClientJar' do
 end
 execute 'createJobExecUser' do
   command "sleep 30;echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['client']['jar']} -auth @#{node['authfile']} -s http://localhost:8080/ groovy ="
+end
+execute 'copyEncryptGroovyScript' do
+  command "cp /home/ec2-user/cookbooks/jenkins/files/default/encrypt.groovy /home/ec2-user/encrypt.groovy"
 end
 
 execute 'copyXmls' do
@@ -60,28 +63,27 @@ if (File.exist?("/home/ec2-user/jazz-core"))
 	end
 end
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b master https://github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
 
   cwd '/home/ec2-user'
 end
-# downloading and running mvn assembly will be don on installer box. This will be uploaded to jenkins master using scp
-#execute 'runAwsgatewayImporter' do
-#  command "/opt/apache-maven-3.5.0/bin/mvn assembly:assembly -Dmaven.test.skip=true "
-#  cwd '/home/ec2-user/jazz-core/aws-apigateway-importer'
-#end
+
 execute 'copylinkdir' do
-  command "cp -rf /home/ec2-user/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
+  command "cp -rf /home/ec2-user/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
 end
 
 
 execute 'createcredentials-jenkins1' do
-  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/jenkins1.sh localhost "
+  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/jenkins1.sh localhost"
 end
 execute 'createcredentials-jobexecutor' do
   command "/home/ec2-user/cookbooks/jenkins/files/credentials/jobexec.sh localhost "
 end
 execute 'createcredentials-aws' do
   command "/home/ec2-user/cookbooks/jenkins/files/credentials/aws.sh localhost "
+end
+execute 'createcredentials-cognitouser' do
+  command "sleep 30;/home/ec2-user/cookbooks/jenkins/files/credentials/cognitouser.sh localhost"
 end
 
 
@@ -128,9 +130,17 @@ execute 'configureJenkinsProperites' do
 end
 
 execute 'configJenkinsLocConfigXml' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} "
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
 end
 
+
+execute 'configJenkinsEmailExtXml' do
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']}"
+end
+
+execute 'configJenkinsTaskMailerXml' do
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']}"
+end
 
 execute 'copyJenkinsPropertyfile' do
   command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"

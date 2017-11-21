@@ -14,6 +14,10 @@ variable "configureApikey_cmd" {
   type = "string"
   default = "./scripts/configureApikey.sh"
 }
+variable "configureapidoc_cmd" {
+  type = "string"
+  default = "./scripts/configure-api-doc.sh"
+}
 
 variable "modifyJenkinsServerIp_cmd" {
   type = "string"
@@ -62,4 +66,8 @@ variable "dynamodb_cmd" {
 variable "modifyPropertyFile_cmd" {
   type = "string"
   default = "./scripts/modifyPropertyFile.sh"
+}
+variable "ses_cmd" {
+  type = "string"
+  default = "./scripts/ses.sh"
 }

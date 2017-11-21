@@ -10,7 +10,10 @@ resource "aws_s3_bucket" "cloudfrontlogs" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.envPrefix}"
+  }
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.cloudfrontlogs.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -31,7 +34,10 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.envPrefix}"
+  }
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -52,7 +58,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.envPrefix}"
+  }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -73,7 +81,9 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.envPrefix}"
+  }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -82,7 +92,38 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
   }
-  
+
+}
+
+resource "aws_s3_bucket" "jazz_s3_api_doc" {
+  bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
+  request_payer = "BucketOwner"
+  region = "${var.region}"
+  depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
+  acl = "public-read"
+  cors_rule {
+    allowed_headers = ["Authorization"]
+    allowed_methods = ["GET", "PUT", "POST"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3000
+  }
+  tags {
+	Application = "${var.envPrefix}"
+  }
+  website {
+  index_document = "index.html"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} jazz_s3_api_doc ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
+  }
+  provisioner "local-exec" {
+	when = "destroy"
+	on_failure = "continue"
+    command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
+  }
 }
 
 resource "aws_api_gateway_rest_api" "jazz-dev" {
@@ -93,20 +134,19 @@ resource "aws_api_gateway_rest_api" "jazz-stag" {
   name        = "${var.envPrefix}-stag"
   description = "STG API for Tmobile demo"
 }
+
 resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API for Tmobile demo"
   provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz.git jazz-core"
+    command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
 
   }
-  provisioner "local-exec" {
-    command = "git clone https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz-ui.git"
-  }	
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
 }
+
 resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
@@ -118,7 +158,9 @@ resource "aws_s3_bucket" "jazz-web" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+  tags {
+	Application = "${var.envPrefix}"
+  }
   website {
     index_document = "index.html"
 
@@ -136,7 +178,7 @@ EOF
 
   provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
-  }  
+  }
 
   provisioner "local-exec" {
     command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinspropsfile} "
@@ -147,16 +189,7 @@ EOF
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
   }
-  provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
-    command = "sudo rm -rf ./jazz-core ./jazz-core-bitbucket ./jazz-ui"
-  }
 }
-
-
-
-
 
 resource "aws_iam_policy" "basic_execution_policy" {
   name        = "${var.envPrefix}_execution_aws_logs"
@@ -203,6 +236,10 @@ resource "aws_iam_role" "lambda_role" {
    ]
 }
 EOF
+
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_roleId ${aws_iam_role.lambda_role.arn} ${var.jenkinspropsfile}"
+  }
   provisioner "local-exec" {
         when = "destroy"
 	on_failure = "continue"
@@ -250,8 +287,6 @@ EOF
 }
 
 
-
-
 resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
@@ -294,7 +329,9 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-
+  tags {
+	Application = "${var.envPrefix}"
+  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
@@ -319,7 +356,9 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-
+  tags {
+	Application = "${var.envPrefix}"
+  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
@@ -340,6 +379,9 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     allowed_methods = ["GET"]
     allowed_origins = ["*"]
     max_age_seconds = 3000
+  }
+  tags {
+	Application = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {
@@ -507,4 +549,25 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
         bucket = "${aws_s3_bucket.jazz-web.id}"
         policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
+}
+
+data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
+  policy_id = "jazz-s3-api-doc-bucket-contents"
+  statement {
+        sid = "jazz-s3-api-doc"
+        actions = [
+                        "s3:*"
+        ]
+        principals  {
+                        type="*",
+                        identifiers = ["*"]
+                        }
+        resources = [
+                "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
+        ]
+  }
+}
+resource "aws_s3_bucket_policy" "jazz-s3-api-doc-bucket-contents-policy" {
+        bucket = "${aws_s3_bucket.jazz_s3_api_doc.id}"
+        policy = "${data.aws_iam_policy_document.jazz_s3_api_doc_bucket_contents.json}"
 }

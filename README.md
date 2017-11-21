@@ -5,11 +5,11 @@
 
 **Note**: Please go through [limitations](#limitations) before you proceed.
        Also, make sure that the [prerequisites](#prerequisites) are met before you proceed with the installation.
-       Currently we are only supporting Linux based Installer (Windows based jazz installer is coming soon). 
+       Currently we are only supporting Linux based Installer (Windows based jazz installer is coming soon).
 
 ## Prerequisites
-* AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the 
-  [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region. 
+* AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the
+  [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region.
 * Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
 * Make sure that the BitBucket server has below addons installed.
   * Atlassian Universal Plugin Manager Plugin
@@ -17,11 +17,11 @@
   * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
   * Bitbucket Web Post Hooks Plugin
 * Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
-* Please create the following adminid/password on Jenkins Server before you proceed: jenkinsadmin/jenkinsadmin
-* Please create the following adminid/password on Bitbucket Server before you proceed: jenkins1/jenkinsadmin
+* Installer requests a Jenkins user and a Bitbucket user.
+* Please make sure that you provide a jenkins user with 'admin' permission and the bitbucket user with 'create project' permisions.
 * Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
-  * Note: Please note that some of the AWS resources are acessed through Jenkins during some of the internal orchestration activities.
+  * Note: Please note that some of the AWS resources are accessed through Jenkins during some of the internal orchestration activities.
 
 
 ## Installation steps
@@ -29,8 +29,7 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh master&& cd ./jazz-installer/installscripts/wizard && ./run.py 
-
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh master && cd ./jazz-installer/installscripts/wizard && ./run.py 
  ```
 
 3) Follow the installer wizard. It prompts for few AWS configurations which needs to be filled in.
@@ -40,6 +39,8 @@ curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/master/installs
         Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): myjazz
 
 Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please ensure that you provide these details correctly during this process. Not doing so would result in installation failure. Please follow the wizard prompts to complete the installation.
+
+Please provide an admin email ID to be used as Jazz Application Administrator.
 
 Check the status through [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 
