@@ -10,7 +10,7 @@ resource "aws_kinesis_stream" "kinesis_stream_dev" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -29,7 +29,7 @@ resource "aws_kinesis_stream" "kinesis_stream_stg" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"
@@ -48,7 +48,7 @@ resource "aws_kinesis_stream" "kinesis_stream_prod" {
 
   tags {
     Name        = "${var.envPrefix}"
-    Application = "${var.tagsApplication}"
+    Application = "${var.envPrefix}"
     Environment = "${var.tagsEnvironment}"
     Exempt = "${var.tagsExempt}"
     Owner = "${var.tagsOwner}"

@@ -4,8 +4,6 @@
 #
 # Copyright 2017, YOUR_COMPANY_NAME
 #
-# All rights reserved - Do Not Redistribute
-#
 
 execute 'resizeJenkinsMemorySettings' do
   command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
@@ -60,7 +58,7 @@ end
 #end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b JAZZBRANCH https://github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
 
   cwd '/home/ec2-user'
 end
@@ -140,7 +138,15 @@ execute 'configureJenkinsProperites' do
 end
 
 execute 'configJenkinsLocConfigXml' do
-  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} "
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
+end
+
+execute 'configJenkinsEmailExtXml' do
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']}"
+end
+
+execute 'configJenkinsTaskMailerXml' do
+  command "/home/ec2-user/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']}"
 end
 
 # config.xml is added in xmls.tar

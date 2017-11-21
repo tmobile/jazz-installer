@@ -6,9 +6,9 @@ echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-credentials-by-xml system::system::jenkins "(global)"
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
   <scope>GLOBAL</scope>
-  <id>jenkins1cred</id>
-  <description>user created on bitbucket</description>
-  <username>bitbucketuser</username>
-  <password>bitbucketpasswd</password>
+  <id>SVC_ADMIN</id>
+  <description>Jazz Admin User</description>
+  <username>cognitouser</username>
+  <password>cognitopasswd</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
 EOF
