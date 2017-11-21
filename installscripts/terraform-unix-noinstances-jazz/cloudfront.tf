@@ -48,6 +48,7 @@ resource "aws_cloudfront_distribution" "jazz" {
 
 
   tags {
+    Application = "${var.envPrefix}"
     Environment = "production"
   }
 

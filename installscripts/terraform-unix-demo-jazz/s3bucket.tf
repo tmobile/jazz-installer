@@ -97,12 +97,10 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API for Tmobile demo"
   provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz.git jazz-core"
+    command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
 
   }
-  provisioner "local-exec" {
-    command = "git clone https://${var.github_username}:${var.github_password}@github.com/tmobile/jazz-ui.git"
-  }	
+
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
@@ -146,11 +144,6 @@ EOF
 	when = "destroy"
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
-  }
-  provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
-    command = "sudo rm -rf ./jazz-core ./jazz-core-bitbucket ./jazz-ui"
   }
 }
 
