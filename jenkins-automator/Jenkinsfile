@@ -1,4 +1,4 @@
-@Library('notifications-library') _
+@Library('notifications-library@jenkins-automator') _
 pipeline {
   agent any
 
