@@ -136,7 +136,7 @@ subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(jenkinsuse
 subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
 
 os.chdir("../terraform-unix-noinstances-jazz")
-subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
+subprocess.call('./scripts/create.sh >> ../../stack_creation.out &', shell=True)
 subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
 print("\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
 print(os.path.realpath('../../'))
