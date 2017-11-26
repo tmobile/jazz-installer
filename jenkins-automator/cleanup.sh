@@ -10,8 +10,7 @@ bb_password="{bitbucketpasswd}"
 script_path="/home/ec2-user/atlassian-cli-6.7.1/bitbucket.sh"
 
 delete_repos () {
-    sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action getRepositoryList --project "$1" | grep -i $1 | awk -F',' '{print
-$2}' | tr -d '"' > repolist
+    sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action getRepositoryList --project "$1" | grep -i $1 | awk -F',' '{print $2}' | tr -d '"' > repolist
     while read p; do
     sudo $script_path --server $bb_url --user $bb_username --password $bb_password  --action deleteRepository --project "$1" --repository "$p"
     done < repolist
