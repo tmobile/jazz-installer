@@ -36,7 +36,7 @@ pipeline {
         }
       stage('Cleaning up Existing Jenkins and BB'){
           steps{
-              sh 'bash jenkins-automator/cleanup.sh'
+              sh './jenkins-automator/cleanup.sh'
           }
       }
       stage('Running Installer.sh'){
