@@ -17,8 +17,7 @@ delete_repos () {
 }
 
 delete_bb_all () {
-    sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action getProjectlist | grep -i /projects | awk -F ',' '{print $2}' | tr
--d '"' > projectlist
+    sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action getProjectlist | grep -i /projects | awk -F ',' '{print $2}' | tr -d '"' > projectlist
     while read q; do
     delete_repos "$q"
     sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action deleteProject --project "$q"
