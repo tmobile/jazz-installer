@@ -1,4 +1,3 @@
-#!/bin/bash
 jenkins_url="http://Jenkins-terraform-elb-209020953.us-east-1.elb.amazonaws.com"
 cli_url="$jenkins_url:8080/jnlpJars/jenkins-cli.jar"
 jenkins_username="{jenkinsuser}"
