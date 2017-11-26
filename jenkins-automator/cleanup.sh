@@ -21,7 +21,6 @@ delete_bb_all () {
     delete_repos "$q"
     sudo $script_path --server $bb_url --user $bb_username --password $bb_password --action deleteProject --project "$q"
     done < projectlist
-
     rm -rf projectlist repolist
 }
 
