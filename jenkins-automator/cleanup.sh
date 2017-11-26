@@ -1,12 +1,12 @@
 #!/bin/bash
 jenkins_url="http://Jenkins-terraform-elb-209020953.us-east-1.elb.amazonaws.com"
 cli_url="$jenkins_url:8080/jnlpJars/jenkins-cli.jar"
-jenkins_username="jenkinsuser"
-jenkins_password="jenkinsuser"
+jenkins_username="{jenkinsuser}"
+jenkins_password="{jenkinspasswd}"
 
 bb_url="http://bitbucket-terraform-elb-1577123782.us-east-1.elb.amazonaws.com"
-bb_username="bitbucketuser"
-bb_password="bitbucketuser"
+bb_username="{bitbucketuser}"
+bb_password="{bitbucketpasswd}"
 script_path="/home/ec2-user/atlassian-cli-6.7.1/bitbucket.sh"
 
 delete_repos () {
