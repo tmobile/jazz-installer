@@ -13,20 +13,20 @@ pipeline {
       stage('Provisioning') {
         steps{
             sendStartNotifications 'STARTED'
-            sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" input_parameters_shell'
-            sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" input_parameters_shell'
+            sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
+            sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" jenkins-automator/input_parameters_shell'
 
             sh '''
             day=`date -I | cut -d'-' -f3`
             month=`date -I | cut -d'-' -f2`
             year=`date -I | cut -d'-' -f1`
             stack_name="jazz$year$month$day"
-            sed -i "s/{stack_name}/$stack_name/g" input_parameters_python
+            sed -i "s/{stack_name}/$stack_name/g" jenkins-automator/input_parameters_python
             '''
-            sh 'sed -i "s/{jenkinsuser}/${JENKINS_USER_USR}/g" input_parameters_python'
-            sh 'sed -i "s/{jenkinspasswd}/${JENKINS_USER_PSW}/g" input_parameters_python'
-            sh 'sed -i "s/{bitbucketuser}/${BITBUCKET_USER_USR}/g" input_parameters_python'
-            sh 'sed -i "s/{bitbucketpasswd}/${BITBUCKET_USER_PSW}/g" input_parameters_python'
+            sh 'sed -i "s/{jenkinsuser}/${JENKINS_USER_USR}/g" jenkins-automator/input_parameters_python'
+            sh 'sed -i "s/{jenkinspasswd}/${JENKINS_USER_PSW}/g" jenkins-automator/input_parameters_python'
+            sh 'sed -i "s/{bitbucketuser}/${BITBUCKET_USER_USR}/g" jenkins-automator/input_parameters_python'
+            sh 'sed -i "s/{bitbucketpasswd}/${BITBUCKET_USER_PSW}/g" jenkins-automator/input_parameters_python'
             }
         }
       stage('Running Installer.sh'){
@@ -37,7 +37,7 @@ pipeline {
       stage('Running run.py'){
         steps{
             sh 'sed -i "s,nohup.*&,./scripts/create.sh | tee -a ../../stack_creation.out,g" ~/jazz-installer/installscripts/wizard/run.py'
-            sh 'cd ~/jazz-installer/installscripts/wizard && ./run.py < ${WORKSPACE}/input_parameters_python'
+            sh 'cd ~/jazz-installer/installscripts/wizard && ./run.py < ${WORKSPACE}/jenkins-automator/input_parameters_python'
             sh 'cp ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz/settings.txt ${WORKSPACE}/Stack_details.txt'
         }
       }
