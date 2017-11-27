@@ -54,7 +54,7 @@ pipeline {
             expression { stack_name != 'jazz2017*' }
         }
         steps {
-            sh 'bash jazz-installer/destroy.sh all'
+            sh 'bash ~/jazz-installer/destroy.sh all'
         }
       }
       stage('Running Installer.sh') {
