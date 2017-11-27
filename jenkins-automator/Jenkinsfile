@@ -71,7 +71,6 @@ pipeline {
         }
       }
   }
-
   post {
     failure {
     sendFailureNotifications currentBuild.result
