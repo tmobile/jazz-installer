@@ -4,7 +4,7 @@ if [ ! -f $check_file ]; then
     echo "No previous stack_creation logs found!"
     echo "Proceeding with new stack deployment..."
 else
-    for i in {2..30}
+    for i in {1..30}
     do
         check_date=`date -d "-$i day" +%Y%m%d`
         stack_name="jazz$check_date"
