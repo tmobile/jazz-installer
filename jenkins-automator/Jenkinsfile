@@ -50,7 +50,6 @@ pipeline {
             sh 'curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.1/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1.1 < jenkins-automator/input_parameters_shell'
         }
       }
-/*
       stage('Running run.py'){
         steps{
             sh 'sed -i "s,nohup.*&,./scripts/create.sh | tee -a ../../stack_creation.out,g" ~/jazz-installer/installscripts/wizard/run.py'
@@ -59,7 +58,7 @@ pipeline {
         }
       }
   }
-*/
+
   post {
     failure {
     sendFailureNotifications currentBuild.result
