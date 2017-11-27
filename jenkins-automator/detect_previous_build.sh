@@ -12,7 +12,7 @@ else
         if [ $? -eq 0 ] ; then
             echo "Found stack_name: $stack_name in $check_file"
             echo "Destroying stack $stack_name...."
-            /home/ec2-user/jazz-installer/destroy.sh all
+            echo "$stack_name" > stack_name
             exit
         fi
     done
