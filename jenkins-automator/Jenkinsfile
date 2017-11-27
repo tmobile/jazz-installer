@@ -35,15 +35,15 @@ pipeline {
             }
         }
       stage('Detecting previous builds') {
-        steps {
+        steps{
           sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
           sh 'sed -i "s,installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
-          sh 'bash -xe jenkins-automator/detect_previous_build.sh'
+          sh 'bash jenkins-automator/detect_previous_build.sh'
         }
       }
       stage('Cleaning up Existing Jenkins and BB'){
           steps{
-              sh 'bash -xe jenkins-automator/cleanup.sh'
+              sh 'bash jenkins-automator/cleanup.sh'
           }
       }
       stage('Running Installer.sh'){
