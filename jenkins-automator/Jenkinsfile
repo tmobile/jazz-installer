@@ -34,17 +34,17 @@ pipeline {
             sh 'sed -i "s/{bitbucketpasswd}/${BITBUCKET_USER_PSW}/g" jenkins-automator/cleanup.sh'
             }
         }
+      stage('Cleaning up Existing Jenkins and BB') {
+        steps {
+            sh 'bash jenkins-automator/cleanup.sh'
+          }
+      }
       stage('Detecting previous builds') {
         steps {
             sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
             sh 'sed -i "s,cd *installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
             sh 'bash jenkins-automator/detect_previous_build.sh'
         }
-      }
-      stage('Cleaning up Existing Jenkins and BB') {
-        steps {
-            sh 'bash jenkins-automator/cleanup.sh'
-          }
       }
       stage('Running Installer.sh') {
         steps {
