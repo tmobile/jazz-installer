@@ -11,7 +11,7 @@ pipeline {
 
   stages {
       stage('Provisioning') {
-        steps{
+        steps {
             sendStartNotifications 'STARTED'
             sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
             sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" jenkins-automator/input_parameters_shell'
@@ -35,24 +35,24 @@ pipeline {
             }
         }
       stage('Detecting previous builds') {
-        steps{
-          sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
-          sh 'sed -i "s,cd *installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
-          sh 'bash jenkins-automator/detect_previous_build.sh'
+        steps {
+            sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
+            sh 'sed -i "s,cd *installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
+            sh 'bash jenkins-automator/detect_previous_build.sh'
         }
       }
-      stage('Cleaning up Existing Jenkins and BB'){
-          steps{
-              sh 'bash jenkins-automator/cleanup.sh'
+      stage('Cleaning up Existing Jenkins and BB') {
+        steps {
+            sh 'bash jenkins-automator/cleanup.sh'
           }
       }
-      stage('Running Installer.sh'){
-        steps{
+      stage('Running Installer.sh') {
+        steps {
             sh 'curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.1/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1.1 < jenkins-automator/input_parameters_shell'
         }
       }
-      stage('Running run.py'){
-        steps{
+      stage('Running run.py') {
+        steps {
             sh 'sed -i "s,nohup.*&,./scripts/create.sh | tee -a ../../stack_creation.out,g" ~/jazz-installer/installscripts/wizard/run.py'
             sh 'cd ~/jazz-installer/installscripts/wizard && ./run.py < ${WORKSPACE}/jenkins-automator/input_parameters_python'
             sh 'cp ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz/settings.txt ${WORKSPACE}/Stack_details.txt'
