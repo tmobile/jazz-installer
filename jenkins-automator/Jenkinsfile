@@ -42,7 +42,7 @@ pipeline {
       stage('Detecting and Destroying if previous stack exists') {
         steps {
             sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
-            sh 'sed -i "s,cd *installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
+            sh 'sed -i "s,cd *installscripts.*,cd ~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
             sh 'sed -i "s/sudo rm -rf//g" ~/jazz-installer/destroy.sh'
             sh 'bash jenkins-automator/detect_previous_build.sh'
         }
