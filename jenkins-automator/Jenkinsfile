@@ -43,8 +43,7 @@ pipeline {
         steps {
             sh 'sed -i "s,nohup.*&,terraform destroy --force | tee -a ../../stack_deletion.out,g" ~/jazz-installer/destroy.sh'
             sh 'sed -i "s,cd *installscripts.*,~/jazz-installer/installscripts/terraform-unix-noinstances-jazz,g" ~/jazz-installer/destroy.sh'
-            sh 'sed -i "s/sudo rm -rf !(*.out)//g" ~/jazz-installer/destroy.sh'
-            sh 'sed -i "s/sudo rm -rf ../rhel7Installer.sh//g ~/jazz-installer/destroy.sh'
+            sh 'sed -i "s/sudo rm -rf//g" ~/jazz-installer/destroy.sh'
             sh 'bash jenkins-automator/detect_previous_build.sh'
             script {
               stack_name = readFile('stack_name').trim()
