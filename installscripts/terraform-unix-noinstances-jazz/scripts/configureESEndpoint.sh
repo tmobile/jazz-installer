@@ -23,3 +23,17 @@ curl -X POST --url https://$ES_ENDPOINT/_template/applicationlogs  --data-binary
 curl -XPUT https://$ES_ENDPOINT/apilogs?pretty --data-binary @./jazz-core/cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
 
 curl -XPUT https://$ES_ENDPOINT/applicationlogs?pretty --data-binary @./jazz-core/cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
+
+# Adding index-pattern in kibana
+curl_params="--include --silent --retry 5 --retry-delay 3  --output /dev/null"
+ES_version=`curl -s  https://$ES_ENDPOINT | grep number | awk '{print $3}'| tr -d ',"'`
+
+echo "Creating index patterns..."
+index_pattern_apilogs="https://$ES_ENDPOINT/.kibana/index-pattern/apilogs"
+curl $curl_params -X POST "${index_pattern_apilogs}" -d '{"title":"apilogs","timeFieldName":"@timestamp","customFormats":"{}"}'
+index_pattern_applicationlogs="https://$ES_ENDPOINT/.kibana/index-pattern/applicationlogs"
+curl $curl_params -X POST "${index_pattern_applicationlogs}" -d '{"title":"applicationlogs","timeFieldName":"@timestamp","customFormats":"{}"}'
+
+echo "Creating default index..."
+config_url="https://$ES_ENDPOINT/.kibana/config/$ES_version"
+curl $curl_params -X POST "${config_url}" -d '{"defaultIndex":"applicationlogs"}'
