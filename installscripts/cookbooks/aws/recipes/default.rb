@@ -15,15 +15,12 @@ remote_file "/tmp/awscli-bundle.zip" do
   mode '0755'
   action :create
 end
-execute 'unzipaws' do
-  command 'unzip -o awscli-bundle.zip'
-  cwd '/tmp'
-end
+
 execute 'installaws' do
-  command 'sudo -H pip install awscli --upgrade --ignore-installed'
+  command 'sudo pip install awscli --upgrade --ignore-installed'
   cwd '/tmp'
-  ignore_failure true
 end
+
 execute 'installaws-apigateway-importer' do
    command 'npm i aws-apigateway-importer'
    #cwd "/usr/local"
