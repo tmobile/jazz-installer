@@ -4,7 +4,7 @@ POOL_NAME=$1
 # List Users Pools
 aws cognito-idp list-user-pools --max-results 60  > /tmp/poollist
 
-USER_POOL_ID=`jq '.UserPools[] | if .Name == "'$POOL_NAME'" then .Id else empty end' < /tmp/poollist |tr -d '"'`
+USER_POOL_ID=`grep -B1 $POOL_NAME /tmp/poollist  | grep Id | awk -F':' '{print $2}'| tr -d '",'`
 
 # Delete domain before deleting user pool
 aws cognito-idp delete-user-pool-domain --domain $POOL_NAME --user-pool-id $USER_POOL_ID
