@@ -43,6 +43,10 @@ variable "jenkinsattribsfile" {
   type = "string"
   default = "../cookbooks/jenkins/attributes/default.rb"
 }
+variable "jenkinsclientrbfile" {
+  type = "string"
+  default = "../chefconfig/jenkins_client.rb"
+}
 variable "jenkinsservermap" {
   type = "map"
   default = {
@@ -52,7 +56,7 @@ variable "jenkinsservermap" {
     jenkins_security_group = "replace"
     jenkinsuser = "replace"
     jenkinspasswd = "replace"
-    jenkins_ssh_login = "ec2-user"
+    jenkins_ssh_login = "replace"
     jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   }
 }
@@ -67,7 +71,7 @@ variable "bitbucketservermap" {
     bitbucket_public_ip = "replace IP here"
     bitbucketuser = "replace"
     bitbucketpasswd = "replace"
-    bitbucket_ssh_login = "ec2-user"
+    bitbucket_ssh_login = "replace"
     bitbucket_ssh_key = "../sshkeys/bitbucketkey.pem"
   }
 }

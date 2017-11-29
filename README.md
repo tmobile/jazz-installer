@@ -11,15 +11,20 @@
 * AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the
   [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region.
 * Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
-* Make sure that the BitBucket server has below addons installed.
-  * Atlassian Universal Plugin Manager Plugin
-  * bitbucket-webhooks
-  * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
-  * Bitbucket Web Post Hooks Plugin
-* Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
-* Installer requests a Jenkins user and a Bitbucket user.
-* Please make sure that you provide a jenkins user with 'admin' permission and the bitbucket user with 'create project' permisions.
-* Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user
+* An existing Jenkins and Bitbucket Servers (Linux boxes) needed to be provided to build the stack.
+* Bitbucket - Prerequisites
+  * A Bitbucket server user (ssh user), which is configured as passwordless, required by Jazz Installer.
+  * A Bitbucket user with 'create project' permisions.
+  * BitBucket server Addons required.
+    * Atlassian Universal Plugin Manager Plugin
+    * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
+    * Bitbucket Web Post Hooks Plugin
+* Jenkins - Prerequisites  
+  * A jenkins server user (ssh user), which is configured as passwordless, required by Jazz Installer.
+  * A Jenkins user with 'admin' permission.
+  * Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
+  
+* Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in home directory '/home/ec2-user;
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
   * Note: Please note that some of the AWS resources are accessed through Jenkins during some of the internal orchestration activities.
 
@@ -29,18 +34,32 @@
 2) Run the below command to run the installation wizard.
 
 ```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.2/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1.2 && cd ./jazz-installer/installscripts/wizard && ./run.py 
+curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.2/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1.2
  ```
 
-3) Follow the installer wizard. It prompts for few AWS configurations which needs to be filled in.
+3) Follow the installer wizard. It prompts for few inputs which needs to be filled in.
 
-   3.1) Provide the prefix for your stack (**Please use only lowercase alphabets & numbers for tag name. Some of the artifacts are named using this informatin and AWS has restrictions on how we use this tag. Please check AWS console if there are artifacts created with this name. If yes, please choose another name!**)
+  3.1) Provide the installation option. Currently we only support 1 ( we are adding more)
+  
+        Kindly select an installation option...
+          1. Stack with existing Bitbucket and Jenkins 
+        Please enter your choice : 1
+        
+  3.2) Please provide AWS credentials.
+  
+        Please provide the AWS credentials
+        AWS Access Key ID : XXXXXXXX
+        AWS Secret Access Key : XXXXXX
+        
+  3.3) Provide the prefix for your stack (**Please use only lowercase alphabets & numbers for tag name. Some of the artifacts are named using this informatin and AWS has restrictions on how we use this tag. Please check AWS console if there are artifacts created with this name. If yes, please choose another name!**)
 
-        Please provide the tag Name to Prefix your Stack(Eg:- jazz10 ): myjazz
+        Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ) : myjazz
 
-Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please ensure that you provide these details correctly during this process. Not doing so would result in installation failure. Please follow the wizard prompts to complete the installation.
+  3.4) Please provide an admin email ID to be used as Jazz Application Administrator.
 
-Please provide an admin email ID to be used as Jazz Application Administrator.
+        Please provide valid email ID to login to Jazz Application : abc@abc.com
+
+  3.5) Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please ensure that you provide these details correctly during this process. Not doing so would result in installation failure. Please follow the wizard prompts to complete the installation.
 
 Check the status through [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
 

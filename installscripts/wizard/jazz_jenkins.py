@@ -65,9 +65,9 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
     #Get Existing Jenkins Details form user
     print "\nPlease provide Jenkins Details.."
-    jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL):")
-    jenkins_username = raw_input("Jenkins username:")
-    jenkins_passwd = raw_input("Jenkins password:")
+    jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL) :")
+    jenkins_username = raw_input("Jenkins username :")
+    jenkins_passwd = raw_input("Jenkins password :")
 
     #Check is the jenkins user exist in jenkins server
     if check_jenkins_user(jenkins_server_elb, jenkins_username, jenkins_passwd):
@@ -76,12 +76,12 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         sys.exit("Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!")
 
     #get the jenkinsserver public IP and SSH login    
-    jenkins_server_public_ip = raw_input("Jenkins Server PublicIp:")
-    jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name:")
+    jenkins_server_public_ip = raw_input("Jenkins Server PublicIp :")
+    jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name :")
 
     #TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
-    jenkins_server_security_group = raw_input("Jenkins Server Security Group Name: ")
-    jenkins_server_subnet = raw_input("Jenkins Server Subnet : ")
+    jenkins_server_security_group = raw_input("Jenkins Server Security Group Name :")
+    jenkins_server_subnet = raw_input("Jenkins Server Subnet :")
 
     #Create paramter list
     parameter_list = [  jenkins_server_elb ,
