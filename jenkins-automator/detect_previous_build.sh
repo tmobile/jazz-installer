@@ -12,11 +12,11 @@ else
         if [ $? -eq 0 ] ; then
             echo "Found stack_name: $stack_name in $check_file"
             echo "Destroying stack $stack_name...."
-            if [ -f ~/jazz-installer/destroy.sh ]; then
-            ~/jazz-installer/destroy.sh all
-            else
-            echo "Destroy script not found!"
-            fi 
+            if [ -f "~/jazz-installer/destroy.sh" ]; then
+                ~/jazz-installer/destroy.sh all
+                else
+                echo "Destroy script not found!"
+            fi
             exit
         fi
     done
