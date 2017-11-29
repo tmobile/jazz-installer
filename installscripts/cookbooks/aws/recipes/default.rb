@@ -16,8 +16,13 @@ remote_file "/tmp/awscli-bundle.zip" do
   action :create
 end
 
+execute 'unzipaws' do
+  command 'unzip -o awscli-bundle.zip'
+   cwd '/tmp'
+ end
+
 execute 'installaws' do
-  command 'sudo pip install awscli --upgrade --ignore-installed'
+  command './awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws'
   cwd '/tmp'
 end
 
