@@ -15,10 +15,10 @@ jenkinspasswd=$5
 #create PROJECTS in BITBUCKET
 #ACTION=createProject --project 'SLF'  --name 'SLF' --description ' created from cli' --public
 #java -jar $CLIENTJAR -s $BASEURL -u $USER -p $PASS --action $ACTION
-java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "SLF"  --name "SLF" --description " created from cli" --public
+java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "SLF"  --name "SLF" --description " created from cli" --private
 #ACTION=createProject --project 'CAS'  --name 'CAS' --description ' created from cli' --public
 #java -jar $CLIENTJAR -s $BASEURL -u $USER -p $PASS --action $ACTION
-java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "CAS"  --name "CAS" --description " created from cli" --public
+java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "CAS"  --name "CAS" --description " created from cli" --private
 
 
 
