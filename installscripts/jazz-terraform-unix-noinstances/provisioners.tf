@@ -8,6 +8,10 @@ resource "null_resource" "configureExistingJenkinsServer" {
     type = "ssh"
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
+
+  provisioner "local-exec" {
+    command = "${var.configureJenkinsSSHUser_cmd} ${lookup(var.jenkinsservermap, "jenkins_ssh_login")} ${var.jenkinsattribsfile} ${var.jenkinsclientrbfile}"
+  }
   provisioner "local-exec" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
@@ -34,7 +38,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
           "sudo curl -O https://bootstrap.pypa.io/get-pip.py&& sudo python get-pip.py",
           "sudo chmod -R o+w /usr/lib/python2.7/site-packages/ /usr/bin/",
           "sudo cp ~/.bash_profile /var/lib/jenkins; sudo cp ~/.bashrc /var/lib/jenkins",
-          "sudo chef-client --local-mode -c ~/chefconfig/client.rb -j ~/chefconfig/node-jenkinsserver-packages.json"
+          "sudo chef-client --local-mode -c ~/chefconfig/jenkins_client.rb -j ~/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
 
@@ -108,7 +112,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
  provisioner "remote-exec" {
     inline = [
-          "sudo chef-client --local-mode -c ~/chefconfig/client.rb --override-runlist blankJenkins::configureblankjenkins"
+          "sudo chef-client --local-mode -c ~/chefconfig/jenkins_client.rb --override-runlist blankJenkins::configureblankjenkins"
     ]
   }
 
