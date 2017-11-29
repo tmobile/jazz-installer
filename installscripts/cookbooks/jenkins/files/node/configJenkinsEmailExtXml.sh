@@ -10,11 +10,12 @@ SMTP_PORT=$6
 JENKINS_URL=http://$7:8080/
 JENKINSUSER=$8
 JENKINSPASSWD=$9
+SSH_USER=${10}
 
 #Jenkins ExtendedEmailPublisher XML
 JENKINS_EMAIL_EXT_CONFIG_XML=/var/lib/jenkins/hudson.plugins.emailext.ExtendedEmailPublisher.xml
-JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
-ENCRYPT_PASSWORD_SCRIPT=/home/ec2-user/encrypt.groovy
+JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
 
 #Populating all the variables necessary
 sed  -i "s=useSsl.*.$=useSsl>$SMTP_USE_SSL</useSsl>=g" $JENKINS_EMAIL_EXT_CONFIG_XML

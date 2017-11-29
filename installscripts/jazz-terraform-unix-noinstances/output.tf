@@ -3,6 +3,9 @@
 #
 resource "null_resource" "outputVariables" {
   provisioner "local-exec" {
+    command = "touch settings.txt"
+  }
+  provisioner "local-exec" {
     command = "echo bitbucketelb = http://${lookup(var.bitbucketservermap, "bitbucket_elb")}:7990 > settings.txt"
   }
   provisioner "local-exec" {

@@ -70,9 +70,9 @@ def get_jazz_tag_config_details():
         Get tag configuration details from user and add it to the files
     """
         #Get the Tag Name from the user - Should not exceed 13 character. It may break the S3 bucket creation
-    tag_env_prefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
+    tag_env_prefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ) :")
     while(len(tag_env_prefix) > 13 or len(tag_env_prefix) == 0):
-            tag_env_prefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ): ")
+            tag_env_prefix = raw_input("Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ) :")
     tag_env_prefix = tag_env_prefix.lower()
 
     #TODO - Need to check if we really need this
@@ -102,7 +102,7 @@ def get_stack_generic_details(jazz_branch):
 
     # Get Cognito details
     while(1):
-        cognito_email_id = raw_input("Please provide valid email ID to login to Jazz Application:")
+        cognito_email_id = raw_input("Please provide valid email ID to login to Jazz Application :")
         if validate_email_id(cognito_email_id):
             break
         else:

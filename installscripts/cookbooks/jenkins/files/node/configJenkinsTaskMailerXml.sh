@@ -8,11 +8,12 @@ SMTP_USE_SSL=$4
 JENKINS_URL=http://$5:8080/
 JENKINSUSER=$6
 JENKINSPASSWD=$7
+SSH_USER=$8
 
 #Jenkins TaskMailerPublisher XML
 JENKINS_TASK_MAILER_CONFIG_XML=/var/lib/jenkins/hudson.tasks.Mailer.xml
-JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
-ENCRYPT_PASSWORD_SCRIPT=/home/ec2-user/encrypt.groovy
+JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
 SMTP_PORT=465
 
 #Populating all the variables necessary
