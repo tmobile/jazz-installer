@@ -23,7 +23,7 @@ for x in stack_de*.out;do mv $x ./${x%.out}-old.out;done
 echo " ======================================================="
 echo " The following Stack has been marked for deletion in AWS"
 echo " ________________________________________________"
-cd installscripts/terraform-unix-noinstances-jazz
+cd installscripts/jazz-terraform-unix-noinstances
 terraform state list
 
 echo " ======================================================="

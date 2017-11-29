@@ -26,6 +26,10 @@ variable "configureJenkinselb_cmd" {
   type = "string"
   default = "./scripts/configureJenkinselb.sh"
 }
+variable "configureJenkinsSSHUser_cmd" {
+  type = "string"
+  default = "./scripts/configureJenkinsSSHUser.sh"
+}
 variable "bitbucketclient_cmd" {
   type = "string"
   default = "./scripts/bitbucketclient.sh"

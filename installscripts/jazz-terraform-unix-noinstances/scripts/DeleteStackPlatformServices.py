@@ -9,7 +9,8 @@ def checkCFServiceAvailable(servicename):
     return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 def deleteCFService(servicename):
-    return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return subprocess.call("aws cloudformation delete-stack --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 def getServicesList():
     return subprocess.call('aws cloudformation list-stacks --stack-status-filter "CREATE_IN_PROGRESS" "CREATE_FAILED" "CREATE_COMPLETE" "UPDATE_IN_PROGRESS" "UPDATE_COMPLETE" >> listservice.json', shell=True)
