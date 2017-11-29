@@ -67,9 +67,9 @@ def get_and_add_existing_bitbucket_config(terraform_folder):
 
     #Get Existing Bitbucket Details form user
     print "\nPlease provide Bitbucket Details.."
-    bitbucket_server_elb = raw_input("Bitbucket URL (Please ignore http and port number from URL): ")
-    bitbucket_username = raw_input("Bitbucket username:")
-    bitbucket_passwd = raw_input("Bitbucket password:")
+    bitbucket_server_elb = raw_input("Bitbucket URL (Please ignore http and port number from URL) :")
+    bitbucket_username = raw_input("Bitbucket username :")
+    bitbucket_passwd = raw_input("Bitbucket password :")
     
     #Check if the user provided bitbucket user exist
     if check_bitbucket_user(bitbucket_server_elb, bitbucket_username, bitbucket_passwd):
@@ -78,8 +78,8 @@ def get_and_add_existing_bitbucket_config(terraform_folder):
         sys.exit("Kindly provide an 'Admin' Bitbucket user with correct password and run the installer again!")
     
     #Get bitbucket public ip and ssh login
-    bitbucket_server_public_ip = raw_input("Bitbucket Server PublicIp:")
-    bitbucket_server_ssh_login = raw_input("Bitbucket SSH login name:")
+    bitbucket_server_public_ip = raw_input("Bitbucket Server PublicIp :")
+    bitbucket_server_ssh_login = raw_input("Bitbucket SSH login name :")
 
     #Create paramter list
     parameter_list = [  bitbucket_server_elb ,

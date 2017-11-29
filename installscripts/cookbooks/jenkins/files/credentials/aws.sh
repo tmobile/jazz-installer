@@ -1,6 +1,9 @@
 JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
-AUTHFILE=/home/ec2-user/cookbooks/jenkins/files/default/authfile
-JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
+SSH_USER=$2
+
+AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+
 AWS_ACCESS_KEY="Replaced with sed command from create.sh"
 AWS_SECRET_KEY="Replaced with sed command from create.sh"
 echo "$0 $1"
