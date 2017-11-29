@@ -1,7 +1,9 @@
 JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
-JENKINS_PROPFILE=/home/ec2-user/cookbooks/jenkins/files/node/jenkins-conf.properties
-AUTHFILE=/home/ec2-user/cookbooks/jenkins/files/default/authfile
-JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
+SSH_USER=$2
+JENKINS_PROPFILE=/home/$SSH_USER/cookbooks/jenkins/files/node/jenkins-conf.properties
+AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+
 echo "$0 $1 $2 "
 REPO_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
 AWS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "AWS Credentials"|cut -d" " -f1`
