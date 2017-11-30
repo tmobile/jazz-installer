@@ -49,8 +49,8 @@ pipeline {
       }
       stage('Running Installer.sh') {
         steps {
-            sh 'cd ~ && curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.1/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh'
-            sh '~/rhel7Installer.sh v1.1.1 < ${WORKSPACE}/jenkins-automator/input_parameters_shell'
+            sh 'cd ~ && curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.2/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh'
+            sh '~/rhel7Installer.sh v1.1.2 < ${WORKSPACE}/jenkins-automator/input_parameters_shell'
         }
       }
       stage('Running run.py') {
