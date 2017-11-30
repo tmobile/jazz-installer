@@ -11,7 +11,7 @@ def call(String buildStatus = 'STARTED') {
 Check console output at: ${env.BUILD_URL}console"""
 
   emailext (
-      to: 'feroz.shaikh@ust-global.com, surya.jakhotia1@t-mobile.com, raghavendra.pai@ust-global.com, somanchi.subramanyam@ust-global.com',
+      to: 'feroz.shaikh@ust-global.com' 'surya.jakhotia1@t-mobile.com' 'raghavendra.pai@ust-global.com' 'somanchi.subramanyam@ust-global.com',
       subject: subject,
       body: details,
       attachmentsPattern: 'Stack_details.txt',
