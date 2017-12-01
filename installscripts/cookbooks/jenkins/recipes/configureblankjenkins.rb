@@ -102,6 +102,9 @@ end
 execute 'job_build-deploy-platform-service' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}"
 end
+execute 'job_cleanup_cloudfront_distributions' do
+  command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh localhost cleanup_cloudfront_distributions  #{node['bitbucketelb']}  #{node['region']}"
+end
 execute 'job_deploy-all-platform-services' do
   command "/home/ec2-user/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh localhost deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']}"
 end
