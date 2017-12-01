@@ -5,9 +5,10 @@ def call(String buildStatus = 'STARTED') {
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
   // Default values
-  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def subject = "${buildStatus} Build for: Stack_name"
   def summary = "${subject} (${env.BUILD_URL})"
   def details = """${buildStatus}: Job '${env.JOB_NAME}. Build Number: [${env.BUILD_NUMBER}]'
+This build is for Stack: Stack_name
 Check console output at: ${env.BUILD_URL}console"""
 
   emailext (
