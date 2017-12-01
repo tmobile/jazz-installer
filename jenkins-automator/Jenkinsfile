@@ -12,17 +12,21 @@ pipeline {
   stages {
       stage('Provisioning') {
         steps {
-            sendStartNotifications 'STARTED'
-            sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
-            sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" jenkins-automator/input_parameters_shell'
-
             sh '''
             day=`date -I | cut -d'-' -f3`
             month=`date -I | cut -d'-' -f2`
             year=`date -I | cut -d'-' -f1`
             stack_name="jazz$year$month$day"
             sed -i "s/{stack_name}/$stack_name/g" jenkins-automator/input_parameters_python
+            sed -i "s/Stack_name/$stack_name/g" vars/sendStartNotifications.groovy
+            sed -i "s/Stack_name/$stack_name/g" vars/sendNotifications.groovy
+            sed -i "s/Stack_name/$stack_name/g" vars/sendSuccessNotifications.groovy
+            sed -i "s/Stack_name/$stack_name/g" vars/sendFailureNotifications.groovy
             '''
+            sendStartNotifications 'STARTED'
+            sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
+            sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" jenkins-automator/input_parameters_shell'
+
             sh 'sed -i "s/{jenkinsuser}/${JENKINS_USER_USR}/g" jenkins-automator/input_parameters_python'
             sh 'sed -i "s/{jenkinspasswd}/${JENKINS_USER_PSW}/g" jenkins-automator/input_parameters_python'
             sh 'sed -i "s/{bitbucketuser}/${BITBUCKET_USER_USR}/g" jenkins-automator/input_parameters_python'
