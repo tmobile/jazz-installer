@@ -22,6 +22,7 @@ pipeline {
             sed -i "s/Stack_name/$stack_name/g" vars/sendNotifications.groovy
             sed -i "s/Stack_name/$stack_name/g" vars/sendSuccessNotifications.groovy
             sed -i "s/Stack_name/$stack_name/g" vars/sendFailureNotifications.groovy
+            echo "Building the Stack: $stack_name now"
             '''
             sendStartNotifications 'STARTED'
             sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
