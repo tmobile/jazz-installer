@@ -17,6 +17,7 @@ pipeline {
             month=`date -I | cut -d'-' -f2`
             year=`date -I | cut -d'-' -f1`
             stack_name="jazz$year$month$day"
+            echo $stack_name > SN
             sed -i "s/{stack_name}/$stack_name/g" jenkins-automator/input_parameters_python
             sed -i "s/Stack_name/$stack_name/g" vars/sendStartNotifications.groovy
             sed -i "s/Stack_name/$stack_name/g" vars/sendNotifications.groovy
@@ -24,7 +25,10 @@ pipeline {
             sed -i "s/Stack_name/$stack_name/g" vars/sendFailureNotifications.groovy
             echo "Building the Stack: $stack_name now"
             '''
-            sendStartNotifications 'STARTED'
+            script {
+            def stack_name = readFile('SN').trim()
+            sendStartNotifications('STARTED', stack_name)
+            }
             sh 'sed -i "s/{aws_access_key}/${AWS_ACCESS_KEY_ID}/g" jenkins-automator/input_parameters_shell'
             sh 'sed -i "s/{aws_secret_key}/${AWS_SECRET_ACCESS_KEY}/g" jenkins-automator/input_parameters_shell'
 
@@ -68,10 +72,16 @@ pipeline {
   }
   post {
     failure {
-    sendFailureNotifications currentBuild.result
+      script {
+        def stack_name = readFile('SN').trim()
+        sendFailureNotifications currentBuild.result, stack_name
+      }
     }
     success {
-    sendSuccessNotifications currentBuild.result
+      script {
+        def stack_name = readFile('SN').trim()
+        sendSuccessNotifications currentBuild.result, stack_name
+      }
     }
   }
 }
