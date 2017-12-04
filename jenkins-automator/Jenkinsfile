@@ -18,6 +18,7 @@ pipeline {
             year=`date -I | cut -d'-' -f1`
             stack_name="jazz$year$month$day"
             echo $stack_name > SN
+            sed -i "s/{stack_name}/$stack_name/g" jenkins-automator/input_parameters_python
             echo "Building the Stack: $stack_name now"
             '''
             script {
