@@ -18,11 +18,6 @@ pipeline {
             year=`date -I | cut -d'-' -f1`
             stack_name="jazz$year$month$day"
             echo $stack_name > SN
-            sed -i "s/{stack_name}/$stack_name/g" jenkins-automator/input_parameters_python
-            sed -i "s/Stack_name/$stack_name/g" vars/sendStartNotifications.groovy
-            sed -i "s/Stack_name/$stack_name/g" vars/sendNotifications.groovy
-            sed -i "s/Stack_name/$stack_name/g" vars/sendSuccessNotifications.groovy
-            sed -i "s/Stack_name/$stack_name/g" vars/sendFailureNotifications.groovy
             echo "Building the Stack: $stack_name now"
             '''
             script {
