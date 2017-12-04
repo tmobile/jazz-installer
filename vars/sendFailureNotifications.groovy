@@ -1,14 +1,14 @@
 #!/usr/bin/env groovy
 
-def call(String buildStatus = 'STARTED') {
+def call(String buildStatus = 'STARTED', String SN) {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
-
+  Stack_name = SN
   // Default values
-  def subject = "${buildStatus} Build for: Stack_name"
+  def subject = "${buildStatus} Build for: ${Stack_name}"
   def summary = "${subject} (${env.BUILD_URL})"
   def details = """${buildStatus}: Job '${env.JOB_NAME}. Build Number: [${env.BUILD_NUMBER}]'
-This build is for Stack: Stack_name
+This build is for Stack: ${Stack_name}
 Check console output at: ${env.BUILD_URL}console"""
 
   emailext (
