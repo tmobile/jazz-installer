@@ -66,6 +66,8 @@ cd installscripts/terraform-unix-noinstances-jazz
 
 shopt -s extglob
 
+sleep 2m
+
 if (grep -q "Error applying plan" ./stack_deletion.out) then
     echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
 else
