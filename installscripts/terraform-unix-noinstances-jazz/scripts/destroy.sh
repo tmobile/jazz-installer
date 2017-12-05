@@ -68,12 +68,12 @@ shopt -s extglob
 
 sleep 2m
 
+cd $currentDir
+
 if (grep -q "Error applying plan" ./stack_deletion.out) then
     echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
 else
     echo "Proceeding to delete Jazz Installer."
-    cd $currentDir
-
     sudo rm -rf !(*.out)
     sudo rm -rf ../rhel7Installer.sh ../atlassian-cli*
 fi
