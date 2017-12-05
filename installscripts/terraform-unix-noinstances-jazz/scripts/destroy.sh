@@ -35,6 +35,8 @@ echo " ======================================================="
 
 if [ "$1" == "all" ]; then
      /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name true
+     cd $currentDir
+     cd installscripts/terraform-unix-noinstances-jazz
      /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name true
 fi
 
@@ -56,9 +58,10 @@ if [ "$1" != "all" ]; then
 	exit 0
 fi
 
-cd $currentDir
-
+    
 echo "Destroy Cloud Fronts of the stack."
+cd $currentDir
+cd installscripts/terraform-unix-noinstances-jazz
 /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
 shopt -s extglob
@@ -67,6 +70,7 @@ if (grep -q "Error applying plan" ./stack_deletion.out) then
     echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
 else
     echo "Proceeding to delete Jazz Installer."
+    cd $currentDir
 
     sudo rm -rf !(*.out)
     sudo rm -rf ../rhel7Installer.sh ../atlassian-cli*
