@@ -104,3 +104,9 @@ sed -i "s/region.*.$/region: $region/g" ./jazz-core/lambda-template-python/deplo
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-java.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-nodejs.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-python.yml
+
+#Adding platform_usermanagement value injection
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_usermanagement/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_usermanagement/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_usermanagement/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_usermanagement/deployment-env.yml
