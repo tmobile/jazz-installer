@@ -38,7 +38,7 @@ echo " ======================================================="
 
 if [ "$1" == "all" ]; then
      /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name true
-     cd $currentDir/installscripts/terraform-unix-noinstances-jazz
+     cd $currentDir/installscripts/jazz-terraform-unix-noinstances
      /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name true
 fi
 
@@ -48,7 +48,7 @@ fi
 
 if [ "$1" == "all" ]; then
     echo "Destroy Cloud Fronts of the stack."
-    cd $currentDir/installscripts/terraform-unix-noinstances-jazz
+    cd $currentDir/installscripts/jazz-terraform-unix-noinstances
     /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
     while [ $loopIndx -le 2 ];
