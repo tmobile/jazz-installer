@@ -38,7 +38,7 @@ echo " ======================================================="
 
 if [ "$1" == "all" ]; then
      /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name true
-     cd ~/installscripts/jazz-terraform-unix-noinstances
+     cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
      /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name true
 fi
 
@@ -48,7 +48,7 @@ fi
 
 if [ "$1" == "all" ]; then
     echo "Destroy Cloud Fronts of the stack."
-    cd ~/installscripts/jazz-terraform-unix-noinstances
+    cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
     /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
     while [ $loopIndx -le 2 ];
@@ -84,7 +84,7 @@ fi
 echo "sleeping for 30 secs"
 sleep 30s
 
-cd ~/
+cd ~/jazz-installer
 
 if (grep -q "Error applying plan" ./stack_deletion.out) then
     echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
