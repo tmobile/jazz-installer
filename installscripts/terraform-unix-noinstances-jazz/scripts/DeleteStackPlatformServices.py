@@ -37,7 +37,7 @@ print (str(sys.argv))
 stackName = sys.argv[1].lower() + "-"
 deleteClientServices = sys.argv[2]
 
-platformServices = ['hndlr-dev', 'events-dev', 'services-dev', 'logout-dev', 'login-dev', 'cloud-logs-streamer-dev', 'is-service-available-dev', 'delete-serverless-service-dev', 'create-serverless-service-dev', 'cognito-authorizer-dev']
+platformServices = ['logs-dev', 'usermanagement-dev', 'hndlr-dev', 'events-dev', 'services-dev', 'logout-dev', 'login-dev', 'cloud-logs-streamer-dev', 'is-service-available-dev', 'delete-serverless-service-dev', 'create-serverless-service-dev', 'cognito-authorizer-dev']
 for pservice in platformServices:
     deleteCloudFormationService(stackName + pservice)
 
