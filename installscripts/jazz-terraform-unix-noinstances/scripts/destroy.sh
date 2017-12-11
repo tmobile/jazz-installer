@@ -18,7 +18,13 @@ if [ "$1" != "all" ] && [ "$1" != "frameworkonly" ]; then
 fi
 
 # Rename any stack_deletion out files if any
-for x in stack_de*.out;do mv $x ./${x%.out}-old.out;done
+for x in ~/jazz-installer/stack_de*.out
+do
+    if [ -f "$x" ] 
+    then
+        mv $x ${x%.out}-old.out
+    fi
+done
 
 echo " ======================================================="
 echo " The following Stack has been marked for deletion in AWS"
@@ -54,7 +60,7 @@ if [ "$1" == "all" ]; then
     while [ $loopIndx -le 2 ];
     do
         ((loopIndx++))
-        nohup terraform destroy --force >>../../stack_deletion_$loopIndx.out &&
+        nohup terraform destroy --force >> ../../stack_deletion_$loopIndx.out &&
 
         echo "Waiting for Terraform to finish updating the logs for 30 secs"
         sleep 30s
