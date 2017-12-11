@@ -24,7 +24,7 @@
   * A Jenkins user with 'admin' permission.
   * Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
   
-* Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in home directory '/home/ec2-user;
+* Login to the installer box; create jenkinskey.pem with private key of Jenkins in home directory '/home/ec2-user;
 * Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
   * Note: Please note that some of the AWS resources are accessed through Jenkins during some of the internal orchestration activities.
 

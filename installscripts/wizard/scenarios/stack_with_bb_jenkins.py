@@ -13,31 +13,27 @@ HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
 JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
-BITBUCKET_PEM = HOME_FOLDER + "/bitbucketkey.pem"
 
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
-def check_jenkins_bitbucket_pem():
+
+def check_jenkins_pem():
     """
-        Check if the user has provided jenkinskey.pem and bitbucketkey.pem
+        Check if the user has provided jenkinskey.pem
     """
-    print(" Please make sure that you have the ssh login user names of jenkins and bitbucket servers.")
-    print(" Please create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in /home/ec2-user")
+    print(" Please make sure that you have the ssh login user name of jenkins servers.")
+    print(" Please create jenkinskey.pem with private key of Jenkins in /home/ec2-user")
     pause()
 
-    #Chck if both files are been added to home derectory
+    #Check if file is been added to home derectory
     if not os.path.isfile(JENKINS_PEM):
         sys.exit("File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
-    if not os.path.isfile(BITBUCKET_PEM):
-        sys.exit("File bitbucketkey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
-
+    
     #Copy the pem keys and give relavant permisions
     subprocess.call('cp -f {0} {1}sshkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
     subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
-    subprocess.call('cp -f {0} {1}sshkeys'.format(BITBUCKET_PEM, HOME_INSTALL_SCRIPTS).split(' '))
-    subprocess.call('sudo chmod 400 {0}sshkeys/bitbucketkey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
-
+    
 
 def start(parameter_list):
     """
@@ -53,8 +49,8 @@ def start(parameter_list):
     # Get Bitbucket configuration details    
     get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)
 
-    # Make Sure Jenkins and Bitbucket pem files are present in home folder
-    check_jenkins_bitbucket_pem()
+    # Make Sure Jenkins pem file is present in home folder
+    check_jenkins_pem()
 
     #All variables are set and ready to call terraform
     os.chdir(TERRAFORM_FOLDER_PATH)
