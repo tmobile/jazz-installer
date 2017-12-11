@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BITBUCKETELB=%1
+BITBUCKETELB=$1
 bitbucketuser=$2
 bitbucketpasswd=$3
 
@@ -25,7 +25,7 @@ for path in ./*; do
 
     bitbucketuser_encoded=`python -c "import urllib; print(urllib.quote_plus('$bitbucketuser'))"`
     bitbucketpasswd_encoded=`python -c "import urllib; print(urllib.quote_plus('$bitbucketpasswd'))"`
-    git clone http://$bitbucketuser_encoded:$bitbucketpasswd_encoded@$1:7990/scm/SLF/$dirname.git
+    git clone http://$bitbucketuser_encoded:$bitbucketpasswd_encoded@$BITBUCKETELB:7990/scm/SLF/$dirname.git
 
     pwd
     cp -rf ../jazz-core/$dirname/* $dirname
