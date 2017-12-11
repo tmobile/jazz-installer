@@ -151,7 +151,7 @@ resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
   region = "${var.region}"
-  depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
+  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ] 
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
