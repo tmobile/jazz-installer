@@ -18,8 +18,7 @@ def add_bitbucket_config_to_files(parameter_list):
         parameter_list = [  bitbucket_server_elb ,
                             bitbucket_username,
                             bitbucket_passwd,
-                            bitbucket_server_public_ip,
-                            bitbucket_server_ssh_login]
+                            bitbucket_server_public_ip]
     """
     subprocess.call(['sed', '-i', "s|bitbucket_elb.*.$|bitbucket_elb=\"%s\"|g" %(parameter_list[0]), VARIABLES_TF_FILE])
 
@@ -29,8 +28,7 @@ def add_bitbucket_config_to_files(parameter_list):
 
     subprocess.call(['sed', '-i', "s|bitbucket_public_ip.*.$|bitbucket_public_ip=\"%s\"|g" %(parameter_list[3]), VARIABLES_TF_FILE])
 
-    subprocess.call(['sed', '-i', "s|bitbucket_ssh_login.*.$|bitbucket_ssh_login=\"%s\"|g" %(parameter_list[4]), VARIABLES_TF_FILE])
-
+    
     #Adding bitbucket username and password
     subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
     subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(parameter_list[2]), JENKINS_COOKBOOK_SH])
@@ -77,15 +75,13 @@ def get_and_add_existing_bitbucket_config(terraform_folder):
     else:
         sys.exit("Kindly provide an 'Admin' Bitbucket user with correct password and run the installer again!")
     
-    #Get bitbucket public ip and ssh login
+    #Get bitbucket public ip
     bitbucket_server_public_ip = raw_input("Bitbucket Server PublicIp :")
-    bitbucket_server_ssh_login = raw_input("Bitbucket SSH login name :")
-
+    
     #Create paramter list
     parameter_list = [  bitbucket_server_elb ,
                         bitbucket_username,
                         bitbucket_passwd,
-                        bitbucket_server_public_ip,
-                        bitbucket_server_ssh_login]
+                        bitbucket_server_public_ip]
 
     add_bitbucket_config_to_files(parameter_list)
