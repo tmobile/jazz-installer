@@ -69,7 +69,6 @@ if [ "$1" == "all" ]; then
             terraform state list
         else
             echo "Terraform destroy success"
-            ((loopIndx=5))
             break
         fi
     done
@@ -87,8 +86,6 @@ if [ "$1" == "frameworkonly" ]; then
     exit 0
 fi
 
-echo "sleeping for 30 secs"
-sleep 30s
 
 cd ~/jazz-installer
 
