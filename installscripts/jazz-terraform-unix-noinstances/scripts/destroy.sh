@@ -89,7 +89,7 @@ fi
 
 cd ~/jazz-installer
 
-if (grep -q "Error applying plan" ./stack_deletion.out) then
+if (grep -q "Error applying plan" ./stack_deletion_$loopIndx.out) then
     echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
     exit 1
 fi
