@@ -4,7 +4,7 @@ sleep 60
 #The below two variables are added from  configureJenkinselb.sh and configureBitbucketelb
 JENKINSELB=jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com
 BITBUCKETELB=jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com
-BASEURL=http://$BITBUCKETELB:7990
+BASEURL=http://$BITBUCKETELB
 
 CLIENTJAR=~/atlassian-cli-6.7.1/lib/bitbucket-cli-6.7.0.jar
 region=$1
@@ -22,4 +22,4 @@ java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action 
 
 #CALLS JENKINS JOB TO INSTALL Serverless application on AWS
 #curl  http://$JENKINSELB:8080/job/inst_deploy_createservice/build?token=triggerCreateService --user jenkinsadmin:jenkinsadmin
-curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB:8080/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
+curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
