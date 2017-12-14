@@ -7,6 +7,6 @@ ADMIN_ADDRESS=$2
 JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
 sed  -i "s=adminAddress.*.$=adminAddress>$ADMIN_ADDRESS</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
-sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://$JENKINSELB:8080/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
+sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://$JENKINSELB/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
 
 
