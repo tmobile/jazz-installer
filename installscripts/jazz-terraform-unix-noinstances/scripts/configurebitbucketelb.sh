@@ -8,7 +8,7 @@ inst_stack_prefix=$5
 jazz_admin=$6
 
 sed -i "s/default\['bitbucketelb'\].*.$/default['bitbucketelb']='$bitbucketelb_dns_name'/g"  $jenkinsattribsfile
-sed -i "s/REPO_BASE=.*.$/REPO_BASE=$bitbucketelb_dns_name:7990/g" $jenkinspropertiesfile
+sed -i "s/REPO_BASE=.*.$/REPO_BASE=$bitbucketelb_dns_name/g" $jenkinspropertiesfile
 sed -i "s/BITBUCKETELB=.*.$/BITBUCKETELB=$bitbucketelb_dns_name/g" $bitbucketclient
 
 #Modify platform_services config files
