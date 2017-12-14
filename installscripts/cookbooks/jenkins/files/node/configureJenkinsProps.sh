@@ -1,4 +1,4 @@
-JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+JENKINS_URL=http://$1/ # localhost or jenkins elb url
 SSH_USER=$2
 JENKINS_PROPFILE=/home/$SSH_USER/cookbooks/jenkins/files/node/jenkins-conf.properties
 AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile

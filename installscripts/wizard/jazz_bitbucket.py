@@ -38,7 +38,7 @@ def check_bitbucket_user(url, username, passwd):
     """
         Check if the bitbucket user is present in Bitbucket server
     """
-    bitbucket_url = 'http://' + url +':7990'
+    bitbucket_url = 'http://' + url +''
     subprocess.call(['sudo', 'chmod', '+x', BITBUCKET_SH])
     cmd = [ BITBUCKET_SH , '--action', 'createproject', '--project', 'test000', '--name', 'test000', '--server', bitbucket_url, '--user', username, '--password', passwd]
     
