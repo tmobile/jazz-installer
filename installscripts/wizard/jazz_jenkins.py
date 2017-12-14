@@ -45,7 +45,7 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_url = 'http://' + url +':8080'
+    jenkins_url = 'http://' + url +''
     cmd = ['/usr/bin/java', '-jar', JENKINS_CLI, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
     subprocess.call(cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
 
