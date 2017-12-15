@@ -1,4 +1,4 @@
-export JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+export JENKINS_URL=http://$1/ # localhost or jenkins elb url
 export HOST_NAME=`hostname -i | cut -d" " -f2` 
 export NODE_NAME=$2
 export NODE_SLAVE_HOME="/home/ec2-user/$NODE_NAME"
