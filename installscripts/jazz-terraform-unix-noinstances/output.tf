@@ -6,13 +6,13 @@ resource "null_resource" "outputVariables" {
     command = "touch settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo bitbucketelb = http://${lookup(var.bitbucketservermap, "bitbucket_elb")}:7990 > settings.txt"
+    command = "echo bitbucketelb = http://${lookup(var.bitbucketservermap, "bitbucket_elb")} > settings.txt"
   }
   provisioner "local-exec" {
     command = "echo bitbucket publicip = ${lookup(var.bitbucketservermap, "bitbucket_public_ip")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo jenkinselb = http://${lookup(var.jenkinsservermap, "jenkins_elb")}:8080 >> settings.txt"
+    command = "echo jenkinselb = http://${lookup(var.jenkinsservermap, "jenkins_elb")} >> settings.txt"
   }
   provisioner "local-exec" {
     command = "echo jenkins-publicip = ${lookup(var.jenkinsservermap, "jenkins_public_ip")} >> settings.txt"
