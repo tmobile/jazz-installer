@@ -25,7 +25,7 @@ def check_jenkins_ec2user(parameter_list):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         res = ssh.connect(jenkins_server_public_ip,username=jenkins_server_ssh_login,key_filename=keyfile)
         if res == None:
-            print ("SSH successful")
+            print("SSH successful")
     except:
         print("Are the keys and usernames valid?")
 
