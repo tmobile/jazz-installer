@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import paramiko
 
 # Global variables
 VARIABLES_TF_FILE = "variables.tf"
@@ -11,6 +12,24 @@ JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
 JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/authfile"
 
 DEV_NULL = open(os.devnull, 'w')
+
+def check_jenkins_ec2user(parameter_list):
+        """
+        Check if the ssh login name is a ec2-user
+        """
+		jenkins_server_public_ip=parameter_list[3]
+		jenkins_server_ssh_login=parameter_list[4]
+		keyfile="~/jenkinskey.pem"
+
+        try:
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                res = ssh.connect(jenkins_server_public_ip,username=jenkins_server_ssh_login,key_filename=keyfile)
+				if res == None:
+                  print "SSH successful"
+        except:
+                print("Are the keys and usernames valid?")
+
 
 def add_jenkins_config_to_files(parameter_list):
     """
@@ -91,5 +110,8 @@ def get_and_add_existing_jenkins_config(terraform_folder):
                         jenkins_server_ssh_login,
                         jenkins_server_security_group,
                         jenkins_server_subnet]
+	
 
+	
+	check_jenkins_ec2user(parameter_list)
     add_jenkins_config_to_files(parameter_list)
