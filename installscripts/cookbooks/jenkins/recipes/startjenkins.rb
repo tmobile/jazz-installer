@@ -4,7 +4,6 @@
 #
 # Copyright 2017, YOUR_COMPANY_NAME
 #
-JENKINSELB=$1
 
 execute 'resizeJenkinsMemorySettings' do
   command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
@@ -65,43 +64,43 @@ execute 'copylinkdir' do
 end
 
 execute 'createcredentials-jenkins1' do
-  command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh localhost #{node['jenkins']['SSH_user']}"
+  command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createcredentials-jobexecutor' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh localhost #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createcredentials-aws' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/aws.sh localhost #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
 
 
 execute 'createJob-create-service' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_create-service.sh localhost create-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-delete-service' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh localhost delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-job_pack_java_api' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh localhost build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-bitbucketteam_newService' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh localhost bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_build-deploy-platform-service' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh localhost build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_cleanup_cloudfront_distributions' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh localhost cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_deploy-all-platform-services' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh localhost deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-job-pack-lambda' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh localhost build-pack-lambda #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 
 execute 'createJob-job-build-pack-website' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh localhost build-pack-website #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 
 link '/usr/bin/aws-api-import' do
@@ -118,7 +117,7 @@ link '/usr/bin/aws' do
 end
 
 execute 'configureJenkinsProperites' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh localhost #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
 
 execute 'configJenkinsLocConfigXml' do
@@ -146,11 +145,11 @@ service "jenkins" do
   action [:restart]
 end
 execute 'copyJobBuildPackApi' do
-  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh localhost build_pack_api build_pack_api_dev #{node['jenkins']['SSH_user']}"
+  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build_pack_api build_pack_api_dev #{node['jenkins']['SSH_user']}"
 end
 execute 'copyJobBuildPackLambda' do
-  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-lambda build-pack-lambda-dev #{node['jenkins']['SSH_user']}"
+  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-lambda build-pack-lambda-dev #{node['jenkins']['SSH_user']}"
 end
 execute 'copyJobBuildPackLambda' do
-  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh localhost build-pack-website build-pack-website-dev #{node['jenkins']['SSH_user']}"
+  command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-website build-pack-website-dev #{node['jenkins']['SSH_user']}"
 end
