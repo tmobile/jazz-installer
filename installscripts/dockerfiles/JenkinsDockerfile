@@ -1,0 +1,24 @@
+FROM centos
+MAINTAINER Jazz-OSS feroz.shaikh@ust-global.com
+
+RUN yum install epel-release wget -y
+RUN yum makecache fast
+RUN yum install java-1.8.0-openjdk.x86_64 -y
+RUN cp /etc/profile /etc/profile_backup
+RUN echo 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk' | tee -a /etc/profile
+RUN echo 'export JRE_HOME=/usr/lib/jvm/jre' | tee -a /etc/profile
+RUN source /etc/profile
+RUN cd ~
+RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+RUN yum install jenkins -y
+
+ENV JENKINS_HOME /var/jenkins_home
+VOLUME /var/jenkins_home
+RUN yum -y install initscripts
+
+RUN chkconfig jenkins on
+EXPOSE 8080
+VOLUME [ “/sys/fs/cgroup” ]
+CMD [“/usr/sbin/init”]
+CMD service jenkins start
