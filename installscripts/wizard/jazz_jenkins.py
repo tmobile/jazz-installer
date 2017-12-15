@@ -112,5 +112,5 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 	
 
 	
-	check_jenkins_ec2user(parameter_list)
+    check_jenkins_ec2user(parameter_list)
     add_jenkins_config_to_files(parameter_list)
