@@ -17,15 +17,15 @@ def check_jenkins_ec2user(parameter_list):
     """
         Check if the ssh login name is a ec2-user
     """
-	jenkins_server_public_ip=parameter_list[3]
-	jenkins_server_ssh_login=parameter_list[4]
-	keyfile="~/jenkinskey.pem"
+	jenkins_server_public_ip = parameter_list[3]
+	jenkins_server_ssh_login = parameter_list[4]
+	keyfile = "~/jenkinskey.pem"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         res = ssh.connect(jenkins_server_public_ip,username=jenkins_server_ssh_login,key_filename=keyfile)
-        	if res == None:
-                print "SSH successful"
+        if res == None:
+            print ("SSH successful")
     except:
         print("Are the keys and usernames valid?")
 
