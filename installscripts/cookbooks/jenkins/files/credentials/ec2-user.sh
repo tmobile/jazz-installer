@@ -1,4 +1,4 @@
-JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+JENKINS_URL=http://$1/ # localhost or jenkins elb url
 AUTHFILE=/home/ec2-user/cookbooks/jenkins/files/default/authfile
 JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
 echo "$0 $1 $2 "
