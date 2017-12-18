@@ -24,7 +24,7 @@ ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
 echo "============>"
 echo "Jenkins Docker Details:"
-echo "PublicIp: $ip"
+echo "Jenkins URL: http://$ip:8080"
 echo "Username: admin"
 echo "Password: $initialPassword"
 echo "============>"
