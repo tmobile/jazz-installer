@@ -5,6 +5,7 @@ CLIENT_NAME=$2
 POOL_USER_NAME=$3
 POOL_USER_PASSWORD=$4
 jenkinspropsfile=$5
+jenkinsjsonpropsfile=$5
 
 
 #Create the userpool
@@ -37,3 +38,9 @@ aws cognito-idp admin-confirm-sign-up  --user-pool-id $USER_POOL_ID --username $
 # Adding Cognito Details to jenkinspropsfile
 sed -i "s/USER_POOL_ID.*.$/USER_POOL_ID=$USER_POOL_ID/g" $jenkinspropsfile
 sed -i "s/CLIENT_ID.*.$/CLIENT_ID=$CLIENT_ID/g" $jenkinspropsfile
+
+
+
+# Adding Cognito Details to jenkinsjsonpropsfile[Json Format]
+sed -i "s/USER_POOL_ID\".*.$/USER_POOL_ID\": \"$USER_POOL_ID\",/g" $jenkinsjsonpropsfile
+sed -i "s/CLIENT_ID\".*.$/CLIENT_ID\": \"$CLIENT_ID\"/g" $jenkinsjsonpropsfile

@@ -17,3 +17,6 @@ sed -i 's/"services_table": ".*.$/"services_table": "'$inst_stack_prefix'_servic
 sed -i 's/"services_table": ".*.$/"services_table": "'$inst_stack_prefix'_services_prod",/g' ./jazz-core/platform_services/config/prod-config.json
 
 sed -i 's/"admin_users": ".*.$/"admin_users": "'$jazz_admin'"/g' ./jazz-core/platform_services/config/dev-config.json
+
+#[JSON Format]
+sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$bitbucketelb_dns_name\",/g" $jenkinspropertiesfile

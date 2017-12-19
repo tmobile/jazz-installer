@@ -117,6 +117,9 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     command = "${var.modifyPropertyFile_cmd} jazz_s3_api_doc ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} jazz_s3_api_doc ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
     command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
   }
   provisioner "local-exec" {
@@ -140,10 +143,12 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   description = "PROD API for Tmobile demo"
   provisioner "local-exec" {
     command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
-
   }
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
+  }
+  provisioner "local-exec" {
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
 }
 
@@ -182,6 +187,9 @@ EOF
 
   provisioner "local-exec" {
     command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinspropsfile} "
+  }
+  provisioner "local-exec" {
+    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile} "
   }
 
   provisioner "local-exec" {
@@ -239,6 +247,9 @@ EOF
 
   provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} jazz_roleId ${aws_iam_role.lambda_role.arn} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_roleId ${aws_iam_role.lambda_role.arn} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
         when = "destroy"
@@ -336,7 +347,13 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_S3BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JAZZ_REGION ${var.region} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JAZZ_REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
 	when = "destroy"
@@ -363,6 +380,9 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_S3BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
 	when = "destroy"
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
@@ -386,6 +406,9 @@ resource "aws_s3_bucket" "prod-serverless-static" {
 
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_S3BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_S3BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
 	when = "destroy"
