@@ -12,19 +12,20 @@ sudo usermod -aG docker $(whoami)
 #Configuring and pulling the jenkins-docker from ECR
 sudo docker volume rm jenkins-volume
 sudo docker volume create jenkins-volume
-aws ecr get-login --no-include-email --region us-east-1 > ecr_login_script
+sudo aws ecr get-login --no-include-email --region us-east-1 > ecr_login_script
 sudo bash ecr_login_script && rm -f ecr_login_script
 sudo docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss-repo:jenkins-docker
 sudo docker stop jenkins-server
 sudo docker rm jenkins-server
-sudo docker run -dt -p 8080:8080 --name=jenkins-server --mount source=jenkins-volume,destination=/var/lib/jenkins 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss-repo:jenkins-docker /bin/bash
+sudo docker run -dt -p 2200:2200  -p 8080:8080 --name=jenkins-server --mount source=jenkins-volume,destination=/var/lib/jenkins 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss-repo:jenkins-docker
+sudo docker cp jenkins-server:/root/.ssh/id_rsa private_key.pem
 echo "Waiting for Jenkins Server to be ready..."
-sleep 12
+sleep 8
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
 echo "============>"
 echo "Jenkins Docker Details:"
-echo "Jenkins URL: http://$ip:8080"
+echo "PublicIp: http://$ip:8080"
 echo "Username: admin"
 echo "Password: $initialPassword"
 echo "============>"
