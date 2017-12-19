@@ -18,6 +18,9 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
+  provisioner "local-exec" {
+    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
+  }
    provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
@@ -46,7 +49,13 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+   command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinspropsfile}"
@@ -58,14 +67,27 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinsjsonpropsfile}"
+  }
+
 
   provisioner "file" {
           source      = "${var.cookbooksDir}"
