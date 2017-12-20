@@ -14,9 +14,14 @@ SSH_USER=${10}
 
 #Jenkins ExtendedEmailPublisher XML
 JENKINS_EMAIL_EXT_CONFIG_XML=/var/lib/jenkins/hudson.plugins.emailext.ExtendedEmailPublisher.xml
-JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
-ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
 
+if [ -f /etc/redhat-release ]; then
+  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+  ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
+elif [ -f /etc/lsb-release ]; then
+  JENKINS_CLI=/root/jenkins-cli.jar
+  ENCRYPT_PASSWORD_SCRIPT=/root/encrypt.groovy
+fi
 #Populating all the variables necessary
 sed  -i "s=useSsl.*.$=useSsl>$SMTP_USE_SSL</useSsl>=g" $JENKINS_EMAIL_EXT_CONFIG_XML
 
