@@ -17,7 +17,7 @@ sed -i "s/API_ID_DEV=.*.$/API_ID_DEV=$API_ID_DEV/g" $jenkinspropsfile
 sed -i "s/API_ID_STG=.*.$/API_ID_STG=$API_ID_STG/g" $jenkinspropsfile
 sed -i "s/API_ID_PROD=.*.$/API_ID_PROD=$API_ID_PROD/g" $jenkinspropsfile
 sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsfile
-sed -i "s/default\['region'\].*.$/default['region']='$region'/g"  $jenkinsattribsfile
+
 
 else 
 	
@@ -29,6 +29,8 @@ sed -i "s/API_ID_PROD\".*.$/API_ID_PROD\": \"$API_ID_PROD\"/g" $jenkinsjsonprops
 sed -i "s/env_name_prefix\".*.$/env_name_prefix\": \"$env_name_prefix\",/g" $jenkinsjsonpropsfile
 
 fi
+
+sed -i "s/default\['region'\].*.$/default['region']='$region'/g"  $jenkinsattribsfile
 
 # Changing jazz-web config.json
 sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_DEV/g" ./jazz-core/jazz-web/config/config.json
