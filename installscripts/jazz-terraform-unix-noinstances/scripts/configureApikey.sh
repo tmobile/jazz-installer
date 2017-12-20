@@ -9,7 +9,7 @@ jenkinsattribsfile=$6
 env_name_prefix=$7
 
 #Both API_KEY and API_ID_DEV are needed and should have the same value
-if [ '$3' == "jazz-installer-vars.json" ] ;
+if [ '$5' == "jazz-installer-vars.json" ] ;
     then
 sed -i "s/API_KEY=.*.$/API_KEY=$API_ID_DEV/g" $jenkinspropsfile
 sed -i "s/API_ID_DEV=.*.$/API_ID_DEV=$API_ID_DEV/g" $jenkinspropsfile
@@ -18,7 +18,7 @@ sed -i "s/API_ID_PROD=.*.$/API_ID_PROD=$API_ID_PROD/g" $jenkinspropsfile
 sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsfile
 sed -i "s/default\['region'\].*.$/default['region']='$region'/g"  $jenkinsattribsfile
 
-elif [ '$3' == "jenkins-conf.properties" ] ;
+elif [ '$5' == "jenkins-conf.properties" ] ;
 	then
 #Both API_KEY and API_ID_DEV are needed and should have the same value[JSON Format]
 sed -i "s/API_KEY\".*.$/API_KEY\": \"$API_ID_DEV\",/g" $jenkinspropsfile

@@ -36,12 +36,12 @@ username_rand=`cat /tmp/$POOL_NAME-signup  | grep -i usersub | awk '{print $2}' 
 aws cognito-idp admin-confirm-sign-up  --user-pool-id $USER_POOL_ID --username $username_rand
 
 # Adding Cognito Details to jenkinspropsfile
-if [ '$6' == "jenkins-conf.properties" ] ;
+if [ '$5' == "jenkins-conf.properties" ] ;
     then
 sed -i "s/USER_POOL_ID.*.$/USER_POOL_ID=$USER_POOL_ID/g" $jenkinspropsfile
 sed -i "s/CLIENT_ID.*.$/CLIENT_ID=$CLIENT_ID/g" $jenkinspropsfile
 
-elif [ '$3' == "jenkins-conf.properties" ] ;
+elif [ '$5' == "jenkins-conf.properties" ] ;
 	then
 # Adding Cognito Details to jenkinsjsonpropsfile[Json Format]
 sed -i "s/USER_POOL_ID\".*.$/USER_POOL_ID\": \"$USER_POOL_ID\",/g" $jenkinspropsfile
