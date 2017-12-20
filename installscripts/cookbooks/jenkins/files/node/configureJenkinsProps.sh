@@ -11,7 +11,6 @@ REPO_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list
 AWS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "AWS Credentials"|cut -d" " -f1`
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jobexec"|cut -d" " -f1`
 
-
 sed -i "s/REPO_CREDENTIAL_ID=.*.$/REPO_CREDENTIAL_ID=$REPO_CREDENTIAL_ID/g" $JENKINS_PROPFILE
 sed -i "s/AWS_CREDENTIAL_ID=.*.$/AWS_CREDENTIAL_ID=$AWS_CREDENTIAL_ID/g" $JENKINS_PROPFILE
 sed -i "s/JENKINS_CREDENTIAL_ID=.*.$/JENKINS_CREDENTIAL_ID=$JENKINS_CREDENTIAL_ID/g" $JENKINS_PROPFILE
