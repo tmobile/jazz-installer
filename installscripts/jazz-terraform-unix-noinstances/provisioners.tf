@@ -5,6 +5,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   connection {
     host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
     user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
     type = "ssh"
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
@@ -32,12 +33,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
           "sudo sh ~/cookbooks/installChef.sh",
           "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
           "sudo chmod 755 /usr/local/bin/jq",
-          "sudo cd /var/lib/jenkins/",
+          "cd /var/lib/jenkins/",
           "sudo cat ~/cookbooks/jenkins/files/plugins/plugins0* >plugins.tar",
           "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
           "sudo curl -O https://bootstrap.pypa.io/get-pip.py&& sudo python get-pip.py",
-          "sudo chmod -R o+w /usr/lib/python2.7/site-packages/ /usr/bin/",
-          "sudo cp ~/.bash_profile /var/lib/jenkins; sudo cp ~/.bashrc /var/lib/jenkins",
+          "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
           "sudo chef-client --local-mode -c ~/chefconfig/jenkins_client.rb -j ~/chefconfig/node-jenkinsserver-packages.json"
     ]
   }

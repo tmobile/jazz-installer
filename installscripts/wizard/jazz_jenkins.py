@@ -4,11 +4,15 @@ import sys
 import subprocess
 
 # Global variables
-VARIABLES_TF_FILE = "variables.tf"
+HOME_FOLDER = os.path.expanduser("~")
+TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
+VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
+
 HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
 JENKINS_CLI_PATH = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/"
 JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
 JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/authfile"
+
 
 DEV_NULL = open(os.devnull, 'w')
 
@@ -20,6 +24,7 @@ def add_jenkins_config_to_files(parameter_list):
                                 jenkins_passwd,
                                 jenkins_server_public_ip,
                                 jenkins_server_ssh_login,
+                                jenkins_server_ssh_port,
                                 jenkins_server_security_group,
                                 jenkins_server_subnet]
     """
@@ -34,9 +39,11 @@ def add_jenkins_config_to_files(parameter_list):
 
     subprocess.call(['sed', '-i', "s|jenkins_ssh_login.*.$|jenkins_ssh_login=\"%s\"|g" %(parameter_list[4]), VARIABLES_TF_FILE])
 
-    subprocess.call(['sed', '-i', "s|jenkins_security_group.*.$|jenkins_security_group=\"%s\"|g" %(parameter_list[5]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|jenkins_ssh_port.*.$|jenkins_ssh_port=\"%s\"|g" %(parameter_list[5]), VARIABLES_TF_FILE])
 
-    subprocess.call(['sed', '-i', "s|jenkins_subnet.*.$|jenkins_subnet=\"%s\"|g" %(parameter_list[6]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|jenkins_security_group.*.$|jenkins_security_group=\"%s\"|g" %(parameter_list[6]), VARIABLES_TF_FILE])
+
+    subprocess.call(['sed', '-i', "s|jenkins_subnet.*.$|jenkins_subnet=\"%s\"|g" %(parameter_list[7]), VARIABLES_TF_FILE])
 
     subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), JENKINS_AUTH_FILE])
 
@@ -64,7 +71,6 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     os.chdir(terraform_folder)
 
     #Get Existing Jenkins Details form user
-    print "\nPlease provide Jenkins Details.."
     jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL) :")
     jenkins_username = raw_input("Jenkins username :")
     jenkins_passwd = raw_input("Jenkins password :")
@@ -75,13 +81,14 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     else:
         sys.exit("Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!")
 
-    #get the jenkinsserver public IP and SSH login    
+    #get the jenkinsserver public IP and SSH login
     jenkins_server_public_ip = raw_input("Jenkins Server PublicIp :")
     jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name :")
 
     #TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
     jenkins_server_security_group = raw_input("Jenkins Server Security Group Name :")
     jenkins_server_subnet = raw_input("Jenkins Server Subnet :")
+    jenkins_server_ssh_port = "22"
 
     #Create paramter list
     parameter_list = [  jenkins_server_elb ,
@@ -89,7 +96,26 @@ def get_and_add_existing_jenkins_config(terraform_folder):
                         jenkins_passwd,
                         jenkins_server_public_ip,
                         jenkins_server_ssh_login,
+                        jenkins_server_ssh_port,
                         jenkins_server_security_group,
                         jenkins_server_subnet]
+
+    add_jenkins_config_to_files(parameter_list)
+
+def get_and_add_docker_jenkins_config(jenkins_docker_path):
+    """
+        Launch a dockerized Jenkins server.
+    """
+    os.chdir(jenkins_docker_path)
+    print("Running docker launch script")
+    subprocess.call(['bash', 'launch_jenkins_docker.sh', '|', 'tee', '-a', '../../docker_creation.out'])
+
+    # Get values to create the array
+    parameter_list = []
+    with open("docker_jenkins_vars") as f:
+        for line in f:
+            parameter_list.append(line.rstrip())
+
+    print(parameter_list[0:])
 
     add_jenkins_config_to_files(parameter_list)

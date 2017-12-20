@@ -15,7 +15,10 @@ resource "null_resource" "outputVariables" {
     command = "echo jenkinselb = http://${lookup(var.jenkinsservermap, "jenkins_elb")}:8080 >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo jenkins-publicip = ${lookup(var.jenkinsservermap, "jenkins_public_ip")} >> settings.txt"
+    command = "echo Jenkins Username = ${lookup(var.jenkinsservermap, "jenkinsuser")} >> settings.txt"
+  }
+  provisioner "local-exec" {
+    command = "echo Jenkins Password = ${lookup(var.jenkinsservermap, "jenkinspasswd")} >> settings.txt"
   }
   provisioner "local-exec" {
     command = "echo jenkins-subnet = ${lookup(var.jenkinsservermap, "jenkins_subnet")} >> settings.txt"

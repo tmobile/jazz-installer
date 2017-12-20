@@ -1,8 +1,13 @@
 JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
 SSH_USER=$2
 
-AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+if [ -f /etc/redhat-release ]; then
+  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+elif [ -f /etc/lsb-release ]; then
+  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/root/jenkins-cli.jar
+fi
 
 AWS_ACCESS_KEY="Replaced with sed command from create.sh"
 AWS_SECRET_KEY="Replaced with sed command from create.sh"

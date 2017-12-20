@@ -12,8 +12,13 @@ SSH_USER=$8
 
 #Jenkins TaskMailerPublisher XML
 JENKINS_TASK_MAILER_CONFIG_XML=/var/lib/jenkins/hudson.tasks.Mailer.xml
-JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
-ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
+if [ -f /etc/redhat-release ]; then
+  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+  ENCRYPT_PASSWORD_SCRIPT=/home/$SSH_USER/encrypt.groovy
+elif [ -f /etc/lsb-release ]; then
+  JENKINS_CLI=/root/jenkins-cli.jar
+  ENCRYPT_PASSWORD_SCRIPT=/root/encrypt.groovy
+fi
 SMTP_PORT=465
 
 #Populating all the variables necessary
@@ -32,6 +37,3 @@ sed -i "3 i \ ${SMTP_AUTH_PASSWORD_ENCRYPT_LINE}" $JENKINS_TASK_MAILER_CONFIG_XM
 
 SMTP_AUTH_USERNAME_LINE=" <smtpAuthUsername>$SMTP_AUTH_USERNAME</smtpAuthUsername>"
 sed -i "3 i \ ${SMTP_AUTH_USERNAME_LINE}" $JENKINS_TASK_MAILER_CONFIG_XML
-
-
-
