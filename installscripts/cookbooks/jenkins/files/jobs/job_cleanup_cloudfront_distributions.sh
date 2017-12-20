@@ -3,12 +3,17 @@ JOB_NAME=$2
 BITBUCKET_ELB=$3
 SSH_USER=$4
 
-AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+if [ -f /etc/redhat-release ]; then
+  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+elif [ -f /etc/lsb-release ]; then
+  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/root/jenkins-cli.jar
+fi
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
 
 echo "$0 $1 $2 "
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME 
+cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description>Cleans up Website Service&apos;s Cloud front distributions that are in status=disabled</description>
