@@ -1,11 +1,23 @@
-execute 'getnode' do
-   command 'curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -'
-   #cwd "/usr/local"
+if node[:platform_family].include?("rhel")
+  execute 'getnode' do
+     command 'curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -'
+     #cwd "/usr/local"
+  end
+  execute 'installnodeandnpm' do
+     command 'yum -y install nodejs-8.1.3'
+     #cwd "/usr/local"
+  end
 end
-execute 'installnodeandnpm' do
-   command 'yum -y install nodejs-8.1.3'
-   #cwd "/usr/local"
+
+if node[:platform_family].include?("debian")
+  execute 'getnode' do
+     command 'curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -'
+  end
+  execute 'installnodeandnpm' do
+     command 'sudo apt-get install -y nodejs'
+  end
 end
+
 execute 'npmversion' do
    command 'npm --version; node --version'
    #cwd "/usr/local"

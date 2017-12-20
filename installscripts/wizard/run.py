@@ -9,17 +9,12 @@ def main():
     git_branch_name = sys.argv[1]
     key = 0
     while 1:
-        
-        #Commeting this option as we only have currently one option to be selected
-        #Later when we add new options we will uncomment this.
-        #this code is been tested.
-        """print("\n\nKindly select an option...\n")
+        print("\n\nKindly select an option...\n")
         scenarios.print_stack_options()
-        selection = raw_input("Please enter your choice :")"""
+        selection = raw_input("Please enter your choice :")
 
         try:
-            #key = int(selection)
-            key = 1 #Hardcoding 1 as we only have one option currently
+            key = int(selection)
         except:
             print("Invalid Input! Please enter an integer\n")
             continue
@@ -29,7 +24,6 @@ def main():
             break
         else:
             print("Invalid selection! Try again\n")
-
 
 #Entry Point
 main()

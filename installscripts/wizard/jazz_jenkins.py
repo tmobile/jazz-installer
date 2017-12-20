@@ -2,10 +2,12 @@
 import os
 import sys
 import subprocess
-import paramiko
 
 # Global variables
-VARIABLES_TF_FILE = "variables.tf"
+HOME_FOLDER = os.path.expanduser("~")
+TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
+VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
+
 HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
 JENKINS_CLI_PATH = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/"
 JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
@@ -93,7 +95,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     else:
         sys.exit("Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!")
 
-    #get the jenkinsserver public IP and SSH login    
+    #get the jenkinsserver public IP and SSH login
     jenkins_server_public_ip = raw_input("Jenkins Server PublicIp :")
     jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name :")
 
@@ -109,8 +111,27 @@ def get_and_add_existing_jenkins_config(terraform_folder):
                         jenkins_server_ssh_login,
                         jenkins_server_security_group,
                         jenkins_server_subnet]
-	
 
-	
+
+
+    check_jenkins_ec2user(parameter_list)
+    add_jenkins_config_to_files(parameter_list)
+
+def get_and_add_docker_jenkins_config(jenkins_docker_path):
+    """
+        Launch a dockerized Jenkins server.
+    """
+    os.chdir(jenkins_docker_path)
+    print("Running docker launch script")
+    subprocess.call(['bash', 'launch_jenkins_docker.sh', '|', 'tee', '-a', '../../docker_creation.out'])
+
+    # Get values to create the array
+    parameter_list = []
+    with open("docker_jenkins_vars") as f:
+        for line in f:
+            parameter_list.append(line.rstrip())
+
+    print(parameter_list[0:])
+
     check_jenkins_ec2user(parameter_list)
     add_jenkins_config_to_files(parameter_list)
