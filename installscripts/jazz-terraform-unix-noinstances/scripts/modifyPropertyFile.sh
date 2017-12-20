@@ -7,14 +7,13 @@ property_file=$3
 
 property_value=$(sed 's/[]\/$*.^|[]/\\&/g' <<< $property_value)
 
-if [ '$3' == "jazz-installer-vars.json" ] ;
-        then
-        sed -i "s/$property_key\".*.$/$property_key\": \"$property_value\"/g" $property_file
-elif [ '$3' == "jenkins-conf.properties" ] ;
-        then
-        sed -i "s/$property_key.*.$/$property_key=$property_value/g" $property_file
-else
-        echo "file not found"
+if [ "$3" -eq "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ;
+    then
+    sed -i "s/$property_key.*.$/$property_key=$property_value/g" $property_file
+        
+else 
+	sed -i "s/$property_key\".*.$/$property_key\": \"$property_value\"/g" $property_file
+       
 fi
 
 
