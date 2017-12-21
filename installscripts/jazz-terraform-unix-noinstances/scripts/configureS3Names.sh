@@ -9,7 +9,7 @@ jenkinspropsfile=$6
 jenkinsjsonpropsfile=$6
 
 
-if [ '$6' == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
+if [ $6 == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
 # new changes for randomizing s3 bucket names
 sed -i "s/jazz_bucket_dev.*.$/jazz_bucket_dev=$jazz_bucket_dev/g" $jenkinspropsfile
 sed -i "s/jazz_bucket_stg.*.$/jazz_bucket_stg=$jazz_bucket_stg/g" $jenkinspropsfile

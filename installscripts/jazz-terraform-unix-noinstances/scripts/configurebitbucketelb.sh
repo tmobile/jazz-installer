@@ -9,7 +9,7 @@ inst_stack_prefix=$5
 jazz_admin=$6
 
 
-if [ '$3' == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
+if [ $3 == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
 sed -i "s/REPO_BASE=.*.$/REPO_BASE=$bitbucketelb_dns_name/g" $jenkinspropertiesfile
 else
 sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$bitbucketelb_dns_name\",/g" $jenkinsjsonpropertiesfile
