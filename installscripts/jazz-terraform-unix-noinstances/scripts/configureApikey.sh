@@ -10,7 +10,7 @@ jenkinsattribsfile=$6
 env_name_prefix=$7
 
 #Both API_KEY and API_ID_DEV are needed and should have the same value
-if [ '$5' == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
+if [ $5 == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
 sed -i "s/API_KEY=.*.$/API_KEY=$API_ID_DEV/g" $jenkinspropsfile
 sed -i "s/API_ID_DEV=.*.$/API_ID_DEV=$API_ID_DEV/g" $jenkinspropsfile
 sed -i "s/API_ID_STG=.*.$/API_ID_STG=$API_ID_STG/g" $jenkinspropsfile
