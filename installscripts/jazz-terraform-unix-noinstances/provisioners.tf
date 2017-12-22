@@ -155,7 +155,7 @@ resource "null_resource" "configureExistingBitbucketServer" {
 
 resource "null_resource" "configurejazzbuildmodule" {
 
-  depends_on = ["configureExistingBitbucketServer" ]
+  depends_on = ["null_resource.configureExistingBitbucketServer"]
 
   connection {
     host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
