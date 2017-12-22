@@ -133,9 +133,9 @@ subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>
 subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(jenkinsuser, jenkinspasswd), "../cookbooks/jenkins/files/default/authfile"])
 subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(tagEnvPrefix), "../terraform-unix-noinstances-jazz/scripts/destroy.sh"])
 
-os.chdir("../terraform-unix-noinstances-jazz")
-subprocess.call('nohup ./scripts/create.sh >> ../../stack_creation.out &', shell=True)
-subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
+#os.chdir("../terraform-unix-noinstances-jazz")
+#subprocess.call('nohup ./scripts/create.sh >> ../../stack_creation.out &', shell=True)
+#subprocess.call('cp ./scripts/destroy.sh ../../', shell=True)
 print("\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
 print(os.path.realpath('../../'))
 print("\n\n")
