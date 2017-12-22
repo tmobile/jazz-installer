@@ -110,3 +110,9 @@ sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-cor
 sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_usermanagement/deployment-env.yml
 sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_usermanagement/deployment-env.yml
 sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_usermanagement/deployment-env.yml
+
+#Adding platform_email value injection
+sed -i "s/securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_email/deployment-env.yml
+sed -i "s/subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_email/deployment-env.yml
+sed -i "s=iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_email/deployment-env.yml
+sed -i "s/region.*.$/region: $region/g" ./jazz-core/platform_email/deployment-env.yml
