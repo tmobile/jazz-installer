@@ -152,3 +152,29 @@ resource "null_resource" "configureExistingBitbucketServer" {
   }
 
 }
+
+resource "null_resource" "configurejazzbuildmodule" {
+
+  depends_on = ["configureExistingBitbucketServer" ]
+
+  connection {
+    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
+    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+    type = "ssh"
+    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
+  }
+    provisioner "remote-exec"{
+    inline = [
+        "mkdir ~/jazz_build_module_tmp ",
+        "cd jazz_build_module_tmp",
+        "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_public_ip")}/scm/slf/jazz-build-module.git",
+        "cd jazz-build-module",
+        "cp ~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json ~/jazz_build_module",
+        "git add jazz-installer-vars.json",
+        "git commit -m 'Adding Json file to repo'",
+        "git push -u origin master",
+        "cd ../..",
+        "sudo rm -rf jazz_build_module_tmp"]
+  }
+
+  }
