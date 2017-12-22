@@ -167,7 +167,7 @@ resource "null_resource" "configurejazzbuildmodule" {
     inline = [
         "mkdir ~/jazz_build_module_tmp ",
         "cd jazz_build_module_tmp",
-        "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_public_ip")}/scm/slf/jazz-build-module.git",
+        "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_elb")}/scm/slf/jazz-build-module.git",
         "cd jazz-build-module",
         "cp ~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json ~/jazz_build_module",
         "git add jazz-installer-vars.json",
