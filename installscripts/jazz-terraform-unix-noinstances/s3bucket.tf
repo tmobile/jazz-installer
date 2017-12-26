@@ -140,7 +140,7 @@ resource "aws_api_gateway_rest_api" "jazz-stag" {
 
 resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
-  description = "PROD API for Tmobile demo"
+  description = "PROD API"
   provisioner "local-exec" {
     command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
   }
