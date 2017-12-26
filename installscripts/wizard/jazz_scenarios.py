@@ -6,7 +6,7 @@ from scenarios import stack_with_bb_dockerized_jenkins as option2
 from scenarios import full_stack as option3
 
 #Global Variables
-OPTIONS = { 1: ["\t1: Stack with existing Bitbucket and Jenkins", option1] , 2: ["\t1: Stack with existing Bitbucket and Dockerized Jenkins", option2] }
+OPTIONS = { 1: ["\t1: Stack with existing Bitbucket and Jenkins", option1] , 2: ["\t2: Stack with existing Bitbucket and Dockerized Jenkins", option2] }
 
 def is_valid_scenario(option):
     return (option in OPTIONS)

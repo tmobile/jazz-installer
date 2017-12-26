@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import paramiko
 
 # Global variables
 HOME_FOLDER = os.path.expanduser("~")
@@ -21,7 +22,7 @@ def check_jenkins_ec2user(parameter_list):
     """
     jenkins_server_public_ip = parameter_list[3]
     jenkins_server_ssh_login = parameter_list[4]
-    keyfile = "~/jenkinskey.pem"
+    keyfile = os.path.expanduser("~") + "/jenkinskey.pem"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -40,6 +41,7 @@ def add_jenkins_config_to_files(parameter_list):
                                 jenkins_passwd,
                                 jenkins_server_public_ip,
                                 jenkins_server_ssh_login,
+                                jenkins_server_ssh_port,
                                 jenkins_server_security_group,
                                 jenkins_server_subnet]
     """
@@ -54,9 +56,11 @@ def add_jenkins_config_to_files(parameter_list):
 
     subprocess.call(['sed', '-i', "s|jenkins_ssh_login.*.$|jenkins_ssh_login=\"%s\"|g" %(parameter_list[4]), VARIABLES_TF_FILE])
 
-    subprocess.call(['sed', '-i', "s|jenkins_security_group.*.$|jenkins_security_group=\"%s\"|g" %(parameter_list[5]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|jenkins_ssh_port.*.$|jenkins_ssh_port=\"%s\"|g" %(parameter_list[5]), VARIABLES_TF_FILE])
 
-    subprocess.call(['sed', '-i', "s|jenkins_subnet.*.$|jenkins_subnet=\"%s\"|g" %(parameter_list[6]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|jenkins_security_group.*.$|jenkins_security_group=\"%s\"|g" %(parameter_list[6]), VARIABLES_TF_FILE])
+
+    subprocess.call(['sed', '-i', "s|jenkins_subnet.*.$|jenkins_subnet=\"%s\"|g" %(parameter_list[7]), VARIABLES_TF_FILE])
 
     subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), JENKINS_AUTH_FILE])
 
@@ -99,6 +103,9 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     jenkins_server_public_ip = raw_input("Jenkins Server PublicIp :")
     jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name :")
 
+    #Default Jenkins instance ssh Port
+    jenkins_server_ssh_port = "22"
+
     #TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
     jenkins_server_security_group = raw_input("Jenkins Server Security Group Name :")
     jenkins_server_subnet = raw_input("Jenkins Server Subnet :")
@@ -109,6 +116,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
                         jenkins_passwd,
                         jenkins_server_public_ip,
                         jenkins_server_ssh_login,
+                        jenkins_server_ssh_port,
                         jenkins_server_security_group,
                         jenkins_server_subnet]
 
