@@ -133,7 +133,7 @@ sudo yum install -y wget >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading and install wget"
 
 #Download and install pip
-sudo wget https://bootstrap.pypa.io/get-pip.py
+sudo wget -q https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading and install pip"
 
