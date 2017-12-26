@@ -165,16 +165,13 @@ resource "null_resource" "configurejazzbuildmodule" {
   }
     provisioner "remote-exec"{
     inline = [
-        "mkdir ~/jazz_build_module_tmp ",
-        "cd jazz_build_module_tmp",
         "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_elb")}/scm/slf/jazz-build-module.git",
         "cd jazz-build-module",
         "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json ~/jazz_build_module",
         "git add jazz-installer-vars.json",
         "git commit -m 'Adding Json file to repo'",
         "git push -u origin master",
-        "cd ../..",
-        "sudo rm -rf jazz_build_module_tmp"]
+        "cd ..",
+        "sudo rm -rf jazz-build-module"]
   }
-
   }
