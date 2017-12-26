@@ -1,84 +1,30 @@
-# Jazz Installer (Developer Preview)
-## Overview
+![Jazz Logo](logo.png)
+# Jazz Serverless Platform
 
-**Jazz Installer** - Installs [Jazz Serverless Developer Framework in AWS Cloud](https://github.com/tmobile/jazz-core/wiki).
+**Seamlessly build, deploy & manage cloud-native applications.**
 
-**Note**: Please go through [limitations](#limitations) before you proceed.
-       Also, make sure that the [prerequisites](#prerequisites) are met before you proceed with the installation.
-       Currently we are only supporting Linux based Installer (Windows based jazz installer is coming soon).
+Jazz addresses gaps and pain points with serverless, particularly for production applications. It is not another FaaS implementation. Rather, it enhances the usability of existing FaaS systems. Jazz has a beautiful UI designed to let developers quickly self-start and focus on code. Its modular design makes it easy to add new integrations:
 
-## Prerequisites
-* AWS account is required. Ensure that you have the IAM keys with sufficient permissions to create the
-  [AWS Resources](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#aws-resources) in us-east-1 region.
-* Use RHEL 7 instance as your installer machine [How to Launch AWS RHEL7 Instance](https://github.com/tmobile/jazz-installer/wiki/Launch-AWS-RHEL7-Instance-for-Installer).
-* An existing Jenkins and Bitbucket Servers (Linux boxes) needed to be provided to build the stack.
-* Bitbucket - Prerequisites
-  * A Bitbucket server user (ssh user), which is configured as passwordless, required by Jazz Installer.
-  * A Bitbucket user with 'create project' permisions.
-  * BitBucket server Addons required.
-    * Atlassian Universal Plugin Manager Plugin
-    * Bob Swift Atlassian Add-ons - Bitbucket CLI Connector
-    * Bitbucket Web Post Hooks Plugin
-* Jenkins - Prerequisites  
-  * A jenkins server user (ssh user), which is configured as passwordless, required by Jazz Installer.
-  * A Jenkins user with 'admin' permission.
-  * Make sure that jenkins is installed as a service and JAVA_HOME is set to the path of JDK.
-  
-* Login to the installer box; create jenkinskey.pem and bitbucketkey.pem with private keys of Jenkins and Bitbucket in home directory '/home/ec2-user;
-* Make sure that you have **Jenkins and Bitbucket** services available for integration with Jazz. Current version of Jazz integrates with publicly accessible Jenkins & Bitbucket services.
-  * Note: Please note that some of the AWS resources are accessed through Jenkins during some of the internal orchestration activities.
+* **Services** - Today devs can build functions, APIs and static websites. The template-based system makes it easy to define new ones.
+* **Deployment Targets** - Currently we deploy to AWS (Lambda, API gateway and S3). We plan to support Azure Functions and Docker containers in the near future.
+* **Features** - Services seamlessly integrate features like monitoring (CloudWatch), logging (ElasticSearch), authentication (Cognito) and secret management (KMS, Vault coming soon).
+* **Deployment & CI/CD** - We leverage [Serverless Framework](http://www.serverless.com) and Git/Bitbucket/Jenkins.
 
+Jazz is [open-sourced](http://opensource.t-mobile.com) and under active development by T-Mobile's Cloud Center of Excellence.
 
-## Installation steps
-1) SSH to the installer machine (RHEL 7 instance as mentioned in the prerequisites).
-2) Run the below command to run the installation wizard.
+[Watch the video preview here.](https://www.youtube.com/watch?v=6Kp1yxMjn1k)
 
-```
-curl -L https://raw.githubusercontent.com/tmobile/jazz-installer/v1.1.2/installscripts/terraforminstaller/rhel7Installer.sh -o rhel7Installer.sh && chmod +x rhel7Installer.sh && ./rhel7Installer.sh v1.1.2
- ```
+## Install
 
-3) Follow the installer wizard. It prompts for few inputs which needs to be filled in.
+You can [install Jazz](https://github.com/tmobile/jazz-installer/wiki) in your account using the automated installer.
 
-  3.1) Provide the installation option. Currently we only support 1 ( we are adding more)
-  
-        Kindly select an installation option...
-          1. Stack with existing Bitbucket and Jenkins 
-        Please enter your choice : 1
-        
-  3.2) Please provide AWS credentials.
-  
-        Please provide the AWS credentials
-        AWS Access Key ID : XXXXXXXX
-        AWS Secret Access Key : XXXXXX
-        
-  3.3) Provide the prefix for your stack (**Please use only lowercase alphabets & numbers for tag name. Some of the artifacts are named using this informatin and AWS has restrictions on how we use this tag. Please check AWS console if there are artifacts created with this name. If yes, please choose another name!**)
+## Try Jazz!
+You can try out public preview version of Jazz by registering with your email address [here](http://try.tmo-jazz.net). You will need a registration code which can be requested by joining [slack](https://tmo-oss-getinvite.herokuapp.com/). Once in slack, go to `#jazz-serverless` channel to get a working registration code.
 
-        Please provide the tag Name to Prefix your Stack (Not Exceeding 13 char)(Eg:- jazz10 ) : myjazz
+## User Guide
 
-  3.4) Please provide an admin email ID to be used as Jazz Application Administrator.
+For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
 
-        Please provide valid email ID to login to Jazz Application : abc@abc.com
+## License
 
-  3.5) Installer will follow the steps specified in [Installation with existing Jenkins and Bitbucket servers](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation-with-existing-jenkins-and-bitbucket-servers) - Uses existing Jenkins and Bitbucket Servers (as provided) to build the stack. Please ensure that you provide these details correctly during this process. Not doing so would result in installation failure. Please follow the wizard prompts to complete the installation.
-
-Check the status through [Installation status](https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#installation---status).
-
-## Post Installation - Start using Jazz to create your first service!
-Jazz provides management UI to create and manage serverless services.
-
-Post successful installation, start using [Jazz UI](https://github.com/tmobile/jazz-core/wiki/Jazz-UI---Overview) to create your services! Please refer to [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless).
-
-
-## Limitations
-* In this version, Jazz platform components will be created in us-east-1 region (we've seen few restrictions when using us-east-2 region).
-* Only one stack can be created in one region per account (this limitation will be removed soon).
-
-## Cleanup - Removing Jazz components from your AWS Account
-Jazz installer contains the scripts to cleanup Jazz framework & remove all its components from your AWS account.
-
-To clean up Jazz components, please refer to [Jazz Framework - Cleanup](https://github.com/tmobile/jazz-installer/wiki/Cleanup:-Jazz-Framework)
-
-## Wiki
-* [Jazz Framework](https://github.com/tmobile/jazz-core/wiki)
-* [Getting Started with Service Development using Serverless](https://github.com/tmobile/jazz-core/wiki/Getting-Started-with-Service-Development-using-Serverless)
-* [Installer](https://github.com/tmobile/jazz-installer/wiki)
+Jazz is released under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).

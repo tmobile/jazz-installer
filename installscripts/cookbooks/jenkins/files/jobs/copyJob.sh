@@ -1,4 +1,4 @@
-JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+JENKINS_URL=http://$1/ # localhost or jenkins elb url
 SRC_JOB_NAME=$2
 DEST_JOB_NAME=$3
 SSH_USER=$4

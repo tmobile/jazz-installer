@@ -1,4 +1,4 @@
-JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+JENKINS_URL=http://$1/ # localhost or jenkins elb url
 SSH_USER=$2
 
 if [ -f /etc/redhat-release ]; then

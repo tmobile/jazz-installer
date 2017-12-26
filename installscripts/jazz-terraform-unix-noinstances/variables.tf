@@ -50,7 +50,7 @@ variable "jenkinsclientrbfile" {
 variable "jenkinsservermap" {
   type = "map"
   default = {
-    jenkins_elb = "jazz13-jenkinselb-1989578044.us-east-1.elb.amazonaws.com"
+    jenkins_elb = "replace"
     jenkins_public_ip = "replace IP here"
     jenkins_subnet = "replace"
     jenkins_security_group = "replace"
@@ -68,12 +68,10 @@ variable "jenkinsservermap" {
 variable "bitbucketservermap" {
   type = "map"
   default = {
-    bitbucket_elb = "jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com"
+    bitbucket_elb = "replace ELB here"
     bitbucket_public_ip = "replace IP here"
     bitbucketuser = "replace"
     bitbucketpasswd = "replace"
-    bitbucket_ssh_login = "replace"
-    bitbucket_ssh_key = "../sshkeys/bitbucketkey.pem"
   }
 }
 

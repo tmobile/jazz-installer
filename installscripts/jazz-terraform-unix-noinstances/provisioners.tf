@@ -17,7 +17,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${var.chefconfigDir}/bitbucketelbconfig.json ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
+    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
    provisioner "file" {
           source      = "${var.cookbooksDir}"
@@ -125,21 +125,6 @@ resource "null_resource" "configureExistingBitbucketServer" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
 
-  connection {
-    host = "${lookup(var.bitbucketservermap, "bitbucket_public_ip")}"
-    user = "${lookup(var.bitbucketservermap, "bitbucket_ssh_login")}"
-    type = "ssh"
-    private_key = "${file("${lookup(var.bitbucketservermap, "bitbucket_ssh_key")}")}"
-  }
-  provisioner "file" {
-          source      = "${var.chefconfigDir}/bitbucketelbconfig.json"
-          destination = "~/chefconfig/bitbucketelbconfig.json"
-  }
-  provisioner "remote-exec" {
-    inline = [
-          "pwd"
-    ]
-  }
   provisioner "local-exec" {
     command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }

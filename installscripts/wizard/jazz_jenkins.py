@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import paramiko
 
 # Global variables
 HOME_FOLDER = os.path.expanduser("~")
@@ -15,6 +16,23 @@ JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/file
 
 
 DEV_NULL = open(os.devnull, 'w')
+
+def check_jenkins_ec2user(parameter_list):
+    """
+        Check if the ssh login name is a ec2-user
+    """
+    jenkins_server_public_ip = parameter_list[3]
+    jenkins_server_ssh_login = parameter_list[4]
+    keyfile = "~/jenkinskey.pem"
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        res = ssh.connect(jenkins_server_public_ip,username=jenkins_server_ssh_login,key_filename=keyfile)
+        if res == None:
+            print("SSH successful")
+    except:
+        print("Are the keys and usernames valid?")
+
 
 def add_jenkins_config_to_files(parameter_list):
     """
@@ -52,7 +70,7 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_url = 'http://' + url +':8080'
+    jenkins_url = 'http://' + url +''
     cmd = ['/usr/bin/java', '-jar', JENKINS_CLI, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
     subprocess.call(cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
 
@@ -99,8 +117,10 @@ def get_and_add_existing_jenkins_config(terraform_folder):
                         jenkins_server_ssh_port,
                         jenkins_server_security_group,
                         jenkins_server_subnet]
-
+	  
+    check_jenkins_ec2user(parameter_list)
     add_jenkins_config_to_files(parameter_list)
+   
 
 def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
@@ -117,5 +137,5 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
             parameter_list.append(line.rstrip())
 
     print(parameter_list[0:])
-
+    check_jenkins_ec2user(parameter_list)
     add_jenkins_config_to_files(parameter_list)

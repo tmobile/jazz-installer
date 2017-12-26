@@ -128,6 +128,19 @@ sudo rm -rf jazz-installer
 git clone -b $JAZZ_BRANCH https://github.com/tmobile/jazz-installer.git >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading jazz Installer"
 
+#Download and Install wget
+sudo yum install -y wget >>$LOG_FILE 2>&1 &
+spin_wheel $! "Downloading and install wget"
+
+#Download and install pip
+sudo wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py >>$LOG_FILE 2>&1 &
+spin_wheel $! "Downloading and install pip"
+
+#Download and install paramiko
+sudo pip install paramiko >>$LOG_FILE 2>&1 &
+spin_wheel $! "Downloading and install paramiko"
+
 #move the software install log jazz Installer
 mv $LOG_FILE ./jazz-installer/
 

@@ -13,7 +13,6 @@ HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
 JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
-BITBUCKET_PEM = HOME_FOLDER + "/bitbucketkey.pem"
 
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
@@ -26,7 +25,7 @@ def check_jenkins_pem():
     print(" Please create jenkinskey.pem  with private keys of Jenkins Server in your home directory")
     pause()
 
-    #Chck if both files are been added to home derectory
+    #Check if file is been added to home derectory
     if not os.path.isfile(JENKINS_PEM):
         sys.exit("File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
 
@@ -49,7 +48,7 @@ def start(parameter_list):
     # Get Bitbucket configuration details
     get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)
 
-    # Make Sure Jenkins and Bitbucket pem files are present in home folder
+    # Make Sure Jenkins pem file is present in home folder
     check_jenkins_pem()
 
     #All variables are set and ready to call terraform

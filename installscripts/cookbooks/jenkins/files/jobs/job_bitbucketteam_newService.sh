@@ -1,4 +1,4 @@
-JENKINS_URL=http://$1:8080/ #localhost or jenkins elb url
+JENKINS_URL=http://$1/ #localhost or jenkins elb url
 JOB_NAME=$2 #bitbucketteam_newService
 BITBUCKET_ELB=$3
 SSH_USER=$4
@@ -56,7 +56,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <checkoutCredentialsId>SAME</checkoutCredentialsId>
       <pattern>.*</pattern>
       <autoRegisterHooks>true</autoRegisterHooks>
-      <bitbucketServerUrl>http://$BITBUCKET_ELB:7990</bitbucketServerUrl>
+      <bitbucketServerUrl>http://$BITBUCKET_ELB</bitbucketServerUrl>
       <sshPort>22</sshPort>
       <includes>*</includes>
       <excludes></excludes>
