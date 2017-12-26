@@ -86,19 +86,18 @@ end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
+execute 'createJob-Platform API Services' do
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} platform_api_services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+end
 execute 'job_build-deploy-platform-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_cleanup_cloudfront_distributions' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
-execute 'job_deploy-all-platform-services' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
-end
 execute 'createJob-job-pack-lambda' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
-
 execute 'createJob-job-build-pack-website' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
