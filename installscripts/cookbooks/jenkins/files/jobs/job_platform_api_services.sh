@@ -1,5 +1,5 @@
 JENKINS_URL=http://$1/ #localhost or jenkins elb url
-JOB_NAME=$2 #Platform API Services
+JOB_NAME=$2 #Platform_API_Services
 BITBUCKET_ELB=$3 
 SSH_USER=$4
 

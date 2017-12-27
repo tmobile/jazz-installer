@@ -87,7 +87,7 @@ execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-platform_api_services' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform API Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_build-deploy-platform-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
