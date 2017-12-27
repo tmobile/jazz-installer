@@ -43,11 +43,9 @@ def check_jenkins_user(url, username, passwd):
 
     if 'authenticated' in open('output').read():
         os.remove('output')
-        os.remove('jenkins-cli.jar')
         return 1
     else:
         os.remove('output')
-        os.remove('jenkins-cli.jar')
         return 0
 
 def check_bitbucket_user(url, username, passwd):
