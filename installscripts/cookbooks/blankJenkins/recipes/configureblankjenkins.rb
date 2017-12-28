@@ -54,7 +54,6 @@ if node[:platform_family].include?("rhel")
     end
     execute 'downloadgitproj' do
       command "git clone -b #{node['git_branch']} https://github.com/SiniWilson/jazz.git jazz-core"
-
       cwd "/home/#{node['jenkins']['SSH_user']}"
     end
 

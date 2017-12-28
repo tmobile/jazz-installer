@@ -1,7 +1,7 @@
 FROM ubuntu
 MAINTAINER Jazz-OSS feroz.shaikh@ust-global.com
 RUN apt-get update
-RUN apt-get install apt-utils vim wget apt-transport-https default-jdk -y
+RUN apt-get install apt-utils curl sudo vim wget apt-transport-https default-jdk -y
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV JENKINS_HOME /var/lib/jenkins
 RUN wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
@@ -14,6 +14,7 @@ RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/s
 RUN sed -i 's/Port 22/Port 2200/' /etc/ssh/sshd_config
 RUN ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
 RUN cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+RUN mkdir /home/centos
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 EXPOSE 2200 8080
 CMD ["/usr/bin/supervisord"]
