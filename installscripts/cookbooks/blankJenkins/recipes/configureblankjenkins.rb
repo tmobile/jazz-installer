@@ -53,8 +53,7 @@ if node[:platform_family].include?("rhel")
     	end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
-
+      command "git clone -b #{node['git_branch']} https://github.com/SiniWilson/jazz.git jazz-core"
       cwd "/home/#{node['jenkins']['SSH_user']}"
     end
 
@@ -88,6 +87,9 @@ if node[:platform_family].include?("rhel")
     end
     execute 'createJob-bitbucketteam_newService' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+    end
+	execute 'createJob-platform_api_services' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job_build-deploy-platform-service' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  #{node['jenkins']['SSH_user']}"
@@ -194,7 +196,7 @@ if node[:platform_family].include?("debian")
       end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
+      command "git clone -b #{node['git_branch']} https://github.com/SiniWilson/jazz.git jazz-core"
       cwd "/root"
     end
     execute 'copylinkdir' do
@@ -229,6 +231,9 @@ if node[:platform_family].include?("debian")
     end
     execute 'createJob-bitbucketteam_newService' do
       command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  root"
+    end
+	execute 'createJob-platform_api_services' do
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  root"
     end
     execute 'job_build-deploy-platform-service' do
       command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  root"

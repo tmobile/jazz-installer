@@ -52,7 +52,7 @@ if (File.exist?("/home/#{node['jenkins']['SSH_user']}/jazz-core"))
 	end
 end
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/SiniWilson/jazz.git jazz-core"
 
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
@@ -85,6 +85,9 @@ execute 'createJob-job_build_pack_api' do
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+end
+execute 'createJob-platform_api_services' do
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_build-deploy-platform-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
