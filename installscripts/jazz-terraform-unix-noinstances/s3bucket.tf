@@ -142,7 +142,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API"
   provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
+   command = "git clone -b ${var.github_branch} https://github.com/SiniWilson/jazz.git jazz-core"
   }
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinspropsfile}  ${var.jenkinsattribsfile} ${var.envPrefix}"
