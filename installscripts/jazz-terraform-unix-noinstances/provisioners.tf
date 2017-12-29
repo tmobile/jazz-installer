@@ -19,6 +19,9 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
+  provisioner "local-exec" {
+    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
+  }
    provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
@@ -47,7 +50,13 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+   command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinspropsfile}"
@@ -59,14 +68,27 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinspropsfile}"
+  }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinspropsfile}"
   }
   provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinspropsfile}"
   }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinsjsonpropsfile}"
+  }
+
 
   provisioner "file" {
           source      = "${var.cookbooksDir}"
@@ -127,7 +149,30 @@ resource "null_resource" "configureExistingBitbucketServer" {
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
 
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
+    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username}"
   }
 
 }
+
+resource "null_resource" "configurejazzbuildmodule" {
+
+  depends_on = ["null_resource.configureExistingBitbucketServer"]
+
+  connection {
+    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
+    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+    type = "ssh"
+    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
+  }
+    provisioner "remote-exec"{
+    inline = [
+        "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_elb")}/scm/slf/jazz-build-module.git",
+        "cd jazz-build-module",
+        "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json ~/jazz_build_module",
+        "git add jazz-installer-vars.json",
+        "git commit -m 'Adding Json file to repo'",
+        "git push -u origin master",
+        "cd ..",
+        "sudo rm -rf jazz-build-module"]
+  }
+  }
