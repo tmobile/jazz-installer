@@ -20,7 +20,7 @@ variable "cognito_pool_password" {
   default = "cognito_pool_password"
 }
 
-# 
+#
 # Chef and Cookbook variables
 #
 variable "chefconfigDir" {
@@ -61,6 +61,7 @@ variable "jenkinsservermap" {
     jenkinsuser = "replace"
     jenkinspasswd = "replace"
     jenkins_ssh_login = "replace"
+    jenkins_ssh_port = "22"
     jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   }
 }
@@ -90,5 +91,3 @@ variable "lambdaCloudWatchProps" {
         principal      = "logs.us-east-1.amazonaws.com"
   }
 }
-
-

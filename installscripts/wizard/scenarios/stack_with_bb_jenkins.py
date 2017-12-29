@@ -17,23 +17,22 @@ JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
-
 def check_jenkins_pem():
     """
         Check if the user has provided jenkinskey.pem
     """
-    print(" Please make sure that you have the ssh login user name of jenkins servers.")
-    print(" Please create jenkinskey.pem with private key of Jenkins in /home/ec2-user")
+    print(" Please make sure that you have the ssh login user names of jenkins and bitbucket servers.")
+    print(" Please create jenkinskey.pem  with private keys of Jenkins Server in your home directory")
     pause()
 
     #Check if file is been added to home derectory
     if not os.path.isfile(JENKINS_PEM):
         sys.exit("File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
-    
+
     #Copy the pem keys and give relavant permisions
     subprocess.call('cp -f {0} {1}sshkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
     subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
-    
+
 
 def start(parameter_list):
     """
@@ -46,7 +45,7 @@ def start(parameter_list):
     # Get Jenkins configuration details
     get_and_add_existing_jenkins_config(TERRAFORM_FOLDER_PATH)
 
-    # Get Bitbucket configuration details    
+    # Get Bitbucket configuration details
     get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)
 
     # Make Sure Jenkins pem file is present in home folder
@@ -57,8 +56,7 @@ def start(parameter_list):
 
     subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&',shell=True)
     subprocess.call('cp ./scripts/destroy.sh ../../'.split(' '))
-    
+
     print("\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress ")
     print(os.path.realpath('../../'))
     print("\n\n")
-
