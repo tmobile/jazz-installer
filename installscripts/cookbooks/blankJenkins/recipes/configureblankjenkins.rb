@@ -89,14 +89,14 @@ if node[:platform_family].include?("rhel")
     execute 'createJob-bitbucketteam_newService' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
     end
+	execute 'createJob-platform_api_services' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+    end
     execute 'job_build-deploy-platform-service' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
-    end
-    execute 'job_deploy-all-platform-services' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job-pack-lambda' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
@@ -132,15 +132,6 @@ if node[:platform_family].include?("rhel")
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
-    end
-    execute 'copyJobBuildPackApi' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build_pack_api build_pack_api_dev #{node['jenkins']['SSH_user']}"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-lambda build-pack-lambda-dev #{node['jenkins']['SSH_user']}"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-website build-pack-website-dev #{node['jenkins']['SSH_user']}"
     end
 end
 
@@ -230,14 +221,14 @@ if node[:platform_family].include?("debian")
     execute 'createJob-bitbucketteam_newService' do
       command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  root"
     end
+	execute 'createJob-platform_api_services' do
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  root"
+    end
     execute 'job_build-deploy-platform-service' do
       command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  root"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} root"
-    end
-    execute 'job_deploy-all-platform-services' do
-      command "/root/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['bitbucketelb']}  #{node['region']} root"
     end
     execute 'createJob-job-pack-lambda' do
       command "/root/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']}  root"
@@ -285,14 +276,5 @@ if node[:platform_family].include?("debian")
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
-    end
-    execute 'copyJobBuildPackApi' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build_pack_api build_pack_api_dev root"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-lambda build-pack-lambda-dev root"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-website build-pack-website-dev root"
     end
 end
