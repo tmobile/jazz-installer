@@ -38,5 +38,8 @@ POLICIES
     provisioner "local-exec" {
         command = "${var.modifyPropertyFile_cmd} jazz_es_hostname ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinspropsfile}"
     }
+     provisioner "local-exec" {
+        command = "${var.modifyPropertyFile_cmd} jazz_es_hostname ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
+    }
 
 }
