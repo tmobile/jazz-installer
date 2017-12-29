@@ -12,14 +12,19 @@ bitbucketuser=$2
 bitbucketpasswd=$3
 jenkinsuser=$4
 jenkinspasswd=$5
+emailid=$6
+
+
 
 #create PROJECTS in BITBUCKET
 java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "SLF"  --name "SLF" --description " created from cli" --private
 java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action createProject --project "CAS"  --name "CAS" --description " created from cli" --private
 
 # UPLOADS THE REPOSITORIES INTO BITBUCKET
-./scripts/bitbucketpush.sh $BITBUCKETELB $bitbucketuser $bitbucketpasswd
+./scripts/bitbucketpush.sh $BITBUCKETELB $bitbucketuser $bitbucketpasswd $emailid
 
 #CALLS JENKINS JOB TO INSTALL Serverless application on AWS
 #curl  http://$JENKINSELB:8080/job/inst_deploy_createservice/build?token=triggerCreateService --user jenkinsadmin:jenkinsadmin
-curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
+
+#.....
+#curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
