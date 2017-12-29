@@ -20,7 +20,7 @@ sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsf
 
 else 
 	
-#Both API_KEY and API_ID_DEV are needed and should have the same value[JSON Format]
+#Both API_KEY and API_ID_DEV are needed and should have the same value [JSON Format]
 
 sed -i "s/API_KEY\".*.$/API_KEY\": \"$API_ID_PROD\",/g" $jenkinsjsonpropsfile
 sed -i "s/API_ID_DEV\".*.$/API_ID_DEV\": \"$API_ID_DEV\",/g" $jenkinsjsonpropsfile
