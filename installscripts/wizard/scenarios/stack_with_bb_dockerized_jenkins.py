@@ -35,12 +35,14 @@ def start(parameter_list):
         start stack creation
     """
     parse_and_replace_paramter_list(TERRAFORM_FOLDER_PATH, parameter_list)
-    print("Deploying Dockerized Jenkins server==============>")
-    get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
-    check_jenkins_pem()
 
     # Get Bitbucket configuration details
     get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)
+
+    # Launch the Jenkins Docker
+    print("Deploying Dockerized Jenkins server==============>")
+    get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
+    check_jenkins_pem()
 
     #All variables are set and ready to call terraform
     os.chdir(TERRAFORM_FOLDER_PATH)
