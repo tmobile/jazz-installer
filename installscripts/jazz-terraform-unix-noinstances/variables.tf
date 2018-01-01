@@ -39,6 +39,10 @@ variable "jenkinspropsfile" {
   type = "string"
   default = "../cookbooks/jenkins/files/node/jenkins-conf.properties"
 }
+variable "jenkinsjsonpropsfile" {
+  type = "string"
+  default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
+}
 variable "jenkinsattribsfile" {
   type = "string"
   default = "../cookbooks/jenkins/attributes/default.rb"

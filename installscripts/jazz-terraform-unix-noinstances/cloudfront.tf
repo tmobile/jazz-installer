@@ -4,7 +4,7 @@
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "${var.envPrefix}-origin_access_identity"
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinspropsfile}"
+    command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
   }
 }
 resource "aws_cloudfront_distribution" "jazz" {
