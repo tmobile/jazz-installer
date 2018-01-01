@@ -5,6 +5,8 @@ CLIENT_NAME=$2
 POOL_USER_NAME=$3
 POOL_USER_PASSWORD=$4
 jenkinspropsfile=$5
+jenkinsjsonpropsfile=$5
+
 
 
 #Create the userpool
@@ -13,7 +15,7 @@ USER_POOL_ID=$(grep -E '"Id":' /tmp/$POOL_NAME-user-pool | awk -F'"' '{print $4}
 echo "Created User Pool: " $USER_POOL_ID
 
 #Update password policy and email verification information
-aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID --user-pool-tags Application=$POOL_NAME  --auto-verified-attributes email --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' --policies '{"PasswordPolicy": {"MinimumLength": 6,"RequireUppercase": false,"RequireLowercase": false, "RequireNumbers": false, "RequireSymbols": false}}' > /tmp/$POOL_NAME-user-pool
+aws cognito-idp update-user-pool --user-pool-id $USER_POOL_ID --user-pool-tags Application=$POOL_NAME  --auto-verified-attributes email --verification-message-template '{"EmailSubjectByLink": "Jazz Notification - Account Verification", "EmailMessageByLink": "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##Verify Email##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/SiniWilson/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team" , "DefaultEmailOption": "CONFIRM_WITH_LINK"}' --policies '{"PasswordPolicy": {"MinimumLength": 6,"RequireUppercase": false,"RequireLowercase": false, "RequireNumbers": false, "RequireSymbols": false}}' > /tmp/$POOL_NAME-user-pool
 
 #Update the custom attributes
 aws cognito-idp add-custom-attributes --user-pool-id $USER_POOL_ID --custom-attributes '{"Name": "reg-code", "AttributeDataType": "String", "StringAttributeConstraints":{"MinLength": "1"}}'
@@ -35,5 +37,16 @@ username_rand=`cat /tmp/$POOL_NAME-signup  | grep -i usersub | awk '{print $2}' 
 aws cognito-idp admin-confirm-sign-up  --user-pool-id $USER_POOL_ID --username $username_rand
 
 # Adding Cognito Details to jenkinspropsfile
+if [ $5 == "../cookbooks/jenkins/files/node/jenkins-conf.properties" ] ; then
 sed -i "s/USER_POOL_ID.*.$/USER_POOL_ID=$USER_POOL_ID/g" $jenkinspropsfile
 sed -i "s/CLIENT_ID.*.$/CLIENT_ID=$CLIENT_ID/g" $jenkinspropsfile
+sed -i "s/REPO_EMAIL.*.$/REPO_EMAIL=$POOL_USER_NAME/g" $jenkinspropsfile
+
+else 
+	
+# Adding Cognito Details to jenkinsjsonpropsfile[Json Format]
+sed -i "s/USER_POOL_ID\".*.$/USER_POOL_ID\": \"$USER_POOL_ID\",/g" $jenkinsjsonpropsfile
+sed -i "s/CLIENT_ID\".*.$/CLIENT_ID\": \"$CLIENT_ID\"/g" $jenkinsjsonpropsfile
+sed -i "s/REPO_EMAIL\".*.$/REPO_EMAIL\": \"$POOL_USER_NAME\"/g" $jenkinspropsfile
+
+fi
