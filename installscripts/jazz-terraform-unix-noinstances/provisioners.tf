@@ -125,9 +125,20 @@ resource "null_resource" "configureExistingJenkinsServer" {
 resource "null_resource" "configureExistingBitbucketServer" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
+  count = "${var.scmbb}"
 
   provisioner "local-exec" {
     command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
+  }
+
+}
+resource "null_resource" "configureGitlabServer" {
+  // Configure the trigger job
+  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
+  count = "${var.scmgitlab}"
+
+  provisioner "local-exec" {
+    command = "${var.gitlab_cmd} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
   }
 
 }
