@@ -47,7 +47,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/scm/slf/jenkins-build-pack-api.git</url>
+          <url>http://$BITBUCKET_ELB/slf/jenkins-build-pack-api.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
