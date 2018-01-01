@@ -266,10 +266,6 @@ if node[:platform_family].include?("debian")
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
-    execute 'configJenkinsEmailExtXml' do
-      command "/root/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']} root"
-
-    end
     execute 'configJenkinsTaskMailerXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']} root"
     end
