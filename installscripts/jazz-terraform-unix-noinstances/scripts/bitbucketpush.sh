@@ -3,8 +3,9 @@
 BITBUCKETELB=$1
 bitbucketuser=$2
 bitbucketpasswd=$3
+emailid=$4
 
-git config --global user.email "harin.jose@ust-global.com"
+git config --global user.email "$emailid"
 git config --global user.name "$bitbucketuser"
 
 mkdir ./jazz-core-bitbucket
