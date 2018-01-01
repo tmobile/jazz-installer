@@ -62,3 +62,8 @@ variable "ses_cmd" {
   type = "string"
   default = "./scripts/ses.sh"
 }
+
+variable "gitlab_cmd" {
+  type = "string"
+  default = "./scripts/gitlab-trigger-job.sh"
+}
