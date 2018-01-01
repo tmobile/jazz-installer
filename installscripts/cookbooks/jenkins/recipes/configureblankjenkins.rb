@@ -122,10 +122,6 @@ execute 'configJenkinsLocConfigXml' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SSH_user']}"
 end
 
-execute 'configJenkinsEmailExtXml' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsEmailExtXml.sh #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkins']['SES-smtpPort']} #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-end
-
 execute 'configJenkinsTaskMailerXml' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
