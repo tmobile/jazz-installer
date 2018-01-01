@@ -131,11 +131,11 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
 
 resource "aws_api_gateway_rest_api" "jazz-dev" {
   name        = "${var.envPrefix}-dev"
-  description = "DEV API gateway for Tmobile demo "
+  description = "DEV API gateway"
 }
 resource "aws_api_gateway_rest_api" "jazz-stag" {
   name        = "${var.envPrefix}-stag"
-  description = "STG API for Tmobile demo"
+  description = "STG API"
 }
 
 resource "aws_api_gateway_rest_api" "jazz-prod" {

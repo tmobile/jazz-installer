@@ -21,7 +21,5 @@ BITBUCKET
 One installed get the licnese
 Install addons- cli connector, web hooks(2), set admin user ( jenkins1/jenkinsadmin) , run the bitbucketclient.cmd.
 
-# Install package "jq". We are using this to parse data from json output.
-	sudo curl -L <https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq> 
-	chmod +x /usr/local/bin/jq 
+
 
