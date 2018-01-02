@@ -266,9 +266,6 @@ if node[:platform_family].include?("debian")
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
-    execute 'configJenkinsTaskMailerXml' do
-      command "/root/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['user']} #{node['jenkins']['password']} root"
-    end
 
     execute 'copyJenkinsPropertyfile' do
       command "cp /root/cookbooks/jenkins/files/node/jenkins-conf.properties #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"

@@ -122,10 +122,6 @@ execute 'configJenkinsLocConfigXml' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SSH_user']}"
 end
 
-execute 'configJenkinsTaskMailerXml' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsTaskMailerXml.sh #{node['jenkins']['SES-smtpAuthUsername']} #{node['jenkins']['SES-smtpAuthPassword']} #{node['jenkins']['SES-smtpHost']} #{node['jenkins']['SES-useSsl']} #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-end
-
 execute 'copyJenkinsPropertyfile' do
   command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
   cwd "/home/#{node['jenkins']['SSH_user']} #{node['jenkins']['SSH_user']}"
