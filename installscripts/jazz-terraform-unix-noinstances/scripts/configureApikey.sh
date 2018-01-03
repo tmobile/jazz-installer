@@ -18,7 +18,7 @@ sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsf
 sed -i "s/default\['region'\].*.$/default['region']='$region'/g"  $jenkinsattribsfile
 
 # Changing jazz-web config.json
-sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_PROD/g" ./jazz-core/jazz-web/config/config.json
+sed -i "s/{API_GATEWAY_KEY_PROD\}/$API_ID_PROD/g" ./jazz-core/jazz-web/config/config.json
 sed -i "s/{inst_region}/$region/g" ./jazz-core/jazz-web/config/config.json
-sed -i "s/{API_GATEWAY_KEY_DEV\}/$API_ID_PROD/g" ./jazz-core/jazz-web/config/config.prod.json
+sed -i "s/{API_GATEWAY_KEY_PROD\}/$API_ID_PROD/g" ./jazz-core/jazz-web/config/config.prod.json
 sed -i "s/{inst_region}/$region/g" ./jazz-core/jazz-web/config/config.prod.json
