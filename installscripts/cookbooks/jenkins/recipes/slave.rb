@@ -24,7 +24,7 @@ execute 'configurenode' do
 end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b Alpha-R1 https://github.com/SiniWilson/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b Alpha-R1 https://github.com/tmobile/jazz.git jazz-core"
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
 execute 'runAwsgatewayImporter' do
