@@ -125,7 +125,7 @@ spin_wheel $! "Installing atlassian-cli"
 
 #Get Jazz Installer code base
 sudo rm -rf jazz-installer
-git clone -b $JAZZ_BRANCH https://github.com/SiniWilson/jazz-installer.git >>$LOG_FILE 2>&1 &
+git clone -b $JAZZ_BRANCH https://github.com/tmobile/jazz-installer.git >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading jazz Installer"
 
 #Download and Install wget
