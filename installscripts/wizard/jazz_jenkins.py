@@ -89,6 +89,13 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
     #Get Existing Jenkins Details form user
     print "\nPlease provide Jenkins Details.."
+    jenkins_server_elb = raw_input("""\nInstaller would like to install and configure the following jenkins plugins.
+    'https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#jenkins-plugins'
+    If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue. 
+    Yes to proceed and No to abort [y/n] :""")
+    if jenkins_server_elb != 'y':
+        sys.exit("")
+
     jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL) :")
     jenkins_username = raw_input("Jenkins username :")
     jenkins_passwd = raw_input("Jenkins password :")
