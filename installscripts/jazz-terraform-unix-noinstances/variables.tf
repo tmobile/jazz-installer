@@ -79,6 +79,16 @@ variable "bitbucketservermap" {
   }
 }
 
+# Gitlab related variables
+variable "gitlabservermap" {
+  type = "map"
+  default = {
+    gitlab_public_ip = "replace IP here"
+    gitlabuser = "replace"
+    gitlabpasswd = "replace"
+  }
+}
+
 #
 # AWS resource variables
 #
@@ -91,3 +101,8 @@ variable "lambdaCloudWatchProps" {
         principal      = "logs.us-east-1.amazonaws.com"
   }
 }
+
+# SCM Used. Default is bitbucket
+# Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
+variable "scmbb" { default = true }
+variable "scmgitlab" { default = false }
