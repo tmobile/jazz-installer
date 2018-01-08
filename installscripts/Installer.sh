@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # File: rhel7Installer.sh
-# 
+#
 # Description: Installs the Jazz serverless framework from RHEL ec2 instance.
 #
 #
@@ -12,7 +12,7 @@
 # ---------------------------------------------
 # To rhel7Installer, run:
 # ./rhel7Installer branch_name
-# 
+#
 # ---------------------------------------------
 export PS1='$PWD:>'
 
@@ -41,7 +41,7 @@ spin_wheel()
 	spin='-\|/'
 	printf "\r$message...."
 	i=0
-	
+
 	while ps -p $pid > /dev/null
 	do
 	  #echo $pid $i
@@ -69,7 +69,7 @@ trap '' 20
 # 1. GIT
 # 2. Java Jdk - 8u112-linux-x64
 # 3. Unzip
-# 4. AWSCLI 
+# 4. AWSCLI
 # 5. Terraform - 0.9.11
 # 6. JQ - 1.5
 # 7. Atlassian CLI - 6.7.1
@@ -91,7 +91,7 @@ sudo rm -rf jdk-8u112-linux-x64.rpm
 sudo yum install -y unzip >>$LOG_FILE 2>&1&
 spin_wheel $! "Installing unzip"
 
-# Create a temporary folder . Here we will have all the temporary files 
+# Create a temporary folder . Here we will have all the temporary files
 # needed and delete it at the end
 
 sudo rm -rf ~/jazz_tmp
@@ -153,7 +153,7 @@ cd ./jazz-installer/installscripts/wizard
 python ./run.py $JAZZ_BRANCH
 
 #Clean up the jazz_tmp folder
-sudo rm -rf ~/jazz_tmp 
+sudo rm -rf ~/jazz_tmp
 
 setterm -term linux -fore green
 setterm -term linux -fore default
