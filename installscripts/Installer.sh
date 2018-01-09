@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# File: rhel7Installer.sh
+# File: Installer.sh
 #
 # Description: Installs the Jazz serverless framework from RHEL ec2 instance.
 #
@@ -10,8 +10,8 @@
 # ---------------------------------------------
 # Usage:
 # ---------------------------------------------
-# To rhel7Installer, run:
-# ./rhel7Installer branch_name
+# To Installer, run:
+# ./Installer branch_name
 #
 # ---------------------------------------------
 export PS1='$PWD:>'
@@ -22,8 +22,8 @@ LOG_FILE=`realpath $LOG_FILE_NAME`
 #Check if the Branch name is supplied
 if [ $# -eq 0 ]
   then
-	echo 'No arguments supplied for rhel7Installer'
-    echo "Please re-run './rhel7Installer.sh branch_name' "
+	echo 'No arguments supplied for Installer'
+    echo "Please re-run './Installer.sh branch_name' "
 	exit
 fi
 

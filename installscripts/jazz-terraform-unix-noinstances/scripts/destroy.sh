@@ -103,6 +103,6 @@ fi
 echo "Proceeding to delete Jazz Installer."
 shopt -s extglob
 sudo rm -rf !(*.out)
-sudo rm -rf ../rhel7Installer.sh ../atlassian-cli*
+sudo rm -rf ../Installer.sh ../atlassian-cli*
 
 date
