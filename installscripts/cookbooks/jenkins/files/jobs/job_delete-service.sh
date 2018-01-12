@@ -1,8 +1,16 @@
-JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+JENKINS_URL=http://$1/ # localhost or jenkins elb url
 JOB_NAME=$2
 BITBUCKET_ELB=$3
-AUTHFILE=/home/ec2-user/cookbooks/jenkins/files/default/authfile
-JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
+SSH_USER=$4
+
+if [ -f /etc/redhat-release ]; then
+  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+elif [ -f /etc/lsb-release ]; then
+  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
+  JENKINS_CLI=/root/jenkins-cli.jar
+fi
+
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
 echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
@@ -54,7 +62,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB:7990/scm/slf/delete-serverless-service-build-pack.git</url>
+          <url>http://$BITBUCKET_ELB/scm/slf/delete-serverless-service-build-pack.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
