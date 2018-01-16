@@ -5,23 +5,26 @@ import subprocess
 
 #Global variables
 HOME_FOLDER = os.path.expanduser("~")
-VARIABLES_TF_FILE = "variables.tf"
 INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
 JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
-
+VARIABLES_TF_FILE = INSTALL_SCRIPT_FOLDER + "jazz-terraform-unix-noinstances/variables.tf"
 
 DEV_NULL = open(os.devnull, 'w')
 
 def add_gitlab_config_to_files(parameter_list):
     """
-        Add gitlab configuration to vriables.tf
-        parameter_list = [  gitlab_server_public_ip ,
+        Add gitlab configuration to variables.tf
+        parameter_list = [  gitlab_public_ip ,
                             gitlab_username,
                             gitlab_passwd ]
     """
-    subprocess.call(['sed', '-i', "s|gitlab_server_public_ip.*.$|gitlab_server_public_ip=\"%s\"|g" %(parameter_list[0]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|gitlab_public_ip.*.$|gitlab_public_ip=\"%s\"|g" %(parameter_list[0]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|gitlabuser.*.$|gitlabuser=\"%s\"|g" %(parameter_list[1]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|gitlabpasswd.*.$|gitlabpasswd=\"%s\"|g" %(parameter_list[2]), VARIABLES_TF_FILE])
+    
+    subprocess.call(['sed', '-i', "s|variable \"scmELB\".*.$|variable \"scmELB\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[0]), VARIABLES_TF_FILE])    
+    subprocess.call(['sed', '-i', "s|variable \"scmUsername\".*.$|variable \"scmUsername\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[1]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|variable \"scmPasswd\".*.$|variable \"scmPasswd\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[2]), VARIABLES_TF_FILE])
 
     # Adding gitlab username and password
     subprocess.call(['sed', '-i', "s|<username>gitlabuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
