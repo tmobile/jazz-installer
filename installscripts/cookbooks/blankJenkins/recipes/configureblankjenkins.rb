@@ -44,15 +44,15 @@ if node[:platform_family].include?("rhel")
     # Configure Gitlab Plugin
     execute 'configuregitlabplugin' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configuregitlab.sh #{node['gitlab']['publicip']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
     end
     execute 'configuregitlabuser' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-user.sh"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'configuregitlabtoken' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-token.sh"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
 
     service "jenkins" do
@@ -77,6 +77,7 @@ if node[:platform_family].include?("rhel")
     end
 
     execute 'createcredentials-jenkins1' do
+      only_if  { node[:scm] == 'bitbucket' }
       command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createcredentials-jobexecutor' do
@@ -120,6 +121,9 @@ if node[:platform_family].include?("rhel")
     execute 'createJob-job-build-pack-website' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
     end
+    execute 'job-gitlab-trigger' do
+      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
+    end    
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
       owner 'jenkins'
@@ -139,7 +143,7 @@ if node[:platform_family].include?("rhel")
     end
     execute 'configureJenkinsProperitesGitlab' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProperitesGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsPropsGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
 
     execute 'copyJenkinsPropertyfile' do
@@ -203,19 +207,6 @@ if node[:platform_family].include?("debian")
     execute 'copyScriptApprovals' do
       command "cp /root/cookbooks/jenkins/files/scriptapproval/scriptApproval.xml #{node['jenkins']['scriptApprovalfiletarget']}"
     end
-    # Configure Gitlab Plugin
-    execute 'configuregitlabplugin' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/node/configuregitlab.sh #{node['gitlab']['publicip']}"
-    end
-    execute 'configuregitlabuser' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/credentials/gitlab-user.sh"
-    end
-    execute 'configuregitlabtoken' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/credentials/gitlab-token.sh"
-    end
 
     service "jenkins" do
       supports [:stop, :start, :restart]
@@ -238,7 +229,16 @@ if node[:platform_family].include?("debian")
     execute 'settingexecutepermissiononallscripts' do
       command "chmod +x /root/cookbooks/jenkins/files/credentials/*.sh"
     end
+    execute 'configuregitlabuser' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "sleep 30;/root/cookbooks/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} root"
+    end
+    execute 'configuregitlabtoken' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "sleep 30;/root/cookbooks/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} root"
+    end
     execute 'createcredentials-jenkins1' do
+      only_if  { node[:scm] == 'bitbucket' }
       command "sleep 30;/root/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} root"
     end
     execute 'createcredentials-jobexecutor' do
@@ -281,6 +281,9 @@ if node[:platform_family].include?("debian")
     execute 'createJob-job-build-pack-website' do
       command "/root/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  root"
     end
+    execute 'job-gitlab-trigger' do
+      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
+    end    
     link '/usr/bin/aws-api-import' do
       to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
       owner 'jenkins'
@@ -296,13 +299,17 @@ if node[:platform_family].include?("debian")
     execute 'settingexecutepermissiononallnodescripts' do
       command "chmod +x /root/cookbooks/jenkins/files/node/*.sh"
     end
+    execute 'configuregitlabplugin' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/root/cookbooks/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
+    end
     execute 'configureJenkinsProperites' do
       only_if  { node[:scm] == 'bitbucket' }
       command "/root/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} root"
     end
-    execute 'configureJenkinsProperitesGitlab' do
+    execute 'configureJenkinsPropsGitlab' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/node/configureJenkinsProperitesGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+      command "/root/cookbooks/jenkins/files/node/configureJenkinsPropsGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"

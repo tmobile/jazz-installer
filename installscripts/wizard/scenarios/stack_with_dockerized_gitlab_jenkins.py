@@ -14,6 +14,7 @@ JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 GITLAB_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/gitlab/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
+JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
 
 def check_jenkins_pem():
     """

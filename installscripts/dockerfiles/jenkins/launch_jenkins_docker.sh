@@ -28,13 +28,14 @@ sudo docker volume create jenkins-volume &> /dev/null
 
 # Pull the docker image from ECR
 region=`grep region ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf  | cut -d' ' -f 9 | tr -d '"'`
-aws ecr get-login --no-include-email --region $region > ecr_login_script
+aws ecr get-login --registry-ids 108206174331 --no-include-email --region $region > ecr_login_script
 sudo bash ecr_login_script &> /dev/null
 rm -f ecr_login_script
 sudo docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins
 
 # Run the docker container from the using the above image and volumes.
 sudo docker run -dt -p 2200:2200 -p 8080:8080 --name=jenkins-server --mount source=jenkins-volume,destination=/var/lib/jenkins 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins
+
 
 # Grab the pem key for further jenkins configurations
 sudo docker cp jenkins-server:/root/.ssh/id_rsa ~/jenkinskey.pem
@@ -45,6 +46,12 @@ echo "==============>"
 echo "You will see the jenkins server login details after the stack creation!"
 echo "Waiting for Jenkins Server to be ready..."
 sleep 20
+
+#Installing Pip in Jenkins
+sudo docker exec -it jenkins-server /usr/bin/apt-get update
+sudo docker exec -it jenkins-server /usr/bin/apt-get install python-pip -y 
+sudo docker exec -it jenkins-server /usr/bin/pip install --upgrade pip
+sudo docker exec -it jenkins-server /usr/bin/pip install virtualenv
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
