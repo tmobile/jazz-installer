@@ -146,6 +146,7 @@ mv $LOG_FILE ./jazz-installer/
 
 #set the permissions
 chmod -R +x ./jazz-installer/installscripts/*
+mkdir ~/jazz-installer/installscripts/sshkeys
 chmod -R 400 ./jazz-installer/installscripts/sshkeys/*
 
 #Call the python script to continue installation process
