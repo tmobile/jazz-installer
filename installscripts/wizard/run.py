@@ -25,7 +25,7 @@ def main():
                 break
             else:
                 print("Invalid selection! Try again\n")
-                
+
     except KeyboardInterrupt:
         print "\nKeyboard Interrupt detected exiting.."
 

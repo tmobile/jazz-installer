@@ -38,9 +38,9 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
           <defaultValue>$REGION</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>deploy_env</name>
+          <name>scm_branch</name>
           <description></description>
-          <defaultValue>dev</defaultValue>
+          <defaultValue>master</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
