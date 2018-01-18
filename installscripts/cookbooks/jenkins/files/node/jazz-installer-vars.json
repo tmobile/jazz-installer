@@ -52,8 +52,8 @@
     "jazz_bucket_stg": "",
     "jazz_bucket_prod": "",
     "jazz_bucket_cloudfrontlogs": "",
-    "jazz_bucket_web": "",
-    "jazz_bucket_name_prefix": "jazz_bucket_"
+    "jazz_bucket_name_prefix": "jazz_bucket_",
+    "jazz_bucket_web": ""
    },
 
    "WEBSITE_S3": {
