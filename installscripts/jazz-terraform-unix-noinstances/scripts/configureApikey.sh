@@ -18,7 +18,7 @@ sed -i "s/API_ID_PROD=.*.$/API_ID_PROD=$API_ID_PROD/g" $jenkinspropsfile
 sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsfile
 
 
-sed -i "s/API_KEY\".*.$/API_KEY\": \"$API_ID_DEV\",/g" $jenkinsjsonpropsfile
+sed -i "s/API_KEY\".*.$/API_KEY\": \"$API_ID_PROD\",/g" $jenkinsjsonpropsfile
 sed -i "s/API_ID_DEV\".*.$/API_ID_DEV\": \"$API_ID_DEV\",/g" $jenkinsjsonpropsfile
 sed -i "s/API_ID_STG\".*.$/API_ID_STG\": \"$API_ID_STG\",/g" $jenkinsjsonpropsfile
 sed -i "s/API_ID_PROD\".*.$/API_ID_PROD\": \"$API_ID_PROD\"/g" $jenkinsjsonpropsfile
