@@ -87,7 +87,7 @@ variable "lambdaCloudWatchProps" {
   default = {
         statement_id   = "lambdaFxnPermission"
         action         = "lambda:*"
-        function_name  = "cloud-logs-streamer-dev"
+        function_name  = "cloud-logs-streamer-prod"
         principal      = "logs.us-east-1.amazonaws.com"
   }
 }
