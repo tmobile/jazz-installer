@@ -138,6 +138,7 @@ resource "null_resource" "configurejazzbuildmodule" {
  connection {
    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+   port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    type = "ssh"
    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
  }
@@ -147,6 +148,7 @@ resource "null_resource" "configurejazzbuildmodule" {
        "cd jazz-build-module",
        "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
        "git add jazz-installer-vars.json",
+       "git config --global user.email ${var.cognito_pool_username}",
        "git commit -m 'Adding Json file to repo'",
        "git push -u origin master",
        "cd ..",
