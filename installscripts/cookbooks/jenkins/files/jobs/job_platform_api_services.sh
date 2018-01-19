@@ -64,7 +64,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
   </navigators>
   <projectFactories>
     <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory plugin="workflow-multibranch@2.15">
-      <scriptPath>Jenkinsfile</scriptPath>
+      <scriptPath>Jenkinsfile_Platform</scriptPath>
     </org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory>
   </projectFactories>
 </jenkins.branch.OrganizationFolder>
