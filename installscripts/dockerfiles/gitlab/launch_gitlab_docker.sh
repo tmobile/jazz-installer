@@ -68,8 +68,9 @@ sleep 180 &
 spin_wheel $! "Launching the Gitlab Docker"
 
 # Setting up admin credentials
+passwd=`date | md5sum | cut -d ' ' -f1`
 sudo docker cp gitlab.sh gitlab:/root/gitlab.sh
-sudo docker exec gitlab /bin/bash /root/gitlab.sh > credentials.txt 2>&1&
+sudo docker exec gitlab /bin/bash /root/gitlab.sh $passwd > credentials.txt 2>&1&
 spin_wheel $! "Setting up admin credentials"
 
 # Installing epel
@@ -86,7 +87,7 @@ spin_wheel $! "Installing lxml"
 
 # Generating private tokens
 echo "Generating private tokens:"
-python privatetoken.py mytoken 2018-12-31
+python privatetoken.py mytoken 2018-12-31 $passwd
 
 # Grabbing the admin credentials
 gitlab_admin=`cat credentials.txt | grep login| awk '{print $2}'`
@@ -137,9 +138,7 @@ sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins & token replacement in triggerfile
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
-triggerfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/scripts/gitlab-trigger-job.sh
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
 sed -i "s|gitlabtoken.*.$|gitlabtoken=\"$token\"|g" $variablesfile
 sed -i "s|gitlabcasid.*.$|gitlabcasid=\"$ns_id_slf\"|g" $variablesfile
-sed -i "s|<secretToken>replace</secretToken>|<secretToken>$token</secretToken>|g" $triggerfile
