@@ -207,7 +207,6 @@ if node[:platform_family].include?("debian")
     execute 'copyScriptApprovals' do
       command "cp /root/cookbooks/jenkins/files/scriptapproval/scriptApproval.xml #{node['jenkins']['scriptApprovalfiletarget']}"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
@@ -322,7 +321,6 @@ if node[:platform_family].include?("debian")
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]

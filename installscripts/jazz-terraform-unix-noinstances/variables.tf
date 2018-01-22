@@ -87,7 +87,7 @@ variable "gitlabservermap" {
     gitlabuser = "replace"
     gitlabpasswd = "replace"
     gitlabtoken = "replace"
-    gitlabcasid = "replace"    
+    gitlabcasid = "replace"
   }
 }
 

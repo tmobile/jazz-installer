@@ -70,4 +70,3 @@ variable "gitlabPush_cmd" {
   type = "string"
   default = "./scripts/gitlabpush.sh"
 }
-

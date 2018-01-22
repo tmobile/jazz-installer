@@ -14,6 +14,6 @@ then
     sed -i "s/default\['scmelb'\].*.$/default['scmelb']='$bitbucketelbdnsname'/g"  $jenkinsattribsfile
     sed -i "s/REPO_BASE=.*.$/REPO_BASE=$bitbucketelbdnsname/g" $jenkinspropertiesfile
     sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$bitbucketelbdnsname\",/g" $jenkinsjsonpropertiesfile
-
     sed -i "s/BITBUCKETELB=.*.$/BITBUCKETELB=$bitbucketelbdnsname/g" $bitbucketclient
 fi
+
