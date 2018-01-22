@@ -120,6 +120,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
   }
+  // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
+  provisioner "local-exec" {
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}"
+  }
+
 
 }
 resource "null_resource" "configureExistingBitbucketServer" {
@@ -155,5 +160,3 @@ resource "null_resource" "configurejazzbuildmodule" {
        "sudo rm -rf jazz-build-module" ]
  }
 }
-
-
