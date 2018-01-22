@@ -16,9 +16,9 @@ JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/file
 
 DEV_NULL = open(os.devnull, 'w')
 
-def check_jenkins_ec2user(parameter_list):
+def check_jenkins_sshuser_valid(parameter_list, port_number):
     """
-        Check if the ssh login name is a ec2-user
+        Check if the ssh login name is a user
     """
     jenkins_server_public_ip = parameter_list[3]
     jenkins_server_ssh_login = parameter_list[4]
@@ -26,11 +26,9 @@ def check_jenkins_ec2user(parameter_list):
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        res = ssh.connect(jenkins_server_public_ip,username=jenkins_server_ssh_login,key_filename=keyfile)
-        if res == None:
-            print("SSH successful")
+        ssh.connect(jenkins_server_public_ip, username=jenkins_server_ssh_login, key_filename=keyfile, port=port_number)
     except:
-        print("Are the keys and usernames valid?")
+        print("Is the jenkinskey key or the username valid?")
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -89,6 +87,13 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
     #Get Existing Jenkins Details form user
     print "\nPlease provide Jenkins Details.."
+    jenkins_server_elb = raw_input("""\nInstaller would like to install and configure the following jenkins plugins.
+    'https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#jenkins-plugins'
+    If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue. 
+    Yes to proceed and No to abort [y/n] :""")
+    if jenkins_server_elb != 'y':
+        sys.exit("")
+
     jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL) :")
     jenkins_username = raw_input("Jenkins username :")
     jenkins_passwd = raw_input("Jenkins password :")
@@ -122,7 +127,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
 
 
-    check_jenkins_ec2user(parameter_list)
+    check_jenkins_sshuser_valid(parameter_list, jenkins_server_ssh_port)
     add_jenkins_config_to_files(parameter_list)
 
 def get_and_add_docker_jenkins_config(jenkins_docker_path):
@@ -141,5 +146,5 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
 
     print(parameter_list[0:])
 
-    check_jenkins_ec2user(parameter_list)
+    check_jenkins_sshuser_valid(parameter_list, 2200)
     add_jenkins_config_to_files(parameter_list)
