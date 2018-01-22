@@ -51,7 +51,6 @@ sed -i "s|default\['scm'\].*.|default\['scm'\]='gitlab'|g" $attrbsfile
 sed -i "s|default\['scmelb'\].*.|default\['scmelb'\]='$ip'|g" $attrbsfile
 sed -i "s|default\['scmpath'\].*.|default\['scmpath'\]='$ip'|g" $attrbsfile
 
-
 # Running the Gitlab Docker
 sudo docker run --detach \
     --hostname $ip \
@@ -113,7 +112,7 @@ echo "PRIVATE TOKEN: $token" >> credentials.txt
 echo "NSID SLF: $ns_id_slf" >> credentials.txt
 echo "NSID CAS: $ns_id_cas" >> credentials.txt
 
-
+# Redirecting ip, username and passwd
 echo "$ip" > docker_gitlab_vars
 echo "$gitlab_admin" >> docker_gitlab_vars
 echo "$gitlab_passwd" >> docker_gitlab_vars
@@ -136,7 +135,7 @@ sed -i "s/gitlab_private_token\".*.$/gitlab_private_token\": \"$token\",/g" $jen
 sed -i "s/gitlab_cas_name_space_id\".*.$/gitlab_cas_name_space_id\": \"$ns_id_cas\"/g" $jenkinsJsonfile
 sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$ip\",/g" $jenkinsJsonfile
 
-# SCM selection for Gitlab trigger job in Jenkins & token replacement in triggerfile
+# SCM selection for Gitlab trigger job in Jenkins
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile

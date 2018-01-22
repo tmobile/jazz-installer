@@ -60,6 +60,5 @@ def main():
     f.write("Private Token: %s" % token)
     f.close()
 
-
 if __name__ == u"__main__":
     main()
