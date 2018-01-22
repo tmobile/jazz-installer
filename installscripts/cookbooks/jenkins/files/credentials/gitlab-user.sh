@@ -12,7 +12,7 @@ echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-credentials-by-xml system::system::jenkins "(global)"
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
   <scope>GLOBAL</scope>
-  <id>Jazz-Gitlab-Cred</id>
+  <id>jenkins1cred</id>
   <description>Gitlab user</description>
   <username>gitlabuser</username>
   <password>gitlabpassword</password>

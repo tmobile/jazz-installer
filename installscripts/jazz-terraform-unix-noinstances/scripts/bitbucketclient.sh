@@ -23,4 +23,4 @@ java -jar $CLIENTJAR -s $BASEURL -u $bitbucketuser -p $bitbucketpasswd --action 
 
 #CALLS JENKINS JOB TO INSTALL Serverless application on AWS
 #curl  http://$JENKINSELB:8080/job/inst_deploy_createservice/build?token=triggerCreateService --user jenkinsadmin:jenkinsadmin
-curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
+#curl  -X GET -u $jenkinsuser:$jenkinspasswd http://$JENKINSELB/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region

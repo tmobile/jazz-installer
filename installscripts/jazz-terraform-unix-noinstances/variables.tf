@@ -55,7 +55,7 @@ variable "jenkinsservermap" {
   type = "map"
   default = {
     jenkins_elb = "replace"
-    jenkins_public_ip = "replace IP here"
+    jenkins_public_ip = "replaceIP"
     jenkins_subnet = "replace"
     jenkins_security_group = "replace"
     jenkinsuser = "replace"
@@ -72,8 +72,8 @@ variable "jenkinsservermap" {
 variable "bitbucketservermap" {
   type = "map"
   default = {
-    bitbucket_elb = "replace ELB here"
-    bitbucket_public_ip = "replace IP here"
+    bitbucket_elb = "replaceELB"
+    bitbucket_public_ip = "replaceIP"
     bitbucketuser = "replace"
     bitbucketpasswd = "replace"
   }
@@ -83,9 +83,11 @@ variable "bitbucketservermap" {
 variable "gitlabservermap" {
   type = "map"
   default = {
-    gitlab_public_ip = "replace IP here"
+    gitlab_public_ip = "replaceIP"
     gitlabuser = "replace"
     gitlabpasswd = "replace"
+    gitlabtoken = "replace"
+    gitlabcasid = "replace"
   }
 }
 
@@ -95,10 +97,10 @@ variable "gitlabservermap" {
 variable "lambdaCloudWatchProps" {
   type = "map"
   default = {
-        statement_id   = "lambdaFxnPermission"
-        action         = "lambda:*"
-        function_name  = "cloud-logs-streamer-dev"
-        principal      = "logs.us-east-1.amazonaws.com"
+    statement_id   = "lambdaFxnPermission"
+    action         = "lambda:*"
+    function_name  = "cloud-logs-streamer-dev"
+    principal      = "logs.us-east-1.amazonaws.com"
   }
 }
 
@@ -106,3 +108,7 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
+variable "scmUsername" { type = "string" default = "replace" }
+variable "scmPasswd" { type = "string" default = "replace" }
+variable "scmELB" { type = "string" default = "replace" }
+variable "scmPathExt" { type = "string" default = "" }

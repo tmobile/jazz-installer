@@ -9,9 +9,6 @@ root_route = urljoin(endpoint, u"/")
 sign_in_route = urljoin(endpoint, u"/users/sign_in")
 pat_route = urljoin(endpoint, u"/profile/personal_access_tokens")
 
-login = u"root"
-password = u"gitlab12345"
-
 def find_csrf_token(text):
     soup = BeautifulSoup(text, u"lxml")
     token = soup.find(attrs={u"name": u"csrf-token"})
@@ -24,7 +21,7 @@ def obtain_csrf_token():
     token = find_csrf_token(r.text)
     return token, r.cookies
 
-def sign_in(csrf, cookies):
+def sign_in(login, password, csrf, cookies):
     data = {
         u"user[login]": login,
         u"user[password]": password,
@@ -50,8 +47,11 @@ def obtain_personal_access_token(name, expires_at, csrf, cookies):
     return token
 
 def main():
+    login = u"root"
+    password = sys.argv[3]
+
     csrf1, cookies1 = obtain_csrf_token()
-    csrf2, cookies2 = sign_in(csrf1, cookies1)
+    csrf2, cookies2 = sign_in(login, password, csrf1, cookies1)
 
     name = sys.argv[1]
     expires_at = sys.argv[2]
@@ -59,7 +59,6 @@ def main():
     f = open("credentials.txt","a")
     f.write("Private Token: %s" % token)
     f.close()
-
 
 if __name__ == u"__main__":
     main()
