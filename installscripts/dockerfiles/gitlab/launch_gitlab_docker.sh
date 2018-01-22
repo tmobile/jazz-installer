@@ -97,7 +97,7 @@ token=`grep -i private credentials.txt | awk '{print $3}'`
 sed -i "s|replace|$token|g" ~/jazz-installer/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
 
 # Create Groups CAS and SLF
-curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"SLF","path":"slf", "description": "Group containing templates and Frameworks"}'
+curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"SLF","path":"slf", "description": "Jazz framework, templates and services"}'
 curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"CAS","path":"cas", "description": "User created services repository"}'
 
 # Grabbing the namespace ID of CAS Group
