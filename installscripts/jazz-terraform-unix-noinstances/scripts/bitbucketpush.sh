@@ -38,6 +38,9 @@ for path in ./*; do
     git push -u origin master
     echo "code has been pushed"
 
+    #Adding a temp fix for overcoming simultaneous deployment of platform services
+    sleep 10
+
     pwd
     cd ../../jazz-core/
 
