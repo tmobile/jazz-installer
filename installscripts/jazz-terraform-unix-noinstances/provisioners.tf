@@ -157,7 +157,7 @@ resource "null_resource" "configurejazzbuildmodule" {
    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
  }
-   provisioner "remote-exec"{
+ provisioner "remote-exec"{
    inline = [
        "git clone http://${var.scmUsername}:${var.scmPasswd}@${var.scmELB}${var.scmPathExt}/slf/jazz-build-module.git",
        "cd jazz-build-module",
@@ -169,11 +169,8 @@ resource "null_resource" "configurejazzbuildmodule" {
        "cd ..",
        "sudo rm -rf jazz-build-module" ]
  }
-
   //This would be the last command which needs to be run which triggers the Jenkins Build deploy job
-  provisioner "local-exec" {
+ provisioner "local-exec" {
     command = "curl  -X GET -u ${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")} http://${lookup(var.jenkinsservermap, "jenkins_elb")}/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=${var.region}"
   }
-
 }
-

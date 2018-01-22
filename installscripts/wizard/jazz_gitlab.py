@@ -13,10 +13,10 @@ DEV_NULL = open(os.devnull, 'w')
 
 def add_gitlab_config_to_files(parameter_list):
     """
-        Add gitlab configuration to variables.tf
-        parameter_list = [  gitlab_public_ip ,
-                            gitlab_username,
-                            gitlab_passwd ]
+    Add gitlab configuration to variables.tf
+    parameter_list = [  gitlab_public_ip ,
+                        gitlab_username,
+                        gitlab_passwd ]
     """
     subprocess.call(['sed', '-i', "s|gitlab_public_ip.*.$|gitlab_public_ip=\"%s\"|g" %(parameter_list[0]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|gitlabuser.*.$|gitlabuser=\"%s\"|g" %(parameter_list[1]), VARIABLES_TF_FILE])
