@@ -83,10 +83,22 @@ def get_jazz_tag_config_details():
     return [tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
 
 def get_stack_generic_details(jazz_branch):
-    region = 'us-east-1'
-
+    
     print ""
     print("Please provide the details to setup Jazz")
+
+    region = None
+ 
+    while True:
+        region = raw_input("AWS Region(Choose us-east-1 or us-west-2): ")
+        if region == 'us-east-1':
+            print 'Valid Region'
+            break
+        elif region == 'us-west-2':
+            print 'valid Region'
+            break
+        else:
+            print 'Invalid Region,Please try again..'
 
     # Get the aws credentials
     aws_credentials = get_aws_credentials()
