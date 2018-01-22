@@ -62,3 +62,7 @@ variable "ses_cmd" {
   type = "string"
   default = "./scripts/ses.sh"
 }
+variable "injectingBootstrapToJenkinsfiles_cmd" {
+  type = "string"
+  default = "./scripts/injectingToJenkinsfile.sh"
+}
