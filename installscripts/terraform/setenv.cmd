@@ -1,1 +1,0 @@
-set PATH=.;%PATH%;C:\project\software\curl-7.33.0
