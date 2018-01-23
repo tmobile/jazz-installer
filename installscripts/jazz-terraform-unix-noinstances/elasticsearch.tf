@@ -36,7 +36,7 @@ POLICIES
 		    command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.region}"
 	  }
     provisioner "local-exec" {
-        command = "${var.modifyPropertyFile_cmd} jazz_es_hostname ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+        command = "${var.modifyPropertyFile_cmd} jazz_es_hostname ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
     }
 
 }
