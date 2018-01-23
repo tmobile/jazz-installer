@@ -1,4 +1,4 @@
-export JENKINS_URL=http://$1:8080/ # localhost or jenkins elb url
+export JENKINS_URL=http://$1/ # localhost or jenkins elb url
 export HOST_NAME=`hostname -i | cut -d" " -f2` 
 export NODE_NAME=$2
 export NODE_SLAVE_HOME="/home/ec2-user/$NODE_NAME"
@@ -28,19 +28,6 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-node 
   </launcher>
   <label></label>
   <nodeProperties>
-    <hudson.slaves.EnvironmentVariablesNodeProperty>
-      <envVars serialization="custom">
-        <unserializable-parents/>
-        <tree-map>
-          <default>
-            <comparator class="hudson.util.CaseInsensitiveComparator"/>
-          </default>
-          <int>1</int>
-          <string>JAVA_HOME</string>
-          <string>/usr/lib/jvm/java-1.8.0</string>
-        </tree-map>
-      </envVars>
-    </hudson.slaves.EnvironmentVariablesNodeProperty>
     <org.jenkinsci.plugins.envinject.EnvInjectNodeProperty plugin="envinject@2.1.1">
       <unsetSystemVariables>false</unsetSystemVariables>
       <propertiesFilePath>${propsFilePath}</propertiesFilePath>

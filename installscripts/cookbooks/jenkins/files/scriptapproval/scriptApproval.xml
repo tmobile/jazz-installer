@@ -11,6 +11,8 @@
     <string>staticMethod java.lang.System getenv</string>
     <string>staticMethod java.lang.System getenv java.lang.String</string>
     <string>staticMethod jenkins.model.JenkinsLocationConfiguration get</string>
+    <string>new groovy.json.JsonSlurperClassic</string>
+    <string>method groovy.json.JsonSlurperClassic parseText java.lang.String </string>     
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
