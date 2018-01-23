@@ -35,10 +35,6 @@ variable "cookbooksDir" {
 #
 # Jenkins related variables
 #
-variable "jenkinspropsfile" {
-  type = "string"
-  default = "../cookbooks/jenkins/files/node/jenkins-conf.properties"
-}
 variable "jenkinsjsonpropsfile" {
   type = "string"
   default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
