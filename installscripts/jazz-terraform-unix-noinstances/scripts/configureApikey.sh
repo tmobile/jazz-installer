@@ -4,18 +4,9 @@ API_ID_DEV=$1
 API_ID_STG=$2
 API_ID_PROD=$3
 region=$4
-jenkinspropsfile=$5
-jenkinsjsonpropsfile=$6
-jenkinsattribsfile=$7
-env_name_prefix=$8
-
-
-#Both API_KEY and API_ID_DEV are needed and should have the same value
-sed -i "s/API_KEY=.*.$/API_KEY=$API_ID_PROD/g" $jenkinspropsfile
-sed -i "s/API_ID_DEV=.*.$/API_ID_DEV=$API_ID_DEV/g" $jenkinspropsfile
-sed -i "s/API_ID_STG=.*.$/API_ID_STG=$API_ID_STG/g" $jenkinspropsfile
-sed -i "s/API_ID_PROD=.*.$/API_ID_PROD=$API_ID_PROD/g" $jenkinspropsfile
-sed -i "s/env_name_prefix.*.$/env_name_prefix=$env_name_prefix/g" $jenkinspropsfile
+jenkinsjsonpropsfile=$5
+jenkinsattribsfile=$6
+env_name_prefix=$7
 
 
 sed -i "s/API_KEY\".*.$/API_KEY\": \"$API_ID_PROD\",/g" $jenkinsjsonpropsfile
