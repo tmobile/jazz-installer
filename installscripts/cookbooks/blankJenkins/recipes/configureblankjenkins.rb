@@ -121,10 +121,6 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
 
-    execute 'copyJenkinsPropertyfile' do
-      command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
-      cwd "/home/#{node['jenkins']['SSH_user']}"
-    end
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
@@ -258,10 +254,6 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
 
-    execute 'copyJenkinsPropertyfile' do
-      command "cp /root/cookbooks/jenkins/files/node/jenkins-conf.properties #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
-      cwd "root"
-    end
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
