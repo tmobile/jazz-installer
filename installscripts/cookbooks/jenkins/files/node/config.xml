@@ -55,9 +55,5 @@
     </hudson.slaves.EnvironmentVariablesNodeProperty>
   </nodeProperties>
   <globalNodeProperties>
-    <org.jenkinsci.plugins.envinject.EnvInjectNodeProperty plugin="envinject@2.1.1">
-      <unsetSystemVariables>false</unsetSystemVariables>
-      <propertiesFilePath>/tmp/jenkins-conf.properties</propertiesFilePath>
-    </org.jenkinsci.plugins.envinject.EnvInjectNodeProperty>
   </globalNodeProperties>
 </hudson>
