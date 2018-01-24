@@ -92,7 +92,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/scm/slf/service-onboarding-build-pack.git</url>
+          <url>http://$BITBUCKET_ELB/slf/service-onboarding-build-pack.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>

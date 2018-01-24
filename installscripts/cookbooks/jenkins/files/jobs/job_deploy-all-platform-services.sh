@@ -16,31 +16,15 @@ JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE l
 echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
 <flow-definition plugin="workflow-job@2.12">
-  <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>service_name</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>admin_group</name>
-          <description></description>
-          <defaultValue>admin_group</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>region</name>
           <description></description>
           <defaultValue>$REGION</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>scm_branch</name>
-          <description></description>
-          <defaultValue>master</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -66,11 +50,11 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>Jenkinsfile</scriptPath>
+    <scriptPath>Jenkinsfile-deploy-platformservices</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>bld-plat-srvs-71717</authToken>
+  <authToken>dep-all-ps-71717</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF
