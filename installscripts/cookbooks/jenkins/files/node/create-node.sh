@@ -1,10 +1,9 @@
 export JENKINS_URL=http://$1/ # localhost or jenkins elb url
-export HOST_NAME=`hostname -i | cut -d" " -f2` 
+export HOST_NAME=`hostname -i | cut -d" " -f2`
 export NODE_NAME=$2
 export NODE_SLAVE_HOME="/home/ec2-user/$NODE_NAME"
 export EXECUTORS=1
 export SSH_PORT=22
-export propsFilePath=/tmp/jenkins-conf.properties
 export AUTHFILE=/home/ec2-user/cookbooks/jenkins/files/default/authfile
 export JENKINS_CLI=/home/ec2-user/jenkins-cli.jar
 #CRED_ID=$3 #9219e826-5f37-43df-b10b-51b2f4332a64
