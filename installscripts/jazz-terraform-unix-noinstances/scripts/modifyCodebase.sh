@@ -5,6 +5,7 @@ subnetIds=$2
 iamRoleARN=$3
 region=$4
 stackprefix=$5
+jazz_admin=$6
 
 sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/api-template-java/deployment-env.yml
 sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-java/deployment-env.yml
@@ -16,78 +17,10 @@ sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-nodej
 sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/api-template-nodejs/deployment-env.yml
 sed -i "s/^region.*.$/region: $region/g" ./jazz-core/api-template-nodejs/deployment-env.yml
 
-
-
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/create-serverless-service/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/create-serverless-service/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/create-serverless-service/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/create-serverless-service/deployment-env.yml
-
-
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/delete-serverless-service/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/delete-serverless-service/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/delete-serverless-service/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/delete-serverless-service/deployment-env.yml
-
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/cloud-logs-streamer/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/cloud-logs-streamer/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/cloud-logs-streamer/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/cloud-logs-streamer/deployment-env.yml
-
-# Modify platform_services deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_services/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_services/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_services/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_services/deployment-env.yml
-
-# Modify platform_logs deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_logs/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_logs/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_logs/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_logs/deployment-env.yml
-
-# Modify is-service-available deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/is-service-available/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/is-service-available/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/is-service-available/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/is-service-available/deployment-env.yml
-
-# Modify platform_login deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_login/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_login/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_login/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_login/deployment-env.yml
-
-# Modify platform_logout deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_logout/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_logout/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_logout/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_logout/deployment-env.yml
-
-
-
-# Modify cognito-authorizer deployment-env.yml file
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/cognito-authorizer/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/cognito-authorizer/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/cognito-authorizer/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/cognito-authorizer/deployment-env.yml
-
-
-
 sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/api-template-python/deployment-env.yml
 sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/api-template-python/deployment-env.yml
 sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/api-template-python/deployment-env.yml
 sed -i "s/^region.*.$/region: $region/g" ./jazz-core/api-template-python/deployment-env.yml
-
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform-services-handler/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform-services-handler/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform-services-handler/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform-services-handler/deployment-env.yml
-
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_events/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_events/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_events/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_events/deployment-env.yml
 
 sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/lambda-template-java/deployment-env.yml
 sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/lambda-template-java/deployment-env.yml
@@ -109,14 +42,31 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-nodejs.yml
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack/serverless-python.yml
 
-#Adding platform_usermanagement value injection
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_usermanagement/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_usermanagement/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_usermanagement/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_usermanagement/deployment-env.yml
-
-#Adding platform_email value injection
-sed -i "s/^securityGroupIds.*.$/securityGroupIds: $securityGroupIds/g" ./jazz-core/platform_email/deployment-env.yml
-sed -i "s/^subnetIds.*.$/subnetIds: $subnetIds/g" ./jazz-core/platform_email/deployment-env.yml
-sed -i "s=^iamRoleARN.*.$=iamRoleARN: $iamRoleARN=g" ./jazz-core/platform_email/deployment-env.yml
-sed -i "s/^region.*.$/region: $region/g" ./jazz-core/platform_email/deployment-env.yml
+#-------------------------------------------
+platform_services=("cognito-authorizer" "logs" "usermanagement" "services-handler" "events" "services" "logout" "login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "email" )
+servicename="_services_prod"
+tablename=$stackprefix$servicename
+for element in "${platform_services[@]}"
+do
+	uuid=`uuidgen -t`
+	aws dynamodb put-item --table-name $tablename --item '{
+		"SERVICE_ID":{"S":"$uuid"},
+		"SERVICE_CREATED_BY":{"S":"$jazz_admin"},
+		"SERVICE_DOMAIN":{"S":"platform"},
+		"SERVICE_NAME":{"S":"$element"},
+		"SERVICE_RUNTIME":{"S":"nodejs"},
+		"SERVICE_STATUS":{"S":"active"},
+		"SERVICE_METADATA":{"M":{
+				"securityGroupIds":{"S":"$securityGroupIds"},
+				"subnetIds":{"S":"$subnetIds"},
+				"iamRoleARN":{"S":"$iamRoleARN"},
+				"providerMemorySize":{"S":"256"},
+				"providerRuntime":{"S":"nodejs4.3"},
+				"providerTimeout":{"S":"160"},
+				"runtime":{"S":"nodejs"},
+				"service":{"S":"$element"},
+				"type":{"S":"api"}
+				}
+			}
+		}'
+done
