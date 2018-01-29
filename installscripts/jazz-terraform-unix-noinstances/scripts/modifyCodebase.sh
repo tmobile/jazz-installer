@@ -50,21 +50,21 @@ for element in "${platform_services[@]}"
 do
 	uuid=`uuidgen -t`
 	aws dynamodb put-item --table-name $tablename --item '{
-		"SERVICE_ID":{"S":"$uuid"},
-		"SERVICE_CREATED_BY":{"S":"$jazz_admin"},
+		"SERVICE_ID":{"S":'$uuid'},
+		"SERVICE_CREATED_BY":{"S":'$jazz_admin'},
 		"SERVICE_DOMAIN":{"S":"platform"},
-		"SERVICE_NAME":{"S":"$element"},
+		"SERVICE_NAME":{"S":'$element'},
 		"SERVICE_RUNTIME":{"S":"nodejs"},
 		"SERVICE_STATUS":{"S":"active"},
 		"SERVICE_METADATA":{"M":{
-				"securityGroupIds":{"S":"$securityGroupIds"},
-				"subnetIds":{"S":"$subnetIds"},
-				"iamRoleARN":{"S":"$iamRoleARN"},
+				"securityGroupIds":{"S":'$securityGroupIds'},
+				"subnetIds":{"S":'$subnetIds'},
+				"iamRoleARN":{"S":'$iamRoleARN'},
 				"providerMemorySize":{"S":"256"},
 				"providerRuntime":{"S":"nodejs4.3"},
 				"providerTimeout":{"S":"160"},
 				"runtime":{"S":"nodejs"},
-				"service":{"S":"$element"},
+				"service":{"S":'$element'},
 				"type":{"S":"api"}
 				}
 			}
