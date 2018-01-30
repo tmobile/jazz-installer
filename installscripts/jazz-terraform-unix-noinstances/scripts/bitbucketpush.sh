@@ -38,7 +38,7 @@ function individual_repo_push() {
   echo "code has been pushed"
 
   #Adding a temp fix for overcoming simultaneous deployment of platform services - Number of simultaneous cloudformation creation requests
-  sleep 10
+  sleep 45
   cd ../../jazz-core/
 }
 
