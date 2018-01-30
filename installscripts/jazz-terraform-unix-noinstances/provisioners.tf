@@ -127,18 +127,21 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
 
 }
-resource "null_resource" "configureExistingBitbucketServer" {
+
+// Copy the jazz-build-module to SLF in SCM
+resource "null_resource" "copyJazzBuildModule" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
 
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username}"
+    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username} jazz-build-module"
   }
 }
 
-resource "null_resource" "configurejazzbuildmodule" {
+// Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
+resource "null_resource" "configureJazzBuildModule" {
 
- depends_on = ["null_resource.configureExistingBitbucketServer"]
+ depends_on = ["null_resource.copyJazzBuildModule"]
 
  connection {
    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
@@ -159,4 +162,14 @@ resource "null_resource" "configurejazzbuildmodule" {
        "cd ..",
        "sudo rm -rf jazz-build-module" ]
  }
+}
+
+// Push all other repos to SLF
+resource "null_resource" "configureExistingBitbucketServer" {
+
+  depends_on = ["null_resource.configureJazzBuildModule"]
+
+  provisioner "local-exec" {
+    command = "${var.bitbucketpush_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.cognito_pool_username}"
+  }
 }

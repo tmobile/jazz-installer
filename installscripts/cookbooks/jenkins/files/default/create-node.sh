@@ -8,7 +8,6 @@ SSH_PORT=22
 CRED_ID=$3 #9219e826-5f37-43df-b10b-51b2f4332a64
 LABELS=build
 USERID=${USER}
-propsFilePath=/tmp/jenkins-conf.properties
 
 cat <<EOF | java -jar ~/bin/jenkins-cli.jar -s $1 create-node $2
 <slave>
@@ -25,10 +24,6 @@ cat <<EOF | java -jar ~/bin/jenkins-cli.jar -s $1 create-node $2
   </launcher>
   <label>${LABELS}</label>
   <nodeProperties>
-    <org.jenkinsci.plugins.envinject.EnvInjectNodeProperty plugin="envinject@2.1.1">
-      <unsetSystemVariables>false</unsetSystemVariables>
-      <propertiesFilePath>${propsFilePath}</propertiesFilePath>
-    </org.jenkinsci.plugins.envinject.EnvInjectNodeProperty>
   </nodeProperties>
   <userId>${USERID}</userId>
 </slave>
