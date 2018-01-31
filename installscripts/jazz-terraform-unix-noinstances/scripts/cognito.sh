@@ -37,4 +37,3 @@ aws cognito-idp admin-confirm-sign-up  --user-pool-id $USER_POOL_ID --username $
 
 sed -i "s/USER_POOL_ID\".*.$/USER_POOL_ID\": \"$USER_POOL_ID\",/g" $jenkinsjsonpropsfile
 sed -i "s/CLIENT_ID\".*.$/CLIENT_ID\": \"$CLIENT_ID\"/g" $jenkinsjsonpropsfile
-sed -i "s/REPO_EMAIL\".*.$/REPO_EMAIL\": \"$POOL_USER_NAME\"/g" $jenkinsjsonpropsfile
