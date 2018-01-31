@@ -44,28 +44,28 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} BITBUCKET_PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-  command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
+  command = "${var.modifyPropertyFile_cmd} PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-  command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
+  command = "${var.modifyPropertyFile_cmd} ACCOUNTID ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-  command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinsjsonpropsfile}"
+  command = "${var.modifyPropertyFile_cmd} REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "file" {
