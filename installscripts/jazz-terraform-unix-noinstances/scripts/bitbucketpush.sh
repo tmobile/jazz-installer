@@ -37,8 +37,6 @@ function individual_repo_push() {
   git push -u origin master
   echo "code has been pushed"
 
-  #Adding a temp fix for overcoming simultaneous deployment of platform services - Number of simultaneous cloudformation creation requests
-  sleep 45
   cd ../../jazz-core/
 }
 
