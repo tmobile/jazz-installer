@@ -37,8 +37,6 @@ function individual_repo_push() {
   git push -u origin master
   echo "code has been pushed"
 
-  #Adding a temp fix for overcoming simultaneous deployment of platform services - Number of simultaneous cloudformation creation requests
-  sleep 45
   cd ../../jazz-core/
 }
 
@@ -52,7 +50,7 @@ function push_to_repo() {
 
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" ]]; then
           repos+=("${d%/}")
         fi
     done
