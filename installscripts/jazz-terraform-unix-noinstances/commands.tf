@@ -34,6 +34,11 @@ variable "bitbucketclient_cmd" {
   type = "string"
   default = "./scripts/bitbucketclient.sh"
 }
+variable "bitbucketpush_cmd" {
+  type = "string"
+  default = "./scripts/bitbucketpush.sh"
+}
+
 variable "configureESEndpoint_cmd" {
   type = "string"
   default = "./scripts/configureESEndpoint.sh"
