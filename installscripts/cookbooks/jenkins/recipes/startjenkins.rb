@@ -116,9 +116,9 @@ link '/usr/bin/aws' do
   mode '0777'
 end
 
-execute 'configureJenkinsProperites' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-end
+# execute 'configureJenkinsProperites' do
+  # command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+# end
 
 execute 'configJenkinsLocConfigXml' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']} #{node['jenkins']['SSH_user']}"
