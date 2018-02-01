@@ -117,9 +117,9 @@ if node[:platform_family].include?("rhel")
       mode '0777'
     end
 
-    execute 'configureJenkinsProperites' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    end
+    # execute 'configureJenkinsProperites' do
+      # command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+    # end
 
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
