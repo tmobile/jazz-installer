@@ -122,7 +122,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
+    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
@@ -131,29 +131,22 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
 
 }
-resource "null_resource" "configureExistingBitbucketServer" {
+
+// Copy the jazz-build-module to SLF in SCM
+resource "null_resource" "copyJazzBuildModule" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username}"
+    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username} jazz-build-module"
   }
 }
 
-resource "null_resource" "configureGitlabServer" {
-  // Configure the trigger job
-  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
-  count = "${var.scmgitlab}"
+// Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
+resource "null_resource" "configureJazzBuildModule" {
 
-  provisioner "local-exec" {
-    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
-  }
-}
-
-resource "null_resource" "configurejazzbuildmodule" {
-
- depends_on = ["null_resource.configureExistingBitbucketServer", "null_resource.configureGitlabServer"]
+ depends_on = ["null_resource.copyJazzBuildModule"]
 
  connection {
    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
@@ -176,13 +169,23 @@ resource "null_resource" "configurejazzbuildmodule" {
        "sudo rm -rf jazz-build-module" ]
  }
 }
+
+// Push all other repos to SLF
+resource "null_resource" "configureExistingBitbucketServer" {
+
+  depends_on = ["null_resource.configureJazzBuildModule"]
+
+  provisioner "local-exec" {
+    command = "${var.bitbucketpush_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.cognito_pool_username}"
+  }
+}
+
 resource "null_resource" "configureGitlabServer" {
   // Configure the trigger job
-  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
+  depends_on = ["null_resource.configureJazzBuildModule"]
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
-    command = "${var.gitlab_cmd} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
+    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
   }
-
 }
