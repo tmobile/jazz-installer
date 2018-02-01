@@ -17,8 +17,12 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
+    command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
+  provisioner "local-exec" {
+    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
+  }
+
    provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
@@ -69,46 +73,46 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "file" {
-          source      = "${var.cookbooksDir}"
-          destination = "~/cookbooks"
+    source      = "${var.cookbooksDir}"
+    destination = "~/cookbooks"
   }
 
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/recipes"
-          destination = "~/cookbooks/jenkins"
+    source      = "${var.cookbooksDir}/jenkins/recipes"
+    destination = "~/cookbooks/jenkins"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/default"
-          destination = "~/cookbooks/jenkins/files"
+    source      = "${var.cookbooksDir}/jenkins/files/default"
+    destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/jobs"
-          destination = "~/cookbooks/jenkins/files"
+    source      = "${var.cookbooksDir}/jenkins/files/jobs"
+    destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/node"
-          destination = "~/cookbooks/jenkins/files"
+    source      = "${var.cookbooksDir}/jenkins/files/node"
+    destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/scriptapproval"
-          destination = "~/cookbooks/jenkins/files"
+    source      = "${var.cookbooksDir}/jenkins/files/scriptapproval"
+    destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/files/credentials"
-          destination = "~/cookbooks/jenkins/files"
+    source      = "${var.cookbooksDir}/jenkins/files/credentials"
+    destination = "~/cookbooks/jenkins/files"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/attributes"
-          destination = "~/cookbooks/jenkins"
+    source      = "${var.cookbooksDir}/jenkins/attributes"
+    destination = "~/cookbooks/jenkins"
   }
   provisioner "file" {
-          source      = "${var.cookbooksDir}/jenkins/attributes/"
-          destination = "~/cookbooks/blankJenkins/attributes/"
+    source      = "${var.cookbooksDir}/jenkins/attributes/"
+    destination = "~/cookbooks/blankJenkins/attributes/"
   }
 
   provisioner "file" {
-          source      = "${var.chefconfigDir}/"
-          destination = "~/chefconfig"
+    source      = "${var.chefconfigDir}/"
+    destination = "~/chefconfig"
   }
 
  provisioner "remote-exec" {
@@ -132,6 +136,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
 resource "null_resource" "copyJazzBuildModule" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
+  count = "${var.scmbb}"
 
   provisioner "local-exec" {
     command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username} jazz-build-module"
@@ -148,11 +153,12 @@ resource "null_resource" "configureJazzBuildModule" {
    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    type = "ssh"
+   port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
  }
    provisioner "remote-exec"{
    inline = [
-       "git clone http://${lookup(var.bitbucketservermap, "bitbucketuser")}:${lookup(var.bitbucketservermap, "bitbucketpasswd")}@${lookup(var.bitbucketservermap, "bitbucket_elb")}/scm/slf/jazz-build-module.git",
+       "git clone http://${var.scmUsername}:${var.scmPasswd}@${var.scmELB}${var.scmPathExt}/slf/jazz-build-module.git",
        "cd jazz-build-module",
        "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
        "git add jazz-installer-vars.json",
@@ -171,5 +177,15 @@ resource "null_resource" "configureExistingBitbucketServer" {
 
   provisioner "local-exec" {
     command = "${var.bitbucketpush_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.cognito_pool_username}"
+  }
+}
+
+resource "null_resource" "configureGitlabServer" {
+  // Configure the trigger job
+  depends_on = ["null_resource.configureJazzBuildModule"]
+  count = "${var.scmgitlab}"
+
+  provisioner "local-exec" {
+    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
   }
 }

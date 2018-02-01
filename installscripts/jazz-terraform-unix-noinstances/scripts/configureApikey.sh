@@ -1,5 +1,4 @@
 #!/bin/bash
-
 API_ID_DEV=$1
 API_ID_STG=$2
 API_ID_PROD=$3
@@ -14,8 +13,6 @@ sed -i "s/API_ID_DEV\".*.$/API_ID_DEV\": \"$API_ID_DEV\",/g" $jenkinsjsonpropsfi
 sed -i "s/API_ID_STG\".*.$/API_ID_STG\": \"$API_ID_STG\",/g" $jenkinsjsonpropsfile
 sed -i "s/API_ID_PROD\".*.$/API_ID_PROD\": \"$API_ID_PROD\"/g" $jenkinsjsonpropsfile
 sed -i "s/env_name_prefix\".*.$/env_name_prefix\": \"$env_name_prefix\",/g" $jenkinsjsonpropsfile
-
-
 
 # Changing jazz-web config.json
 sed -i "s/{API_GATEWAY_KEY_PROD\}/$API_ID_PROD/g" ./jazz-core/jazz-web/config/config.json

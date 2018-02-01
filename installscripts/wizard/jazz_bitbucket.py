@@ -28,7 +28,11 @@ def add_bitbucket_config_to_files(parameter_list):
 
     subprocess.call(['sed', '-i', "s|bitbucket_public_ip.*.$|bitbucket_public_ip=\"%s\"|g" %(parameter_list[3]), VARIABLES_TF_FILE])
 
-    
+    subprocess.call(['sed', '-i', "s|variable \"scmELB\".*.$|variable \"scmELB\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[0]), VARIABLES_TF_FILE])    
+    subprocess.call(['sed', '-i', "s|variable \"scmUsername\".*.$|variable \"scmUsername\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[1]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|variable \"scmPasswd\".*.$|variable \"scmPasswd\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[2]), VARIABLES_TF_FILE])
+    subprocess.call(['sed', '-i', "s|variable \"scmPathExt\".*.$|variable \"scmPathExt\" \{ type = \"string\" default = \"/scm\" \}|g" , VARIABLES_TF_FILE])
+
     #Adding bitbucket username and password
     subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
     subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(parameter_list[2]), JENKINS_COOKBOOK_SH])
