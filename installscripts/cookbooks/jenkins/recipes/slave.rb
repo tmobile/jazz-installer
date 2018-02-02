@@ -41,10 +41,6 @@ end
 execute 'copylinkdir' do
   command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
 end
-# execute 'configureJenkinsProperites' do
-  # command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['server']['privateip']} "
-  # cwd "/home/#{node['jenkins']['SSH_user']}"
-# end
 
 execute 'copyJenkinsPropertyfile' do
   command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
