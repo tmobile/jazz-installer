@@ -55,9 +55,9 @@
   "JAZZ": {
     "ADMIN": "",
     "PASSWD": "",
-	"S3_BUCKET_NAME_PREFIX": "jazz_bucket_",
+	"S3_BUCKET_NAME_SUFFIX": "_BUCKET",
 	"S3_BUCKET_WEB": "",
-	"s3": {     
+	"S3": {     
        "WEBSITE_DEV_BUCKET": "",
        "WEBSITE_STG_BUCKET": "",
        "WEBSITE_PROD_BUCKET": ""
