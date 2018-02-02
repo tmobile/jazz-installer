@@ -115,11 +115,7 @@ if node[:platform_family].include?("rhel")
       owner 'root'
       group 'root'
       mode '0777'
-    end
-
-    # execute 'configureJenkinsProperites' do
-      # command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    # end
+    end   
 
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
@@ -247,9 +243,7 @@ if node[:platform_family].include?("debian")
     execute 'settingexecutepermissiononallnodescripts' do
       command "chmod +x /root/cookbooks/jenkins/files/node/*.sh"
     end
-    execute 'configureJenkinsProperites' do
-      command "/root/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} root"
-    end
+   
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
