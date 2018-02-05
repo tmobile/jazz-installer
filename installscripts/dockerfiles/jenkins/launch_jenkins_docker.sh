@@ -36,7 +36,6 @@ sudo docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins
 # Run the docker container from the using the above image and volumes.
 sudo docker run -dt -p 2200:2200 -p 8080:8080 --name=jenkins-server --mount source=jenkins-volume,destination=/var/lib/jenkins 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins
 
-
 # Grab the pem key for further jenkins configurations
 sudo docker cp jenkins-server:/root/.ssh/id_rsa ~/jenkinskey.pem
 sudo chmod +r ~/jenkinskey.pem

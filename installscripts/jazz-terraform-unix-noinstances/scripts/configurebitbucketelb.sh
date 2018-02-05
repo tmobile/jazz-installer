@@ -1,4 +1,5 @@
 #!/bin/bash
+
 scmbb=$1
 bitbucketelbdnsname=$2
 jenkinsattribsfile=$3

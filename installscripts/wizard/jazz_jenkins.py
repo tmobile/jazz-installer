@@ -18,7 +18,7 @@ DEV_NULL = open(os.devnull, 'w')
 
 def check_jenkins_sshuser_valid(parameter_list, port_number):
     """
-        Check if the ssh login name is a user
+        Check if the ssh login name is a sudo user
     """
     jenkins_server_public_ip = parameter_list[3]
     jenkins_server_ssh_login = parameter_list[4]
@@ -28,7 +28,7 @@ def check_jenkins_sshuser_valid(parameter_list, port_number):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(jenkins_server_public_ip, username=jenkins_server_ssh_login, key_filename=keyfile, port=port_number)
     except:
-        print("Is the jenkinskey key or the username valid?")
+        print("Is jenkinskey key or the username valid?")
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -89,7 +89,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     print "\nPlease provide Jenkins Details.."
     jenkins_server_elb = raw_input("""\nInstaller would like to install and configure the following jenkins plugins.
     'https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#jenkins-plugins'
-    If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue.
+    If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue. 
     Yes to proceed and No to abort [y/n] :""")
     if jenkins_server_elb != 'y':
         sys.exit("")
