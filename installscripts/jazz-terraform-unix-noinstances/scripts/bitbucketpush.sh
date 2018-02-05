@@ -37,6 +37,8 @@ function individual_repo_push() {
   git push -u origin master
   echo "code has been pushed"
 
+  # Adding a sleep to ensure smaller jenkins boxes do not overload themselves.
+  sleep 45
   cd ../../jazz-core/
 }
 
