@@ -2,7 +2,6 @@
   "AWS_CREDENTIAL_ID": "",
   "env_name_prefix": "",
   "CLOUDFRONT_ORIGIN_ID": "",
-  "jazz_scm":"bitbucket",
 
   "AWS": {
     "AWS.SECURITY_GROUP_IDS": "",
@@ -78,12 +77,5 @@
    "BITBUCKET": {
     "BITBUCKET_USERNAME": "",
     "BITBUCKET_PASSWORD": ""
-   },
-
-   "GITLAB": {
-    "gitlab_username": "",
-    "gitlab_password": "",
-    "gitlab_private_token": "",
-    "gitlab_cas_name_space_id": ""    
    }
 }
