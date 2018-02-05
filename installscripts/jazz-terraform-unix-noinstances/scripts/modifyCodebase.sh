@@ -76,7 +76,6 @@ do
 							  "providerRuntime":{"S":"nodejs4.3"},
 							  "providerTimeout":{"S":"160"},
 							  "runtime":{"S":"nodejs"},
-							  "service":{"S":"'$element'"},
 							  "type":{"S":"api"}
 							  }
 					  }
@@ -97,7 +96,6 @@ do
 							  "providerRuntime":{"S":"nodejs6.10"},
 							  "providerTimeout":{"S":"160"},
 							  "runtime":{"S":"nodejs"},
-							  "service":{"S":"'$element'"},
 							  "type":{"S":"api"}
 							  }
 					  }
