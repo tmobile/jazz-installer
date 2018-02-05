@@ -105,8 +105,8 @@ if node[:platform_family].include?("rhel")
       only_if  { node[:scm] == 'bitbucket' }
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
-	execute 'createJob-platform_api_services' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+	  execute 'createJob-platform_api_services' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
 
     execute 'job_build-deploy-platform-service' do
@@ -122,7 +122,8 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job-gitlab-trigger' do
-      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
@@ -255,7 +256,7 @@ if node[:platform_family].include?("debian")
     end
     execute 'createJob-platform_api_services' do
       only_if  { node[:scm] == 'bitbucket' }
-      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  root"
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  root"
     end
     execute 'job_build-deploy-platform-service' do
       command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['scmpath']}  #{node['region']}  root"
@@ -270,6 +271,7 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  root"
     end
     execute 'job-gitlab-trigger' do
+      only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
