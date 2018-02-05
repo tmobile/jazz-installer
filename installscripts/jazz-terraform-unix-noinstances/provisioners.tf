@@ -20,7 +20,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
+    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
   }
 
    provisioner "file" {
