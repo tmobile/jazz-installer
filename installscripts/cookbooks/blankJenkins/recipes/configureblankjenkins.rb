@@ -63,7 +63,7 @@ if node[:platform_family].include?("rhel")
     end
 
     execute 'createcredentials-jenkins1' do
-      command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+      command "sleep 300;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createcredentials-jobexecutor' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
@@ -216,7 +216,7 @@ if node[:platform_family].include?("debian")
     end
     execute 'createJob-bitbucketteam_newService' do
       command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  root"
-    end	
+    end
     execute 'createJob-platform_api_services' do
       command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  root"
     end
