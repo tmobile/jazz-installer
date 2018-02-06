@@ -17,9 +17,9 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
+    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
   }
-   provisioner "file" {
+  provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
   }
