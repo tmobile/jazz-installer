@@ -51,7 +51,7 @@ variable "jenkinsservermap" {
   type = "map"
   default = {
     jenkins_elb = "replace"
-    jenkins_public_ip = "replace IP here"
+    jenkins_public_ip = "replaceIP"
     jenkins_subnet = "replace"
     jenkins_security_group = "replace"
     jenkinsuser = "replace"
@@ -68,10 +68,22 @@ variable "jenkinsservermap" {
 variable "bitbucketservermap" {
   type = "map"
   default = {
-    bitbucket_elb = "replace ELB here"
-    bitbucket_public_ip = "replace IP here"
+    bitbucket_elb = "replaceELB"
+    bitbucket_public_ip = "replaceIP"
     bitbucketuser = "replace"
     bitbucketpasswd = "replace"
+  }
+}
+
+# Gitlab related variables
+variable "gitlabservermap" {
+  type = "map"
+  default = {
+    gitlab_public_ip = "replaceIP"
+    gitlabuser = "replace"
+    gitlabpasswd = "replace"
+    gitlabtoken = "replace"
+    gitlabcasid = "replace"
   }
 }
 
