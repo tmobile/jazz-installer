@@ -43,6 +43,10 @@ variable "configureESEndpoint_cmd" {
   type = "string"
   default = "./scripts/configureESEndpoint.sh"
 }
+variable "configureJazzCore_cmd" {
+  type = "string"
+  default = "./scripts/configureJazzCore.sh"
+}
 variable "cognito_cmd" {
   type = "string"
   default = "./scripts/cognito.sh"
@@ -66,6 +70,10 @@ variable "modifyPropertyFile_cmd" {
 variable "ses_cmd" {
   type = "string"
   default = "./scripts/ses.sh"
+}
+variable "gitlabPush_cmd" {
+  type = "string"
+  default = "./scripts/gitlabpush.sh"
 }
 variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
