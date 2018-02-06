@@ -88,7 +88,7 @@ do
 			    }
 			}
 	  }'
-	elif [$element == "cloud-logs-streamer" || $element == "platform-services-handler" ] ; then
+	elif [ $element == "cloud-logs-streamer" ] || [ $element == "platform-services-handler" ] ; then
 			aws dynamodb put-item --table-name $tablename --item '{
 			  "SERVICE_ID":{"S":"'$uuid'"},
 			  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
