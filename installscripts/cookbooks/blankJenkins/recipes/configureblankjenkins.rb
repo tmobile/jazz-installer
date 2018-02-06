@@ -78,7 +78,7 @@ if node[:platform_family].include?("rhel")
 
     execute 'createcredentials-jenkins1' do
       only_if  { node[:scm] == 'bitbucket' }
-      command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+      command "sleep 300;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createcredentials-jobexecutor' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
@@ -105,15 +105,14 @@ if node[:platform_family].include?("rhel")
       only_if  { node[:scm] == 'bitbucket' }
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
-
+	  execute 'createJob-platform_api_services' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
+    end
     execute 'job_build-deploy-platform-service' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['scmpath']}  #{node['region']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} #{node['jenkins']['SSH_user']}"
-    end
-    execute 'job_deploy-all-platform-services' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['scmpath']}  #{node['region']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job-pack-lambda' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
@@ -122,8 +121,12 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job-gitlab-trigger' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
+    end
+    execute 'job-gitlab-trigger' do
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
-    end    
+    end
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
       owner 'jenkins'
@@ -146,10 +149,6 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsPropsGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
 
-    execute 'copyJenkinsPropertyfile' do
-      command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
-      cwd "/home/#{node['jenkins']['SSH_user']}"
-    end
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
@@ -157,15 +156,6 @@ if node[:platform_family].include?("rhel")
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
-    end
-    execute 'copyJobBuildPackApi' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build_pack_api build_pack_api_dev #{node['jenkins']['SSH_user']}"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-lambda build-pack-lambda-dev #{node['jenkins']['SSH_user']}"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-website build-pack-website-dev #{node['jenkins']['SSH_user']}"
     end
 end
 
@@ -265,14 +255,15 @@ if node[:platform_family].include?("debian")
       only_if  { node[:scm] == 'bitbucket' }
       command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  root"
     end
+    execute 'createJob-platform_api_services' do
+      only_if  { node[:scm] == 'bitbucket' }
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  root"
+    end
     execute 'job_build-deploy-platform-service' do
       command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['scmpath']}  #{node['region']}  root"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} root"
-    end
-    execute 'job_deploy-all-platform-services' do
-      command "/root/cookbooks/jenkins/files/jobs/job_deploy-all-platform-services.sh #{node['jenkinselb']} deploy-all-platform-services #{node['scmpath']}  #{node['region']} root"
     end
     execute 'createJob-job-pack-lambda' do
       command "/root/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['scmpath']}  root"
@@ -281,8 +272,13 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  root"
     end
     execute 'job-gitlab-trigger' do
+      only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
-    end    
+
+    end
+    execute 'job-gitlab-trigger' do
+      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
+    end
     link '/usr/bin/aws-api-import' do
       to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
       owner 'jenkins'
@@ -314,24 +310,11 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
 
-    execute 'copyJenkinsPropertyfile' do
-      command "cp /root/cookbooks/jenkins/files/node/jenkins-conf.properties #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
-      cwd "root"
-    end
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
-    end
-    execute 'copyJobBuildPackApi' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build_pack_api build_pack_api_dev root"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-lambda build-pack-lambda-dev root"
-    end
-    execute 'copyJobBuildPackLambda' do
-      command "sleep 20;/root/cookbooks/jenkins/files/jobs/copyJob.sh #{node['jenkinselb']} build-pack-website build-pack-website-dev root"
     end
 end

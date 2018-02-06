@@ -19,11 +19,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
-  provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
-  }
 
    provisioner "file" {
+    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
+  }
+  provisioner "file" {
           source      = "${var.cookbooksDir}"
           destination = "~/cookbooks"
   }
@@ -48,28 +48,28 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} JENKINS_USERNAME ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {            
-    command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} BITBUCKET_PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} BITBUCKET_USERNAME ${lookup(var.bitbucketservermap, "bitbucketuser")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} BITBUCKET_PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} JAZZ_ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+  command = "${var.modifyPropertyFile_cmd} JAZZ_PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinspropsfile} ${var.jenkinsjsonpropsfile}"
+  command = "${var.modifyPropertyFile_cmd} jazz_accountid ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+  command = "${var.modifyPropertyFile_cmd} jazz_region ${var.region} ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "file" {
@@ -122,37 +122,36 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
+    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
+  }
+  // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
+  provisioner "local-exec" {
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}"
   }
 
+
 }
-resource "null_resource" "configureExistingBitbucketServer" {
+
+// Copy the jazz-build-module to SLF in SCM
+resource "null_resource" "copyJazzBuildModule" {
 
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username}"
+    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username} jazz-build-module"
   }
 }
 
-resource "null_resource" "configureGitlabServer" {
-  // Configure the trigger job
-  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
-  count = "${var.scmgitlab}"
 
-  provisioner "local-exec" {
-    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
-  }
-}
+resource "null_resource" "configureJazzBuildModule" {
+// Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
+ depends_on = ["null_resource.copyJazzBuildModule"]
 
-resource "null_resource" "configurejazzbuildmodule" {
-
- depends_on = ["null_resource.configureExistingBitbucketServer", "null_resource.configureGitlabServer"]
- 
  connection {
    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+   port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    type = "ssh"
    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
@@ -172,5 +171,25 @@ resource "null_resource" "configurejazzbuildmodule" {
   //This would be the last command which needs to be run which triggers the Jenkins Build deploy job
  provisioner "local-exec" {
     command = "curl  -X GET -u ${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")} http://${lookup(var.jenkinsservermap, "jenkins_elb")}/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=${var.region}"
+  }
+}
+
+// Push all other repos to SLF
+resource "null_resource" "configureExistingBitbucketServer" {
+
+  depends_on = ["null_resource.configureJazzBuildModule"]
+
+  provisioner "local-exec" {
+    command = "${var.bitbucketpush_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.cognito_pool_username}"
+  }
+}
+
+resource "null_resource" "configureGitlabServer" {
+  // Configure the trigger job
+  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
+  count = "${var.scmgitlab}"
+
+  provisioner "local-exec" {
+    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
   }
 }
