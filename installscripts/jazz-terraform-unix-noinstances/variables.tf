@@ -35,10 +35,6 @@ variable "cookbooksDir" {
 #
 # Jenkins related variables
 #
-variable "jenkinspropsfile" {
-  type = "string"
-  default = "../cookbooks/jenkins/files/node/jenkins-conf.properties"
-}
 variable "jenkinsjsonpropsfile" {
   type = "string"
   default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
@@ -97,10 +93,10 @@ variable "gitlabservermap" {
 variable "lambdaCloudWatchProps" {
   type = "map"
   default = {
-    statement_id   = "lambdaFxnPermission"
-    action         = "lambda:*"
-    function_name  = "cloud-logs-streamer-dev"
-    principal      = "logs.us-east-1.amazonaws.com"
+        statement_id   = "lambdaFxnPermission"
+        action         = "lambda:*"
+        function_name  = "cloud-logs-streamer-prod"
+        principal      = "logs.us-east-1.amazonaws.com"
   }
 }
 
