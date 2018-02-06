@@ -87,3 +87,12 @@ variable "lambdaCloudWatchProps" {
         principal      = "logs.us-east-1.amazonaws.com"
   }
 }
+
+# SCM Used. Default is bitbucket
+# Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
+variable "scmbb" { default = true }
+variable "scmgitlab" { default = false }
+variable "scmUsername" { type = "string" default = "replace" }
+variable "scmPasswd" { type = "string" default = "replace" }
+variable "scmELB" { type = "string" default = "replace" }
+variable "scmPathExt" { type = "string" default = "" }
