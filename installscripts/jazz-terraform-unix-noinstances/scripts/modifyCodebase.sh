@@ -61,7 +61,7 @@ do
   uuid=`uuidgen -t`
   echo -n > ./jazz-core/$element/deployment-env.yml
   echo "service_id: "$uuid >> ./jazz-core/$element/deployment-env.yml
-  
+ 
   if [[ $element =~ ^platform ]] ; then
     service_name="${element:9}"
   else
@@ -128,6 +128,6 @@ do
 					}
 				}
 		  }' 
-		
+
    fi
 done
