@@ -1,3 +1,0 @@
-{
-	"run_list": [ "recipe[java::oracle]","recipe[git]", "recipe[maven]", "recipe[npm]", "recipe[aws]"]
-}
