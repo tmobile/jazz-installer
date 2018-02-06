@@ -124,9 +124,6 @@ if node[:platform_family].include?("rhel")
       only_if  { node[:scm] == 'gitlab' }
       command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
     end
-    execute 'job-gitlab-trigger' do
-      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
-    end
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
       owner 'jenkins'
@@ -273,10 +270,6 @@ if node[:platform_family].include?("debian")
     end
     execute 'job-gitlab-trigger' do
       only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
-
-    end
-    execute 'job-gitlab-trigger' do
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do

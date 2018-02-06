@@ -74,6 +74,7 @@ variable "ses_cmd" {
 variable "gitlabPush_cmd" {
   type = "string"
   default = "./scripts/gitlabpush.sh"
+}
 variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
   default = "./scripts/injectingToJenkinsfile.sh"
