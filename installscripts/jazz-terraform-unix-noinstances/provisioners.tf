@@ -118,7 +118,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix}"
+    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
