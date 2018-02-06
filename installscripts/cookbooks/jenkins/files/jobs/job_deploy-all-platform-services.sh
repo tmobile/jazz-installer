@@ -1,7 +1,8 @@
 JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME=$2
+JOB_NAME=$2 #create_service
 BITBUCKET_ELB=$3
-SSH_USER=$4
+REGION=$4
+SSH_USER=$5
 
 if [ -f /etc/redhat-release ]; then
   AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
@@ -15,37 +16,16 @@ JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE l
 echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
 <flow-definition plugin="workflow-job@2.12">
-  <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>service_name</name>
+          <name>region</name>
           <description></description>
-          <defaultValue>newServissceX</defaultValue>
+          <defaultValue>$REGION</defaultValue>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>domain</name>
-          <description></description>
-          <defaultValue>slf</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>version</name>
-          <description></description>
-          <defaultValue>1.0</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>tracking_id</name>
-          <description></description>
-          <defaultValue>1001</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>db_service_id</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>        
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -57,7 +37,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/slf/delete-serverless-service-build-pack.git</url>
+          <url>http://$BITBUCKET_ELB/slf/build-deploy-platform-services.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -70,11 +50,11 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>Jenkinsfile</scriptPath>
+    <scriptPath>Jenkinsfile-deploy-platformservices</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-0714-delserv</authToken>
+  <authToken>dep-all-ps-71717</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF
