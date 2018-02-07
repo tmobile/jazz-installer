@@ -117,17 +117,8 @@ echo "$ip" > docker_gitlab_vars
 echo "$gitlab_admin" >> docker_gitlab_vars
 echo "$gitlab_passwd" >> docker_gitlab_vars
 
-# Populating jenkins properties file
-jenkinsfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jenkins-conf.properties
-jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
-sed -i "s/jazz_scm.*.$/jazz_scm=gitlab/g" $jenkinsfile
-sed -i "s/gitlab_username.*.$/gitlab_username=$gitlab_admin/g" $jenkinsfile
-sed -i "s/gitlab_password.*.$/gitlab_password=$gitlab_passwd/g" $jenkinsfile
-sed -i "s/gitlab_private_token.*.$/gitlab_private_token=$token/g" $jenkinsfile
-sed -i "s/gitlab_cas_name_space_id.*.$/gitlab_cas_name_space_id=$ns_id_cas/g" $jenkinsfile
-sed -i "s/REPO_BASE.*.$/REPO_BASE=$ip/g" $jenkinsfile
-
 #Populating Gitlab config in Jenkins json file
+jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
 sed -i "s/jazz_scm\".*.$/jazz_scm\": \"gitlab\",/g" $jenkinsJsonfile
 sed -i "s/gitlab_username\".*.$/gitlab_username\": \"$gitlab_admin\",/g" $jenkinsJsonfile
 sed -i "s/gitlab_password\".*.$/gitlab_password\": \"$gitlab_passwd\",/g" $jenkinsJsonfile
