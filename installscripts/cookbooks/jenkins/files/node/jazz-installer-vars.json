@@ -1,11 +1,11 @@
 {
   "AWS_CREDENTIAL_ID": "awscreds1",
-  "INSTANCE_PREFIX": "",  
-
+  "INSTANCE_PREFIX": "",
+  
   "AWS": {
-    "SECURITY_GROUP_IDS": [""],
-    "SUBNET_IDS": [""],
-    "LAMBDA_EXECUTION_ROLE": "",
+  "SECURITY_GROUP_IDS": [""],
+  "SUBNET_IDS": [""],
+  "LAMBDA_EXECUTION_ROLE": "",
 	"CLOUDFRONT_ORIGIN_ID": "",
 	"ACCOUNTID": "",
 	"REGION": "",
@@ -14,18 +14,20 @@
 	"COGNITO": {
       "USER_POOL_ID": "",
       "CLIENT_ID": ""
-    },
+  },
+    
 	"API": {
-      "DEV_ID": "",
-      "STG_ID": "",
-      "PROD_ID": ""
-    },
+    "DEV_ID": "",
+    "STG_ID": "",
+    "PROD_ID": ""
+  },
+    
 	"S3": {
-      "API_DOC": "",
-      "DEV_BUCKET": "",
-      "STG_BUCKET": "",
-      "PROD_BUCKET": "",
-      "CFLOGS_BUCKET": ""
+    "API_DOC": "",
+    "DEV_BUCKET": "",
+    "STG_BUCKET": "",
+    "PROD_BUCKET": "",
+    "CFLOGS_BUCKET": ""
     }
   },
   
@@ -49,19 +51,19 @@
    },
 
   "PLATFORM":{
-	"PLATFORM_SERVICE_BUILD_URI":"/job/build-deploy-platform-service/buildWithParameters?token=bld-plat-srvs-71717"
+	  "PLATFORM_SERVICE_BUILD_URI":"/job/build-deploy-platform-service/buildWithParameters?token=bld-plat-srvs-71717"
   },
 
   "JAZZ": {
     "ADMIN": "",
     "PASSWD": "",
-	"S3_BUCKET_NAME_SUFFIX": "_BUCKET",
-	"S3_BUCKET_WEB": "",
-	"S3": {     
+	  "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
+	  "S3_BUCKET_WEB": "",
+	  "S3": {     
        "WEBSITE_DEV_BUCKET": "",
        "WEBSITE_STG_BUCKET": "",
        "WEBSITE_PROD_BUCKET": ""
-	   }
+	  }
    },
    
   "JENKINS": {
@@ -71,6 +73,9 @@
    },
 
    "SCM": {
+    "TYPE": "bitbucket",
+    "PRIVATE_TOKEN": "",
+    "CAS_NAMESPACE_ID": "",
     "USERNAME": "",
     "PASSWORD": ""
    }
