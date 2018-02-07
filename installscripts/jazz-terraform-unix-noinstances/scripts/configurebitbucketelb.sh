@@ -12,7 +12,7 @@ jazz_admin=$7
 if [ "$scmbb" == 1 ]
 then
     sed -i "s/default\['scmelb'\].*.$/default['scmelb']='$bitbucketelbdnsname'/g"  $jenkinsattribsfile
-    sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$bitbucketelbdnsname\",/g" $jenkinsjsonpropertiesfile
+    sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$bitbucketelbdnsname\",/g" $jenkinsjsonpropertiesfile
     sed -i "s/BITBUCKETELB=.*.$/BITBUCKETELB=$bitbucketelbdnsname/g" $bitbucketclient
 fi
 

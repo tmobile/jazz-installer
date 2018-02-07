@@ -2,7 +2,6 @@ if node[:platform_family].include?("rhel")
     execute 'resizeJenkinsMemorySettings' do
       command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
     end
-
     execute 'chmodservices' do
       command "chmod -R 755 /home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files;"
     end
@@ -54,12 +53,10 @@ if node[:platform_family].include?("rhel")
       only_if  { node[:scm] == 'gitlab' }
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
     end
-
     if (File.exist?("/home/#{node['jenkins']['SSH_user']}/jazz-core"))
     	execute 'downloadgitproj' do
       		command "rm -rf /home/#{node['jenkins']['SSH_user']}/jazz-core"
@@ -71,11 +68,9 @@ if node[:platform_family].include?("rhel")
 
       cwd "/home/#{node['jenkins']['SSH_user']}"
     end
-
     execute 'copylinkdir' do
       command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
     end
-
     execute 'createcredentials-jenkins1' do
       only_if  { node[:scm] == 'bitbucket' }
       command "sleep 300;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
@@ -135,21 +130,10 @@ if node[:platform_family].include?("rhel")
       owner 'root'
       group 'root'
       mode '0777'
-    end
-
-    execute 'configureJenkinsProperites' do
-      only_if  { node[:scm] == 'bitbucket' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    end
-    execute 'configureJenkinsProperitesGitlab' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsPropsGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    end
-
+    end   
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
@@ -177,7 +161,6 @@ if node[:platform_family].include?("debian")
     execute 'copyEncryptGroovyScript' do
       command "cp /root/cookbooks/jenkins/files/default/encrypt.groovy /root/encrypt.groovy"
     end
-
     execute 'copyXmls' do
       command "tar -xvf /root/cookbooks/jenkins/files/default/xmls.tar"
       cwd "/var/lib/jenkins"
@@ -198,7 +181,6 @@ if node[:platform_family].include?("debian")
       supports [:stop, :start, :restart]
       action [:restart]
     end
-
     if (File.exist?("/root/jazz-core"))
       execute 'downloadgitproj' do
           command "rm -rf /root/jazz-core"
@@ -291,14 +273,7 @@ if node[:platform_family].include?("debian")
       only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
     end
-    execute 'configureJenkinsProperites' do
-      only_if  { node[:scm] == 'bitbucket' }
-      command "/root/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} root"
-    end
-    execute 'configureJenkinsPropsGitlab' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/node/configureJenkinsPropsGitlab.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    end
+
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
