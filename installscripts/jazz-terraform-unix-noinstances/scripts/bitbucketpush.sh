@@ -37,8 +37,8 @@ function individual_repo_push() {
   git push -u origin master
   echo "code has been pushed"
 
-  #Adding a temp fix for overcoming simultaneous deployment of platform services - Number of simultaneous cloudformation creation requests
-  sleep 10
+  # Adding a sleep to ensure smaller jenkins boxes do not overload themselves.
+  sleep 45
   cd ../../jazz-core/
 }
 
@@ -48,11 +48,11 @@ function push_to_repo() {
     individual_repo_push $1
   else
     # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. "jazz-build-module" is already pushed at this stage.
-    repos=("serverless-config-pack" "cognito-authorizer")
+    repos=("serverless-config-pack" "build-deploy-platform-services" "cognito-authorizer")
 
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" ]]; then
           repos+=("${d%/}")
         fi
     done
