@@ -47,13 +47,13 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
 
   provisioner "local-exec" {
-	 command = "sed -i "s/\"jenkins_username\"/\"${lookup(var.jenkinsservermap, "jenkinsuser")}\"/g" ${var.jenkinsjsonpropsfile}"
+	command = "sed -i 's/\"jenkins_username\"/\"${lookup(var.jenkinsservermap, "jenkinsuser")}\"/g' ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-	command = "sed -i "s/\"scm_username\"/\"${lookup(var.bitbucketservermap, "bitbucketuser")}\"/g" ${var.jenkinsjsonpropsfile}"
+	command = "sed -i 's/\"scm_username\"/\"${lookup(var.bitbucketservermap, "bitbucketuser")}\"/g' ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinsjsonpropsfile}"
