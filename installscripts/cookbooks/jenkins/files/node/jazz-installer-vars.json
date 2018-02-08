@@ -67,7 +67,7 @@
    },
    
   "JENKINS": {
-    "USERNAME": "",
+    "USERNAME": "jenkins_username",
     "JENKINS_PASSWORD": "",
     "CREDENTIAL_ID": "jobexecutor"
    },
@@ -76,7 +76,7 @@
     "TYPE": "bitbucket",
     "PRIVATE_TOKEN": "",
     "CAS_NAMESPACE_ID": "",
-    "USERNAME": "",
+    "USERNAME": "scm_username",
     "PASSWORD": ""
    }
 }
