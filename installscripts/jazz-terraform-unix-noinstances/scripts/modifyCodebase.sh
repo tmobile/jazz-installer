@@ -55,6 +55,7 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" )
 servicename="_services_prod"
 tablename=$stackprefix$servicename
+timestamp=`date --utc +%FT%T`
 
 for element in "${platform_services[@]}"
 do
@@ -74,8 +75,9 @@ do
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
 	  "SERVICE_DOMAIN":{"S":"platform"},
 	  "SERVICE_NAME":{"S":"'$service_name'"},
-	  "SERVICE_RUNTIME":{"S":"nodejs"},
+	  "SERVICE_RUNTIME":{"S":"nodejs"}, 
 	  "SERVICE_STATUS":{"S":"active"},
+	  "TIMESTAMP":{"S":"'$timestamp'"},
 	  "SERVICE_METADATA":{"M":{
 				  "securityGroupIds":{"S":"'$securityGroupIds'"},
 				  "subnetIds":{"S":"'$subnetIds'"},
@@ -96,6 +98,7 @@ do
 			  "SERVICE_NAME":{"S":"'$service_name'"},
 			  "SERVICE_RUNTIME":{"S":"nodejs"},
 			  "SERVICE_STATUS":{"S":"active"},
+			  "TIMESTAMP":{"S":"'$timestamp'"},
 			  "SERVICE_METADATA":{"M":{
 						  "securityGroupIds":{"S":"'$securityGroupIds'"},
 						  "subnetIds":{"S":"'$subnetIds'"},
@@ -116,6 +119,7 @@ do
 		  "SERVICE_NAME":{"S":"'$service_name'"},
 		  "SERVICE_RUNTIME":{"S":"nodejs"},
 		  "SERVICE_STATUS":{"S":"active"},
+		  "TIMESTAMP":{"S":"'$timestamp'"},
 		  "SERVICE_METADATA":{"M":{
 					  "securityGroupIds":{"S":"'$securityGroupIds'"},
 					  "subnetIds":{"S":"'$subnetIds'"},
