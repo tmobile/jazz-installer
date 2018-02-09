@@ -21,13 +21,6 @@ resource "aws_cloudfront_distribution" "jazz" {
   enabled             = true
   is_ipv6_enabled     = true
 
-  logging_config {
-    include_cookies = true
-    bucket          = "${aws_s3_bucket..bucket_domain_name}"
-    prefix          = ""
-  }
-
-
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
