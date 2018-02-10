@@ -14,13 +14,13 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJenkinsSSHUser_cmd} ${lookup(var.jenkinsservermap, "jenkins_ssh_login")} ${var.jenkinsattribsfile} ${var.jenkinsclientrbfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${var.bitbucketclient_cmd} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
+    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
   provisioner "local-exec" {
     command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   provisioner "local-exec" {
-    command = "${var.configurebitbucketelb_cmd} ${var.scmbb} ${lookup(var.bitbucketservermap, "bitbucket_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.bitbucketclient_cmd}"
+    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.scmclient_cmd}"
   }
   provisioner "file" {
           source      = "${var.cookbooksDir}"
@@ -53,10 +53,10 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-	command = "sed -i 's/\"scm_username\"/\"${lookup(var.bitbucketservermap, "bitbucketuser")}\"/g' ${var.jenkinsjsonpropsfile}"
+	command = "sed -i 's/\"scm_username\"/\"${lookup(var.scmmap, "username")}\"/g' ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.scmmap, "passwd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
@@ -124,33 +124,40 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
-  
+
   provisioner "local-exec" {
     command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
-  
+
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
-    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}"
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.scmmap, "elb")}"
   }
 
 
 }
 
-// Copy the jazz-build-module to SLF in SCM
-resource "null_resource" "copyJazzBuildModule" {
-
+// Create Projects in Bitbucket. Will be executed only if the SCM is Bitbucket.
+resource "null_resource" "createProjectsInBB" {
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.bitbucketclient_cmd} ${var.region} ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.cognito_pool_username} jazz-build-module"
+    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")}"
   }
 }
 
+// Copy the jazz-build-module to SLF in SCM
+resource "null_resource" "copyJazzBuildModule" {
+  depends_on = ["null_resource.createProjectsInBB"]
 
-resource "null_resource" "configureJazzBuildModule" {
+  provisioner "local-exec" {
+    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "privatetoken")} ${lookup(var.scmmap, "slfid")} ${lookup(var.scmmap, "type")} jazz-build-module"
+  }
+}
+
 // Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
+resource "null_resource" "configureJazzBuildModule" {
  depends_on = ["null_resource.copyJazzBuildModule"]
 
  connection {
@@ -163,7 +170,7 @@ resource "null_resource" "configureJazzBuildModule" {
  }
  provisioner "remote-exec"{
    inline = [
-       "git clone http://${var.scmUsername}:${var.scmPasswd}@${var.scmELB}${var.scmPathExt}/slf/jazz-build-module.git",
+       "git clone http://${lookup(var.scmmap, "username")}:${lookup(var.scmmap, "passwd")}@${lookup(var.scmmap, "elb")}${lookup(var.scmmap, "scmPathExt")}/slf/jazz-build-module.git",
        "cd jazz-build-module",
        "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
        "git add jazz-installer-vars.json",
@@ -180,21 +187,10 @@ resource "null_resource" "configureJazzBuildModule" {
 }
 
 // Push all other repos to SLF
-resource "null_resource" "configureExistingBitbucketServer" {
-
+resource "null_resource" "configureSCMRepos" {
   depends_on = ["null_resource.configureJazzBuildModule"]
 
   provisioner "local-exec" {
-    command = "${var.bitbucketpush_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}  ${lookup(var.bitbucketservermap, "bitbucketuser")} ${lookup(var.bitbucketservermap, "bitbucketpasswd")} ${var.cognito_pool_username}"
-  }
-}
-
-resource "null_resource" "configureGitlabServer" {
-  // Configure the trigger job
-  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain"]
-  count = "${var.scmgitlab}"
-
-  provisioner "local-exec" {
-    command = "${var.gitlabPush_cmd} ${lookup(var.gitlabservermap, "gitlabtoken")} ${lookup(var.gitlabservermap, "gitlabcasid")} ${lookup(var.gitlabservermap, "gitlabuser")} ${lookup(var.gitlabservermap, "gitlabpasswd")} ${lookup(var.gitlabservermap, "gitlab_public_ip")}"
+    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "privatetoken")} ${lookup(var.scmmap, "slfid")} ${lookup(var.scmmap, "type")}"
   }
 }

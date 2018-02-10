@@ -119,16 +119,14 @@ echo "$gitlab_passwd" >> docker_gitlab_vars
 
 #Populating Gitlab config in Jenkins json file
 jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
-sed -i "s/jazz_scm\".*.$/jazz_scm\": \"gitlab\",/g" $jenkinsJsonfile
-sed -i "s/gitlab_username\".*.$/gitlab_username\": \"$gitlab_admin\",/g" $jenkinsJsonfile
-sed -i "s/gitlab_password\".*.$/gitlab_password\": \"$gitlab_passwd\",/g" $jenkinsJsonfile
-sed -i "s/gitlab_private_token\".*.$/gitlab_private_token\": \"$token\",/g" $jenkinsJsonfile
-sed -i "s/gitlab_cas_name_space_id\".*.$/gitlab_cas_name_space_id\": \"$ns_id_cas\"/g" $jenkinsJsonfile
-sed -i "s/REPO_BASE\".*.$/REPO_BASE\": \"$ip\",/g" $jenkinsJsonfile
+sed -i "s/TYPE\".*.$/TYPE\": \"gitlab\",/g" $jenkinsJsonfile
+sed -i "s/PRIVATE_TOKEN\".*.$/PRIVATE_TOKEN\": \"$token\",/g" $jenkinsJsonfile
+sed -i "s/CAS_NAMESPACE_ID\".*.$/CAS_NAMESPACE_ID\": \"$ns_id_cas\",/g" $jenkinsJsonfile
+sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
-sed -i "s|gitlabtoken.*.$|gitlabtoken=\"$token\"|g" $variablesfile
-sed -i "s|gitlabcasid.*.$|gitlabcasid=\"$ns_id_slf\"|g" $variablesfile
+sed -i "s|replacetoken|$token|g" $variablesfile
+sed -i "s|replaceslfid|$ns_id_slf|g" $variablesfile

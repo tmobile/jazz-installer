@@ -1,10 +1,9 @@
 #!/bin/bash
 # This file creates CAS and SLF projects in bitbucket.
-# Similar logic for gitlab is handled in launch_gitlab_docker.sh script.
+# The corresponding projects creation in gitlab is handled in launch_gitlab_docker.sh script.
 sleep 60
 
-#The below two variables are added from  configureJenkinselb.sh and configureBitbucketelb
-
+#The below variable is added from configureJenkinselb.sh and configureBitbucketelb
 BITBUCKETELB=jazz13-bitbucketelb-977486464.us-east-1.elb.amazonaws.com
 BASEURL=http://$BITBUCKETELB
 CLIENTJAR=~/atlassian-cli-6.7.1/lib/bitbucket-cli-6.7.0.jar
