@@ -4,12 +4,14 @@ scmelb=$1
 scmuser=$2
 scmpasswd=$3
 emailid=$4
-jazzbuildmodule=$5
-scm=$8
 
 #Gitlab Specific
-token=$6
-ns_id_slf=$7
+token=$5
+ns_id_slf=$6
+
+# Config variables
+scm=$7
+jazzbuildmodule=$8
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
