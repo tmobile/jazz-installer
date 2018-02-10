@@ -10,9 +10,9 @@ variable "sets3acl_cmd" {
   type = "string"
   default = "./scripts/sets3acl.sh"
 }
-variable "configurebitbucketelb_cmd" {
+variable "configurescmelb_cmd" {
   type = "string"
-  default = "./scripts/configurebitbucketelb.sh"
+  default = "./scripts/configurescmelb.sh"
 }
 variable "configureApikey_cmd" {
   type = "string"
@@ -34,13 +34,13 @@ variable "configureJenkinsSSHUser_cmd" {
   type = "string"
   default = "./scripts/configureJenkinsSSHUser.sh"
 }
-variable "bitbucketclient_cmd" {
+variable "scmclient_cmd" {
   type = "string"
-  default = "./scripts/bitbucketclient.sh"
+  default = "./scripts/scmclient.sh"
 }
-variable "bitbucketpush_cmd" {
+variable "scmpush_cmd" {
   type = "string"
-  default = "./scripts/bitbucketpush.sh"
+  default = "./scripts/scmpush.sh"
 }
 
 variable "configureESEndpoint_cmd" {
@@ -74,10 +74,6 @@ variable "modifyPropertyFile_cmd" {
 variable "ses_cmd" {
   type = "string"
   default = "./scripts/ses.sh"
-}
-variable "gitlabPush_cmd" {
-  type = "string"
-  default = "./scripts/gitlabpush.sh"
 }
 variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
