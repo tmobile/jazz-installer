@@ -149,7 +149,7 @@ resource "null_resource" "createProjectsInBB" {
 
 // Copy the jazz-build-module to SLF in SCM
 resource "null_resource" "copyJazzBuildModule" {
-  depends_on = ["null_resource.createProjectsInBB"]
+  depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain","null_resource.createProjectsInBB"]
 
   provisioner "local-exec" {
     command = "${var.scmpush_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "privatetoken")} ${lookup(var.scmmap, "slfid")} ${lookup(var.scmmap, "type")} jazz-build-module"
