@@ -128,5 +128,6 @@ sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
+sed -i "s|replaceelb|$ip|g" $variablesfile
 sed -i "s|replacetoken|$token|g" $variablesfile
 sed -i "s|replaceslfid|$ns_id_slf|g" $variablesfile

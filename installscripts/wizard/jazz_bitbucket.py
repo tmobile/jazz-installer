@@ -25,10 +25,6 @@ def add_bitbucket_config_to_files(parameter_list):
     subprocess.call(['sed', '-i', "s|replacepasswd|%s|g" %(parameter_list[2]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|replaceip|%s|g" %(parameter_list[3]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|replacescmtype|%s|g" %(SCM_TYPE), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|variable \"scmELB\".*.$|variable \"scmELB\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[0]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|variable \"scmUsername\".*.$|variable \"scmUsername\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[1]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|variable \"scmPasswd\".*.$|variable \"scmPasswd\" \{ type = \"string\" default = \"%s\" \}|g" %(parameter_list[2]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|replacescmPathExt|/scm|g" , VARIABLES_TF_FILE])
 
     #Adding bitbucket username and password
