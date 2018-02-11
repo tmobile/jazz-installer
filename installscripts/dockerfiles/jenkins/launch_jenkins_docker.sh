@@ -60,12 +60,10 @@ if [ $? == 0 ] ; then
 fi
 
 # Check if docker volume exists. If yes, remove the docker volume.
-sudo docker volume inspect jenkins-volume &> /dev/null &
-spin_wheel $! "Inspecting existing Jenkins Docker"
+sudo docker volume inspect jenkins-volume &> /dev/null
 if [ $? == 0 ] ; then
   echo "Detected a volume with name: jenkins-volume. Deleting it..."
   sudo docker volume rm jenkins-volume &> /dev/null &
-  spin_wheel $! "Removing Jenkins docker volume"
 fi
 
 # Create the volume
@@ -85,8 +83,9 @@ sudo docker run -dt -p 2200:2200 -p 8081:8080 --name=jenkins-server --mount sour
 spin_wheel $! "Spinning the Jenkins Docker"
 
 # Grab the pem key for further jenkins configurations
-sudo docker cp jenkins-server:/root/.ssh/id_rsa ~/jenkinskey.pem
-sudo chmod +r ~/jenkinskey.pem
+sudo docker cp jenkins-server:/root/.ssh/id_rsa ./jenkinskey.pem
+sudo chmod +r ./jenkinskey.pem
+sed -i 's|jenkins_ssh_key.*.$|jenkins_ssh_key = "../sshkeys/dockerkeys/jenkinskey.pem"|' ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 
 sleep 20 &
 spin_wheel $! "Initializing the Jenkins Container"
