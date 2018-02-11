@@ -14,7 +14,7 @@ JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 GITLAB_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/gitlab/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
-JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
+JENKINS_PEM = JENKINS_DOCKER_PATH + "/jenkinskey.pem"
 
 def check_jenkins_pem():
     """
@@ -24,9 +24,9 @@ def check_jenkins_pem():
     if not os.path.isfile(JENKINS_PEM):
         sys.exit("File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
 
-    #Copy the pem keys and give relavant permisions
-    subprocess.call('cp -f {0} {1}sshkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
-    subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
+    #Copy the pem keys and give relavant permissions to a dockerkeys location. This is different from Scenario 1.
+    subprocess.call('cp -f {0} {1}sshkeys/dockerkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
+    subprocess.call('sudo chmod 400 {0}sshkeys/dockerkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
 
 def start(parameter_list):
     """

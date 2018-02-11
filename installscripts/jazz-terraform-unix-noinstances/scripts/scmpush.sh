@@ -25,7 +25,7 @@ if [ ! -d ./jazz-core-scm ] ; then
 fi
 
 cd ./jazz-core
-find . -name "*git*" -exec rm -rf '{}' \;  -print
+find . -name ".git*" -exec rm -rf '{}' \;  -print
 
 # Function to push code to individual repos in SLF projects to SCM
 function individual_repopush() {
