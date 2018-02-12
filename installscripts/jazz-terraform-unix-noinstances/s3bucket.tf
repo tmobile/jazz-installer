@@ -1,29 +1,5 @@
 data "aws_canonical_user_id" "current" {}
 
-resource "aws_s3_bucket" "cloudfrontlogs" {
-  bucket_prefix="${var.envPrefix}-cloudfrontlogs-"
-  request_payer = "BucketOwner"
-  region = "${var.region}"
-  cors_rule {
-    allowed_headers = ["Authorization"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["*"]
-    max_age_seconds = 3000
-  }
-  tags {
-	Application = "${var.envPrefix}"
-  }
-
-  provisioner "local-exec" {
-    command = "${var.sets3acl_cmd} ${aws_s3_bucket.cloudfrontlogs.bucket} ${data.aws_canonical_user_id.current.id}"
-  }
-  provisioner "local-exec" {
-	when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.cloudfrontlogs.bucket}  --recursive"
-  }
-}
-
 resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-dev-"
   request_payer = "BucketOwner"
@@ -181,8 +157,9 @@ EOF
   }
 
   provisioner "local-exec" {
-    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.cloudfrontlogs.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
-  }  
+    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+
 
   provisioner "local-exec" {
 	when = "destroy"
