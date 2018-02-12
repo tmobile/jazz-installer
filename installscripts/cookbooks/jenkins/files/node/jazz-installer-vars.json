@@ -3,8 +3,8 @@
   "INSTANCE_PREFIX": "",
   
   "AWS": {
-  "SECURITY_GROUP_IDS": [""],
-  "SUBNET_IDS": [""],
+  "SECURITY_GROUP_IDS": "",
+  "SUBNET_IDS": "",
   "LAMBDA_EXECUTION_ROLE": "",
 	"CLOUDFRONT_ORIGIN_ID": "",
 	"ACCOUNTID": "",

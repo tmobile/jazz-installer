@@ -71,6 +71,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   command = "${var.modifyPropertyFile_cmd} REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
 
+
   provisioner "file" {
     source      = "${var.cookbooksDir}"
     destination = "~/cookbooks"
@@ -123,6 +124,11 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
+  
+  provisioner "local-exec" {
+    command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+  }
+  
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
     command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.bitbucketservermap, "bitbucket_elb")}"
