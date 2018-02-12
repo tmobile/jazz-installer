@@ -25,7 +25,12 @@ if [ ! -d ./jazz-core-scm ] ; then
 fi
 
 cd ./jazz-core
-find . -name ".git*" -exec rm -rf '{}' \;  -print
+
+# Condition to include "gitlab-build-pack" for gitlab Scenario3 to SCM repos.
+if [ $scm == "gitlab" ]; then
+  find . -name ".git*" -exec rm -rf '{}' \;  -print
+else
+  find . -name "*git*" -exec rm -rf '{}' \;  -print
 
 # Function to push code to individual repos in SLF projects to SCM
 function individual_repopush() {
