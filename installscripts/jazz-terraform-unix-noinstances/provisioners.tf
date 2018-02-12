@@ -70,7 +70,10 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
   command = "${var.modifyPropertyFile_cmd} REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
-
+  // Modifying subnet replacement before copying cookbooks to Jenkins server.
+  provisioner "local-exec" {
+    command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+  }
 
   provisioner "file" {
     source      = "${var.cookbooksDir}"
@@ -123,10 +126,6 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
-  }
-
-  provisioner "local-exec" {
-    command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
 
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
