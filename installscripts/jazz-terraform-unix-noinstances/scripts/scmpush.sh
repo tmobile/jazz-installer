@@ -26,11 +26,8 @@ fi
 
 cd ./jazz-core
 
-# Condition to include "gitlab-build-pack" for gitlab Scenario3 to SCM repos.
-if [ $scm == "gitlab" ]; then
-  find . -name ".git*" -exec rm -rf '{}' \;  -print
-else
-  find . -name "*git*" -exec rm -rf '{}' \;  -print
+# Remove only the "git" related nested files like .gitignore from all the directories in jazz-core
+find . -name ".git*" -exec rm -rf '{}' \;  -print
 
 # Function to push code to individual repos in SLF projects to SCM
 function individual_repopush() {
@@ -69,12 +66,18 @@ function push_to_scm() {
   elif [[ "$1" == "jazz-build-module" && "$scm" == "gitlab" ]]; then
     individual_repopush $1
   else
-    # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. "jazz-build-module" is already pushed at this stage.
+    # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
+    # "jazz-build-module" is already pushed at this stage.
     repos=("serverless-config-pack" "build-deploy-platform-services" "cognito-authorizer")
+
+    # Including SCM specific repos
+    if [ $scm == "gitlab" ]; then
+      repos+=("gitlab-build-pack")
+    fi
 
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack" ]]; then
           repos+=("${d%/}")
         fi
     done
