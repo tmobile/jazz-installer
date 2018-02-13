@@ -63,27 +63,19 @@ variable "jenkinsservermap" {
 }
 
 #
-# Bitbucket related variables
+# SCM common variables
 #
-variable "bitbucketservermap" {
+variable "scmmap" {
   type = "map"
   default = {
-    bitbucket_elb = "replaceELB"
-    bitbucket_public_ip = "replaceIP"
-    bitbucketuser = "replace"
-    bitbucketpasswd = "replace"
-  }
-}
-
-# Gitlab related variables
-variable "gitlabservermap" {
-  type = "map"
-  default = {
-    gitlab_public_ip = "replaceIP"
-    gitlabuser = "replace"
-    gitlabpasswd = "replace"
-    gitlabtoken = "replace"
-    gitlabcasid = "replace"
+    type = "replacescmtype"
+    elb = "replaceelb"
+    publicip = "replaceip"
+    username = "replaceusername"
+    passwd = "replacepasswd"
+    privatetoken = "replacetoken"
+    slfid = "replaceslfid"
+    scmPathExt = "replacescmPathExt"
   }
 }
 
@@ -104,7 +96,3 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
-variable "scmUsername" { type = "string" default = "replace" }
-variable "scmPasswd" { type = "string" default = "replace" }
-variable "scmELB" { type = "string" default = "replace" }
-variable "scmPathExt" { type = "string" default = "" }
