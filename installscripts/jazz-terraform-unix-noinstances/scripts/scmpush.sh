@@ -16,7 +16,8 @@ jenkins_user=$9
 jenkins_password=${10}
 jazzbuildmodule=${11}
 job_url="/project/Trigger_Platform_Services_Build"
-gitlab_webhook_url="http://"$jenkins_user":"$jenkins_password"@"$jenkins_elb$job_url
+gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$job_url"
+
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
