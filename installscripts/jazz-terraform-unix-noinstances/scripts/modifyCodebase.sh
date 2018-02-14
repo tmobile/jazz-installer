@@ -40,6 +40,7 @@ do
 	  "SERVICE_RUNTIME":{"S":"nodejs"}, 
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
+	  "SERVICE_TYPE":{"S":"api"},
 	  "SERVICE_METADATA":{"M":{
 				  "securityGroupIds":{"S":"'$securityGroupIds'"},
 				  "subnetIds":{"S":"'$subnetIds'"},
@@ -47,8 +48,7 @@ do
 				  "providerMemorySize":{"S":"256"},
 				  "providerRuntime":{"S":"nodejs6.10"},
 				  "providerTimeout":{"S":"160"},
-				  "runtime":{"S":"nodejs"},
-				  "type":{"S":"api"}
+				  "runtime":{"S":"nodejs"}
 			    }
 			}
 	  }'
@@ -61,6 +61,7 @@ do
 			  "SERVICE_RUNTIME":{"S":"nodejs"},
 			  "SERVICE_STATUS":{"S":"active"},
 			  "TIMESTAMP":{"S":"'$timestamp'"},
+			  "SERVICE_TYPE":{"S":"lambda"},
 			  "SERVICE_METADATA":{"M":{
 						  "securityGroupIds":{"S":"'$securityGroupIds'"},
 						  "subnetIds":{"S":"'$subnetIds'"},
@@ -68,8 +69,7 @@ do
 						  "providerMemorySize":{"S":"256"},
 						  "providerRuntime":{"S":"nodejs4.3"},
 						  "providerTimeout":{"S":"160"},
-						  "runtime":{"S":"nodejs"},
-						  "type":{"S":"lambda"}
+						  "runtime":{"S":"nodejs"}
 						}
 					}
 			  }'
@@ -82,6 +82,7 @@ do
 		  "SERVICE_RUNTIME":{"S":"nodejs"},
 		  "SERVICE_STATUS":{"S":"active"},
 		  "TIMESTAMP":{"S":"'$timestamp'"},
+		  "SERVICE_TYPE":{"S":"api"},
 		  "SERVICE_METADATA":{"M":{
 					  "securityGroupIds":{"S":"'$securityGroupIds'"},
 					  "subnetIds":{"S":"'$subnetIds'"},
@@ -89,8 +90,7 @@ do
 					  "providerMemorySize":{"S":"256"},
 					  "providerRuntime":{"S":"nodejs4.3"},
 					  "providerTimeout":{"S":"160"},
-					  "runtime":{"S":"nodejs"},
-					  "type":{"S":"api"}
+					  "runtime":{"S":"nodejs"}
 					}
 				}
 		  }' 

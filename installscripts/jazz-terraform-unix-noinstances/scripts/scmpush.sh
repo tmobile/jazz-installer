@@ -11,7 +11,13 @@ ns_id_slf=$6
 
 # Config variables
 scm=$7
-jazzbuildmodule=$8
+jenkins_elb=$8
+jenkins_user=$9
+jenkins_password=${10}
+jazzbuildmodule=${11}
+root="http://"
+job_url="/project/Trigger_Platform_Services_Build"
+gitlab_webhook_url=$root$jenkins_user":"$jenkins_password"@"$jenkins_elb$job_url
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
@@ -40,8 +46,10 @@ function individual_repopush() {
 
   elif [ $scm == "gitlab" ]; then
     # Creating the repo in SLF folder in SCM
-    curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$1&namespace_id=$ns_id_slf"
-    # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
+    repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$1&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
+    #Adding webhook to the repo
+	curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v3/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
+	# Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
     git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$1.git
   fi
 
