@@ -1,5 +1,5 @@
 JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME="Trigger_Platform_Services_Build"
+GITLAB_JOB_NAME="Gitlab_Trigger_Platform_Services_Build"
 SSH_USER=$2
 SCM_ELB=$3
 
@@ -12,7 +12,7 @@ elif [ -f /etc/lsb-release ]; then
 fi
 echo "$0 $1 $2 "
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $GITLAB_JOB_NAME
 <?xml version='1.0' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.12">
   <description></description>
