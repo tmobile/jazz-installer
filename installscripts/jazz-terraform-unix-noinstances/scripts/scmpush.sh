@@ -15,8 +15,8 @@ jenkins_elb=$8
 jenkins_user=$9
 jenkins_password=${10}
 jazzbuildmodule=${11}
-job_url="/project/Trigger_Platform_Services_Build"
-gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$job_url"
+gitlab_trigger_job_url="/project/Trigger_Platform_Services_Build"
+gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$gitlab_trigger_job_url"
 
 
 git config --global user.email "$emailid"
@@ -76,16 +76,18 @@ function push_to_scm() {
   else
     # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
     # "jazz-build-module" is already pushed at this stage.
-    repos=("serverless-config-pack" "build-deploy-platform-services" "cognito-authorizer")
+    repos=("serverless-config-pack" "build-deploy-platform-services")
 
     # Including SCM specific repos
     if [ $scm == "gitlab" ]; then
-      repos+=("gitlab-build-pack")
+      repos+=("gitlab-build-pack" "gitlab-platform-services-build-pack")
     fi
 
+	repos+=("cognito-authorizer")
+	
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack"  && ${d%/} != "gitlab-platform-services-build-pack" ]]; then
           repos+=("${d%/}")
         fi
     done
