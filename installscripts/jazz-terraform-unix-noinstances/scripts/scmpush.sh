@@ -15,9 +15,9 @@ jenkins_elb=$8
 jenkins_user=$9
 jenkins_password=${10}
 jazzbuildmodule=${11}
-job_url="/project/Trigger_Platform_Services_Build"
-gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$job_url"
-
+gitlab_trigger_job_url="/project/Trigger_Platform_Services_Build"
+gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$gitlab_trigger_job_url"
+platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" )
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
@@ -47,8 +47,10 @@ function individual_repopush() {
   elif [ $scm == "gitlab" ]; then
     # Creating the repo in SLF folder in SCM
     repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$1&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
-    #Adding webhook to the repo
-	curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
+	if [[ " ${platform_services[*]} " == *" $1 "* ]]; then
+		#Adding webhook to the repo
+		curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
+	fi 
 	# Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
     git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$1.git
   fi
@@ -76,16 +78,18 @@ function push_to_scm() {
   else
     # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
     # "jazz-build-module" is already pushed at this stage.
-    repos=("serverless-config-pack" "build-deploy-platform-services" "cognito-authorizer")
+    repos=("serverless-config-pack" "build-deploy-platform-services")
 
     # Including SCM specific repos
     if [ $scm == "gitlab" ]; then
-      repos+=("gitlab-build-pack")
+      repos+=("gitlab-build-pack" "gitlab-platform-services-build-pack")
     fi
 
+	repos+=("cognito-authorizer")
+	
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack"  && ${d%/} != "gitlab-platform-services-build-pack" ]]; then
           repos+=("${d%/}")
         fi
     done
