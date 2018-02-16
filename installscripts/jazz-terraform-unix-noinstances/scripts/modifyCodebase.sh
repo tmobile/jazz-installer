@@ -31,7 +31,7 @@ do
     service_name=$element
   fi
   
-  if [ $element == "platform_email" ] ; then		  
+  if [ $element == "platform_email" ] || [ $element == "platform_usermanagement"] ; then		  
 	  aws dynamodb put-item --table-name $tablename --item '{
 	  "SERVICE_ID":{"S":"'$uuid'"},
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
