@@ -11,7 +11,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {
@@ -35,7 +36,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -58,7 +60,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -84,7 +87,8 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   website {
   index_document = "index.html"
@@ -127,7 +131,7 @@ resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
   region = "${var.region}"
-  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ] 
+  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ]
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -135,7 +139,8 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   website {
     index_document = "index.html"
@@ -307,7 +312,8 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
@@ -334,7 +340,8 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
@@ -358,7 +365,8 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {
