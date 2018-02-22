@@ -78,7 +78,7 @@ function push_to_scm() {
   else
     # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
     # "jazz-build-module" is already pushed at this stage.
-    repos=("serverless-config-pack" "build-deploy-platform-services")
+    repos=("serverless-config-pack" "jenkins-build-pack-api" "jenkins-build-pack-lambda")
 
     # Including SCM specific repos
     if [ $scm == "gitlab" ]; then
@@ -89,7 +89,7 @@ function push_to_scm() {
 	
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "build-deploy-platform-services" && ${d%/} != "gitlab-build-pack"  && ${d%/} != "gitlab-platform-services-build-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "jenkins-build-pack-api" && ${d%/} !=  "jenkins-build-pack-lambda" && ${d%/} != "gitlab-build-pack"  && ${d%/} != "gitlab-platform-services-build-pack" ]]; then
           repos+=("${d%/}")
         fi
     done
