@@ -49,10 +49,6 @@
     "WEBSITE_BUILD_URI": "/job/build-pack-website/buildWithParameters?token=slf-website-build-0907"
    },
 
-  "PLATFORM":{
-	  "PLATFORM_SERVICE_BUILD_URI":"/job/build-deploy-platform-service/buildWithParameters?token=bld-plat-srvs-71717"
-  },
-
   "JAZZ": {
     "ADMIN": "",
     "PASSWD": "",
