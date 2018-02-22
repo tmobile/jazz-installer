@@ -3,7 +3,6 @@ JENKINSELB=$2
 region=$3
 sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/cloud-logs-streamer/index.js
 # this is done in bitbucketclient.sh since that is last script to run in this demo with existing instances
-#curl  -X GET -u jenkinsadmin:jenkinsadmin http://$JENKINSELB:8080/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=$region
 
 # Add permission to Lambda function
 #aws lambda add-permission \
