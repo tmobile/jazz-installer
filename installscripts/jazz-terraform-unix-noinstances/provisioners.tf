@@ -178,11 +178,7 @@ resource "null_resource" "configureJazzBuildModule" {
        "git push -u origin master",
        "cd ..",
        "sudo rm -rf jazz-build-module" ]
- }
-  //This would be the last command which needs to be run which triggers the Jenkins Build deploy job
- provisioner "local-exec" {
-    command = "curl  -X GET -u ${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")} http://${lookup(var.jenkinsservermap, "jenkins_elb")}/job/deploy-all-platform-services/buildWithParameters?token=dep-all-ps-71717&region=${var.region}"
-  }
+ }  
 }
 
 // Push all other repos to SLF
