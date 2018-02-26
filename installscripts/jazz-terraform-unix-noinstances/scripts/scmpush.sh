@@ -17,7 +17,7 @@ jenkins_password=${10}
 jazzbuildmodule=${11}
 gitlab_trigger_job_url="/project/Gitlab_Trigger_Platform_Services_Build"
 gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$gitlab_trigger_job_url"
-platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" )
+platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" "platform_events-handler" )
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
