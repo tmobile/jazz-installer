@@ -355,10 +355,10 @@ resource "aws_dynamodb_table" "dynamodb-Events_Dev" {
   name           = "${var.envPrefix}_Events_Dev"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "EVENT_TYPE"
+  hash_key       = "EVENT_ID"
 
   attribute {
-    name = "EVENT_TYPE"
+    name = "EVENT_ID"
     type = "S"
   }
 
@@ -376,10 +376,10 @@ resource "aws_dynamodb_table" "dynamodb-Events_Stg" {
   name           = "${var.envPrefix}_Events_Stg"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "EVENT_TYPE"
+  hash_key       = "EVENT_ID"
 
   attribute {
-    name = "EVENT_TYPE"
+    name = "EVENT_ID"
     type = "S"
   }
 
@@ -397,10 +397,10 @@ resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
   name           = "${var.envPrefix}_Events_Prod"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "EVENT_TYPE"
+  hash_key       = "EVENT_ID"
 
   attribute {
-    name = "EVENT_TYPE"
+    name = "EVENT_ID"
     type = "S"
   }
 
