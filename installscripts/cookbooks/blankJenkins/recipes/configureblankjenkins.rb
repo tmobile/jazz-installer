@@ -2,7 +2,6 @@ if node[:platform_family].include?("rhel")
     execute 'resizeJenkinsMemorySettings' do
       command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
     end
-
     execute 'chmodservices' do
       command "chmod -R 755 /home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files;"
     end
@@ -41,11 +40,23 @@ if node[:platform_family].include?("rhel")
     execute 'copyScriptApprovals' do
       command "cp #{node['jenkins']['scriptApprovalfile']} #{node['jenkins']['scriptApprovalfiletarget']}"
     end
+    # Configure Gitlab Plugin
+    execute 'configuregitlabplugin' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
+    end
+    execute 'configuregitlabuser' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+    end
+    execute 'configuregitlabtoken' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+    end
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
     end
-
     if (File.exist?("/home/#{node['jenkins']['SSH_user']}/jazz-core"))
     	execute 'downloadgitproj' do
       		command "rm -rf /home/#{node['jenkins']['SSH_user']}/jazz-core"
@@ -57,13 +68,12 @@ if node[:platform_family].include?("rhel")
 
       cwd "/home/#{node['jenkins']['SSH_user']}"
     end
-
     execute 'copylinkdir' do
       command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
     end
-
     execute 'createcredentials-jenkins1' do
-      command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+      only_if  { node[:scm] == 'bitbucket' }
+      command "sleep 300;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createcredentials-jobexecutor' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
@@ -78,31 +88,33 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
     execute 'createJob-create-service' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-delete-service' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-bitbucketteam_newService' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+      only_if  { node[:scm] == 'bitbucket' }
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
-	execute 'createJob-platform_api_services' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
-    end
-    execute 'job_build-deploy-platform-service' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  #{node['jenkins']['SSH_user']}"
+	  execute 'createJob-platform_api_services' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job_cleanup_cloudfront_distributions' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job-pack-lambda' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job-build-pack-website' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']}  #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  #{node['jenkins']['SSH_user']}"
+    end
+    execute 'job-gitlab-trigger' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
@@ -115,16 +127,10 @@ if node[:platform_family].include?("rhel")
       owner 'root'
       group 'root'
       mode '0777'
-    end
-
-    execute 'configureJenkinsProperites' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
-    end
-
+    end   
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
@@ -152,7 +158,6 @@ if node[:platform_family].include?("debian")
     execute 'copyEncryptGroovyScript' do
       command "cp /root/cookbooks/jenkins/files/default/encrypt.groovy /root/encrypt.groovy"
     end
-
     execute 'copyXmls' do
       command "tar -xvf /root/cookbooks/jenkins/files/default/xmls.tar"
       cwd "/var/lib/jenkins"
@@ -173,7 +178,6 @@ if node[:platform_family].include?("debian")
       supports [:stop, :start, :restart]
       action [:restart]
     end
-
     if (File.exist?("/root/jazz-core"))
       execute 'downloadgitproj' do
           command "rm -rf /root/jazz-core"
@@ -190,7 +194,16 @@ if node[:platform_family].include?("debian")
     execute 'settingexecutepermissiononallscripts' do
       command "chmod +x /root/cookbooks/jenkins/files/credentials/*.sh"
     end
+    execute 'configuregitlabuser' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "sleep 30;/root/cookbooks/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} root"
+    end
+    execute 'configuregitlabtoken' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "sleep 30;/root/cookbooks/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} root"
+    end
     execute 'createcredentials-jenkins1' do
+      only_if  { node[:scm] == 'bitbucket' }
       command "sleep 30;/root/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} root"
     end
     execute 'createcredentials-jobexecutor' do
@@ -206,31 +219,34 @@ if node[:platform_family].include?("debian")
       command "chmod +x /root/cookbooks/jenkins/files/jobs/*.sh"
     end
     execute 'createJob-create-service' do
-      command "/root/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['bitbucketelb']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['scmpath']} root"
     end
     execute 'createJob-delete-service' do
-      command "/root/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} root"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} root"
     end
     execute 'createJob-bitbucketteam_newService' do
-      command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']}  root"
-    end	
-    execute 'createJob-platform_api_services' do
-      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']}  root"
+      only_if  { node[:scm] == 'bitbucket' }
+      command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  root"
     end
-    execute 'job_build-deploy-platform-service' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']}  root"
+    execute 'createJob-platform_api_services' do
+      only_if  { node[:scm] == 'bitbucket' }
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  root"
     end
     execute 'job_cleanup_cloudfront_distributions' do
-      command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} root"
     end
     execute 'createJob-job-pack-lambda' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['bitbucketelb']}  root"
+      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} build-pack-lambda #{node['scmpath']}  root"
     end
     execute 'createJob-job-build-pack-website' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']}  root"
+      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['scmpath']}  root"
+    end
+    execute 'job-gitlab-trigger' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
@@ -247,9 +263,11 @@ if node[:platform_family].include?("debian")
     execute 'settingexecutepermissiononallnodescripts' do
       command "chmod +x /root/cookbooks/jenkins/files/node/*.sh"
     end
-    execute 'configureJenkinsProperites' do
-      command "/root/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} root"
+    execute 'configuregitlabplugin' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/root/cookbooks/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
     end
+
     execute 'configJenkinsLocConfigXml' do
       command "/root/cookbooks/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
     end
@@ -257,7 +275,6 @@ if node[:platform_family].include?("debian")
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
-
     service "jenkins" do
       supports [:stop, :start, :restart]
       action [:restart]
