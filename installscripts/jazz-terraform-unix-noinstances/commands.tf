@@ -2,13 +2,17 @@ variable "configureS3Names_cmd" {
   type = "string"
   default = "./scripts/configureS3Names.sh"
 }
+variable "configureSubnet_cmd" {
+  type = "string"
+  default = "./scripts/configureSubnet.sh"
+}
 variable "sets3acl_cmd" {
   type = "string"
   default = "./scripts/sets3acl.sh"
 }
-variable "configurebitbucketelb_cmd" {
+variable "configurescmelb_cmd" {
   type = "string"
-  default = "./scripts/configurebitbucketelb.sh"
+  default = "./scripts/configurescmelb.sh"
 }
 variable "configureApikey_cmd" {
   type = "string"
@@ -30,18 +34,22 @@ variable "configureJenkinsSSHUser_cmd" {
   type = "string"
   default = "./scripts/configureJenkinsSSHUser.sh"
 }
-variable "bitbucketclient_cmd" {
+variable "scmclient_cmd" {
   type = "string"
-  default = "./scripts/bitbucketclient.sh"
+  default = "./scripts/scmclient.sh"
 }
-variable "bitbucketpush_cmd" {
+variable "scmpush_cmd" {
   type = "string"
-  default = "./scripts/bitbucketpush.sh"
+  default = "./scripts/scmpush.sh"
 }
 
 variable "configureESEndpoint_cmd" {
   type = "string"
   default = "./scripts/configureESEndpoint.sh"
+}
+variable "configureJazzCore_cmd" {
+  type = "string"
+  default = "./scripts/configureJazzCore.sh"
 }
 variable "cognito_cmd" {
   type = "string"
