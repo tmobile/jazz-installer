@@ -89,9 +89,6 @@ end
 execute 'createJob-platform_api_services' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
-execute 'job_build-deploy-platform-service' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['bitbucketelb']}  #{node['region']} #{node['jenkins']['SSH_user']}"
-end
 execute 'job_cleanup_cloudfront_distributions' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
@@ -114,10 +111,6 @@ link '/usr/bin/aws' do
   owner 'root'
   group 'root'
   mode '0777'
-end
-
-execute 'configureJenkinsProperites' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/node/configureJenkinsProps.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
 
 execute 'configJenkinsLocConfigXml' do
