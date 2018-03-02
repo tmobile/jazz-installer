@@ -103,9 +103,6 @@ if node[:platform_family].include?("rhel")
 	  execute 'createJob-platform_api_services' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
-    execute 'job_build-deploy-platform-service' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['scmpath']}  #{node['region']}  #{node['jenkins']['SSH_user']}"
-    end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
@@ -118,10 +115,6 @@ if node[:platform_family].include?("rhel")
     execute 'job-gitlab-trigger' do
       only_if  { node[:scm] == 'gitlab' }
       command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
-    end
-	execute 'job-trigger-platform-services-build' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-trigger-platform-services-build.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
@@ -242,9 +235,6 @@ if node[:platform_family].include?("debian")
       only_if  { node[:scm] == 'bitbucket' }
       command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  root"
     end
-    execute 'job_build-deploy-platform-service' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build-deploy-platform-service.sh #{node['jenkinselb']} build-deploy-platform-service  #{node['scmpath']}  #{node['region']}  root"
-    end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} root"
     end
@@ -257,10 +247,6 @@ if node[:platform_family].include?("debian")
     execute 'job-gitlab-trigger' do
       only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
-    end
-	execute 'job-trigger-platform-services-build' do
-      only_if  { node[:scm] == 'gitlab' }
-      command "/root/cookbooks/jenkins/files/jobs/job-trigger-platform-services-build.sh #{node['jenkinselb']} root #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
