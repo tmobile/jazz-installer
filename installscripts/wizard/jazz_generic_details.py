@@ -93,7 +93,6 @@ def get_stack_generic_details(jazz_branch):
     region = raw_input("AWS Region (e.g. us-east-1): ")
     if region not in knownWorkingRegions:
         print 'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation to verify the region you have chosen supports the required AWS resources.'
-        break
 
     # Get the aws credentials
     aws_credentials = get_aws_credentials()
