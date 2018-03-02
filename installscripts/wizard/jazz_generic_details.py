@@ -88,17 +88,13 @@ def get_stack_generic_details(jazz_branch):
     print("Please provide the details to setup Jazz")
 
     region = None
+    knownWorkingRegions = ['us-east-1', 'us-east-2', 'us-west-2']
  
     while True:
-        region = raw_input("AWS Region(Choose us-east-1 or us-west-2): ")
-        if region == 'us-east-1':
-            print 'Valid Region'
+        region = raw_input("AWS Region (e.g. us-east-1): ")
+        if region not in knownWorkingRegions:
+            print 'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation to verify the region you have chosen supports the required AWS resources.'
             break
-        elif region == 'us-west-2':
-            print 'valid Region'
-            break
-        else:
-            print 'Invalid Region,Please try again..'
 
     # Get the aws credentials
     aws_credentials = get_aws_credentials()
