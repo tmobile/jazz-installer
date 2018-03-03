@@ -8,14 +8,14 @@ date
 terraform apply
 date
 echo " ======================================================="
-echo " The following Stack has been created in AWS"
+echo " The following stack has been created in AWS"
 echo " ________________________________________________"
 terraform state list
 echo " ======================================================="
-echo "Please use the following values for checking out JAZZ"
+echo " Please use the following values for checking out Jazz"
 echo " ________________________________________________"
 cat ./settings.txt
 echo " ======================================================="
-echo " Installation Completed!!! Once checkout is done Please execute nohup ./destroy.sh & in the following directory . This will cleanup the entire Stack"
+echo " Installation complete! To cleanup Jazz stack and its resources execute ./destroy.sh in this directory."
 realpath ../../
 echo " ======================================================="
