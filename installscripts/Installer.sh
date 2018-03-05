@@ -1,29 +1,28 @@
 #!/bin/bash
 #
 # File: Installer.sh
+# Description: Installs the Jazz serverless framework from Centos7 ec2-instance.
 #
-# Description: Installs the Jazz serverless framework from RHEL ec2 instance.
-#
-#
-# Be sure to edit the .deploy file and /etc/deploy.conf before running this
-# script.
 # ---------------------------------------------
 # Usage:
 # ---------------------------------------------
 # To Installer, run:
 # ./Installer branch_name
-#
 # ---------------------------------------------
-export PS1='$PWD:>'
 
+# Installation directory
+INSTALL_DIR=`pwd`
+REPO_PATH=$INSTALL_DIR/jazz-installer
+
+# Log file to record the installation logs
 LOG_FILE_NAME=installer_setup.out
-LOG_FILE=`realpath $LOG_FILE_NAME`
+LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 
 #Check if the Branch name is supplied
 if [ $# -eq 0 ]
   then
 	echo 'No arguments supplied for Installer'
-    echo "Please re-run './Installer.sh branch_name' "
+  echo "Please re-run './Installer.sh branch_name' "
 	exit
 fi
 
@@ -65,7 +64,7 @@ spin_wheel()
 trap 'printf "${RED}\nCancelled....\n${NC}"; exit' 2
 trap '' 20
 
-#Download and Installing Softwares required for Jazz Installer
+# Download and Installing Softwares required for Jazz Installer
 # 1. GIT
 # 2. Java Jdk - 8u112-linux-x64
 # 3. Unzip
@@ -91,34 +90,33 @@ sudo rm -rf jdk-8u112-linux-x64.rpm
 sudo yum install -y unzip >>$LOG_FILE 2>&1&
 spin_wheel $! "Installing unzip"
 
-# Create a temporary folder . Here we will have all the temporary files
-# needed and delete it at the end
-
-sudo rm -rf ~/jazz_tmp
-mkdir ~/jazz_tmp
+# Create a temporary folder .
+# Here we will have all the temporary files needed and delete it at the end
+sudo rm -rf $INSTALL_DIR/jazz_tmp
+mkdir $INSTALL_DIR/jazz_tmp
 
 # Download and Install awscli
-sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o ~/jazz_tmp/awscli-bundle.zip >> $LOG_FILE 2>&1 &
+sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip >> $LOG_FILE 2>&1 &
 spin_wheel $! "Downloading  awscli bundle"
-sudo rm -rf ~/jazz_tmp/awscli-bundle
-sudo unzip ~/jazz_tmp/awscli-bundle.zip -d ~/jazz_tmp>>$LOG_FILE 2>&1 &
+sudo rm -rf $INSTALL_DIR/jazz_tmp/awscli-bundle
+sudo unzip $INSTALL_DIR/jazz_tmp/awscli-bundle.zip -d $INSTALL_DIR/jazz_tmp>>$LOG_FILE 2>&1 &
 spin_wheel $! "Unzipping  awscli bundle"
 sudo rm -rf /usr/local/aws
 sudo rm -f /usr/local/bin/aws
 
-cd ~/jazz_tmp/awscli-bundle/
+cd $INSTALL_DIR/jazz_tmp/awscli-bundle/
 sudo ./install -i /usr/local/aws -b /usr/local/bin/aws >>$LOG_FILE 2>&1 &
 spin_wheel $! "Installing  awscli bundle"
-cd ~/
+cd $INSTALL_DIR/
 
 #Download and Install Terraform
-sudo curl -v -L https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261 -o ~/jazz_tmp/terraform.zip >>$LOG_FILE 2>&1 &
+sudo curl -v -L https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261 -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading terraform"
-sudo unzip -o ~/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE 2>&1 &
+sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE 2>&1 &
 spin_wheel $! "Installing terraform"
 
 #Downloading and Install atlassian-cli
-sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o ~/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
+sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading atlassian-cli"
 sudo unzip -o ~/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE 2>&1 &
 spin_wheel $! "Installing atlassian-cli"
@@ -142,18 +140,19 @@ sudo pip install paramiko >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading and install paramiko"
 
 #move the software install log jazz Installer
-mv $LOG_FILE ./jazz-installer/
+mv $LOG_FILE $REPO_PATH
 
 #set the permissions
-chmod -R +x ./jazz-installer/installscripts/*
-mkdir -p ~/jazz-installer/installscripts/sshkeys/dockerkeys
+chmod -R +x $REPO_PATH/installscripts/*
+mkdir -p $REPO_PATH/installscripts/sshkeys/dockerkeys
 
 #Call the python script to continue installation process
-cd ./jazz-installer/installscripts/wizard
-python ./run.py $JAZZ_BRANCH
+cd $REPO_PATH/installscripts/wizard
+sed -i "s|\"jazz_install_dir\".*$|\"jazz_install_dir\": \"$INSTALL_DIR\"|g" config.py
+python ./run.py $JAZZ_BRANCH $INSTALL_DIR
 
 #Clean up the jazz_tmp folder
-sudo rm -rf ~/jazz_tmp
+sudo rm -rf $INSTALL_DIR/jazz_tmp
 
 setterm -term linux -fore green
 setterm -term linux -fore default

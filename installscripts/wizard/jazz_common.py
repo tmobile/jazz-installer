@@ -2,15 +2,17 @@
 import os
 import re
 import subprocess
+import config
 
 #Global variables
 VARIABLES_TF_FILE = "variables.tf"
 ENVPREFIX_TF_FILE = "envprefix.tf"
-HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
+INSTALL_FOLDER = config.settings['jazz_install_dir']
+HOME_JAZZ_INSTALLER = INSTALL_FOLDER + "/jazz-installer/"
 COGNITO_USER_FILE = HOME_JAZZ_INSTALLER + "/installscripts/cookbooks/jenkins/files/credentials/cognitouser.sh"
 DEFAULT_RB = HOME_JAZZ_INSTALLER + "/installscripts/cookbooks/jenkins/attributes/default.rb"
 
-def parse_and_replace_paramter_list(terraform_folder, parameter_list):
+def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     """
         Method parse the parameters send from run.py and these common variables
         are replaced in variables.tf and other files needed
@@ -21,13 +23,14 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     cognito_details = parameter_list[3]
     jazz_account_id = parameter_list[4]
     jazz_tag_details = parameter_list[5] #[tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
+    jazz_install_dir = parameter_list[6]
 
     os.chdir(terraform_folder)
 
     # ----------------------------------------------------------
     # Populate variables in terraform variables.tf and cookbooks
     # -----------------------------------------------------------
-    # Populating AWS Accesskey and
+    # Populating AWS Accesskey
     subprocess.call(['sed', '-i', "s|variable \"aws_access_key\".*.$|variable \"aws_access_key\" \{ type = \"string\" default = \"%s\" \}|g" %(aws_credentials[0]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|variable \"aws_secret_key\".*.$|variable \"aws_secret_key\" \{ type = \"string\" default = \"%s\" \}|g" %(aws_credentials[1]), VARIABLES_TF_FILE])
 
@@ -54,6 +57,9 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     subprocess.call(['sed', '-i', "s|variable \"tagsExempt\".*.$|variable \"tagsExempt\" \{ type = \"string\" default = \"%s\" \}|g" %(jazz_tag_details[2]), ENVPREFIX_TF_FILE])
     subprocess.call(['sed', '-i', "s|variable \"tagsOwner\".*.$|variable \"tagsOwner\" \{ type = \"string\" default = \"%s\" \}|g" %(jazz_tag_details[3]), ENVPREFIX_TF_FILE])
     subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(jazz_tag_details[0]), "scripts/destroy.sh"])
+
+    # Populating Jazz install directory
+    subprocess.call(['sed', '-i', "s|variable \"jazz_install_dir\".*.$|variable \"jazz_install_dir\" \{ type = \"string\" default = \"%s\" \}|g" %(jazz_install_dir), VARIABLES_TF_FILE])
 
 def validate_email_id(email_id):
     """

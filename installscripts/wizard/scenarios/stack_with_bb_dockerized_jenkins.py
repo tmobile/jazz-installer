@@ -2,18 +2,19 @@
 import os
 import sys
 import subprocess
-from jazz_common import parse_and_replace_paramter_list
+import config
+from jazz_common import parse_and_replace_parameter_list
 from jazz_jenkins import get_and_add_docker_jenkins_config
 from jazz_bitbucket import get_and_add_existing_bitbucket_config
 
 #Global variables
-HOME_FOLDER = os.path.expanduser("~")
-HOME_JAZZ_INSTALLER = HOME_FOLDER + "/jazz-installer/"
+INSTALL_FOLDER = config.settings['jazz_install_dir']
+HOME_JAZZ_INSTALLER = INSTALL_FOLDER + "/jazz-installer/"
 HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
-JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
+JENKINS_PEM = INSTALL_FOLDER + "/jenkinskey.pem"
 
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
@@ -34,7 +35,7 @@ def start(parameter_list):
     """
         start stack creation
     """
-    parse_and_replace_paramter_list(TERRAFORM_FOLDER_PATH, parameter_list)
+    parse_and_replace_parameter_list(TERRAFORM_FOLDER_PATH, parameter_list)
 
     # Get Bitbucket configuration details
     get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)

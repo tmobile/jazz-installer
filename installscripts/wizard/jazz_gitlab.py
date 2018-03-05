@@ -2,10 +2,11 @@
 import os
 import sys
 import subprocess
+import config
 
 #Global variables
-HOME_FOLDER = os.path.expanduser("~")
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
+INSTALL_FOLDER = config.settings['jazz_install_dir']
+INSTALL_SCRIPT_FOLDER = INSTALL_FOLDER + "/jazz-installer/installscripts/"
 JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
 VARIABLES_TF_FILE = INSTALL_SCRIPT_FOLDER + "jazz-terraform-unix-noinstances/variables.tf"
 SCM_TYPE = "gitlab"

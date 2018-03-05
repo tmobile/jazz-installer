@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from jazz_generic_details import get_stack_generic_details
-
 from scenarios import stack_with_bb_jenkins as option1
 from scenarios import stack_with_bb_dockerized_jenkins as option2
 from scenarios import stack_with_dockerized_gitlab_jenkins as option3

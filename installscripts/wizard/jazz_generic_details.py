@@ -5,6 +5,7 @@ import random
 import string
 import subprocess
 import datetime
+import config
 from jazz_common import validate_email_id
 
 #Global Variables
@@ -83,12 +84,12 @@ def get_jazz_tag_config_details():
     return [tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
 
 def get_stack_generic_details(jazz_branch):
-    
+
     print ""
     print("Please provide the details to setup Jazz")
 
     region = None
- 
+
     while True:
         region = raw_input("AWS Region (us-east-1 or us-west-2): ")
         if region == 'us-east-1':
@@ -133,6 +134,6 @@ def get_stack_generic_details(jazz_branch):
     jazz_account_id = jazz_account_id[:-1]
 
     # Determine the scenario
-    parameter_list = [jazz_branch, aws_credentials, region, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details]
+    parameter_list = [jazz_branch, aws_credentials, region, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details, config.settings['jazz_install_dir']]
 
     return parameter_list
