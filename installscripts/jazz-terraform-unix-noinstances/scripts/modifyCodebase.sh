@@ -14,7 +14,7 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 
 #-------------------------------------------
 
-platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" "platform_events-handler" )
+platform_services=("cognito-authorizer" "logs" "usermanagement" "services-handler" "events" "services" "logout" "login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "email" "events-handler" )
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
@@ -22,21 +22,16 @@ timestamp=`date --utc +%FT%T`
 for element in "${platform_services[@]}"
 do
   uuid=`uuidgen -t`
-  echo -n > ./jazz-core/$element/deployment-env.yml
-  echo "service_id: "$uuid >> ./jazz-core/$element/deployment-env.yml
- 
-  if [[ $element =~ ^platform ]] ; then
-    service_name="${element:9}"
-  else
-    service_name=$element
-  fi
+  echo -n > ./jazz-core/jazz_$element/deployment-env.yml
+  echo "service_id: "$uuid >> ./jazz-core/jazz_$element/deployment-env.yml
   
-  if [ $element == "platform_email" ] || [ $element == "platform_usermanagement" ] ; then		  
+  
+  if [ $element == "email" ] || [ $element == "usermanagement" ] ; then		  
 	  aws dynamodb put-item --table-name $tablename --item '{
 	  "SERVICE_ID":{"S":"'$uuid'"},
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
-	  "SERVICE_DOMAIN":{"S":"platform"},
-	  "SERVICE_NAME":{"S":"'$service_name'"},
+	  "SERVICE_DOMAIN":{"S":"jazz"},
+	  "SERVICE_NAME":{"S":"'$element'"},
 	  "SERVICE_RUNTIME":{"S":"nodejs"}, 
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
@@ -52,12 +47,12 @@ do
 			    }
 			}
 	  }'
-	elif [ $element == "cloud-logs-streamer" ] || [ $element == "platform-services-handler" ]  || [ $element == "platform_events-handler" ] ; then
+	elif [ $element == "cognito-authorizer" ] || [ $element == "services-handler" ]  || [ $element == "events-handler" ] ; then
 			aws dynamodb put-item --table-name $tablename --item '{
 			  "SERVICE_ID":{"S":"'$uuid'"},
 			  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
-			  "SERVICE_DOMAIN":{"S":"platform"},
-			  "SERVICE_NAME":{"S":"'$service_name'"},
+			  "SERVICE_DOMAIN":{"S":"jazz"},
+			  "SERVICE_NAME":{"S":"'$element'"},
 			  "SERVICE_RUNTIME":{"S":"nodejs"},
 			  "SERVICE_STATUS":{"S":"active"},
 			  "TIMESTAMP":{"S":"'$timestamp'"},
@@ -77,8 +72,8 @@ do
 		aws dynamodb put-item --table-name $tablename --item '{
 		  "SERVICE_ID":{"S":"'$uuid'"},
 		  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
-		  "SERVICE_DOMAIN":{"S":"platform"},
-		  "SERVICE_NAME":{"S":"'$service_name'"},
+		  "SERVICE_DOMAIN":{"S":"jazz"},
+		  "SERVICE_NAME":{"S":"'$element'"},
 		  "SERVICE_RUNTIME":{"S":"nodejs"},
 		  "SERVICE_STATUS":{"S":"active"},
 		  "TIMESTAMP":{"S":"'$timestamp'"},
