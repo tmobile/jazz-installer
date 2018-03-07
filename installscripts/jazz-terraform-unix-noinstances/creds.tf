@@ -1,6 +1,9 @@
+/*
+   Terraform looks for aws_credentials in the default location $HOME/.aws/credentials on Linux.
+   If it fails to detect credentials inline, or in the environment, Terraform will check a custom location specified at shared_credentials_file.
+   shared_credentials_file = "/path/to/cred/file"
+*/
 provider "aws" {
-    #This ec2-user user is of Installer box
-    shared_credentials_file  = "/home/centos/.aws/credentials"
-    profile                  = "default"
+    profile = "default"
     region = "${var.region}"
 }
