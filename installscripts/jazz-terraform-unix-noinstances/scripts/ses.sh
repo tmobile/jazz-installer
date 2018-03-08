@@ -1,4 +1,6 @@
 #!/bin/bash
+#TODO Verify if this script actually needs AWS credentials to be passed in, or if we can
+#do the appropriate AWS commands via the TF AWS module
 EMAIL_ADDRESS=$1
 REGION=$2
 JENKINSATTRIBSFILE=$3
