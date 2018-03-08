@@ -27,7 +27,7 @@ def main():
                 print("Invalid selection! Try again\n")
 
     except KeyboardInterrupt:
-        print "\nKeyboard Interrupt detected exiting.."
+        print("\nKeyboard Interrupt detected exiting..")
 
 #Entry Point
 main()
