@@ -88,7 +88,7 @@ def get_stack_generic_details(jazz_branch):
     print("Please provide the details to setup Jazz")
 
     region = None
-    knownWorkingRegions = ['us-east-1', 'us-east-2', 'us-west-2']
+    knownWorkingRegions = ['us-east-1', 'us-west-2']
  
     region = raw_input("AWS Region (e.g. us-east-1): ")
     if region not in knownWorkingRegions:
