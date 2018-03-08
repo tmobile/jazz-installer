@@ -71,7 +71,7 @@ sudo docker volume create jenkins-volume &> /dev/null &
 spin_wheel $! "Creating the Jenkins volume"
 
 # Pull the docker image from ECR
-region=`grep region ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf  | cut -d' ' -f 9 | tr -d '"'`
+region=`grep region $1/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf  | cut -d' ' -f 9 | tr -d '"'`
 aws ecr get-login --registry-ids 108206174331 --no-include-email --region $region > ecr_login_script
 sudo bash ecr_login_script &> /dev/null
 rm -f ecr_login_script
@@ -85,7 +85,7 @@ spin_wheel $! "Spinning the Jenkins Docker"
 # Grab the pem key for further jenkins configurations
 sudo docker cp jenkins-server:/root/.ssh/id_rsa ./jenkinskey.pem
 sudo chmod +r ./jenkinskey.pem
-sed -i 's|jenkins_ssh_key.*.$|jenkins_ssh_key = "../sshkeys/dockerkeys/jenkinskey.pem"|' ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
+sed -i 's|jenkins_ssh_key.*.$|jenkins_ssh_key = "../sshkeys/dockerkeys/jenkinskey.pem"|' $1/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 
 sleep 20 &
 spin_wheel $! "Initializing the Jenkins Container"

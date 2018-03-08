@@ -118,7 +118,7 @@ spin_wheel $! "Installing terraform"
 #Downloading and Install atlassian-cli
 sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
 spin_wheel $! "Downloading atlassian-cli"
-sudo unzip -o ~/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE 2>&1 &
+sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE 2>&1 &
 spin_wheel $! "Installing atlassian-cli"
 
 #Get Jazz Installer code base

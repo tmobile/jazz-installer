@@ -36,7 +36,7 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path):
     """
     os.chdir(gitlab_docker_path)
     print("Running docker launch script  for gitlab")
-    subprocess.call(['bash', 'launch_gitlab_docker.sh', '|', 'tee', '-a', '../../gitlab_creation.out'])
+    subprocess.call(['bash', 'launch_gitlab_docker.sh', '%s' % INSTALL_FOLDER, '|', 'tee', '-a', '../../gitlab_creation.out'])
 
     # Get values to create the array
     parameter_list = []
