@@ -2,13 +2,14 @@
 import os
 import sys
 import subprocess
-from jazz_common import parse_and_replace_paramter_list
+import config
+from jazz_common import parse_and_replace_parameter_list
 from jazz_jenkins import get_and_add_docker_jenkins_config
 from jazz_gitlab import get_and_add_docker_gitlab_config
 
 # Global variables
-HOME_FOLDER = os.path.expanduser("~")
-HOME_JAZZ_INSTALLER = HOME_FOLDER + "/jazz-installer/"
+INSTALL_FOLDER = config.settings['jazz_install_dir']
+HOME_JAZZ_INSTALLER = INSTALL_FOLDER + "/jazz-installer/"
 HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 GITLAB_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/gitlab/"
@@ -32,7 +33,8 @@ def start(parameter_list):
     """
         start stack creation
     """
-    parse_and_replace_paramter_list(TERRAFORM_FOLDER_PATH, parameter_list)
+
+    parse_and_replace_parameter_list(TERRAFORM_FOLDER_PATH, parameter_list)
     print("Deploying Dockerized Jenkins server==============>")
     get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
     check_jenkins_pem()

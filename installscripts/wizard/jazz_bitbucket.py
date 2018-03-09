@@ -2,19 +2,20 @@
 import os
 import sys
 import subprocess
+import config
 
 #Global variables
-HOME_FOLDER = os.path.expanduser("~")
+INSTALL_FOLDER = config.settings['jazz_install_dir']
 VARIABLES_TF_FILE = "variables.tf"
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
+INSTALL_SCRIPT_FOLDER = INSTALL_FOLDER + "/jazz-installer/installscripts/"
 JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/jenkins1.sh"
-BITBUCKET_SH = HOME_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
+BITBUCKET_SH = INSTALL_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
 SCM_TYPE = "bitbucket"
 DEV_NULL = open(os.devnull, 'w')
 
 def add_bitbucket_config_to_files(parameter_list):
     """
-        Add bitbucket configuration to vriables.tf
+        Add bitbucket configuration to variables.tf
         parameter_list = [  bitbucket_server_elb ,
                             bitbucket_username,
                             bitbucket_passwd,
@@ -67,9 +68,9 @@ def get_and_add_existing_bitbucket_config(terraform_folder):
     bitbucket_username = raw_input("Bitbucket username :")
     bitbucket_passwd = raw_input("Bitbucket password :")
 
-    #Check if the user provided bitbucket user exist
+    #Check if the user provided bitbucket user exists
     if check_bitbucket_user(bitbucket_server_elb, bitbucket_username, bitbucket_passwd):
-        print("Great! We can proceed with this Bitbucket user....We will need few more details of Bitbucket server")
+        print("Great! We can proceed with this Bitbucket user. We will need a few more details about your Bitbucket server.")
     else:
         sys.exit("Kindly provide an 'Admin' Bitbucket user with correct password and run the installer again!")
 

@@ -142,7 +142,7 @@ resource "null_resource" "createProjectsInBB" {
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")}"
+    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.jazz_install_dir}"
   }
 }
 
@@ -178,7 +178,7 @@ resource "null_resource" "configureJazzBuildModule" {
        "git push -u origin master",
        "cd ..",
        "sudo rm -rf jazz-build-module" ]
- }  
+ }
 }
 
 // Push all other repos to SLF

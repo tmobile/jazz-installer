@@ -46,7 +46,7 @@ fi
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 
 # Replacing Gitlab IP in default.rb file of Jenkins cookbook
-attrbsfile=~/jazz-installer/installscripts/cookbooks/jenkins/attributes/default.rb
+attrbsfile=$1/jazz-installer/installscripts/cookbooks/jenkins/attributes/default.rb
 sed -i "s|default\['scm'\].*.|default\['scm'\]='gitlab'|g" $attrbsfile
 sed -i "s|default\['scmelb'\].*.|default\['scmelb'\]='$ip'|g" $attrbsfile
 sed -i "s|default\['scmpath'\].*.|default\['scmpath'\]='$ip'|g" $attrbsfile
@@ -94,7 +94,7 @@ gitlab_passwd=`cat credentials.txt | grep password| awk '{print $2}'`
 token=`grep -i private credentials.txt | awk '{print $3}'`
 
 # Replacing private token in jenkins file
-sed -i "s|replace|$token|g" ~/jazz-installer/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
+sed -i "s|replace|$token|g" $1/jazz-installer/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
 
 # Create Groups CAS and SLF
 curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"SLF","path":"slf", "description": "Jazz framework, templates and services"}'
@@ -118,14 +118,14 @@ echo "$gitlab_admin" >> docker_gitlab_vars
 echo "$gitlab_passwd" >> docker_gitlab_vars
 
 #Populating Gitlab config in Jenkins json file
-jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
+jenkinsJsonfile=$1/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
 sed -i "s/TYPE\".*.$/TYPE\": \"gitlab\",/g" $jenkinsJsonfile
 sed -i "s/PRIVATE_TOKEN\".*.$/PRIVATE_TOKEN\": \"$token\",/g" $jenkinsJsonfile
 sed -i "s/CAS_NAMESPACE_ID\".*.$/CAS_NAMESPACE_ID\": \"$ns_id_cas\",/g" $jenkinsJsonfile
 sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins
-variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
+variablesfile=$1/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
 sed -i "s|replaceelb|$ip|g" $variablesfile

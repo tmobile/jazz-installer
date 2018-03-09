@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import subprocess
 import jazz_scenarios as scenarios
 
 def main():
@@ -29,5 +30,5 @@ def main():
     except KeyboardInterrupt:
         print "\nKeyboard Interrupt detected exiting.."
 
-#Entry Point
+# Entry Point
 main()

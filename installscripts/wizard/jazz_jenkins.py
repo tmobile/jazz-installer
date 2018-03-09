@@ -3,13 +3,14 @@ import os
 import sys
 import subprocess
 import paramiko
+import config
 
 # Global variables
-HOME_FOLDER = os.path.expanduser("~")
-TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
+INSTALL_FOLDER = config.settings['jazz_install_dir']
+TERRAFORM_FOLDER_PATH = INSTALL_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
 
-HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
+HOME_JAZZ_INSTALLER = INSTALL_FOLDER + "/jazz-installer/"
 JENKINS_CLI_PATH = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/"
 JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
 JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/authfile"
@@ -22,7 +23,7 @@ def check_jenkins_sshuser_valid(parameter_list, port_number):
     """
     jenkins_server_public_ip = parameter_list[3]
     jenkins_server_ssh_login = parameter_list[4]
-    keyfile = os.path.expanduser("~") + "/jenkinskey.pem"
+    keyfile = INSTALL_FOLDER + "/jenkinskey.pem"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -80,7 +81,7 @@ def check_jenkins_user(url, username, passwd):
 
 def get_and_add_existing_jenkins_config(terraform_folder):
     """
-        Get the exisintg Jenkins server details from user , validate and change
+        Get the existing Jenkins server details from user , validate and change
         the config files.
     """
     os.chdir(terraform_folder)
@@ -136,7 +137,7 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
     os.chdir(jenkins_docker_path)
     print("Running docker launch script")
-    subprocess.call(['bash', 'launch_jenkins_docker.sh', '|', 'tee', '-a', '../../docker_creation.out'])
+    subprocess.call(['bash', 'launch_jenkins_docker.sh', '%s' % INSTALL_FOLDER, '|', 'tee', '-a', '../../docker_creation.out'])
 
     # Get values to create the array
     parameter_list = []
