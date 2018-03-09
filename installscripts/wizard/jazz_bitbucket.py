@@ -70,7 +70,7 @@ def get_and_add_existing_bitbucket_config(terraform_folder):
 
     #Check if the user provided bitbucket user exists
     if check_bitbucket_user(bitbucket_server_elb, bitbucket_username, bitbucket_passwd):
-        print("Great! We can proceed with this Bitbucket user....We will need few more details of Bitbucket server")
+        print("Great! We can proceed with this Bitbucket user. We will need a few more details about your Bitbucket server.")
     else:
         sys.exit("Kindly provide an 'Admin' Bitbucket user with correct password and run the installer again!")
 
