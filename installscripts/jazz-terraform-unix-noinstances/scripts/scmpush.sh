@@ -85,11 +85,11 @@ function push_to_scm() {
       repos+=("gitlab-build-pack")
     fi
 
-	repos+=("cognito-authorizer")
+	repos+=("jazz_cognito-authorizer")
 	
     # Appending all the other repos to the array
     for d in */ ; do
-        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "jenkins-build-pack-api" && ${d%/} !=  "jenkins-build-pack-lambda" && ${d%/} != "gitlab-build-pack" ]]; then
+        if [[ ${d%/} != "jazz-build-module" && ${d%/} != "jazz_cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "jenkins-build-pack-api" && ${d%/} !=  "jenkins-build-pack-lambda" && ${d%/} != "gitlab-build-pack" ]]; then
           repos+=("${d%/}")
         fi
     done
