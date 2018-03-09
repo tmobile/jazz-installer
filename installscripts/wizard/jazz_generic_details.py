@@ -84,26 +84,20 @@ def get_jazz_tag_config_details():
 
 def get_stack_generic_details(jazz_branch):
     
-    print ""
+    print("")
     print("Please provide the details to setup Jazz")
 
     region = None
+    knownWorkingRegions = ['us-east-1', 'us-west-2']
  
-    while True:
-        region = raw_input("AWS Region (us-east-1 or us-west-2): ")
-        if region == 'us-east-1':
-            print 'Valid region'
-            break
-        elif region == 'us-west-2':
-            print 'valid region'
-            break
-        else:
-            print 'Invalid region, please try again..'
+    region = raw_input("AWS Region (e.g. us-east-1): ")
+    if region not in knownWorkingRegions:
+        print('Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.')
 
     # Get the aws credentials
     aws_credentials = get_aws_credentials()
     while aws_credentials[0] == '' or aws_credentials[1] == '':
-        print "Please provide the AWS credentials"
+        print("Please provide the AWS credentials")
         aws_credentials = get_aws_credentials()
 
     write_aws_credential_to_file(aws_credentials[0], aws_credentials[1])
@@ -118,7 +112,7 @@ def get_stack_generic_details(jazz_branch):
         if validate_email_id(cognito_email_id):
             break
         else:
-            print "The email address is invalid."
+            print("The email address is invalid.")
     cognito_passwd = passwd_generator()
 
     jazz_account_id = ""
@@ -128,7 +122,7 @@ def get_stack_generic_details(jazz_branch):
         jazz_account_id = subprocess.check_output(jazz_accountid_cmd)
 
     except:
-        print "Unable to get caller identity. Are you sure the credentials are correct? Please retry..."
+        print("Unable to get caller identity. Are you sure the credentials are correct? Please retry...")
         exit(0)
     jazz_account_id = jazz_account_id[:-1]
 
