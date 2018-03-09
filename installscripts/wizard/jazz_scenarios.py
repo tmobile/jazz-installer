@@ -16,7 +16,7 @@ def is_valid_scenario(option):
 def print_stack_options():
     for key, value in OPTIONS.iteritems():
         option_string = value[0]
-        print option_string
+        print(option_string)
 
 def execute(key, git_branch_name):
     if not is_valid_scenario(key):

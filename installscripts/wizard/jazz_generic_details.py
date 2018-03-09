@@ -32,8 +32,6 @@ def get_aws_credentials():
     if "AWS_ACCESS_KEY_ID" and "AWS_SECRET_ACCESS_KEY" not in os.environ:
         os.environ['AWS_ACCESS_KEY_ID'] = raw_input("AWS Access Key ID :")
         os.environ['AWS_SECRET_ACCESS_KEY'] = raw_input("AWS Secret Access Key :")
-    #TODO drop this return value once we remove the thing that depends on these values being returned.
-    return [os.environ['AWS_ACCESS_KEY_ID'], os.environ['AWS_SECRET_ACCESS_KEY']]
 
 def set_aws_config(region):
     """
@@ -64,7 +62,7 @@ def get_stack_generic_details(jazz_branch):
     print("Please provide the details to setup Jazz")
 
     region = None
-    knownWorkingRegions = ['us-east-1', 'us-east-2', 'us-west-2']
+    knownWorkingRegions = ['us-east-1', 'us-west-2']
 
     region = raw_input("AWS Region (e.g. us-east-1): ")
     if region not in knownWorkingRegions:
@@ -98,6 +96,6 @@ def get_stack_generic_details(jazz_branch):
     jazz_account_id = jazz_account_id[:-1]
 
     # Determine the scenario
-    parameter_list = [jazz_branch, aws_credentials, region, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details]
+    parameter_list = [jazz_branch, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details]
 
     return parameter_list
