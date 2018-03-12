@@ -16,13 +16,13 @@ JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/file
 
 DEV_NULL = open(os.devnull, 'w')
 
-def check_jenkins_sshuser_valid(parameter_list, port_number):
+def check_jenkins_sshuser_valid(parameter_list, port_number, keypath):
     """
         Check if the ssh login name is a user
     """
     jenkins_server_public_ip = parameter_list[3]
     jenkins_server_ssh_login = parameter_list[4]
-    keyfile = os.path.expanduser("~") + "/jenkinskey.pem"
+    keyfile = keypath + "/jenkinskey.pem"
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -127,7 +127,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
 
 
-    check_jenkins_sshuser_valid(parameter_list, jenkins_server_ssh_port)
+    check_jenkins_sshuser_valid(parameter_list, jenkins_server_ssh_port, os.path.expanduser("~"))
     add_jenkins_config_to_files(parameter_list)
 
 def get_and_add_docker_jenkins_config(jenkins_docker_path):
@@ -146,5 +146,5 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
 
     print(parameter_list[0:])
 
-    check_jenkins_sshuser_valid(parameter_list, 2200)
+    check_jenkins_sshuser_valid(parameter_list, 2200, jenkins_docker_path)
     add_jenkins_config_to_files(parameter_list)
