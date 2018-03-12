@@ -72,7 +72,7 @@ spin_wheel $! "Creating the Jenkins volume"
 
 # Pull the docker image from ECR
 region=`grep region ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf  | cut -d' ' -f 9 | tr -d '"'`
-aws ecr get-login --registry-ids 108206174331 --no-include-email --region $region > ecr_login_script
+aws ecr get-login --registry-ids 108206174331 --no-include-email --region us-east-1 > ecr_login_script
 sudo bash ecr_login_script &> /dev/null
 rm -f ecr_login_script
 sudo docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins &> /dev/null &
