@@ -16,7 +16,11 @@ jenkins_user=$9
 jenkins_password=${10}
 jazzbuildmodule=${11}
 gitlab_trigger_job_url="/project/Gitlab-Trigger-Job"
+jazz_ui_trigger_job_url="/project/jazz_ui"
+
 gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$gitlab_trigger_job_url"
+gitlab_jazz_ui_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$jazz_ui_trigger_job_url"
+
 platform_services=("cognito-authorizer" "platform_logs" "platform_usermanagement" "platform-services-handler" "platform_events" "platform_services" "platform_logout" "platform_login" "cloud-logs-streamer" "is-service-available" "delete-serverless-service" "create-serverless-service" "platform_email" )
 
 git config --global user.email "$emailid"
@@ -47,11 +51,15 @@ function individual_repopush() {
   elif [ $scm == "gitlab" ]; then
     # Creating the repo in SLF folder in SCM
     repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$1&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
-	if [[ " ${platform_services[*]} " == *" $1 "* ]]; then
-		#Adding webhook to the repo
-		curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
-	fi 
-	# Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
+
+    # Adding webhook to the platform services and separate webhook for jazz_ui repo
+    if [[ " ${platform_services[*]} " == *" $1 "* ]]; then
+  		curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
+    elif [[ "$1" == "jazz-ui" ]]; then
+      curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_jazz_ui_webhook_url"
+    fi
+
+    # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
     git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$1.git
   fi
 
@@ -86,7 +94,7 @@ function push_to_scm() {
     fi
 
 	repos+=("cognito-authorizer")
-	
+
     # Appending all the other repos to the array
     for d in */ ; do
         if [[ ${d%/} != "jazz-build-module" && ${d%/} != "cognito-authorizer" && ${d%/} != "serverless-config-pack" && ${d%/} != "jenkins-build-pack-api" && ${d%/} !=  "jenkins-build-pack-lambda" && ${d%/} != "gitlab-build-pack" ]]; then
