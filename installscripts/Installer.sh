@@ -12,34 +12,34 @@
 #Spin wheel
 spin_wheel()
 {
-	RED='\033[0;31m'
-	GREEN='\033[0;32m'
-	NC='\033[0m'
+        RED='\033[0;31m'
+        GREEN='\033[0;32m'
+        NC='\033[0m'
 
-	pid=$1 # Process Id of the previous running command
-	message=$2
-	spin='-\|/'
-	printf "\r$message...."
-	i=0
+        pid=$1 # Process Id of the previous running command
+        message=$2
+        spin='-\|/'
+        printf "\r$message...."
+        i=0
 
-	while ps -p $pid > /dev/null
-	do
-	  #echo $pid $i
-	  i=$(( (i+1) %4 ))
-	  printf "\r${GREEN}$message....${spin:$i:1}"
-	  sleep .05
-	done
+        while ps -p $pid > /dev/null
+        do
+          #echo $pid $i
+          i=$(( (i+1) %4 ))
+          printf "\r${GREEN}$message....${spin:$i:1}"
+          sleep .05
+        done
 
-	wait "$pid"
-	exitcode=$?
-	if [ $exitcode -gt 0 ]
-	then
-		printf "\r${RED}$message....Failed${NC}\n"
-		exit
-	else
-		printf "\r${GREEN}$message....Completed${NC}\n"
+        wait "$pid"
+        exitcode=$?
+        if [ $exitcode -gt 0 ]
+        then
+                printf "\r${RED}$message....Failed${NC}\n"
+                exit
+        else
+                printf "\r${GREEN}$message....Completed${NC}\n"
 
-	fi
+        fi
 }
 trap 'printf "${RED}\nCancelled....\n${NC}"; exit' 2
 trap '' 20
@@ -51,7 +51,10 @@ REPO_PATH=$INSTALL_DIR/jazz-installer
 # Log file to record the installation logs
 LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
-JAZZ_BRANCH=$branch
+JAZZ_BRANCH=""
+
+# Variable to define the verbosity of the installation
+VERBOSE=0
 
 function install_packages_silent () {
   # Download and Installing Softwares required for Jazz Installer
@@ -62,6 +65,9 @@ function install_packages_silent () {
   # 5. Terraform - 0.9.11
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
+
+  echo "Installation started in silent mode."
+  echo "You may view the detailed installation logs at $LOG_FILE"
 
   # Install git
   sudo yum install -y git >>$LOG_FILE&
@@ -140,6 +146,9 @@ function install_packages_verbose () {
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
+        echo "Installation started in verbose mode."
+        echo "You may review the same installation logs at $LOG_FILE"
+
   # Install git
   sudo yum install -y git | tee -a $LOG_FILE
 
@@ -190,6 +199,26 @@ function install_packages_verbose () {
   sudo pip install paramiko | tee -a $LOG_FILE
 }
 
+function post_installation () {
+  # Move the software install log jazz Installer
+  mv $LOG_FILE $REPO_PATH
+
+  # Set the permissions
+  chmod -R +x $REPO_PATH/installscripts/*
+  mkdir -p $REPO_PATH/installscripts/sshkeys/dockerkeys
+
+  # Call the python script to continue installation process
+  cd $REPO_PATH/installscripts/wizard
+  #sed -i "s|\"jazz_install_dir\".*$|\"jazz_install_dir\": \"$INSTALL_DIR\"|g" config.py
+  python ./run.py $JAZZ_BRANCH $INSTALL_DIR
+
+  # Clean up the jazz_tmp folder
+  sudo rm -rf $INSTALL_DIR/jazz_tmp
+
+  setterm -term linux -fore green
+  setterm -term linux -fore default
+}
+
 # Running the selector
 while [ $# -gt 0 ] ; do
   case "$1" in
@@ -199,18 +228,18 @@ while [ $# -gt 0 ] ; do
     echo "./Installer.sh [options]"
     echo ""
     echo "options:"
-    echo "-h, --help                                  Describe help"
-    echo "-b, --branch                                Branch to build Jazz framework from"
-    echo "-v, --verbose 1|0                           Enable/Disable verbose Installer logs. Default:0(Disabled)"
-    echo "-t, --tags Key=stackName,Value=production   Specify as space separated key/value pairs"
+    echo "-b, --branch                                [mandatory] Branch to build Jazz framework from"
+    echo "-v, --verbose 1|0                           [optional] Enable/Disable verbose Installer logs. Default:0(Disabled)"
+    echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
+                echo "-h, --help                                  [optional] Describe help"
     exit 0 ;;
 
     -b|--branch)
     shift
-    if [ ! $1 == "" ] ; then
-      branch="$1"
+    if [ ! -z "$1" ] ; then
+      JAZZ_BRANCH="$1"
     else
-      echo "No arguments supplied for Installer script. We need atleast '-b' branch name to kickoff the Installer.sh"
+      echo "No arguments supplied for branch name. We need atleast branch name to kickoff the Installer.sh"
       echo "Usage: ./Installer.sh -b branch_name"
       exit 1
     fi
@@ -219,13 +248,12 @@ while [ $# -gt 0 ] ; do
     -v|--verbose)
     shift
     if [[ ("$#" -gt 0) && ("$1" == "1") ]] || [[ ("$#" -gt 0) && ("$1" == "0") ]] ; then
-      echo "Verbosity selected is: $1."
-      if [ $1 == "1" ] ; then install_packages_verbose
-      elif [ $1 == "0" ] ; then install_packages_silent
-      fi
+      VERBOSE="$1"
     else
-      echo "Please specify 1 or 0. Enable/Disable verbose Installer logs. Default:0(Disabled)"
+      echo "Please specify 1 or 0 for verbosity. Enable/Disable verbose Installer logs. Default:0(Disabled)"
       echo "Usage: ./Installer --verbose 1"
+      echo "---------------------"
+      echo "Missing: Mandatory flag branchname '-b|--branch' not provided."
       exit 1
     fi
     shift ;;
@@ -233,38 +261,32 @@ while [ $# -gt 0 ] ; do
     -t|--tags)
     shift
     while [ "$#" -gt 0 ] ; do
-      if [[ "$1" =~ Key=.*,Value=.* ]] && [[ ! "$1" =~ ";" ]]; then
+      if [[ "$1" =~ Key=.*,Value=.* ]] && [[ ! "$1" =~ ";" ]] ; then
         arr+=("$1")
-      elif [[ "$1" =~ -* ]] ; then break
+      elif [[ $1 == -* ]] ; then break
       else
         echo "Please specify tags in format: Key=stackName,Value=production"
         echo "Usage: ./Installer --tags Key=stackName,Value=production Key=department,Value=devops"
+        echo "----------------------"
+        echo "Missing: Mandatory flag branchname '-b|--branch' not provided."
         exit 1
       fi
       shift
     done
-    echo "Tags are: ${arr[@]}" ;;
+    echo "AWS tags are: ${arr[@]}"
+    ;;
 
     *)
-    echo "Invalid flag! Please run './Installer.sh -h' to see all the available options."
-    break ;;
+    echo "Invalid flag!"
+    exit 1 ;;
   esac
 done
 
-#move the software install log jazz Installer
-mv $LOG_FILE $REPO_PATH
-
-#set the permissions
-chmod -R +x $REPO_PATH/installscripts/*
-mkdir -p $REPO_PATH/installscripts/sshkeys/dockerkeys
-
-#Call the python script to continue installation process
-cd $REPO_PATH/installscripts/wizard
-sed -i "s|\"jazz_install_dir\".*$|\"jazz_install_dir\": \"$INSTALL_DIR\"|g" config.py
-python ./run.py $JAZZ_BRANCH $INSTALL_DIR
-
-#Clean up the jazz_tmp folder
-sudo rm -rf $INSTALL_DIR/jazz_tmp
-
-setterm -term linux -fore green
-setterm -term linux -fore default
+if [[ ! -z $JAZZ_BRANCH ]] && [[ $VERBOSE == 0 ]]; then
+  install_packages_silent && post_installation
+elif [[ ! -z $JAZZ_BRANCH ]] && [[ $VERBOSE == 1 ]]; then
+  install_packages_verbose && post_installation
+elif [ -z $JAZZ_BRANCH ]; then
+	echo "----------------------"
+	echo "Missing: Mandatory flag branchname '-b|--branch' not provided. Please run './Installer.sh -h' to see all the available options."
+fi
