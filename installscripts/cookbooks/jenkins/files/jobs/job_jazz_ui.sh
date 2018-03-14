@@ -24,7 +24,27 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <gitLabConnection>Jazz-Gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers/>
+    <triggers>
+      <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.2">
+        <spec></spec>
+        <triggerOnPush>true</triggerOnPush>
+        <triggerOnMergeRequest>true</triggerOnMergeRequest>
+        <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+        <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+        <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+        <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
+        <triggerOnNoteRequest>true</triggerOnNoteRequest>
+        <noteRegex>Jenkins please retry a build</noteRegex>
+        <ciSkip>true</ciSkip>
+        <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
+        <setBuildDescription>true</setBuildDescription>
+        <branchFilterType>All</branchFilterType>
+        <includeBranchesSpec></includeBranchesSpec>
+        <excludeBranchesSpec></excludeBranchesSpec>
+        <targetBranchRegex></targetBranchRegex>
+        <secretToken></secretToken>
+      </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
+    </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.36">
