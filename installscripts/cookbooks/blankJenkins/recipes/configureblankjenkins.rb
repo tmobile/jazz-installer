@@ -127,7 +127,7 @@ if node[:platform_family].include?("rhel")
       owner 'root'
       group 'root'
       mode '0777'
-    end   
+    end
     execute 'chownJenkinsfolder' do
       command "chown jenkins:jenkins /var/lib/jenkins"
     end
@@ -247,6 +247,10 @@ if node[:platform_family].include?("debian")
     execute 'job-gitlab-trigger' do
       only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} root #{node['scmpath']}"
+    end
+    execute 'createJob-jazz_ui' do
+      only_if  { node[:scm] == 'gitlab' }
+      command "/root/cookbooks/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} root #{node['scmpath']}"
     end
     link '/usr/bin/aws-api-import' do
       to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
