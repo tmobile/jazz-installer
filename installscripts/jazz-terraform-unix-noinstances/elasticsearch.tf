@@ -15,7 +15,8 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
 
         tags {
 			Domain = "${var.envPrefix}_elasticsearch_domain"
-			Application = "${var.envPrefix}"
+      Application = "Jazz"
+      JazzInstance = "${var.envPrefix}"
 		}
 		  access_policies = <<POLICIES
 {
