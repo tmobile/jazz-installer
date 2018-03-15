@@ -9,6 +9,29 @@
 # To Installer, run:
 # ./Installer -b branch_name
 # ---------------------------------------------
+
+# Variables section
+
+# URLS
+JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+AWSCLI_URL="https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
+TERRAFORM_URL="https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261"
+ATLASSIAN_CLI_URL="https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip"
+INSTALLER_GITHUB_URL="https://github.com/tmobile/jazz-installer.git"
+PIP_URL="https://bootstrap.pypa.io/get-pip.py"
+
+# Installation directory
+INSTALL_DIR=`pwd`
+REPO_PATH=$INSTALL_DIR/jazz-installer
+
+# Log file to record the installation logs
+LOG_FILE_NAME=installer_setup.out
+LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
+JAZZ_BRANCH=""
+
+# Default verbosity of the installation
+VERBOSE=0
+
 #Spin wheel
 spin_wheel()
 {
@@ -44,18 +67,6 @@ spin_wheel()
 trap 'printf "${RED}\nCancelled....\n${NC}"; exit' 2
 trap '' 20
 
-# Installation directory
-INSTALL_DIR=`pwd`
-REPO_PATH=$INSTALL_DIR/jazz-installer
-
-# Log file to record the installation logs
-LOG_FILE_NAME=installer_setup.out
-LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
-JAZZ_BRANCH=""
-
-# Variable to define the verbosity of the installation
-VERBOSE=0
-
 function install_packages_silent () {
   # Download and Installing Softwares required for Jazz Installer
   # 1. GIT
@@ -74,7 +85,7 @@ function install_packages_silent () {
   spin_wheel $! "Installing git"
 
   # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm -o jdk-8u112-linux-x64.rpm >>$LOG_FILE 2>&1&
+  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE 2>&1&
   spin_wheel $! "Downloading java"
 
   sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE 2>&1&
@@ -92,7 +103,7 @@ function install_packages_silent () {
   mkdir $INSTALL_DIR/jazz_tmp
 
   # Download and Install awscli
-  sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip >> $LOG_FILE 2>&1 &
+  sudo curl -L $AWSCLI_URL -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip >> $LOG_FILE 2>&1 &
   spin_wheel $! "Downloading  awscli bundle"
   sudo rm -rf $INSTALL_DIR/jazz_tmp/awscli-bundle
   sudo unzip $INSTALL_DIR/jazz_tmp/awscli-bundle.zip -d $INSTALL_DIR/jazz_tmp>>$LOG_FILE 2>&1 &
@@ -106,28 +117,24 @@ function install_packages_silent () {
   cd $INSTALL_DIR/
 
   #Download and Install Terraform
-  sudo curl -v -L https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261 -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE 2>&1 &
+  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE 2>&1 &
   spin_wheel $! "Downloading terraform"
   sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE 2>&1 &
   spin_wheel $! "Installing terraform"
 
   #Downloading and Install atlassian-cli
-  sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
+  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
   spin_wheel $! "Downloading atlassian-cli"
   sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE 2>&1 &
   spin_wheel $! "Installing atlassian-cli"
 
   #Get Jazz Installer code base
   sudo rm -rf jazz-installer
-  git clone -b $JAZZ_BRANCH https://github.com/tmobile/jazz-installer.git >>$LOG_FILE 2>&1 &
+  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE 2>&1 &
   spin_wheel $! "Downloading jazz Installer"
 
-  #Download and Install wget
-  sudo yum install -y wget >>$LOG_FILE 2>&1 &
-  spin_wheel $! "Downloading and install wget"
-
   #Download and install pip
-  sudo wget -q https://bootstrap.pypa.io/get-pip.py
+  sudo curl -sL $PIP_URL -o get-pip.py
   sudo python get-pip.py >>$LOG_FILE 2>&1 &
   spin_wheel $! "Downloading and install pip"
 
@@ -146,14 +153,14 @@ function install_packages_verbose () {
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
-        echo "Installation started in verbose mode."
-        echo "You may review the same installation logs at $LOG_FILE"
+  echo "Installation started in verbose mode."
+  echo "You may review the same installation logs at $LOG_FILE"
 
   # Install git
   sudo yum install -y git | tee -a $LOG_FILE
 
   # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm -o jdk-8u112-linux-x64.rpm | tee -a $LOG_FILE
+  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm | tee -a $LOG_FILE
   sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm | tee -a $LOG_FILE
   sudo rm -rf jdk-8u112-linux-x64.rpm
 
@@ -166,7 +173,7 @@ function install_packages_verbose () {
   mkdir $INSTALL_DIR/jazz_tmp
 
   # Download and Install awscli
-  sudo curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip | tee -a $LOG_FILEs
+  sudo curl -L $AWSCLI_URL -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip | tee -a $LOG_FILEs
   sudo rm -rf $INSTALL_DIR/jazz_tmp/awscli-bundle
   sudo unzip $INSTALL_DIR/jazz_tmp/awscli-bundle.zip -d $INSTALL_DIR/jazz_tmp | tee -a $LOG_FILE
   sudo rm -rf /usr/local/aws
@@ -177,22 +184,19 @@ function install_packages_verbose () {
   cd $INSTALL_DIR/
 
   #Download and Install Terraform
-  sudo curl -v -L https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261 -o $INSTALL_DIR/jazz_tmp/terraform.zip | tee -a $LOG_FILE
+  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip | tee -a $LOG_FILE
   sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin | tee -a $LOG_FILE
 
   #Downloading and Install atlassian-cli
-  sudo curl -L https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip | tee -a $LOG_FILE
+  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip | tee -a $LOG_FILE
   sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip | tee -a $LOG_FILE
 
   #Get Jazz Installer code base
   sudo rm -rf jazz-installer
-  git clone -b $JAZZ_BRANCH https://github.com/tmobile/jazz-installer.git | tee -a $LOG_FILE
-
-  #Download and Install wget
-  sudo yum install -y wget | tee -a $LOG_FILE
+  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL | tee -a $LOG_FILE
 
   #Download and install pip
-  sudo wget -q https://bootstrap.pypa.io/get-pip.py
+  sudo curl -sL $PIP_URL -o get-pip.py
   sudo python get-pip.py | tee -a $LOG_FILE
 
   #Download and install paramiko
