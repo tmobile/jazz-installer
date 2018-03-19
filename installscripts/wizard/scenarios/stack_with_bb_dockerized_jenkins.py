@@ -13,23 +13,23 @@ HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
 VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
-JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
+JENKINS_PEM = JENKINS_DOCKER_PATH + "/jenkinskey.pem"
 
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
-def check_jenkins_pem():
+def check_dockerised_jenkins_pem():
     """
-        Check if the user has provided jenkinskey.pem private keys
+        Check if the jenkins dockerised has created jenkinskey.pem private keys
     """
     #Chck if both files are been added to home derectory
     if not os.path.isfile(JENKINS_PEM):
-        sys.exit("File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! ")
+        sys.exit("File jenkinskey.pem missing. Aborting! ")
 
-    #Copy the pem keys and give relavant permisions
-    subprocess.call('cp -f {0} {1}sshkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
-    subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
-
+    #Copy the pem keys and give relavant permissions to a dockerkeys location. This is different from Scenario 1.
+    subprocess.call('cp -f {0} {1}sshkeys/dockerkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
+    subprocess.call('sudo chmod 400 {0}sshkeys/dockerkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
+    
 def start(parameter_list):
     """
         start stack creation
@@ -42,7 +42,7 @@ def start(parameter_list):
     # Launch the Jenkins Docker
     print("Deploying Dockerized Jenkins server==============>")
     get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
-    check_jenkins_pem()
+    check_dockerised_jenkins_pem()
 
     #All variables are set and ready to call terraform
     os.chdir(TERRAFORM_FOLDER_PATH)
