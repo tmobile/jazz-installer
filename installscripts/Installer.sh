@@ -42,14 +42,14 @@ spin_wheel()
         pid=$1 # Process Id of the previous running command
         message=$2
         spin='-\|/'
-        printf "\r$message...."
+        printf "\r$message...." 1>&3 2>&4
         i=0
 
         while ps -p $pid > /dev/null
         do
           #echo $pid $i
           i=$(( (i+1) %4 ))
-          printf "\r${GREEN}$message....${spin:$i:1}"
+          printf "\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
           sleep .05
         done
 
@@ -57,17 +57,17 @@ spin_wheel()
         exitcode=$?
         if [ $exitcode -gt 0 ]
         then
-                printf "\r${RED}$message....Failed${NC}\n"
+                printf "\r${RED}$message....Failed${NC}\n" 1>&3 2>&4
                 exit
         else
-                printf "\r${GREEN}$message....Completed${NC}\n"
+                printf "\r${GREEN}$message....Completed${NC}\n" 1>&3 2>&4
 
         fi
 }
-trap 'printf "${RED}\nCancelled....\n${NC}"; exit' 2
+trap 'printf "${RED}\nCancelled....\n${NC}" 1>&3 2>&4; exit' 2
 trap '' 20
 
-function install_packages_silent () {
+function install_packages () {
   # Download and Installing Softwares required for Jazz Installer
   # 1. GIT
   # 2. Java Jdk - 8u112-linux-x64
@@ -77,24 +77,29 @@ function install_packages_silent () {
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
-  echo "Installation started in silent mode."
-  echo "You may view the detailed installation logs at $LOG_FILE"
+  # print verbosity mode during installation
+  if [ "$1" == 1 ]; then
+    echo "You have started the installer in verbose mode" 1>&3 2>&4
+  elif [ "$1" == 0 ]; then
+    echo "You have started the installer in non-verbose mode" 1>&3 2>&4
+  fi
+  echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
 
   # Install git
-  sudo yum install -y git >>$LOG_FILE&
+  sudo yum install -y git >>$LOG_FILE &
   spin_wheel $! "Installing git"
 
   # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE 2>&1&
+  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
   spin_wheel $! "Downloading java"
 
-  sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE 2>&1&
+  sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
   spin_wheel $! "Installing java"
 
   sudo rm -rf jdk-8u112-linux-x64.rpm
 
   # Download and Install unzip
-  sudo yum install -y unzip >>$LOG_FILE 2>&1&
+  sudo yum install -y unzip >>$LOG_FILE &
   spin_wheel $! "Installing unzip"
 
   # Create a temporary folder .
@@ -102,105 +107,40 @@ function install_packages_silent () {
   sudo rm -rf $INSTALL_DIR/jazz_tmp
   mkdir $INSTALL_DIR/jazz_tmp
 
-  # Download and Install awscli
-  sudo curl -L $AWSCLI_URL -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip >> $LOG_FILE 2>&1 &
-  spin_wheel $! "Downloading  awscli bundle"
-  sudo rm -rf $INSTALL_DIR/jazz_tmp/awscli-bundle
-  sudo unzip $INSTALL_DIR/jazz_tmp/awscli-bundle.zip -d $INSTALL_DIR/jazz_tmp>>$LOG_FILE 2>&1 &
-  spin_wheel $! "Unzipping  awscli bundle"
-  sudo rm -rf /usr/local/aws
-  sudo rm -f /usr/local/bin/aws
-
   cd $INSTALL_DIR/jazz_tmp/awscli-bundle/
-  sudo ./install -i /usr/local/aws -b /usr/local/bin/aws >>$LOG_FILE 2>&1 &
+  sudo ./install -i /usr/local/aws -b /usr/local/bin/aws >>$LOG_FILE &
   spin_wheel $! "Installing  awscli bundle"
   cd $INSTALL_DIR/
 
   #Download and Install Terraform
-  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE 2>&1 &
+  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
   spin_wheel $! "Downloading terraform"
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE 2>&1 &
+  sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
   spin_wheel $! "Installing terraform"
 
   #Downloading and Install atlassian-cli
-  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE 2>&1 &
+  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
   spin_wheel $! "Downloading atlassian-cli"
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE 2>&1 &
+  sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
   spin_wheel $! "Installing atlassian-cli"
 
   #Get Jazz Installer code base
   sudo rm -rf jazz-installer
-  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE 2>&1 &
+  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
   sudo curl -sL $PIP_URL -o get-pip.py
-  sudo python get-pip.py >>$LOG_FILE 2>&1 &
+  sudo python get-pip.py >>$LOG_FILE &
   spin_wheel $! "Downloading and install pip"
 
-  #Download and install paramiko
-  sudo pip install paramiko >>$LOG_FILE 2>&1 &
-  spin_wheel $! "Downloading and install paramiko"
-}
-
-function install_packages_verbose () {
-  # Download and Installing Softwares required for Jazz Installer
-  # 1. GIT
-  # 2. Java Jdk - 8u112-linux-x64
-  # 3. Unzip
-  # 4. AWSCLI
-  # 5. Terraform - 0.9.11
-  # 6. JQ - 1.5
-  # 7. Atlassian CLI - 6.7.1
-
-  echo "Installation started in verbose mode."
-  echo "You may review the same installation logs at $LOG_FILE"
-
-  # Install git
-  sudo yum install -y git | tee -a $LOG_FILE
-
-  # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm | tee -a $LOG_FILE
-  sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm | tee -a $LOG_FILE
-  sudo rm -rf jdk-8u112-linux-x64.rpm
-
-  # Download and Install unzip
-  sudo yum install -y unzip | tee -a $LOG_FILE
-
-  # Create a temporary folder .
-  # Here we will have all the temporary files needed and delete it at the end
-  sudo rm -rf $INSTALL_DIR/jazz_tmp
-  mkdir $INSTALL_DIR/jazz_tmp
-
   # Download and Install awscli
-  sudo curl -L $AWSCLI_URL -o $INSTALL_DIR/jazz_tmp/awscli-bundle.zip | tee -a $LOG_FILEs
-  sudo rm -rf $INSTALL_DIR/jazz_tmp/awscli-bundle
-  sudo unzip $INSTALL_DIR/jazz_tmp/awscli-bundle.zip -d $INSTALL_DIR/jazz_tmp | tee -a $LOG_FILE
-  sudo rm -rf /usr/local/aws
-  sudo rm -f /usr/local/bin/aws
-
-  cd $INSTALL_DIR/jazz_tmp/awscli-bundle/
-  sudo ./install -i /usr/local/aws -b /usr/local/bin/aws | tee -a $LOG_FILE
-  cd $INSTALL_DIR/
-
-  #Download and Install Terraform
-  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip | tee -a $LOG_FILE
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin | tee -a $LOG_FILE
-
-  #Downloading and Install atlassian-cli
-  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip | tee -a $LOG_FILE
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip | tee -a $LOG_FILE
-
-  #Get Jazz Installer code base
-  sudo rm -rf jazz-installer
-  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL | tee -a $LOG_FILE
-
-  #Download and install pip
-  sudo curl -sL $PIP_URL -o get-pip.py
-  sudo python get-pip.py | tee -a $LOG_FILE
+  sudo pip install awscli >> $LOG_FILE &
+  spin_wheel $! "Downloading & Installing awscli bundle"
 
   #Download and install paramiko
-  sudo pip install paramiko | tee -a $LOG_FILE
+  sudo pip install paramiko >>$LOG_FILE &
+  spin_wheel $! "Downloading and install paramiko"
 }
 
 function post_installation () {
@@ -235,7 +175,7 @@ while [ $# -gt 0 ] ; do
     echo "-b, --branch                                [mandatory] Branch to build Jazz framework from"
     echo "-v, --verbose 1|0                           [optional] Enable/Disable verbose Installer logs. Default:0(Disabled)"
     echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
-                echo "-h, --help                                  [optional] Describe help"
+    echo "-h, --help                                  [optional] Describe help"
     exit 0 ;;
 
     -b|--branch)
@@ -271,26 +211,31 @@ while [ $# -gt 0 ] ; do
       else
         echo "Please specify tags in format: Key=stackName,Value=production"
         echo "Usage: ./Installer --tags Key=stackName,Value=production Key=department,Value=devops"
-        echo "----------------------"
-        echo "Missing: Mandatory flag branchname '-b|--branch' not provided."
         exit 1
       fi
       shift
-    done
-    echo "AWS tags are: ${arr[@]}"
-    ;;
+    done ;;
 
     *)
     echo "Invalid flag!"
+    echo "Please run './Installer.sh -h' to see all the available options."
     exit 1 ;;
   esac
 done
 
-if [[ ! -z $JAZZ_BRANCH ]] && [[ $VERBOSE == 0 ]]; then
-  install_packages_silent && post_installation
-elif [[ ! -z $JAZZ_BRANCH ]] && [[ $VERBOSE == 1 ]]; then
-  install_packages_verbose && post_installation
+exec 3>&1
+exec 4>&2
+
+# Redirecting the stdout and stderr to /dev/null for non-verbose installation
+if [[ $VERBOSE == 0 ]]; then
+  exec 1>/dev/null
+  exec 2>/dev/null
+fi
+
+# Check if mandatory flag branchname is provided and verbosity is either 0|1
+if [[ ! -z $JAZZ_BRANCH ]] && [[ ($VERBOSE == 0) || ($VERBOSE == 1) ]]; then
+  install_packages $VERBOSE && post_installation
 elif [ -z $JAZZ_BRANCH ]; then
-	echo "----------------------"
-	echo "Missing: Mandatory flag branchname '-b|--branch' not provided. Please run './Installer.sh -h' to see all the available options."
+  echo "Missing: Mandatory flag branchname '-b|--branch' not provided." 1>&3 2>&4
+  echo "Please run './Installer.sh -h' to see all the available options." 1>&3 2>&4
 fi
