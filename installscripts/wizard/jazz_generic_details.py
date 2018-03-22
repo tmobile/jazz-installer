@@ -25,45 +25,20 @@ def passwd_generator():
     random.shuffle(pwd)
     return ''.join(pwd)
 
-
 def get_aws_credentials():
     """
-        Get the aws credentials from user
+        If the AWS credentials have not already been defined as env vars, populate those env vars
     """
-    aws_access_key = raw_input("AWS Access Key ID :")
-    aws_secret_key = raw_input("AWS Secret Access Key :")
-    return [aws_access_key, aws_secret_key]
+    if "AWS_ACCESS_KEY_ID" and "AWS_SECRET_ACCESS_KEY" not in os.environ:
+        os.environ['AWS_ACCESS_KEY_ID'] = raw_input("AWS Access Key ID :")
+        os.environ['AWS_SECRET_ACCESS_KEY'] = raw_input("AWS Secret Access Key :")
 
-def write_aws_credential_to_file(aws_access_key, aws_secret_key):
-    """
-        Writing the aws credential ~/aws/credentials file
-    """
-    home = os.path.expanduser("~")
-    aws_folder = home + "/.aws"
-    aws_credential_file = aws_folder + "/credentials"
-
-    if not os.path.isdir(aws_folder):
-        os.makedirs(aws_folder)
-
-    #write to the file
-    fd = open(aws_credential_file, "w")
-    fd.write("[default]\n")
-    fd.write("aws_access_key_id = " + aws_access_key + "\n")
-    fd.write("aws_secret_access_key = " + aws_secret_key + "\n")
-
-def write_aws_config_to_file(region):
+def set_aws_config(region):
     """
         Writing the aws credential ~/aws/config file
     """
-    home = os.path.expanduser("~")
-    aws_folder = home + "/.aws"
-    aws_config_file = aws_folder + "/config"
-
-    #write to the file
-    fd = open(aws_config_file, "w")
-    fd.write("[default]\n")
-    fd.write("output = json\n")
-    fd.write("region = " + region + "\n")
+    os.environ['AWS_DEFAULT_OUTPUT'] = 'json'
+    os.environ['AWS_DEFAULT_REGION'] = region
 
 def get_jazz_tag_config_details():
     """
@@ -83,25 +58,19 @@ def get_jazz_tag_config_details():
     return [tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
 
 def get_stack_generic_details(jazz_branch):
-    
     print("")
     print("Please provide the details to setup Jazz")
 
     region = None
     knownWorkingRegions = ['us-east-1', 'us-west-2']
- 
+
     region = raw_input("AWS Region (e.g. us-east-1): ")
     if region not in knownWorkingRegions:
         print('Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.')
 
-    # Get the aws credentials
+    # Get the aws credentials & set required AWS env vars
     aws_credentials = get_aws_credentials()
-    while aws_credentials[0] == '' or aws_credentials[1] == '':
-        print("Please provide the AWS credentials")
-        aws_credentials = get_aws_credentials()
-
-    write_aws_credential_to_file(aws_credentials[0], aws_credentials[1])
-    write_aws_config_to_file(region)
+    set_aws_config(region)
 
     # get Jazz Tag details
     jazz_tag_details = get_jazz_tag_config_details()
@@ -127,6 +96,6 @@ def get_stack_generic_details(jazz_branch):
     jazz_account_id = jazz_account_id[:-1]
 
     # Determine the scenario
-    parameter_list = [jazz_branch, aws_credentials, region, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details]
+    parameter_list = [jazz_branch, [cognito_email_id, cognito_passwd], jazz_account_id, jazz_tag_details]
 
     return parameter_list
