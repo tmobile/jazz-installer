@@ -16,24 +16,15 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
         are replaced in variables.tf and other files needed
     """
     jazz_branch = parameter_list[0]
-    aws_credentials = parameter_list[1]
-    aws_region = parameter_list[2]
-    cognito_details = parameter_list[3]
-    jazz_account_id = parameter_list[4]
-    jazz_tag_details = parameter_list[5] #[tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
+    cognito_details = parameter_list[1]
+    jazz_account_id = parameter_list[2]
+    jazz_tag_details = parameter_list[3] #[tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
 
     os.chdir(terraform_folder)
 
     # ----------------------------------------------------------
     # Populate variables in terraform variables.tf and cookbooks
     # -----------------------------------------------------------
-    # Populating AWS Accesskey and
-    subprocess.call(['sed', '-i', "s|variable \"aws_access_key\".*.$|variable \"aws_access_key\" \{ type = \"string\" default = \"%s\" \}|g" %(aws_credentials[0]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|variable \"aws_secret_key\".*.$|variable \"aws_secret_key\" \{ type = \"string\" default = \"%s\" \}|g" %(aws_credentials[1]), VARIABLES_TF_FILE])
-
-    # Populating AWS Region
-    subprocess.call(['sed', '-i', "s|variable \"region\".*.$|variable \"region\" \{ type = \"string\" default = \"%s\" \}|g" %(aws_region), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"%s\" \}|g" %(jazz_branch), VARIABLES_TF_FILE])
 
     #populating BRANCH name
     subprocess.call(['sed', '-i', "s|variable \"github_branch\".*.$|variable \"github_branch\" \{ type = \"string\" default = \"%s\" \}|g" %(jazz_branch), VARIABLES_TF_FILE])
