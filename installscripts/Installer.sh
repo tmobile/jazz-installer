@@ -107,11 +107,6 @@ function install_packages () {
   sudo rm -rf $INSTALL_DIR/jazz_tmp
   mkdir $INSTALL_DIR/jazz_tmp
 
-  cd $INSTALL_DIR/jazz_tmp/awscli-bundle/
-  sudo ./install -i /usr/local/aws -b /usr/local/bin/aws >>$LOG_FILE &
-  spin_wheel $! "Installing  awscli bundle"
-  cd $INSTALL_DIR/
-
   #Download and Install Terraform
   sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
   spin_wheel $! "Downloading terraform"
