@@ -110,7 +110,7 @@ function install_packages () {
   #Download and Install Terraform
   curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
   spin_wheel $! "Downloading terraform"
-  unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
+  sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
   spin_wheel $! "Installing terraform"
 
   #Downloading and Install atlassian-cli
@@ -125,8 +125,8 @@ function install_packages () {
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
-  if [command -v pip >/dev/null]; then
-     echo "System-level pip install found, using that." 1>&3 2>&4
+  if command -v pip > /dev/null; then
+     spin_wheel $! "System-level pip install found, using that."
   else
      curl -sL $PIP_URL -o get-pip.py
      sudo python get-pip.py >>$LOG_FILE &
