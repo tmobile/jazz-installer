@@ -96,7 +96,7 @@ function install_packages () {
   sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
   spin_wheel $! "Installing java"
 
-  sudo rm -rf jdk-8u112-linux-x64.rpm
+  rm -rf jdk-8u112-linux-x64.rpm
 
   # Download and Install unzip
   sudo yum install -y unzip >>$LOG_FILE &
@@ -108,15 +108,15 @@ function install_packages () {
   mkdir $INSTALL_DIR/jazz_tmp
 
   #Download and Install Terraform
-  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
+  curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
   spin_wheel $! "Downloading terraform"
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
+  unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
   spin_wheel $! "Installing terraform"
 
   #Downloading and Install atlassian-cli
-  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
+  curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
   spin_wheel $! "Downloading atlassian-cli"
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
+  unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
   spin_wheel $! "Installing atlassian-cli"
 
   #Get Jazz Installer code base
@@ -125,17 +125,21 @@ function install_packages () {
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
-  sudo curl -sL $PIP_URL -o get-pip.py
-  sudo python get-pip.py >>$LOG_FILE &
-  spin_wheel $! "Downloading and install pip"
+  if command -v pip >/dev/null do
+     echo "System-level pip install found, using that." 1>&3 2>&4
+  else
+     curl -sL $PIP_URL -o get-pip.py
+     sudo python get-pip.py >>$LOG_FILE &
+     spin_wheel $! "Downloading and installing pip"
+  end
 
   # Download and Install awscli
   sudo pip install awscli >> $LOG_FILE &
-  spin_wheel $! "Downloading & Installing awscli bundle"
+  spin_wheel $! "Downloading & installing awscli bundle"
 
   #Download and install paramiko
   sudo pip install paramiko >>$LOG_FILE &
-  spin_wheel $! "Downloading and install paramiko"
+  spin_wheel $! "Downloading and installing paramiko"
 }
 
 function post_installation () {
