@@ -125,13 +125,13 @@ function install_packages () {
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
-  if command -v pip >/dev/null do
+  if [command -v pip >/dev/null]; then
      echo "System-level pip install found, using that." 1>&3 2>&4
   else
      curl -sL $PIP_URL -o get-pip.py
      sudo python get-pip.py >>$LOG_FILE &
      spin_wheel $! "Downloading and installing pip"
-  end
+  fi
 
   # Download and Install awscli
   sudo pip install awscli >> $LOG_FILE &
