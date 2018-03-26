@@ -12,7 +12,7 @@ DEFAULT_RB = HOME_JAZZ_INSTALLER + "/installscripts/cookbooks/jenkins/attributes
 def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     """
         Method parse the parameters send from run.py and these common variables
-        are replaced in variables.tf and other files needed
+        are set in terraform.tfvars and other files needed
     """
     jazz_branch = parameter_list[0]
     cognito_details = parameter_list[1]
