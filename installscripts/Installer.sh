@@ -77,10 +77,17 @@ function install_packages () {
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
+  #Fork output redirection so we can control output if VERBOSE is set
+  exec 3>&1
+  exec 4>&2
+
   # print verbosity mode during installation
   if [ "$1" == 1 ]; then
     echo "You have started the installer in verbose mode" 1>&3 2>&4
   elif [ "$1" == 0 ]; then
+    # Redirecting the stdout and stderr to /dev/null for non-verbose installation
+    exec 1>/dev/null
+    exec 2>/dev/null
     echo "You have started the installer in non-verbose mode" 1>&3 2>&4
   fi
   echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
@@ -125,17 +132,24 @@ function install_packages () {
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
-  sudo curl -sL $PIP_URL -o get-pip.py
-  sudo python get-pip.py >>$LOG_FILE &
-  spin_wheel $! "Downloading and install pip"
+  if command -v pip > /dev/null; then
+     spin_wheel $! "System-level pip install found, using that."
+  else
+     curl -sL $PIP_URL -o get-pip.py
+     sudo python get-pip.py >>$LOG_FILE &
+     spin_wheel $! "Downloading and installing pip"
+  fi
 
   # Download and Install awscli
   sudo pip install awscli >> $LOG_FILE &
-  spin_wheel $! "Downloading & Installing awscli bundle"
+  spin_wheel $! "Downloading & installing awscli bundle"
 
   #Download and install paramiko
   sudo pip install paramiko >>$LOG_FILE &
-  spin_wheel $! "Downloading and install paramiko"
+  spin_wheel $! "Downloading and installing paramiko"
+
+  #Undo output redirection
+  exec >/dev/tty
 }
 
 function post_installation () {
