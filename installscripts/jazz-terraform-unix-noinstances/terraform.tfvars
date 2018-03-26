@@ -1,0 +1,7 @@
+region = "DERP"
+github_branch = "REPLACEME"
+aws_access_key = "REPLACEME"
+aws_secret_key = "REPLACEME"
+jazz_accountid = "REPLACEME"
+cognito_pool_username = "REPLACEME"
+cognito_pool_password = "REPLACEME"
