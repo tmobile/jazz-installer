@@ -1,6 +1,5 @@
 #
-# The following variable default value would be overwritten
-# Hence its added as one line
+# General variables
 #
 variable "region" { type = "string" default = "us-east-1" }
 variable "github_branch" { type = "string" default = "development" }
@@ -9,16 +8,10 @@ variable "aws_secret_key" { type = "string" default = "aws_secret_key" }
 variable "jazz_accountid" { type = "string" default = "jazz_accountid" }
 
 #
-#Cognito variables
+# Cognito variables
 #
-variable "cognito_pool_username" {
-  type = "string"
-  default = "cognito_pool_username"
-}
-variable "cognito_pool_password" {
-  type = "string"
-  default = "cognito_pool_password"
-}
+variable "cognito_pool_username" {type = "string" default = "cognito_pool_username"}
+variable "cognito_pool_password" {type = "string" default = "cognito_pool_password"}
 
 #
 # Chef and Cookbook variables
