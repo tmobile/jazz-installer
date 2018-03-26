@@ -149,7 +149,8 @@ function install_packages () {
   spin_wheel $! "Downloading and installing paramiko"
 
   #Undo output redirection
-  exec >/dev/tty
+  exec 1>/dev/tty
+  exec 2>/dev/tty
 }
 
 function post_installation () {
