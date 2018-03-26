@@ -12,7 +12,6 @@ HOME_JAZZ_INSTALLER = HOME_FOLDER + "/jazz-installer/"
 HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 JENKINS_DOCKER_PATH = HOME_INSTALL_SCRIPTS + "dockerfiles/jenkins/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
-VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
 JENKINS_PEM = JENKINS_DOCKER_PATH + "/jenkinskey.pem"
 
 def pause():
@@ -29,7 +28,7 @@ def check_dockerised_jenkins_pem():
     #Copy the pem keys and give relavant permissions to a dockerkeys location. This is different from Scenario 1.
     subprocess.call('cp -f {0} {1}sshkeys/dockerkeys'.format(JENKINS_PEM, HOME_INSTALL_SCRIPTS).split(' '))
     subprocess.call('sudo chmod 400 {0}sshkeys/dockerkeys/jenkinskey.pem'.format(HOME_INSTALL_SCRIPTS).split(' '))
-    
+
 def start(parameter_list):
     """
         start stack creation

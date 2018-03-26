@@ -11,7 +11,6 @@ HOME_FOLDER = os.path.expanduser("~")
 HOME_JAZZ_INSTALLER = HOME_FOLDER + "/jazz-installer/"
 HOME_INSTALL_SCRIPTS = HOME_JAZZ_INSTALLER + "installscripts/"
 TERRAFORM_FOLDER_PATH = HOME_INSTALL_SCRIPTS + "jazz-terraform-unix-noinstances"
-VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
 JENKINS_PEM = HOME_FOLDER + "/jenkinskey.pem"
 
 def pause():
