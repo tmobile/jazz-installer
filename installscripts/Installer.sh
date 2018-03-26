@@ -77,10 +77,17 @@ function install_packages () {
   # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
+  #Fork output redirection so we can control output if VERBOSE is set
+  exec 3>&1
+  exec 4>&2
+
   # print verbosity mode during installation
   if [ "$1" == 1 ]; then
     echo "You have started the installer in verbose mode" 1>&3 2>&4
   elif [ "$1" == 0 ]; then
+    # Redirecting the stdout and stderr to /dev/null for non-verbose installation
+    exec 1>/dev/null
+    exec 2>/dev/null
     echo "You have started the installer in non-verbose mode" 1>&3 2>&4
   fi
   echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
@@ -140,6 +147,9 @@ function install_packages () {
   #Download and install paramiko
   sudo pip install paramiko >>$LOG_FILE &
   spin_wheel $! "Downloading and installing paramiko"
+
+  #Undo output redirection
+  exec >/dev/tty
 }
 
 function post_installation () {
@@ -222,14 +232,6 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-exec 3>&1
-exec 4>&2
-
-# Redirecting the stdout and stderr to /dev/null for non-verbose installation
-if [[ $VERBOSE == 0 ]]; then
-  exec 1>/dev/null
-  exec 2>/dev/null
-fi
 
 # Check if mandatory flag branchname is provided and verbosity is either 0|1
 if [[ ! -z $JAZZ_BRANCH ]] && [[ ($VERBOSE == 0) || ($VERBOSE == 1) ]]; then
