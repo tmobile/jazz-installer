@@ -88,13 +88,13 @@ sleep 20 &
 spin_wheel $! "Initializing the Jenkins container"
 
 #Installing Pip in Jenkins
-docker exec -it jenkins-server apt-get update &> /dev/null
-spin_wheel $! "Updating Jenkins container"
-docker exec -it jenkins-server apt-get install python-pip -y &> /dev/null
+docker exec -it jenkins-server /usr/bin/apt-get update &> /dev/null
+spin_wheel $! "Updating Jenkins docker container"
+docker exec -it jenkins-server /usr/bin/apt-get install python-pip -y &> /dev/null
 spin_wheel $! "Installing python-pip in Jenkins container"
-docker exec -it jenkins-server pip install --upgrade pip &> /dev/null
+docker exec -it jenkins-server /usr/bin/pip install --upgrade pip &> /dev/null
 spin_wheel $! "Upgrading pip in Jenkins container"
-docker exec -it jenkins-server chmod -R o+w /usr/local/lib/python2.7/dist-packages &> /dev/null
+docker exec -it jenkins-server /bin/chmod -R o+w /usr/local/lib/python2.7/dist-packages &> /dev/null
 spin_wheel $! "Granting permissions to other users to pip install"
 
 # Grab the variables
