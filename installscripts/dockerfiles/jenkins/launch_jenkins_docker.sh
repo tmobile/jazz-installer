@@ -71,7 +71,7 @@ docker volume create jenkins-volume &> /dev/null &
 spin_wheel $! "Creating the Jenkins Docker volume"
 
 # Pull the docker image from ECR (this generates a docker login shell script, which we pipe to sh via stdin)
-aws ecr get-login --registry-ids 108206174331 --no-include-email --region us-east-1 | /bin/sh &> /dev/null
+aws ecr get-login --registry-ids 108206174331 --no-include-email --region us-east-1 | /bin/sh
 docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins &> /dev/null &
 spin_wheel $! "Pulling the Jenkins Docker image"
 
