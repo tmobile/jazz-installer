@@ -87,6 +87,7 @@ spin_wheel $! "Installing lxml"
 # Generating private tokens
 echo "Generating private tokens:"
 python privatetoken.py mytoken 2018-12-31 $passwd
+echo "Private tokens generated"
 
 # Grabbing the admin credentials
 gitlab_admin=`cat credentials.txt | grep login| awk '{print $2}'`
