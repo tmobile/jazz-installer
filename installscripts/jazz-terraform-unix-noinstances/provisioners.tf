@@ -26,10 +26,10 @@ resource "null_resource" "configureExistingJenkinsServer" {
   #Because we have to provision a preexisting machine here and can't use the terraform ses command,
   #we must use sed to insert AWS creds from the provisioner environment into a script chef will run later, before we copy the cookbook to the remote box.
   provisioner "local-exec" {
-    command = "sed -i 's/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY=$AWS_ACCESS_KEY_ID/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
+    command = "sed -i 's/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY='$AWS_ACCESS_KEY_ID'/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
   provisioner "local-exec" {
-    command = "sed -i 's/AWS_SECRET_KEY=.*.$/AWS_SECRET_KEY=$AWS_SECRET_ACCESS_KEY/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
+    command = "sed -i 's/AWS_SECRET_KEY=.*.$/AWS_SECRET_KEY='$AWS_SECRET_ACCESS_KEY'/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
 
   #Copy the chef playbooks and config over to the remote Jenkins server
@@ -189,7 +189,7 @@ resource "null_resource" "configureJazzBuildModule" {
       "git push -u origin master",
       "cd ..",
       "sudo rm -rf jazz-build-module" ]
-  }  
+  }
 }
 
 // Push all other repos to SLF
