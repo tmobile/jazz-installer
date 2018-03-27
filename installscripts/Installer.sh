@@ -144,10 +144,6 @@ function install_packages () {
   sudo pip install awscli >> $LOG_FILE &
   spin_wheel $! "Downloading & installing awscli bundle"
 
-  #Download and install paramiko
-  sudo pip install paramiko >>$LOG_FILE &
-  spin_wheel $! "Downloading and installing paramiko"
-
   #Undo output redirection
   exec 1> /dev/stdout
   exec 2> /dev/stderr
