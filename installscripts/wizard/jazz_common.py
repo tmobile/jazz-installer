@@ -47,8 +47,10 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
 
 # Uses sed to modify the values of key-value pairs within a file that follow the form 'key = value'
 # NOTE: The use of "-i'.bak'" and the creation of backup files is required macOS (that is, BSD) 'sed' will fail otherise.
+# NOTE: The `r` prefix is needed to force a string literal here.
+# TODO: We should replace `sed` executable calls with standard python library calls, would be faster and simpler.
 def replace_tfvars(key, value, fileName):
-    subprocess.call(['sed', '-i\'.bak\'', "s|\(%s = \)\(.*\)|\1\"%s\"|g" %(key, value), fileName])
+    subprocess.call(['sed', "-i\'.bak\'", r's|\(%s = \)\(.*\)|\1\"%s\"|g' %(key, value), fileName])
 
 def validate_email_id(email_id):
     """
