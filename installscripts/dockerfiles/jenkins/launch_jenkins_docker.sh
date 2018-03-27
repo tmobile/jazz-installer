@@ -68,16 +68,16 @@ fi
 
 # Create the volume
 docker volume create jenkins-volume &> /dev/null &
-spin_wheel $! "Creating the Jenkins volume"
+spin_wheel $! "Creating the Jenkins Docker volume"
 
 # Pull the docker image from ECR (this generates a docker login shell script, which we pipe to sh via stdin)
 aws ecr get-login --registry-ids 108206174331 --no-include-email --region us-east-1 | /bin/sh
 docker pull 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins &> /dev/null &
-spin_wheel $! "Pulling the Jenkins docker image"
+spin_wheel $! "Pulling the Jenkins Docker image"
 
 # Run the docker container from the using the above image and volumes.
 docker run -dt -p 2200:2200 -p 8081:8080 --name=jenkins-server --mount source=jenkins-volume,destination=/var/lib/jenkins 108206174331.dkr.ecr.us-east-1.amazonaws.com/jazz-oss:jenkins &> /dev/null &
-spin_wheel $! "Spinning the Jenkins Docker"
+spin_wheel $! "Spinning up the Jenkins Docker container"
 
 # Grab the pem key for further jenkins configurations
 docker cp jenkins-server:/root/.ssh/id_rsa ./jenkinskey.pem
@@ -85,16 +85,16 @@ sudo chmod +r ./jenkinskey.pem
 sed -i 's|jenkins_ssh_key.*.$|jenkins_ssh_key = "../sshkeys/dockerkeys/jenkinskey.pem"|' ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 
 sleep 20 &
-spin_wheel $! "Initializing the Jenkins Container"
+spin_wheel $! "Initializing the Jenkins container"
 
 #Installing Pip in Jenkins
-docker exec -it jenkins-server /usr/bin/apt-get update &> /dev/null
-spin_wheel $! "Updating Jenkins docker container"
-docker exec -it jenkins-server /usr/bin/apt-get install python-pip -y &> /dev/null
+docker exec -it jenkins-server apt-get update &> /dev/null
+spin_wheel $! "Updating Jenkins container"
+docker exec -it jenkins-server apt-get install python-pip -y &> /dev/null
 spin_wheel $! "Installing python-pip in Jenkins container"
-docker exec -it jenkins-server /usr/bin/pip install --upgrade pip &> /dev/null
+docker exec -it jenkins-server pip install --upgrade pip &> /dev/null
 spin_wheel $! "Upgrading pip in Jenkins container"
-docker exec -it jenkins-server /bin/chmod -R o+w /usr/local/lib/python2.7/dist-packages &> /dev/null
+docker exec -it jenkins-server chmod -R o+w /usr/local/lib/python2.7/dist-packages &> /dev/null
 spin_wheel $! "Granting permissions to other users to pip install"
 
 # Grab the variables
