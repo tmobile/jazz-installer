@@ -86,7 +86,7 @@ def get_stack_generic_details(jazz_branch):
 
     jazz_account_id = ""
     try:
-        jazz_accountid_cmd = ['/usr/local/bin/aws', 'sts', 'get-caller-identity', '--output', 'text', '--query',
+        jazz_accountid_cmd = ['aws', 'sts', 'get-caller-identity', '--output', 'text', '--query',
                               'Account']
         jazz_account_id = subprocess.check_output(jazz_accountid_cmd)
 
