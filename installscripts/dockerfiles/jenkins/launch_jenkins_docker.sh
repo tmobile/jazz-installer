@@ -88,7 +88,7 @@ sleep 20 &
 spin_wheel $! "Initializing the Jenkins container"
 
 #Installing Pip in Jenkins
-docker exec -it jenkins-server /usr/bin/apt-get update &> /dev/null &
+docker exec -it jenkins-server /usr/bin/apt-get update &
 spin_wheel $! "Updating Jenkins docker container"
 docker exec -it jenkins-server /usr/bin/apt-get install python-pip -y &> /dev/null &
 spin_wheel $! "Installing python-pip in Jenkins container"
