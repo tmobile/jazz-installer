@@ -2,8 +2,6 @@
 import os
 import sys
 import subprocess
-import paramiko
-
 # Global variables
 HOME_FOLDER = os.path.expanduser("~")
 TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
@@ -15,21 +13,6 @@ JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
 JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/authfile"
 
 DEV_NULL = open(os.devnull, 'w')
-
-def check_jenkins_sshuser_valid(parameter_list, port_number, keypath):
-    """
-        Check if the ssh login name is a user
-    """
-    jenkins_server_public_ip = parameter_list[3]
-    jenkins_server_ssh_login = parameter_list[4]
-    keyfile = keypath + "/jenkinskey.pem"
-    try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(jenkins_server_public_ip, username=jenkins_server_ssh_login, key_filename=keyfile, port=port_number)
-    except:
-        sys.exit("Unable to SSH into the Jenkins instance! Is the jenkinskey key or the username valid? Jenkins IP: %s Username: %s Keypath: %s Port: %s" %(jenkins_server_public_ip, jenkins_server_ssh_login, keyfile, port_number,))
-
 
 def add_jenkins_config_to_files(parameter_list):
     """
@@ -127,7 +110,6 @@ def get_and_add_existing_jenkins_config(terraform_folder):
 
 
 
-    check_jenkins_sshuser_valid(parameter_list, jenkins_server_ssh_port, os.path.expanduser("~"))
     add_jenkins_config_to_files(parameter_list)
 
 def get_and_add_docker_jenkins_config(jenkins_docker_path):
@@ -146,5 +128,4 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
 
     print(parameter_list[0:])
 
-    check_jenkins_sshuser_valid(parameter_list, 2200, jenkins_docker_path)
     add_jenkins_config_to_files(parameter_list)
