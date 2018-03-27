@@ -28,7 +28,7 @@ def check_jenkins_sshuser_valid(parameter_list, port_number, keypath):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(jenkins_server_public_ip, username=jenkins_server_ssh_login, key_filename=keyfile, port=port_number)
     except:
-        print("Is the jenkinskey key or the username valid?")
+        sys.exit("Unable to SSH into the Jenkins instance! Is the jenkinskey key or the username valid?")
 
 
 def add_jenkins_config_to_files(parameter_list):
