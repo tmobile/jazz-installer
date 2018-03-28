@@ -93,21 +93,33 @@ function install_packages () {
   echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
 
   # Install git
-  sudo yum install -y git >>$LOG_FILE &
-  spin_wheel $! "Installing git"
+  if command -v git > /dev/null; then
+      spin_wheel $! "Git already installed, using it"
+  else
+      sudo yum install -y git >>$LOG_FILE &
+      spin_wheel $! "Installing git"
+  fi
 
   # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
-  spin_wheel $! "Downloading java"
+  if command -v java > /dev/null; then
+      spin_wheel $! "Java already installed, using it"
+  else
+      curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+      spin_wheel $! "Downloading java"
 
-  sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
-  spin_wheel $! "Installing java"
+      sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+      spin_wheel $! "Installing java"
 
-  rm -rf jdk-8u112-linux-x64.rpm
+      rm -rf jdk-8u112-linux-x64.rpm
+  fi
 
   # Download and Install unzip
-  sudo yum install -y unzip >>$LOG_FILE &
-  spin_wheel $! "Installing unzip"
+  if command -v unzip > /dev/null; then
+      spin_wheel $! "Unzip already installed, using it"
+  else
+      sudo yum install -y unzip >>$LOG_FILE &
+      spin_wheel $! "Installing unzip"
+  fi
 
   # Create a temporary folder .
   # Here we will have all the temporary files needed and delete it at the end
@@ -133,16 +145,20 @@ function install_packages () {
 
   #Download and install pip
   if command -v pip > /dev/null; then
-     spin_wheel $! "System-level pip install found, using that."
+     spin_wheel $! "Pip already installed, using it"
   else
      curl -sL $PIP_URL -o get-pip.py
      sudo python get-pip.py >>$LOG_FILE &
      spin_wheel $! "Downloading and installing pip"
   fi
 
-  # Download and Install awscli
-  sudo pip install awscli >> $LOG_FILE &
-  spin_wheel $! "Downloading & installing awscli bundle"
+  if command -v aws > /dev/null; then
+      spin_wheel $! "awscli already installed, using it"
+  else
+      # Download and Install awscli
+      sudo pip install awscli >> $LOG_FILE &
+      spin_wheel $! "Downloading & installing awscli bundle"
+  fi
 
   #Undo output redirection
   exec 1> /dev/stdout
