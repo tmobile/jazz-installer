@@ -18,6 +18,7 @@ def add_gitlab_config_to_files(parameter_list):
                         gitlab_username,
                         gitlab_passwd ]
     """
+    print("Adding Gitlab config to Terraform variables")
     subprocess.call(['sed', '-i', "s|replaceip|%s|g" %(parameter_list[0]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|replaceusername|%s|g" %(parameter_list[1]), VARIABLES_TF_FILE])
     subprocess.call(['sed', '-i', "s|replacepasswd|%s|g" %(parameter_list[2]), VARIABLES_TF_FILE])
@@ -25,6 +26,7 @@ def add_gitlab_config_to_files(parameter_list):
     subprocess.call(['sed', '-i', "s|replacescmPathExt|/|g" , VARIABLES_TF_FILE])
 
     # Adding gitlab username and password
+    print("Adding Gitlab usernames and passwords")
     subprocess.call(['sed', '-i', "s|<username>gitlabuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
     subprocess.call(['sed', '-i', "s|<password>gitlabpassword</password>|<password>%s</password>|g" %(parameter_list[2]), JENKINS_COOKBOOK_SH])
 
@@ -36,6 +38,7 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path):
     os.chdir(gitlab_docker_path)
     print("Running docker launch script  for gitlab")
     subprocess.call(['bash', 'launch_gitlab_docker.sh', '|', 'tee', '-a', '../../gitlab_creation.out'])
+    print("Gitlab container launched")
 
     # Get values to create the array
     parameter_list = []

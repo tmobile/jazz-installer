@@ -111,7 +111,6 @@ echo "Getting namespace ID for CAS group"
 ns_id_cas=`curl -sL --header "PRIVATE-TOKEN: $token" -X GET "http://localhost/api/v4/groups/cas" | awk -F',' '{print $1}' | awk -F':' '{print $2}'`
 
 # Writing values to credentials.txt
-echo "Writing credentials"
 echo "GITLAB URL: http://$ip" > credentials.txt
 echo "USERNAME: $gitlab_admin"  >> credentials.txt
 echo "PASSWORD: $gitlab_passwd" >> credentials.txt
@@ -120,7 +119,6 @@ echo "NSID SLF: $ns_id_slf" >> credentials.txt
 echo "NSID CAS: $ns_id_cas" >> credentials.txt
 
 # Redirecting ip, username and passwd
-echo "Writing more credentials"
 echo "$ip" > docker_gitlab_vars
 echo "$gitlab_admin" >> docker_gitlab_vars
 echo "$gitlab_passwd" >> docker_gitlab_vars
