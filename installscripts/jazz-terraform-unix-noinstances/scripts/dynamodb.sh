@@ -35,6 +35,9 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"PUSH_TEMPLATE_TO_SERVICE_REPO\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_ASSET\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CLONE_TEMPLATE\"}}"
+		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_PROJECT\"}}"
+		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"BUILD\"}}"
+		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"VALIDATE_PRE_BUILD_CONF\"}}"
    ;;
    "EVENT_STATUS") 
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"COMPLETED\"}}"
