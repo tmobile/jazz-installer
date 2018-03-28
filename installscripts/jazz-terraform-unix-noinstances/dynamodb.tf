@@ -414,7 +414,7 @@ resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
   }
 }
 
-resource "aws_dynamodb_table" "dynamodb-Environments-Dev" {
+resource "aws_dynamodb_table" "dynamodb-Environments_Dev" {
   name           = "${var.envPrefix}_Environments_Dev"
   read_capacity  = 1
   write_capacity = 1
@@ -435,7 +435,7 @@ resource "aws_dynamodb_table" "dynamodb-Environments-Dev" {
   }
 }
 
-resource "aws_dynamodb_table" "dynamodb-Environments-Stg" {
+resource "aws_dynamodb_table" "dynamodb-Environments_Stg" {
   name           = "${var.envPrefix}_Environments_Stg"
   read_capacity  = 1
   write_capacity = 1
@@ -456,7 +456,7 @@ resource "aws_dynamodb_table" "dynamodb-Environments-Stg" {
   }
 }
 
-resource "aws_dynamodb_table" "dynamodb-Environments-Prod" {
+resource "aws_dynamodb_table" "dynamodb-Environments_Prod" {
   name           = "${var.envPrefix}_Environments_Prod"
   read_capacity  = 1
   write_capacity = 1
