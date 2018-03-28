@@ -22,7 +22,7 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     os.chdir(terraform_folder)
 
     # ----------------------------------------------------------
-    # Populate variables in terraform variables.tf and cookbooks
+    # Populate Terraform variables in terraform.tfvars and Chef cookbook
     # -----------------------------------------------------------
 
     #populating BRANCH name
