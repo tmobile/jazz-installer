@@ -32,6 +32,14 @@ JAZZ_BRANCH=""
 # Default verbosity of the installation
 VERBOSE=0
 
+# Spin wheel only works if you run a command
+print_info()
+{
+    NC='\033[0m'
+    GREEN='\033[0;32m'
+    printf "\r${GREEN}$1....Completed${NC}\n" 1>&3 2>&4
+}
+
 #Spin wheel
 spin_wheel()
 {
@@ -74,7 +82,6 @@ function install_packages () {
   # 3. Unzip
   # 4. AWSCLI
   # 5. Terraform - 0.9.11
-  # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
   #Fork output redirection so we can control output if VERBOSE is set
@@ -94,7 +101,7 @@ function install_packages () {
 
   # Install git
   if command -v git > /dev/null; then
-      spin_wheel $! "Git already installed, using it"
+      print_info "Git already installed, using it"
   else
       sudo yum install -y git >>$LOG_FILE &
       spin_wheel $! "Installing git"
@@ -102,7 +109,7 @@ function install_packages () {
 
   # Download and Install java
   if command -v java > /dev/null; then
-      spin_wheel $! "Java already installed, using it"
+      print_info "Java already installed, using it"
   else
       curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
       spin_wheel $! "Downloading java"
@@ -115,7 +122,7 @@ function install_packages () {
 
   # Download and Install unzip
   if command -v unzip > /dev/null; then
-      spin_wheel $! "Unzip already installed, using it"
+      print_info "Unzip already installed, using it"
   else
       sudo yum install -y unzip >>$LOG_FILE &
       spin_wheel $! "Installing unzip"
@@ -145,7 +152,7 @@ function install_packages () {
 
   #Download and install pip
   if command -v pip > /dev/null; then
-     spin_wheel $! "Pip already installed, using it"
+      print_info "pip already installed, using it"
   else
      curl -sL $PIP_URL -o get-pip.py
      sudo python get-pip.py >>$LOG_FILE &
@@ -153,7 +160,7 @@ function install_packages () {
   fi
 
   if command -v aws > /dev/null; then
-      spin_wheel $! "awscli already installed, using it"
+      print_info "awscli already installed, using it"
   else
       # Download and Install awscli
       sudo pip install awscli >> $LOG_FILE &
