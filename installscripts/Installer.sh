@@ -32,21 +32,23 @@ JAZZ_BRANCH=""
 # Default verbosity of the installation
 VERBOSE=0
 
-# Spin wheel only works if you run a command
+NC='\033[0m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+
 print_info()
 {
-    NC='\033[0m'
-    GREEN='\033[0;32m'
-    printf "\r${GREEN}$1....Completed${NC}\n" 1>&3 2>&4
+    printf "\r${GREEN}$1${NC}\n" 1>&3 2>&4
+}
+
+print_error()
+{
+    printf "\r${RED}$1${NC}\n" 1>&3 2>&4
 }
 
 #Spin wheel
 spin_wheel()
 {
-        RED='\033[0;31m'
-        GREEN='\033[0;32m'
-        NC='\033[0m'
-
         pid=$1 # Process Id of the previous running command
         message=$2
         spin='-\|/'
@@ -57,7 +59,7 @@ spin_wheel()
         do
           #echo $pid $i
           i=$(( (i+1) %4 ))
-          printf "\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
+          print_info "$message...."
           sleep .05
         done
 
@@ -65,10 +67,10 @@ spin_wheel()
         exitcode=$?
         if [ $exitcode -gt 0 ]
         then
-                printf "\r${RED}$message....Failed${NC}\n" 1>&3 2>&4
+                print_error "$message....Failed"
                 exit
         else
-                printf "\r${GREEN}$message....Completed${NC}\n" 1>&3 2>&4
+                print_info "$message....Completed"
 
         fi
 }
@@ -90,14 +92,14 @@ function install_packages () {
 
   # print verbosity mode during installation
   if [ "$1" == 1 ]; then
-    echo "You have started the installer in verbose mode" 1>&3 2>&4
+    print_info "You have started the installer in verbose mode" 1>&3 2>&4
   elif [ "$1" == 0 ]; then
     # Redirecting the stdout and stderr to /dev/null for non-verbose installation
     exec 1>/dev/null
     exec 2>/dev/null
-    echo "You have started the installer in non-verbose mode" 1>&3 2>&4
+    print_info "You have started the installer in non-verbose mode" 1>&3 2>&4
   fi
-  echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
+  print_info "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
 
   # Install git
   if command -v git > /dev/null; then
