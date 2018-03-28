@@ -103,14 +103,15 @@ curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POS
 echo "\nCreating CAS group"
 curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"CAS","path":"cas", "description": "User created services repository"}'
 
-echo "\nObtaining group namespace IDs"
+echo "Obtaining group namespace IDs"
 # Grabbing the namespace ID of CAS Group
-echo "\nGetting namespace ID for SLF group"
+echo "Getting namespace ID for SLF group"
 ns_id_slf=`curl -sL --header "PRIVATE-TOKEN: $token" -X GET "http://localhost/api/v4/groups/slf" | awk -F',' '{print $1}' | awk -F':' '{print $2}'`
-echo "\nGetting namespace ID for CAS group"
+echo "Getting namespace ID for CAS group"
 ns_id_cas=`curl -sL --header "PRIVATE-TOKEN: $token" -X GET "http://localhost/api/v4/groups/cas" | awk -F',' '{print $1}' | awk -F':' '{print $2}'`
 
 # Writing values to credentials.txt
+echo "Writing credentials"
 echo "GITLAB URL: http://$ip" > credentials.txt
 echo "USERNAME: $gitlab_admin"  >> credentials.txt
 echo "PASSWORD: $gitlab_passwd" >> credentials.txt
@@ -119,11 +120,13 @@ echo "NSID SLF: $ns_id_slf" >> credentials.txt
 echo "NSID CAS: $ns_id_cas" >> credentials.txt
 
 # Redirecting ip, username and passwd
+echo "Writing more credentials"
 echo "$ip" > docker_gitlab_vars
 echo "$gitlab_admin" >> docker_gitlab_vars
 echo "$gitlab_passwd" >> docker_gitlab_vars
 
 #Populating Gitlab config in Jenkins json file
+echo "Updating Jenkins config with Gitlab info"
 jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
 sed -i "s/TYPE\".*.$/TYPE\": \"gitlab\",/g" $jenkinsJsonfile
 sed -i "s/PRIVATE_TOKEN\".*.$/PRIVATE_TOKEN\": \"$token\",/g" $jenkinsJsonfile
@@ -131,6 +134,7 @@ sed -i "s/CAS_NAMESPACE_ID\".*.$/CAS_NAMESPACE_ID\": \"$ns_id_cas\",/g" $jenkins
 sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins
+echo "Updating Jenkins job config"
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
 sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
 sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
