@@ -44,7 +44,7 @@ def start(parameter_list):
     os.chdir(TERRAFORM_FOLDER_PATH)
 
     print("Invoking Terraform==============================>")
-    subprocess.call('nohup ./scripts/create.sh >>../../stack_creation.out&',shell=True)
+    subprocess.call('nohup ./scripts/create.sh | tee ../../stack_creation.out&',shell=True)
     print("Copying Terraform destroy script================>")
     subprocess.call('cp ./scripts/destroy.sh ../../'.split(' '))
 
