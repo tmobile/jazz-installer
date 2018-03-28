@@ -29,7 +29,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "sed -i 's/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY=\"${var.aws_access_key}\"/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
   provisioner "local-exec" {
-    command = "sed -i 's/AWS_SECRET_KEY=.*.$/AWS_SECRET_KEY=\"${var.aws_secret_key}\"/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
+    command = "sed -i 's#AWS_SECRET_KEY=.*.$#AWS_SECRET_KEY=\"${var.aws_secret_key}\"#g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
 
   #Copy the chef playbooks and config over to the remote Jenkins server
