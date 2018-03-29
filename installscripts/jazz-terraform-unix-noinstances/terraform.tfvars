@@ -1,4 +1,5 @@
-region = "REPLACEME"
+# These variables are set by user input
+region = "us-east-1"
 github_branch = "REPLACEME"
 aws_access_key = "REPLACEME"
 aws_secret_key = "REPLACEME"
@@ -17,7 +18,7 @@ jenkinsservermap = {
   jenkinspasswd = "REPLACEME"
   jenkins_public_ip = "REPLACEME"
   jenkins_ssh_login = "REPLACEME"
-  jenkins_ssh_port = "REPLACEME"
+  jenkins_ssh_port = "22"
   jenkins_security_group = "REPLACEME"
   jenkins_subnet = "REPLACEME"
 }
