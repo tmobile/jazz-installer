@@ -2,10 +2,12 @@
 import os
 import sys
 import subprocess
+from jazz_common import replace_tfvars
+
 # Global variables
 HOME_FOLDER = os.path.expanduser("~")
 TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
-VARIABLES_TF_FILE = TERRAFORM_FOLDER_PATH + "variables.tf"
+TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
 
 HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
 JENKINS_CLI_PATH = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/"
@@ -27,21 +29,14 @@ def add_jenkins_config_to_files(parameter_list):
                                 jenkins_server_subnet]
     """
 
-    subprocess.call(['sed', '-i', "s|jenkins_elb.*.$|jenkins_elb=\"%s\"|g" %(parameter_list[0]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkinsuser.*.$|jenkinsuser=\"%s\"|g" %(parameter_list[1]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkinspasswd.*.$|jenkinspasswd=\"%s\"|g" %(parameter_list[2]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkins_public_ip.*.$|jenkins_public_ip=\"%s\"|g" %(parameter_list[3]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkins_ssh_login.*.$|jenkins_ssh_login=\"%s\"|g" %(parameter_list[4]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkins_ssh_port.*.$|jenkins_ssh_port=\"%s\"|g" %(parameter_list[5]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkins_security_group.*.$|jenkins_security_group=\"%s\"|g" %(parameter_list[6]), VARIABLES_TF_FILE])
-
-    subprocess.call(['sed', '-i', "s|jenkins_subnet.*.$|jenkins_subnet=\"%s\"|g" %(parameter_list[7]), VARIABLES_TF_FILE])
+    replace_tfvars('jenkins_elb', parameter_list[0], TFVARS_FILE)
+    replace_tfvars('jenkinsuser', parameter_list[1], TFVARS_FILE)
+    replace_tfvars('jenkinspasswd', parameter_list[2], TFVARS_FILE)
+    replace_tfvars('jenkins_public_ip', parameter_list[3], TFVARS_FILE)
+    replace_tfvars('jenkins_ssh_login', parameter_list[4], TFVARS_FILE)
+    replace_tfvars('jenkins_ssh_port', parameter_list[5], TFVARS_FILE)
+    replace_tfvars('jenkins_security_group', parameter_list[6], TFVARS_FILE)
+    replace_tfvars('jenkins_subnet', parameter_list[7], TFVARS_FILE)
 
     subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), JENKINS_AUTH_FILE])
 
@@ -51,7 +46,7 @@ def check_jenkins_user(url, username, passwd):
         Check if the jenkins user is present in Jenkins server
     """
     jenkins_url = 'http://' + url +''
-    cmd = ['/usr/bin/java', '-jar', JENKINS_CLI, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
+    cmd = ['java', '-jar', JENKINS_CLI, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
     subprocess.call(cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
 
     if 'authenticated' in open('output').read():
