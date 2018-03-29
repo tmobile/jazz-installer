@@ -3,32 +3,28 @@ import os
 import sys
 import subprocess
 
-#Global variables
-HOME_FOLDER = os.path.expanduser("~")
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
-JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
-VARIABLES_TF_FILE = INSTALL_SCRIPT_FOLDER + "jazz-terraform-unix-noinstances/variables.tf"
-SCM_TYPE = "gitlab"
-DEV_NULL = open(os.devnull, 'w')
+from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
 
 def add_gitlab_config_to_files(parameter_list):
     """
-    Add gitlab configuration to variables.tf
+    Add gitlab configuration to terraform.tfvars
     parameter_list = [  gitlab_public_ip ,
                         gitlab_username,
                         gitlab_passwd ]
     """
     print("Adding Gitlab config to Terraform variables")
-    subprocess.call(['sed', '-i', "s|replaceip|%s|g" %(parameter_list[0]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replaceusername|%s|g" %(parameter_list[1]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacepasswd|%s|g" %(parameter_list[2]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacescmtype|%s|g" %(SCM_TYPE), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacescmPathExt|/|g" , VARIABLES_TF_FILE])
+    replace_tfvars('scm_publicip', parameter_list[0], TFVARS_FILE)
+    replace_tfvars('scm_username', parameter_list[1], TFVARS_FILE)
+    replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
+    replace_tfvars('scm_type', 'gitlab', TFVARS_FILE)
+    replace_tfvars('scm_pathext', '/', TFVARS_FILE)
 
     # Adding gitlab username and password
     print("Adding Gitlab usernames and passwords")
-    subprocess.call(['sed', '-i', "s|<username>gitlabuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
-    subprocess.call(['sed', '-i', "s|<password>gitlabpassword</password>|<password>%s</password>|g" %(parameter_list[2]), JENKINS_COOKBOOK_SH])
+    jenkinsCookbookSh = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
+
+    subprocess.call(['sed', '-i', "s|<username>gitlabuser</username>|<username>%s</username>|g" %(parameter_list[1]), jenkinsCookbookSh])
+    subprocess.call(['sed', '-i', "s|<password>gitlabpassword</password>|<password>%s</password>|g" %(parameter_list[2]), jenkinsCookbookSh])
 
 
 def get_and_add_docker_gitlab_config(gitlab_docker_path):
