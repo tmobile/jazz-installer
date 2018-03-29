@@ -45,7 +45,7 @@ def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     replace_tfvars('tagsOwner', jazz_tag_details[3], TFVARS_FILE)
     subprocess.call(['sed', '-i', 's|stack_name=.*.$|stack_name="%s"|g' %(jazz_tag_details[0]), "scripts/destroy.sh"])
 
-# Uses sed to modify the values of key-value pairs within a file that follow the form 'key = value'
+# Uses sed to modify the values of key-value pairs within a file (such as a .tfvars file) that follow the form 'key = value'
 # NOTE: The use of "-i'.bak'" and the creation of backup files is required macOS (that is, BSD) 'sed' will fail otherise.
 # NOTE: The `r` prefix is needed to force a string literal here.
 # TODO: We should replace `sed` executable calls with standard python library calls, would be faster and simpler.
