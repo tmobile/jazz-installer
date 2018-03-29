@@ -57,9 +57,7 @@ spin_wheel()
 
         while ps -p $pid > /dev/null
         do
-          #echo $pid $i
-          i=$(( (i+1) %4 ))
-          print_info "$message...."
+          print_info "$message....${spin:$i:1}"
           sleep .05
         done
 
