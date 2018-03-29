@@ -23,14 +23,32 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.scmclient_cmd}"
   }
 
+  #BEGIN chef cookbook edits TODO consider moving these to their own .tf file
   #Because we have to provision a preexisting machine here and can't use the terraform ses command,
   #we must use sed to insert AWS creds from the provisioner environment into a script chef will run later, before we copy the cookbook to the remote box.
   provisioner "local-exec" {
     command = "sed -i 's/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY='${var.aws_access_key}'/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
+
   provisioner "local-exec" {
     command = "sed -i 's/AWS_SECRET_KEY=.*.$/AWS_SECRET_KEY='${var.aws_secret_key}'/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
+
+  # Update git branch in jenkins cookbook
+  provisioner "local-exec" {
+      command = "sed -i 's/default\['git_branch'\].*./default\['git_branch'\]='${var.github_branch}'/g' ${var.cookbooksDir}/jenkins/attributes/default.rb"
+  }
+
+
+  # Update cognito script in jenkins cookbook
+  provisioner "local-exec" {
+    command = "sed -i 's|<username>cognitouser</username>|<username>${var.cognito_pool_username}</username>|g' ${var.cookbooksDir}/jenkins/files/credentials/cognitouser.sh"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|<password>cognitopasswd</password>|<password>${var.cognito_pool_password}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/cognitouser.sh"
+  }
+  #END chef cookbook edits
 
   #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
