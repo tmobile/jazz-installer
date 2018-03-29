@@ -20,7 +20,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   provisioner "local-exec" {
-    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.scmclient_cmd}"
+    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile} ${var.scmclient_cmd}"
   }
 
   #Because we have to provision a preexisting machine here and can't use the terraform ses command,
@@ -64,10 +64,10 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "sed -i 's/\"scm_username\"/\"${lookup(var.scmmap, "username")}\"/g' ${var.jenkinsjsonpropsfile}"
+    command = "sed -i 's/\"scm_username\"/\"${lookup(var.scmmap, "scm_username")}\"/g' ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.scmmap, "passwd")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.scmmap, "scm_passwd")} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
@@ -141,7 +141,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
-    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "type")}"
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_type")}"
   }
 
 
@@ -153,7 +153,7 @@ resource "null_resource" "createProjectsInBB" {
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")}"
+    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")}"
   }
 }
 
@@ -162,7 +162,7 @@ resource "null_resource" "copyJazzBuildModule" {
   depends_on = ["null_resource.configureExistingJenkinsServer","aws_elasticsearch_domain.elasticsearch_domain","null_resource.createProjectsInBB"]
 
   provisioner "local-exec" {
-    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "privatetoken")} ${lookup(var.scmmap, "slfid")} ${lookup(var.scmmap, "type")}  ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} jazz-build-module"
+    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.scmmap, "scm_slfid")} ${lookup(var.scmmap, "scm_type")}  ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} jazz-build-module"
   }
 }
 
@@ -180,7 +180,7 @@ resource "null_resource" "configureJazzBuildModule" {
   }
   provisioner "remote-exec"{
     inline = [
-      "git clone http://${lookup(var.scmmap, "username")}:${lookup(var.scmmap, "passwd")}@${lookup(var.scmmap, "elb")}${lookup(var.scmmap, "scmPathExt")}/slf/jazz-build-module.git",
+      "git clone http://${lookup(var.scmmap, "scm_username")}:${lookup(var.scmmap, "scm_passwd")}@${lookup(var.scmmap, "scm_elb")}${lookup(var.scmmap, "scm_pathext")}/slf/jazz-build-module.git",
       "cd jazz-build-module",
       "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
       "git add jazz-installer-vars.json",
@@ -197,6 +197,6 @@ resource "null_resource" "configureSCMRepos" {
   depends_on = ["null_resource.configureJazzBuildModule"]
 
   provisioner "local-exec" {
-    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "elb")} ${lookup(var.scmmap, "username")} ${lookup(var.scmmap, "passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "privatetoken")} ${lookup(var.scmmap, "slfid")} ${lookup(var.scmmap, "type")} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
+    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_scm_username} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.scmmap, "scm_slfid")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
 }

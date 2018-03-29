@@ -2,14 +2,16 @@
 import os
 import sys
 import subprocess
+from jazz_common import replace_tfvars
 
 #Global variables
 HOME_FOLDER = os.path.expanduser("~")
-VARIABLES_TF_FILE = "variables.tf"
+TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
+TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
+
 INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
 JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/jenkins1.sh"
 BITBUCKET_SH = HOME_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
-SCM_TYPE = "bitbucket"
 DEV_NULL = open(os.devnull, 'w')
 
 def add_bitbucket_config_to_files(parameter_list):
@@ -19,13 +21,14 @@ def add_bitbucket_config_to_files(parameter_list):
                             bitbucket_username,
                             bitbucket_passwd,
                             bitbucket_server_public_ip]
-    """
-    subprocess.call(['sed', '-i', "s|replaceelb|%s|g" %(parameter_list[0]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replaceusername|%s|g" %(parameter_list[1]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacepasswd|%s|g" %(parameter_list[2]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replaceip|%s|g" %(parameter_list[3]), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacescmtype|%s|g" %(SCM_TYPE), VARIABLES_TF_FILE])
-    subprocess.call(['sed', '-i', "s|replacescmPathExt|/scm|g" , VARIABLES_TF_FILE])
+     """
+    #TODO make this key more specific
+    replace_tfvars('scm_elb', parameter_list[0], TFVARS_FILE)
+    replace_tfvars('scm_username', parameter_list[1], TFVARS_FILE)
+    replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
+    replace_tfvars('scm_publicip', parameter_list[3], TFVARS_FILE)
+    replace_tfvars('scm_type', 'bitbucket', TFVARS_FILE)
+    replace_tfvars('scm_pathext', '/scm', TFVARS_FILE)
 
     #Adding bitbucket username and password
     subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
