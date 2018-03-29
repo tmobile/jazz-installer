@@ -18,7 +18,7 @@ DEV_NULL = open(os.devnull, 'w')
 
 def add_jenkins_config_to_files(parameter_list):
     """
-        Adding Jenkins Server configuration details to variables.tf
+        Adding Jenkins Server configuration details to terraform.tfvars
            parameter_list = [   jenkins_server_elb ,
                                 jenkins_username,
                                 jenkins_passwd,

@@ -61,14 +61,14 @@ variable "jenkinsservermap" {
 variable "scmmap" {
   type = "map"
   default = {
-    type = "replacescmtype"
-    elb = "replaceelb"
-    publicip = "replaceip"
-    username = "replaceusername"
-    passwd = "replacepasswd"
-    privatetoken = "replacetoken"
-    slfid = "replaceslfid"
-    scmPathExt = "replacescmPathExt"
+    scm_type = "replacescmtype"
+    scm_elb = "replaceelb"
+    scm_publicip = "replaceip"
+    scm_username = "replaceusername"
+    scm_passwd = "replacepasswd"
+    scm_privatetoken = "replacetoken"
+    scm_slfid = "replaceslfid"
+    scm_pathext = "replacescmPathExt"
   }
 }
 
