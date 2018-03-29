@@ -4,10 +4,15 @@ import re
 import subprocess
 
 #Global variables
-TFVARS_FILE = "terraform.tfvars"
-HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
-COGNITO_USER_FILE = HOME_JAZZ_INSTALLER + "/installscripts/cookbooks/jenkins/files/credentials/cognitouser.sh"
-DEFAULT_RB = HOME_JAZZ_INSTALLER + "/installscripts/cookbooks/jenkins/attributes/default.rb"
+
+HOME_FOLDER = os.path.expanduser("~")
+INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
+
+TERRAFORM_FOLDER_PATH = INSTALL_SCRIPT_FOLDER + "/jazz-terraform-unix-noinstances/"
+TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
+
+COGNITO_USER_FILE = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/credentials/cognitouser.sh"
+DEFAULT_RB = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/attributes/default.rb"
 
 def parse_and_replace_paramter_list(terraform_folder, parameter_list):
     """

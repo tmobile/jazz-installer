@@ -2,27 +2,18 @@
 import os
 import sys
 import subprocess
-from jazz_common import replace_tfvars
-
-#Global variables
-HOME_FOLDER = os.path.expanduser("~")
-TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
-TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
-
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
-JENKINS_COOKBOOK_SH = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/jenkins1.sh"
-BITBUCKET_SH = HOME_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
-DEV_NULL = open(os.devnull, 'w')
+from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE, HOME_FOLDER
 
 def add_bitbucket_config_to_files(parameter_list):
     """
-        Add bitbucket configuration to vriables.tf
+        Add bitbucket configuration to terraform.tfvars
         parameter_list = [  bitbucket_server_elb ,
                             bitbucket_username,
                             bitbucket_passwd,
                             bitbucket_server_public_ip]
      """
-    #TODO make this key more specific
+
+
     replace_tfvars('scm_elb', parameter_list[0], TFVARS_FILE)
     replace_tfvars('scm_username', parameter_list[1], TFVARS_FILE)
     replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
@@ -31,17 +22,20 @@ def add_bitbucket_config_to_files(parameter_list):
     replace_tfvars('scm_pathext', '/scm', TFVARS_FILE)
 
     #Adding bitbucket username and password
-    subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(parameter_list[1]), JENKINS_COOKBOOK_SH])
-    subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(parameter_list[2]), JENKINS_COOKBOOK_SH])
+    jenkinsCookbookSh = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/jenkins1.sh"
+
+    subprocess.call(['sed', '-i', "s|<username>bitbucketuser</username>|<username>%s</username>|g" %(parameter_list[1]), jenkinsCookbookSh])
+    subprocess.call(['sed', '-i', "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %(parameter_list[2]), jenkinsCookbookSh])
 
 
 def check_bitbucket_user(url, username, passwd):
     """
         Check if the bitbucket user is present in Bitbucket server
     """
+    bitbucket_sh = HOME_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
     bitbucket_url = 'http://'+ url +''
-    subprocess.call(['sudo', 'chmod', '+x', BITBUCKET_SH])
-    cmd = [ BITBUCKET_SH , '--action', 'createproject', '--project', 'test000', '--name', 'test000', '--server', bitbucket_url, '--user', username, '--password', passwd]
+    subprocess.call(['sudo', 'chmod', '+x', bitbucket_sh])
+    cmd = [ bitbucket_sh, '--action', 'createproject', '--project', 'test000', '--name', 'test000', '--server', bitbucket_url, '--user', username, '--password', passwd]
 
     try:
         output = subprocess.check_output(cmd)
@@ -50,7 +44,7 @@ def check_bitbucket_user(url, username, passwd):
             print output
             return 0
         else:
-            cmd = [BITBUCKET_SH, '--action', 'deleteproject', '--project', 'test000', '--server', bitbucket_url, '--user', username, '--password', passwd]
+            cmd = [bitbucket_sh, '--action', 'deleteproject', '--project', 'test000', '--server', bitbucket_url, '--user', username, '--password', passwd]
             subprocess.check_output(cmd)
             return 1
     except:
