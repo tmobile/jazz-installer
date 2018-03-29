@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE, HOME_FOLDER
+from jazz_common import HOME_FOLDER, TFVARS_FILE, replace_tfvars
 
 
 def add_bitbucket_config_to_files(parameter_list):
@@ -20,20 +20,6 @@ def add_bitbucket_config_to_files(parameter_list):
     replace_tfvars('scm_publicip', parameter_list[3], TFVARS_FILE)
     replace_tfvars('scm_type', 'bitbucket', TFVARS_FILE)
     replace_tfvars('scm_pathext', '/scm', TFVARS_FILE)
-
-    # Adding bitbucket username and password
-    jenkinsCookbookSh = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/jenkins1.sh"
-
-    subprocess.call([
-        'sed', '-i',
-        "s|<username>bitbucketuser</username>|<username>%s</username>|g" %
-        (parameter_list[1]), jenkinsCookbookSh
-    ])
-    subprocess.call([
-        'sed', '-i',
-        "s|<password>bitbucketpasswd</password>|<password>%s</password>|g" %
-        (parameter_list[2]), jenkinsCookbookSh
-    ])
 
 
 def check_bitbucket_user(url, username, passwd):
@@ -69,8 +55,8 @@ def check_bitbucket_user(url, username, passwd):
 
 def get_and_add_existing_bitbucket_config(terraform_folder):
     """
-        Get the exisintg Bitbucket server details from user , validate and change
-        the config files.
+        Get the exisintg Bitbucket server details from user,
+        validate and change the config files.
     """
     os.chdir(terraform_folder)
 

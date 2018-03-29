@@ -19,8 +19,9 @@ def check_jenkins_pem():
         " Please make sure that you have the ssh login user names of jenkins and bitbucket servers."
     )
     print(
-        " Please create jenkinskey.pem  with private keys of Jenkins Server in your home directory"
+        " Please create jenkinskey.pem with private keys of Jenkins Server in your home directory"
     )
+
     pause()
 
     # Check if file is been added to home derectory
