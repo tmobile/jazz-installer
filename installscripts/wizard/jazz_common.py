@@ -14,7 +14,7 @@ TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
 COGNITO_USER_FILE = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/credentials/cognitouser.sh"
 DEFAULT_RB = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/attributes/default.rb"
 
-def parse_and_replace_paramter_list(terraform_folder, parameter_list):
+def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     """
         Method parse the parameters send from run.py and these common variables
         are set in terraform.tfvars and other files needed
