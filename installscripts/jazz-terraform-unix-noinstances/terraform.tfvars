@@ -9,3 +9,13 @@ envPrefix = "REPLACEME"
 tagsEnvironment = "REPLACEME"
 tagsExempt = "REPLACEME"
 tagsOwner = "REPLACEME"
+
+#Jenkins vars (set programmatically by wizard)
+jenkins_elb = "REPLACEME"
+jenkinsuser = "REPLACEME"
+jenkinspasswd = "REPLACEME"
+jenkins_public_ip = "REPLACEME"
+jenkins_ssh_login = "REPLACEME"
+jenkins_ssh_port = "REPLACEME"
+jenkins_security_group = "REPLACEME"
+jenkins_subnet = "REPLACEME"
