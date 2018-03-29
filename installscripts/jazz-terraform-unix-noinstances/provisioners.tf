@@ -48,6 +48,15 @@ resource "null_resource" "configureExistingJenkinsServer" {
   provisioner "local-exec" {
     command = "sed -i 's|<password>cognitopasswd</password>|<password>${var.cognito_pool_password}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/cognitouser.sh"
   }
+
+  #Update Jenkins script in cookbook
+  provisioner "local-exec" {
+    command = "sed -i 's|<username>bitbucketuser</username>|<username>${lookup(var.scmmap, "scm_username")}</username>|g' ${var.cookbooksDir}/jenkins/files/credentials/jenkins1.sh"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|<password>bitbucketpasswd</password>|<password>${lookup(var.scmmap, "scm_passwd")}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/jenkins1.sh"
+  }
   #END chef cookbook edits
 
   #Copy the chef playbooks and config over to the remote Jenkins server
