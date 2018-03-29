@@ -7,9 +7,6 @@ import subprocess
 import datetime
 from jazz_common import validate_email_id
 
-#Global Variables
-DEV_NULL = open(os.devnull, 'w')
-
 def passwd_generator():
     """
         Random password generator for jazz-ui admin email ID login

@@ -2,19 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import replace_tfvars
-
-# Global variables
-HOME_FOLDER = os.path.expanduser("~")
-TERRAFORM_FOLDER_PATH = HOME_FOLDER + "/jazz-installer/installscripts/jazz-terraform-unix-noinstances/"
-TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
-
-HOME_JAZZ_INSTALLER = os.path.expanduser("~") + "/jazz-installer/"
-JENKINS_CLI_PATH = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/"
-JENKINS_CLI = JENKINS_CLI_PATH + "jenkins-cli.jar"
-JENKINS_AUTH_FILE = HOME_JAZZ_INSTALLER + "installscripts/cookbooks/jenkins/files/default/authfile"
-
-DEV_NULL = open(os.devnull, 'w')
+from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
 
 def add_jenkins_config_to_files(parameter_list):
     """
@@ -38,15 +26,19 @@ def add_jenkins_config_to_files(parameter_list):
     replace_tfvars('jenkins_security_group', parameter_list[6], TFVARS_FILE)
     replace_tfvars('jenkins_subnet', parameter_list[7], TFVARS_FILE)
 
-    subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), JENKINS_AUTH_FILE])
+    jenkins_auth_file = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/authfile"
+
+    subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), jenkins_auth_file])
 
 
 def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
+    jenkins_cli = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
     jenkins_url = 'http://' + url +''
-    cmd = ['java', '-jar', JENKINS_CLI, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
+
+    cmd = ['java', '-jar', jenkins_cli, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
     subprocess.call(cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
 
     if 'authenticated' in open('output').read():
