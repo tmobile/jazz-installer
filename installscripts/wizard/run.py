@@ -29,5 +29,5 @@ def main():
     except KeyboardInterrupt:
         print("\nKeyboard Interrupt detected exiting..")
 
-#Entry Point
+# Entry Point
 main()

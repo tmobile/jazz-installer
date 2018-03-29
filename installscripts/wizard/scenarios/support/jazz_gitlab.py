@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import os
-import sys
 import subprocess
 
 from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
+
 
 def add_gitlab_config_to_files(parameter_list):
     """
@@ -23,8 +23,16 @@ def add_gitlab_config_to_files(parameter_list):
     print("Adding Gitlab usernames and passwords")
     jenkinsCookbookSh = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
 
-    subprocess.call(['sed', '-i', "s|<username>gitlabuser</username>|<username>%s</username>|g" %(parameter_list[1]), jenkinsCookbookSh])
-    subprocess.call(['sed', '-i', "s|<password>gitlabpassword</password>|<password>%s</password>|g" %(parameter_list[2]), jenkinsCookbookSh])
+    subprocess.call([
+        'sed', '-i',
+        "s|<username>gitlabuser</username>|<username>%s</username>|g" %
+        (parameter_list[1]), jenkinsCookbookSh
+    ])
+    subprocess.call([
+        'sed', '-i',
+        "s|<password>gitlabpassword</password>|<password>%s</password>|g" %
+        (parameter_list[2]), jenkinsCookbookSh
+    ])
 
 
 def get_and_add_docker_gitlab_config(gitlab_docker_path):
@@ -33,7 +41,10 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path):
     """
     os.chdir(gitlab_docker_path)
     print("Running docker launch script  for gitlab")
-    subprocess.call(['bash', 'launch_gitlab_docker.sh', '|', 'tee', '-a', '../../gitlab_creation.out'])
+    subprocess.call([
+        'bash', 'launch_gitlab_docker.sh', '|', 'tee', '-a',
+        '../../gitlab_creation.out'
+    ])
     print("Gitlab container launched")
 
     # Get values to create the array
