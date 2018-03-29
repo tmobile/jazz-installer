@@ -4,6 +4,7 @@ import sys
 import subprocess
 from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
 
+
 def add_jenkins_config_to_files(parameter_list):
     """
         Adding Jenkins Server configuration details to terraform.tfvars
@@ -28,7 +29,11 @@ def add_jenkins_config_to_files(parameter_list):
 
     jenkins_auth_file = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/authfile"
 
-    subprocess.call(['sed', '-i', "s|jenkinsuser:jenkinspasswd|%s:%s|g" %(parameter_list[1], parameter_list[2]), jenkins_auth_file])
+    subprocess.call([
+        'sed', '-i',
+        "s|jenkinsuser:jenkinspasswd|%s:%s|g" %
+        (parameter_list[1], parameter_list[2]), jenkins_auth_file
+    ])
 
 
 def check_jenkins_user(url, username, passwd):
@@ -36,10 +41,14 @@ def check_jenkins_user(url, username, passwd):
         Check if the jenkins user is present in Jenkins server
     """
     jenkins_cli = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
-    jenkins_url = 'http://' + url +''
+    jenkins_url = 'http://' + url + ''
 
-    cmd = ['java', '-jar', jenkins_cli, '-s', jenkins_url, 'who-am-i', '--username', username, '--password', passwd]
-    subprocess.call(cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
+    cmd = [
+        'java', '-jar', jenkins_cli, '-s', jenkins_url, 'who-am-i',
+        '--username', username, '--password', passwd
+    ]
+    subprocess.call(
+        cmd, stdout=open("output", 'w'), stderr=open("output", 'w'))
 
     if 'authenticated' in open('output').read():
         os.remove('output')
@@ -48,6 +57,7 @@ def check_jenkins_user(url, username, passwd):
         os.remove('output')
         return 0
 
+
 def get_and_add_existing_jenkins_config(terraform_folder):
     """
         Get the exisintg Jenkins server details from user , validate and change
@@ -55,49 +65,55 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     """
     os.chdir(terraform_folder)
 
-    #Get Existing Jenkins Details form user
+    # Get Existing Jenkins Details form user
     print "\nPlease provide Jenkins Details.."
-    jenkins_server_elb = raw_input("""\nInstaller would like to install and configure the following jenkins plugins.
+    jenkins_server_elb = raw_input(
+        """\nInstaller would like to install and configure the following jenkins plugins.
     'https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#jenkins-plugins'
     If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue.
     Yes to proceed and No to abort [y/n] :""")
+
     if jenkins_server_elb != 'y':
         sys.exit("")
 
-    jenkins_server_elb = raw_input("Jenkins URL (Please ignore http and port number from URL) :")
+    jenkins_server_elb = raw_input(
+        "Jenkins URL (Please ignore http and port number from URL) :")
     jenkins_username = raw_input("Jenkins username :")
     jenkins_passwd = raw_input("Jenkins password :")
 
-    #Check is the jenkins user exist in jenkins server
-    if check_jenkins_user(jenkins_server_elb, jenkins_username, jenkins_passwd):
-        print("Great! We can proceed with this jenkins user....We will need few more details of Jenkins server")
+    # Check is the jenkins user exist in jenkins server
+    if check_jenkins_user(jenkins_server_elb, jenkins_username,
+                          jenkins_passwd):
+        print(
+            "Great! We can proceed with this jenkins user....We will need few more details of Jenkins server"
+        )
     else:
-        sys.exit("Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!")
+        sys.exit(
+            "Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!"
+        )
 
-    #get the jenkinsserver public IP and SSH login
+    # get the jenkinsserver public IP and SSH login
     jenkins_server_public_ip = raw_input("Jenkins Server PublicIp :")
     jenkins_server_ssh_login = raw_input("Jenkins Server SSH login name :")
 
-    #Default Jenkins instance ssh Port
+    # Default Jenkins instance ssh Port
     jenkins_server_ssh_port = "22"
 
-    #TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
-    jenkins_server_security_group = raw_input("Jenkins Server Security Group Name :")
+    # TODO - This is a temporary fix - We need to check why this is needed and should not ask this.
+    jenkins_server_security_group = raw_input(
+        "Jenkins Server Security Group Name :")
     jenkins_server_subnet = raw_input("Jenkins Server Subnet :")
 
-    #Create paramter list
-    parameter_list = [  jenkins_server_elb ,
-                        jenkins_username,
-                        jenkins_passwd,
-                        jenkins_server_public_ip,
-                        jenkins_server_ssh_login,
-                        jenkins_server_ssh_port,
-                        jenkins_server_security_group,
-                        jenkins_server_subnet]
-
-
+    # Create paramter list
+    parameter_list = [
+        jenkins_server_elb, jenkins_username, jenkins_passwd,
+        jenkins_server_public_ip, jenkins_server_ssh_login,
+        jenkins_server_ssh_port, jenkins_server_security_group,
+        jenkins_server_subnet
+    ]
 
     add_jenkins_config_to_files(parameter_list)
+
 
 def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
@@ -105,7 +121,10 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
     os.chdir(jenkins_docker_path)
     print("Running docker launch script")
-    subprocess.call(['sh', 'launch_jenkins_docker.sh', '|', 'tee', '-a', '../../docker_creation.out'])
+    subprocess.call([
+        'sh', 'launch_jenkins_docker.sh', '|', 'tee', '-a',
+        '../../docker_creation.out'
+    ])
 
     # Get values to create the array
     parameter_list = []
