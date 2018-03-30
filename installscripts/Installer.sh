@@ -26,7 +26,7 @@ REPO_PATH=$INSTALL_DIR/jazz-installer
 
 # Log file to record the installation logs
 LOG_FILE_NAME=installer_setup.out
-LOG_FILE=`realpath $REPO_PATH/$LOG_FILE_NAME`
+LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 JAZZ_BRANCH=""
 
 # Default verbosity of the installation
