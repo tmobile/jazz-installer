@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
+from jazz_common import TFVARS_FILE, replace_tfvars
 
 
 def add_gitlab_config_to_files(parameter_list):
@@ -18,21 +18,6 @@ def add_gitlab_config_to_files(parameter_list):
     replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
     replace_tfvars('scm_type', 'gitlab', TFVARS_FILE)
     replace_tfvars('scm_pathext', '/', TFVARS_FILE)
-
-    # Adding gitlab username and password
-    print("Adding Gitlab usernames and passwords")
-    jenkinsCookbookSh = INSTALL_SCRIPT_FOLDER + "cookbooks/jenkins/files/credentials/gitlab-user.sh"
-
-    subprocess.call([
-        'sed', '-i',
-        "s|<username>gitlabuser</username>|<username>%s</username>|g" %
-        (parameter_list[1]), jenkinsCookbookSh
-    ])
-    subprocess.call([
-        'sed', '-i',
-        "s|<password>gitlabpassword</password>|<password>%s</password>|g" %
-        (parameter_list[2]), jenkinsCookbookSh
-    ])
 
 
 def get_and_add_docker_gitlab_config(gitlab_docker_path):
