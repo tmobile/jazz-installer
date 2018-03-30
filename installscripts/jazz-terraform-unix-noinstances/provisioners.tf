@@ -59,7 +59,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|jenkinsuser:jenkinspasswd|${var.jenkinsuser}:${var.jenkinspasswd}|g' ${var.cookbooksDir}/jenkins/files/default/authfile"
+    command = "sed -i 's|jenkinsuser:jenkinspasswd|${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")}|g' ${var.cookbooksDir}/jenkins/files/default/authfile"
   }
   #Update Gitlab script in cookbook
   provisioner "local-exec" {
