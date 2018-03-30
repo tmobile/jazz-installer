@@ -30,6 +30,9 @@ def get_aws_credentials():
         os.environ['AWS_ACCESS_KEY_ID'] = raw_input("AWS Access Key ID :")
         os.environ['AWS_SECRET_ACCESS_KEY'] = raw_input(
             "AWS Secret Access Key :")
+    else:
+        print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' \
+              and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
 
 
 def set_aws_config(region):
