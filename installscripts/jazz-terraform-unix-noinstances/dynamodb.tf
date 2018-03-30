@@ -413,3 +413,66 @@ resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
     Owner = "${var.tagsOwner}"
   }
 }
+
+resource "aws_dynamodb_table" "dynamodb-Environments_Dev" {
+  name           = "${var.envPrefix}_Environments_Dev"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ENVIRONMENT_ID"
+
+  attribute {
+    name = "ENVIRONMENT_ID"
+    type = "S"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
+
+resource "aws_dynamodb_table" "dynamodb-Environments_Stg" {
+  name           = "${var.envPrefix}_Environments_Stg"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ENVIRONMENT_ID"
+
+  attribute {
+    name = "ENVIRONMENT_ID"
+    type = "S"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
+
+resource "aws_dynamodb_table" "dynamodb-Environments_Prod" {
+  name           = "${var.envPrefix}_Environments_Prod"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ENVIRONMENT_ID"
+
+  attribute {
+    name = "ENVIRONMENT_ID"
+    type = "S"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
