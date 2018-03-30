@@ -58,12 +58,12 @@ def get_jazz_tag_config_details():
     tag_env_prefix = tag_env_prefix.lower()
 
     # TODO Since most of these are currently static we could define them with interpolation in envprefix.tf
-    tag_enviornment = "Development"
+    tag_environment = "Development"
     tag_exempt = (datetime.datetime.today() +
                   datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     tag_owner = tag_env_prefix + "-Admin"
 
-    return [tag_env_prefix, tag_enviornment, tag_exempt, tag_owner]
+    return [tag_env_prefix, tag_environment, tag_exempt, tag_owner]
 
 
 def get_stack_generic_details(jazz_branch):
@@ -76,8 +76,9 @@ def get_stack_generic_details(jazz_branch):
     region = raw_input("AWS Region (e.g. us-east-1): ")
     if region not in knownWorkingRegions:
         print(
-            'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.'
+            'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.\n\n'
         )
+        raw_input('Press Enter to continue anyway, or Control+C to abort...')
 
     # Get the aws credentials & set required AWS env vars
     set_aws_config(region)
