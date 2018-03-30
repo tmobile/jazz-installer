@@ -32,13 +32,23 @@ JAZZ_BRANCH=""
 # Default verbosity of the installation
 VERBOSE=0
 
+NC='\033[0m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+
+print_info()
+{
+    printf "\r${GREEN}$1${NC}\n" 1>&3 2>&4
+}
+
+print_error()
+{
+    printf "\r${RED}$1${NC}\n" 1>&3 2>&4
+}
+
 #Spin wheel
 spin_wheel()
 {
-        RED='\033[0;31m'
-        GREEN='\033[0;32m'
-        NC='\033[0m'
-
         pid=$1 # Process Id of the previous running command
         message=$2
         spin='-\|/'
@@ -47,7 +57,6 @@ spin_wheel()
 
         while ps -p $pid > /dev/null
         do
-          #echo $pid $i
           i=$(( (i+1) %4 ))
           printf "\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
           sleep .05
@@ -57,10 +66,10 @@ spin_wheel()
         exitcode=$?
         if [ $exitcode -gt 0 ]
         then
-                printf "\r${RED}$message....Failed${NC}\n" 1>&3 2>&4
+                print_error "$message....Failed"
                 exit
         else
-                printf "\r${GREEN}$message....Completed${NC}\n" 1>&3 2>&4
+                print_info "$message....Completed"
 
         fi
 }
@@ -74,7 +83,6 @@ function install_packages () {
   # 3. Unzip
   # 4. AWSCLI
   # 5. Terraform - 0.9.11
-  # 6. JQ - 1.5
   # 7. Atlassian CLI - 6.7.1
 
   #Fork output redirection so we can control output if VERBOSE is set
@@ -83,31 +91,43 @@ function install_packages () {
 
   # print verbosity mode during installation
   if [ "$1" == 1 ]; then
-    echo "You have started the installer in verbose mode" 1>&3 2>&4
+    print_info "You have started the installer in verbose mode" 1>&3 2>&4
   elif [ "$1" == 0 ]; then
     # Redirecting the stdout and stderr to /dev/null for non-verbose installation
     exec 1>/dev/null
     exec 2>/dev/null
-    echo "You have started the installer in non-verbose mode" 1>&3 2>&4
+    print_info "You have started the installer in non-verbose mode" 1>&3 2>&4
   fi
-  echo "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
+  print_info "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
 
   # Install git
-  sudo yum install -y git >>$LOG_FILE &
-  spin_wheel $! "Installing git"
+  if command -v git > /dev/null; then
+      print_info "Git already installed, using it"
+  else
+      sudo yum install -y git >>$LOG_FILE &
+      spin_wheel $! "Installing git"
+  fi
 
   # Download and Install java
-  curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
-  spin_wheel $! "Downloading java"
+  if command -v java > /dev/null; then
+      print_info "Java already installed, using it"
+  else
+      curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+      spin_wheel $! "Downloading java"
 
-  sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
-  spin_wheel $! "Installing java"
+      sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+      spin_wheel $! "Installing java"
 
-  sudo rm -rf jdk-8u112-linux-x64.rpm
+      rm -rf jdk-8u112-linux-x64.rpm
+  fi
 
   # Download and Install unzip
-  sudo yum install -y unzip >>$LOG_FILE &
-  spin_wheel $! "Installing unzip"
+  if command -v unzip > /dev/null; then
+      print_info "Unzip already installed, using it"
+  else
+      sudo yum install -y unzip >>$LOG_FILE &
+      spin_wheel $! "Installing unzip"
+  fi
 
   # Create a temporary folder .
   # Here we will have all the temporary files needed and delete it at the end
@@ -115,15 +135,15 @@ function install_packages () {
   mkdir $INSTALL_DIR/jazz_tmp
 
   #Download and Install Terraform
-  sudo curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
+  curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
   spin_wheel $! "Downloading terraform"
   sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
   spin_wheel $! "Installing terraform"
 
   #Downloading and Install atlassian-cli
-  sudo curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
+  curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
   spin_wheel $! "Downloading atlassian-cli"
-  sudo unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
+  unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
   spin_wheel $! "Installing atlassian-cli"
 
   #Get Jazz Installer code base
@@ -133,24 +153,24 @@ function install_packages () {
 
   #Download and install pip
   if command -v pip > /dev/null; then
-     spin_wheel $! "System-level pip install found, using that."
+      print_info "pip already installed, using it"
   else
      curl -sL $PIP_URL -o get-pip.py
      sudo python get-pip.py >>$LOG_FILE &
      spin_wheel $! "Downloading and installing pip"
   fi
 
-  # Download and Install awscli
-  sudo pip install awscli >> $LOG_FILE &
-  spin_wheel $! "Downloading & installing awscli bundle"
+  if command -v aws > /dev/null; then
+      print_info "awscli already installed, using it"
+  else
+      # Download and Install awscli
+      sudo pip install awscli >> $LOG_FILE &
+      spin_wheel $! "Downloading & installing awscli bundle"
+  fi
 
-  #Download and install paramiko
-  sudo pip install paramiko >>$LOG_FILE &
-  spin_wheel $! "Downloading and installing paramiko"
-
-  #Undo output redirection
-  exec 1> /dev/stdout
-  exec 2> /dev/stderr
+  #Undo output redirection and close unused file descriptors.
+  exec 1>&3 3>&-
+  exec 2>&4 4>&-
 }
 
 function post_installation () {
@@ -233,14 +253,6 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-exec 3>&1
-exec 4>&2
-
-# Redirecting the stdout and stderr to /dev/null for non-verbose installation
-if [[ $VERBOSE == 0 ]]; then
-  exec 1>/dev/null
-  exec 2>/dev/null
-fi
 
 # Check if mandatory flag branchname is provided and verbosity is either 0|1
 if [[ ! -z $JAZZ_BRANCH ]] && [[ ($VERBOSE == 0) || ($VERBOSE == 1) ]]; then
