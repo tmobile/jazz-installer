@@ -27,14 +27,6 @@ def add_jenkins_config_to_files(parameter_list):
     replace_tfvars('jenkins_security_group', parameter_list[6], TFVARS_FILE)
     replace_tfvars('jenkins_subnet', parameter_list[7], TFVARS_FILE)
 
-    jenkins_auth_file = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/authfile"
-
-    subprocess.call([
-        'sed', '-i',
-        "s|jenkinsuser:jenkinspasswd|%s:%s|g" %
-        (parameter_list[1], parameter_list[2]), jenkins_auth_file
-    ])
-
 
 def check_jenkins_user(url, username, passwd):
     """
