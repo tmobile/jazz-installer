@@ -57,6 +57,7 @@ spin_wheel()
 
         while ps -p $pid > /dev/null
         do
+          i=$(( (i+1) %4 ))
           printf "\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
           sleep .05
         done
