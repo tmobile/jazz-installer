@@ -40,7 +40,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
 
-  # Update cognito script in jenkins cookbook
+  # Update cognito script in cookbook
   provisioner "local-exec" {
     command = "sed -i 's|<username>cognitouser</username>|<username>${var.cognito_pool_username}</username>|g' ${var.cookbooksDir}/jenkins/files/credentials/cognitouser.sh"
   }
@@ -58,6 +58,9 @@ resource "null_resource" "configureExistingJenkinsServer" {
     command = "sed -i 's|<password>bitbucketpasswd</password>|<password>${lookup(var.scmmap, "scm_passwd")}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/jenkins1.sh"
   }
 
+  provisioner "local-exec" {
+    command = "sed -i 's|jenkinsuser:jenkinspasswd|${var.jenkinsuser}:${var.jenkinspasswd}|g' ${var.cookbooksDir}/jenkins/files/default/authfile"
+  }
   #Update Gitlab script in cookbook
   provisioner "local-exec" {
     command = "sed -i 's|<username>gitlabuser</username>|<username>${lookup(var.scmmap, "scm_username")}</username>|g' ${var.cookbooksDir}/jenkins/files/credentials/gitlab-user.sh"
