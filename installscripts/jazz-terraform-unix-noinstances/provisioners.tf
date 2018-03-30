@@ -36,7 +36,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
 
   # Update git branch in jenkins cookbook
   provisioner "local-exec" {
-      command = "sed -i 's/default\['git_branch'\].*./default\['git_branch'\]='${var.github_branch}'/g' ${var.cookbooksDir}/jenkins/attributes/default.rb"
+    command = "sed -i 's|default\['git_branch'\].*.|default\['git_branch'\]='${var.github_branch}'|g' ${var.cookbooksDir}/jenkins/attributes/default.rb"
   }
 
 
