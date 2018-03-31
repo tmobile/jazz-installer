@@ -17,9 +17,6 @@
   },
     
 	"API": {
-    "DEV_ID": "",
-    "STG_ID": "",
-    "PROD_ID": "",
     "PROD": {
       "*": "{AWS_PROD_API_ID_DEFAULT}",
       "jazz_*": "{AWS_PROD_API_ID_JAZZ}"
