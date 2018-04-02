@@ -31,7 +31,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's/AWS_SECRET_KEY=.*.$/AWS_SECRET_KEY='${var.aws_secret_key}'/g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
+    command = "sed -i 's#AWS_SECRET_KEY=.*.$#AWS_SECRET_KEY='${var.aws_secret_key}'#g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
 
   # Update git branch in jenkins cookbook
