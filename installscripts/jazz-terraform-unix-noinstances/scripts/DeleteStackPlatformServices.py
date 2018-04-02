@@ -38,7 +38,8 @@ print (str(sys.argv))
 stackName = sys.argv[1].lower() + "-"
 deleteClientServices = sys.argv[2]
 
-platformServices = ['logs-prod', 'usermanagement-prod', 'hndlr-prod', 'events-prod', 'services-prod', 'logout-prod', 'login-prod', 'cloud-logs-streamer-prod', 'is-service-available-prod', 'delete-serverless-service-prod', 'create-serverless-service-prod', 'cognito-authorizer-prod']
+platformServices = ['jazz_cognito-authorizer', 'jazz_logs', 'jazz_usermanagement', 'jazz_services-handler', 'jazz_events', 'jazz_services', 'jazz_logout', 'jazz_login', 'jazz_cloud-logs-streamer', 'jazz_is-service-available', 'jazz_delete-serverless-service', 'jazz_create-serverless-service', 'jazz_email', 'jazz_events-handler']
+
 for pservice in platformServices:
     deleteCloudFormationService(stackName + pservice)
 
