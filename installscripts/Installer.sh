@@ -15,7 +15,7 @@
 # URLS
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 AWSCLI_URL="https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
-TERRAFORM_URL="https://releases.hashicorp.com/terraform/0.9.11/terraform_0.9.11_linux_amd64.zip?_ga=2.191030627.850923432.1499789921-755991382.1496973261"
+TERRAFORM_URL="https://releases.hashicorp.com/terraform/0.11.5/terraform_0.11.5_linux_amd64.zip"
 ATLASSIAN_CLI_URL="https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip"
 INSTALLER_GITHUB_URL="https://github.com/tmobile/jazz-installer.git"
 PIP_URL="https://bootstrap.pypa.io/get-pip.py"
@@ -82,7 +82,7 @@ function install_packages () {
   # 2. Java Jdk - 8u112-linux-x64
   # 3. Unzip
   # 4. AWSCLI
-  # 5. Terraform - 0.9.11
+  # 5. Terraform
   # 7. Atlassian CLI - 6.7.1
 
   #Fork output redirection so we can control output if VERBOSE is set
