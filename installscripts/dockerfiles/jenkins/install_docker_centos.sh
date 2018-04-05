@@ -46,4 +46,3 @@ sudo systemctl enable docker &> /dev/null &
 spin_wheel $! "Enabling docker-ce service"
 sudo usermod -aG docker $(whoami) &> /dev/null &
 spin_wheel $! "Adding the present user to docker group"
-exec sudo su -l $USER
