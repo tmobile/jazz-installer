@@ -118,7 +118,10 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
         '../../docker_creation.out'
     ])
     print("Running docker launch script")
-    subprocess.call(['sg', 'docker', './launch_jenkins_docker.sh', '|', 'tee', '-a', '../../docker_creation.out'])
+    subprocess.call([
+        'sg', 'docker', './launch_jenkins_docker.sh', '|', 'tee', '-a',
+        '../../docker_creation.out'
+    ])
     # Get values to create the array
     parameter_list = []
     with open("docker_jenkins_vars") as f:
