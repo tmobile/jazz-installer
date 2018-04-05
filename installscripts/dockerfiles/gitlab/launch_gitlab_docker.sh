@@ -32,12 +32,12 @@ spin_wheel()
 }
 
 # Check if docker with same name exists. If yes, stop and remove the docker container.
-docker ps -a | grep -i gitlab &> /dev/null
+sudo docker ps -a | grep -i gitlab &> /dev/null
 if [ $? == 0 ] ; then
     echo "Detected a container with name: gitlab. Deleting it..."
-    docker stop gitlab &> /dev/null &
+    sudo docker stop gitlab &> /dev/null &
     spin_wheel $! "Stopping existing Gitlab Docker"
-    docker rm gitlab &> /dev/null &
+    sudo docker rm gitlab &> /dev/null &
     spin_wheel $! "Removing existing Gitlab Docker"
     sudo rm -rf /srv/gitlab/*
 fi
@@ -52,7 +52,7 @@ sed -i "s|default\['scmelb'\].*.|default\['scmelb'\]='$ip'|g" $attrbsfile
 sed -i "s|default\['scmpath'\].*.|default\['scmpath'\]='$ip'|g" $attrbsfile
 
 # Running the Gitlab Docker
-docker run --detach \
+sudo docker run --detach \
     --hostname $ip \
     --publish 443:443 --publish 80:80 --publish 2201:22 \
     --name gitlab \
@@ -68,8 +68,8 @@ spin_wheel $! "Launching the Gitlab Docker"
 
 # Setting up admin credentials
 passwd=`date | md5sum | cut -d ' ' -f1`
-docker cp gitlab.sh gitlab:/root/gitlab.sh
-docker exec gitlab /bin/bash /root/gitlab.sh $passwd > credentials.txt 2>&1&
+sudo docker cp gitlab.sh gitlab:/root/gitlab.sh
+sudo docker exec gitlab /bin/bash /root/gitlab.sh $passwd > credentials.txt 2>&1&
 spin_wheel $! "Setting up admin credentials"
 
 # Installing epel
