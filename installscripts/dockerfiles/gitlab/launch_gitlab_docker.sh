@@ -136,5 +136,5 @@ echo "Updating Jenkins job config"
 variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
 sed -i'.bak' 's|\(scmbb \= \)\(.*\)|\1false|g' $variablesfile
 sed -i'.bak' 's|\(scmgitlab \= \)\(.*\)|\1true|g' $variablesfile
-sed -i'.bak' 's|\(scm_slfid \= \)\(.*\)|\1\"$ns_id_slf\"|g' $variablesfile
-sed -i'.bak' 's|\(scm_privatetoken \= \)\(.*\)|\1\"$token\"|g' $variablesfile
+sed -i'.bak' 's|\(scm_slfid \= \)\(.*\)|\1'$ns_id_slf'|g' $variablesfile
+sed -i'.bak' 's|\(scm_privatetoken \= \)\(.*\)|\1'$token'|g' $variablesfile
