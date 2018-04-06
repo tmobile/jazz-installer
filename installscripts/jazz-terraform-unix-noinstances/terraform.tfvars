@@ -1,8 +1,8 @@
 # These variables are set by user input
-region = "us-east-1"
+region = "This is set from the terraform CLI"
 github_branch = "REPLACEME"
-aws_access_key = "REPLACEME"
-aws_secret_key = "REPLACEME"
+aws_access_key = "This is set from the terraform CLI"
+aws_secret_key = "This is set from the terraform CLI"
 jazz_accountid = "REPLACEME"
 cognito_pool_username = "REPLACEME"
 cognito_pool_password = "REPLACEME"
@@ -19,6 +19,7 @@ jenkinsservermap = {
   jenkins_public_ip = "REPLACEME"
   jenkins_ssh_login = "REPLACEME"
   jenkins_ssh_port = "22"
+  jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   jenkins_security_group = "REPLACEME"
   jenkins_subnet = "REPLACEME"
 }
@@ -34,3 +35,5 @@ scmmap = {
   scm_slfid = "REPLACEME"
   scm_pathext = "REPLACEME"
 }
+scmbb = true
+scmgitlab = false
