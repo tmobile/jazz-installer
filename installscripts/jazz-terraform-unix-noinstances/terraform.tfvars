@@ -1,8 +1,8 @@
 # These variables are set by user input
-region = "us-east-1"
+region = "This is set from the terraform CLI"
 github_branch = "REPLACEME"
-aws_access_key = "REPLACEME"
-aws_secret_key = "REPLACEME"
+aws_access_key = "This is set from the terraform CLI"
+aws_secret_key = "This is set from the terraform CLI"
 jazz_accountid = "REPLACEME"
 cognito_pool_username = "REPLACEME"
 cognito_pool_password = "REPLACEME"
@@ -30,7 +30,11 @@ scmmap = {
   scm_publicip = "REPLACEME"
   scm_username = "REPLACEME"
   scm_passwd = "REPLACEME"
-  scm_privatetoken = "REPLACEME"
-  scm_slfid = "REPLACEME"
+  ## TODO Remove these from shell script
+  # scm_privatetoken = "REPLACEME"
+  # scm_slfid = "REPLACEME"
   scm_pathext = "REPLACEME"
 }
+# TODO Remove these from shell script
+# scmbb = true
+# scmgitlab = false
