@@ -19,6 +19,7 @@ jenkinsservermap = {
   jenkins_public_ip = "REPLACEME"
   jenkins_ssh_login = "REPLACEME"
   jenkins_ssh_port = "22"
+  jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   jenkins_security_group = "REPLACEME"
   jenkins_subnet = "REPLACEME"
 }
@@ -30,11 +31,9 @@ scmmap = {
   scm_publicip = "REPLACEME"
   scm_username = "REPLACEME"
   scm_passwd = "REPLACEME"
-  ## TODO Remove these from shell script
-  # scm_privatetoken = "REPLACEME"
-  # scm_slfid = "REPLACEME"
+  scm_privatetoken = "REPLACEME"
+  scm_slfid = "REPLACEME"
   scm_pathext = "REPLACEME"
 }
-# TODO Remove these from shell script
-# scmbb = true
-# scmgitlab = false
+scmbb = true
+scmgitlab = false
