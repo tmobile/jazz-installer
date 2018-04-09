@@ -27,14 +27,14 @@ do
 done
 
 echo " ======================================================="
-echo " The following Stack has been marked for deletion in AWS"
+echo " The following stack has been marked for deletion in AWS"
 echo " ________________________________________________"
 cd installscripts/jazz-terraform-unix-noinstances
 terraform state list
 
 echo " ======================================================="
 
-echo " Destroying of stack Initiated!!! "
+echo " Destroying of stack initiated!!! "
 echo " Execute  'tail -f stack_deletion_X.out' in below directory to see the stack deletion progress (X=1 or 2 or 3)"
 echo $currentDir
 
@@ -52,7 +52,7 @@ if [ "$1" == "all" ]; then
     cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
     /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name true
 
-    echo "Destroy Cloud Fronts of the stack."
+    echo "Destroy cloudfronts"
     cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
     /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
@@ -61,10 +61,10 @@ if [ "$1" == "all" ]; then
         ((loopIndx++))
         nohup terraform destroy --force >> ../../stack_deletion_$loopIndx.out &&
 
-        echo "Waiting for Terraform to finish updating the logs for 30 secs"
+        echo "Waiting for terraform to finish updating the logs for 30 secs"
         sleep 30s
         if (grep -q "Error applying plan" ../../stack_deletion_$loopIndx.out); then
-            echo "Found error in Terraform Destory. In Run=" + $loopIndx + " Starting to destory again"
+            echo "Found error in terraform destroy. In run=" + $loopIndx + ", starting to destroy again"
             terraform state list
         else
             echo "Terraform destroy success"
@@ -86,7 +86,7 @@ if [ "$1" == "frameworkonly" ]; then
     /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name false
 
     #Calling the terraform destroy 
-    terraform destroy -target=aws_kinesis_stream.kinesis_stream_prod -target=aws_iam_role_policy_attachment.kinesisaccess -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Stg -target=null_resource.configureExistingBitbucketServer -target=aws_dynamodb_table.dynamodb-Event_Name_Prod -target=aws_dynamodb_table.dynamodb-Event_Type_Dev -target=aws_s3_bucket.oab-apis-deployment-stg -target=aws_s3_bucket_policy.dev-serverless-static-bucket-contents-policy -target=null_resource.outputVariables -target=aws_cloudfront_distribution.jazz -target=aws_cloudfront_origin_access_identity.origin_access_identity -target=aws_dynamodb_table.dynamodb-Event_Name_Stg -target=aws_iam_role_policy_attachment.cognitopoweruser -target=aws_s3_bucket_policy.stg-serverless-static-bucket-contents-policy -target=aws_s3_bucket_policy.jazz-web-bucket-contents-policy -target=aws_dynamodb_table.dynamodb-table-stg -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Dev -target=aws_s3_bucket.oab-apis-deployment-dev -target=aws_iam_role_policy_attachment.vpccrossaccountaccess -target=aws_s3_bucket_policy.prod-serverless-static-bucket-contents-policy -target=aws_s3_bucket.oab-apis-deployment-prod -target=aws_dynamodb_table.dynamodb-Event_Type_Prod -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Prod -target=data.aws_canonical_user_id.current -target=aws_dynamodb_table.dynamodb-Event_Name_Dev -target=aws_kinesis_stream.kinesis_stream_stg -target=aws_dynamodb_table.dynamodb-Event_Status_Prod -target=aws_dynamodb_table.dynamodb-table-prod -target=aws_dynamodb_table.dynamodb-Event_Status_Dev -target=aws_dynamodb_table.dynamodb-Events_Stg -target=aws_elasticsearch_domain.elasticsearch_domain -target=aws_dynamodb_table.dynamodb-Event_Type_Stg -target=aws_dynamodb_table.dynamodb-Events_Prod -target=aws_kinesis_stream.kinesis_stream_dev -target=null_resource.configureExistingJenkinsServer -target=aws_s3_bucket.jazz-web -target=aws_dynamodb_table.dynamodb-table-dev -target=aws_dynamodb_table.dynamodb-Event_Status_Stg -target=aws_dynamodb_table.dynamodb-Events_Dev -target=null_resource.cognito_user_pool -target=aws_s3_bucket.jazz_s3_api_doc
+    terraform destroy -target=aws_kinesis_stream.kinesis_stream_prod -target=aws_iam_role_policy_attachment.kinesisaccess -target=aws_dynamodb_table.dynamodb-Environments_Dev -target=aws_dynamodb_table.dynamodb-Environments_Stg -target=aws_dynamodb_table.dynamodb-Environments_Prod -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Stg -target=null_resource.configureExistingBitbucketServer -target=aws_dynamodb_table.dynamodb-Event_Name_Prod -target=aws_dynamodb_table.dynamodb-Event_Type_Dev -target=aws_s3_bucket.oab-apis-deployment-stg -target=aws_s3_bucket_policy.dev-serverless-static-bucket-contents-policy -target=null_resource.outputVariables -target=aws_cloudfront_distribution.jazz -target=aws_cloudfront_origin_access_identity.origin_access_identity -target=aws_dynamodb_table.dynamodb-Event_Name_Stg -target=aws_iam_role_policy_attachment.cognitopoweruser -target=aws_s3_bucket_policy.stg-serverless-static-bucket-contents-policy -target=aws_s3_bucket_policy.jazz-web-bucket-contents-policy -target=aws_dynamodb_table.dynamodb-table-stg -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Dev -target=aws_s3_bucket.oab-apis-deployment-dev -target=aws_iam_role_policy_attachment.vpccrossaccountaccess -target=aws_s3_bucket_policy.prod-serverless-static-bucket-contents-policy -target=aws_s3_bucket.oab-apis-deployment-prod -target=aws_dynamodb_table.dynamodb-Event_Type_Prod -target=aws_dynamodb_table.dynamodb-table_Event_Handler_Prod -target=data.aws_canonical_user_id.current -target=aws_dynamodb_table.dynamodb-Event_Name_Dev -target=aws_kinesis_stream.kinesis_stream_stg -target=aws_dynamodb_table.dynamodb-Event_Status_Prod -target=aws_dynamodb_table.dynamodb-table-prod -target=aws_dynamodb_table.dynamodb-Event_Status_Dev -target=aws_dynamodb_table.dynamodb-Events_Stg -target=aws_elasticsearch_domain.elasticsearch_domain -target=aws_dynamodb_table.dynamodb-Event_Type_Stg -target=aws_dynamodb_table.dynamodb-Events_Prod -target=aws_kinesis_stream.kinesis_stream_dev -target=null_resource.configureExistingJenkinsServer -target=aws_s3_bucket.jazz-web -target=aws_dynamodb_table.dynamodb-table-dev -target=aws_dynamodb_table.dynamodb-Event_Status_Stg -target=aws_dynamodb_table.dynamodb-Events_Dev -target=null_resource.cognito_user_pool -target=aws_s3_bucket.jazz_s3_api_doc
 
     date
     exit 0
@@ -96,11 +96,11 @@ fi
 cd ~/jazz-installer
 
 if (grep -q "Error applying plan" ./stack_deletion_$loopIndx.out) then
-    echo "Errors occured in destroy......please refer stack_deletion.out. And re-run destroy after resolving the issues."
+    echo "Error occured in destroy, please refer stack_deletion.out and re-run destroy after resolving the issues."
     exit 1
 fi
 
-echo "Proceeding to delete Jazz Installer."
+echo "Proceeding to delete Jazz instance."
 shopt -s extglob
 sudo rm -rf !(*.out)
 sudo rm -rf ../Installer.sh ../atlassian-cli*
