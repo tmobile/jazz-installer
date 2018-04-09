@@ -11,16 +11,19 @@ terraform init && terraform apply \
                             -var "aws_access_key=${AWS_ACCESS_KEY_ID}" \
                             -var "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
                             -var "region=${AWS_DEFAULT_REGION}"
-date
 if [ $? -gt 0 ]
 then
+    date
     print_error "$message....Failed"
+    print_error "Destroying created AWS resources because of failure"
+    terraform destroy
     echo " ======================================================="
     echo " To cleanup Jazz stack and its resources execute ./destroy.sh in this directory."
     realpath ../../
     echo " ======================================================="
     exit
 else
+    date
     echo " ======================================================="
     echo " The following stack has been created in AWS"
     echo " ________________________________________________"
