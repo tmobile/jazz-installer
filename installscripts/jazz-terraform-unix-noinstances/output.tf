@@ -18,13 +18,13 @@ resource "null_resource" "outputVariables" {
     command = "echo Jenkins Subnet = ${lookup(var.jenkinsservermap, "jenkins_subnet")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Cloudfront URL = http://${aws_cloudfront_distribution.jazz.domain_name}/index.html >> settings.txt"
+    command = "echo Jazz Home = http://${aws_cloudfront_distribution.jazz.domain_name} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Username = ${var.cognito_pool_username} >> settings.txt"
+    command = "echo Admin Username = ${var.cognito_pool_username} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Password = ${var.cognito_pool_password} >> settings.txt"
+    command = "echo Admin Password = ${var.cognito_pool_password} >> settings.txt"
   }
 }
 
@@ -33,16 +33,16 @@ resource "null_resource" "outputVariablesBB" {
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "echo Bitbucket ELB = http://${lookup(var.scmmap, "elb")} >> settings.txt"
+    command = "echo Bitbucket ELB = http://${lookup(var.scmmap, "scm_elb")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Bitbucket publicip = ${lookup(var.scmmap, "publicip")} >> settings.txt"
+    command = "echo Bitbucket Home = ${lookup(var.scmmap, "scm_publicip")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Bitbucket Username = ${lookup(var.scmmap, "username")}  >> settings.txt"
+    command = "echo Bitbucket Username = ${lookup(var.scmmap, "scm_username")}  >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Bitbucket Password = ${lookup(var.scmmap, "passwd")}  >> settings.txt"
+    command = "echo Bitbucket Password = ${lookup(var.scmmap, "scm_passwd")}  >> settings.txt"
   }
 }
 
@@ -51,12 +51,12 @@ resource "null_resource" "outputVariablesGitlab" {
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
-    command = "echo Gitlab PublicIP = http://${lookup(var.scmmap, "publicip")} >> settings.txt"
+    command = "echo Gitlab Home = http://${lookup(var.scmmap, "scm_publicip")} >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Gitlab Username = ${lookup(var.scmmap, "username")}  >> settings.txt"
+    command = "echo Gitlab Username = ${lookup(var.scmmap, "scm_username")}  >> settings.txt"
   }
   provisioner "local-exec" {
-    command = "echo Gitlab Password = ${lookup(var.scmmap, "passwd")}  >> settings.txt"
+    command = "echo Gitlab Password = ${lookup(var.scmmap, "scm_passwd")}  >> settings.txt"
   }
 }

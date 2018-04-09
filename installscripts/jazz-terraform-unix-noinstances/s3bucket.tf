@@ -3,7 +3,7 @@ data "aws_canonical_user_id" "current" {}
 resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-dev-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -11,7 +11,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {
@@ -27,7 +28,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-stg-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -35,7 +36,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -50,7 +52,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-prod-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -58,7 +60,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -74,7 +77,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
   acl = "public-read"
   cors_rule {
@@ -84,7 +87,8 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   website {
   index_document = "index.html"
@@ -114,6 +118,10 @@ resource "aws_api_gateway_rest_api" "jazz-stag" {
 resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API"
+
+  provisioner "local-exec" {
+    command = "rm -rf jazz-core"
+  }
   provisioner "local-exec" {
     command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
 
@@ -126,8 +134,8 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
 resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
-  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ] 
+  //region = "${var.region}"
+  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ]
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -135,7 +143,8 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   website {
     index_document = "index.html"
@@ -299,7 +308,7 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -307,7 +316,8 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
@@ -326,7 +336,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
 resource "aws_s3_bucket" "stg-serverless-static" {
   bucket_prefix = "${var.envPrefix}-stg-web-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -334,7 +344,8 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
@@ -350,7 +361,7 @@ resource "aws_s3_bucket" "stg-serverless-static" {
 resource "aws_s3_bucket" "prod-serverless-static" {
   bucket_prefix = "${var.envPrefix}-prod-web-"
   request_payer = "BucketOwner"
-  region = "${var.region}"
+  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -358,7 +369,8 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags {
-	Application = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
   }
 
   provisioner "local-exec" {

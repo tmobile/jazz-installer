@@ -1,21 +1,20 @@
 #!/bin/bash
-aws_secret_access_key=`tr -d '\n' < ~/.aws/credentials | sed -e 's/\[/\n[/g'|grep default|sed -e 's/\[default\]//g' -e 's/aws_secret_access_key/\naws_secret_access_key/g' -e  's/ //g' |grep aws_secret_access_key| cut -d'=' -f2`
-aws_access_key=`tr -d '\n' < ~/.aws/credentials | sed -e 's/\[/\n[/g'|grep default|sed -e 's/\[default\]//g' -e 's/aws_secret_access_key/\naws_secret_access_key/g' -e  's/ //g'| grep "aws_access_key" |cut -d'=' -f2`
-sed -i "s/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY=$aws_access_key/g" ../cookbooks/jenkins/files/credentials/aws.sh
-sed -i "s|AWS_SECRET_KEY=.*.$|AWS_SECRET_KEY=$aws_secret_access_key|g" ../cookbooks/jenkins/files/credentials/aws.sh
 rm -f ./settings.txt
 date
-terraform apply
+terraform apply \
+          -var "aws_access_key=${AWS_ACCESS_KEY_ID}" \
+          -var "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
+          -var "region=${AWS_DEFAULT_REGION}"
 date
 echo " ======================================================="
-echo " The following Stack has been created in AWS"
+echo " The following stack has been created in AWS"
 echo " ________________________________________________"
 terraform state list
 echo " ======================================================="
-echo "Please use the following values for checking out JAZZ"
+echo " Please use the following values for checking out Jazz"
 echo " ________________________________________________"
 cat ./settings.txt
 echo " ======================================================="
-echo " Installation Completed!!! Once checkout is done Please execute nohup ./destroy.sh & in the following directory . This will cleanup the entire Stack"
+echo " Installation complete! To cleanup Jazz stack and its resources execute ./destroy.sh in this directory."
 realpath ../../
 echo " ======================================================="

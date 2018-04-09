@@ -1,7 +1,7 @@
 JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME=$2 #create_service
-BITBUCKET_ELB=$3
-SSH_USER=$4
+JOB_NAME="jazz_ui"
+SSH_USER=$2
+SCM_ELB=$3
 
 if [ -f /etc/redhat-release ]; then
   AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
@@ -12,29 +12,39 @@ elif [ -f /etc/lsb-release ]; then
 fi
 
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+<?xml version='1.0' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>service_id</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>        
-        <hudson.model.StringParameterDefinition>
-          <name>admin_group</name>
-          <description></description>
-          <defaultValue>admin</defaultValue>
-        </hudson.model.StringParameterDefinition>        
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.2">
+      <gitLabConnection>Jazz-Gitlab</gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      <triggers/>
+    <triggers>
+      <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.5.2">
+        <spec></spec>
+        <triggerOnPush>true</triggerOnPush>
+        <triggerOnMergeRequest>true</triggerOnMergeRequest>
+        <triggerOnPipelineEvent>false</triggerOnPipelineEvent>
+        <triggerOnAcceptedMergeRequest>false</triggerOnAcceptedMergeRequest>
+        <triggerOnClosedMergeRequest>false</triggerOnClosedMergeRequest>
+        <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
+        <triggerOnNoteRequest>true</triggerOnNoteRequest>
+        <noteRegex>Jenkins please retry a build</noteRegex>
+        <ciSkip>true</ciSkip>
+        <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
+        <setBuildDescription>true</setBuildDescription>
+        <branchFilterType>All</branchFilterType>
+        <includeBranchesSpec></includeBranchesSpec>
+        <excludeBranchesSpec></excludeBranchesSpec>
+        <targetBranchRegex></targetBranchRegex>
+        <secretToken></secretToken>
+      </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
+    </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.36">
@@ -42,8 +52,8 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/slf/service-onboarding-build-pack.git</url>
-          <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
+          <url>http://$SCM_ELB/slf/jazz-ui.git</url>
+          <credentialsId>jenkins1cred</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
@@ -55,7 +65,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>Jenkinsfile</scriptPath>
+    <scriptPath>Jenkinsfile_Platform</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
