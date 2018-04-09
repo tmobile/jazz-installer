@@ -133,9 +133,8 @@ sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins
 echo "Updating Jenkins job config"
-variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/variables.tf
-sed -i "s|variable \"scmbb\".*.$|variable \"scmbb\" \{ default = false \}|g" $variablesfile
-sed -i "s|variable \"scmgitlab\".*.$|variable \"scmgitlab\" \{ default = true \}|g" $variablesfile
-sed -i "s|replaceelb|$ip|g" $variablesfile
-sed -i "s|replacetoken|$token|g" $variablesfile
-sed -i "s|replaceslfid|$ns_id_slf|g" $variablesfile
+variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
+sed -i'.bak' 's|\(scmbb \= \)\(.*\)|\1false|g' $variablesfile
+sed -i'.bak' 's|\(scmgitlab \= \)\(.*\)|\1true|g' $variablesfile
+sed -i'.bak' 's|\(scm_slfid \= \)\(.*\)|\1\"'$ns_id_slf'\"|g' $variablesfile
+sed -i'.bak' 's|\(scm_privatetoken \= \)\(.*\)|\1\"'$token'\"|g' $variablesfile

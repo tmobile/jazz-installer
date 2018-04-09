@@ -81,6 +81,7 @@ def get_stack_generic_details(jazz_branch):
         raw_input('Press Enter to continue anyway, or Control+C to abort...')
 
     # Get the aws credentials & set required AWS env vars
+    get_aws_credentials()
     set_aws_config(region)
 
     # get Jazz Tag details
