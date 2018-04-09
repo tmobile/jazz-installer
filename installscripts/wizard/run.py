@@ -10,14 +10,14 @@ def main():
         git_branch_name = sys.argv[1]
         key = 0
         while 1:
-            print("\n\nKindly select an option...\n")
+            print("\n\nSelect your install option...\n")
             scenarios.print_stack_options()
             selection = raw_input("Please enter your choice :")
 
             try:
                 key = int(selection)
             except:
-                print("Invalid Input! Please enter an integer\n")
+                print("Invalid input! Please enter an integer\n")
                 continue
 
             if scenarios.is_valid_scenario(key):
@@ -27,7 +27,7 @@ def main():
                 print("Invalid selection! Try again\n")
 
     except KeyboardInterrupt:
-        print "\nKeyboard Interrupt detected exiting.."
+        print("\nKeyboard Interrupt detected exiting..")
 
-#Entry Point
+# Entry Point
 main()
