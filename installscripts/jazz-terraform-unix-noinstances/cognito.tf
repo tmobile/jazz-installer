@@ -29,7 +29,7 @@ resource "aws_cognito_user_pool" "pool"{
     default_email_option = "CONFIRM_WITH_LINK"
   }
   password_policy = {
-    minimum_length    = 6
+    minimum_length    = 8
     require_lowercase = true
     require_numbers   = false
     require_symbols   = false
