@@ -55,10 +55,6 @@ variable "cognito_cmd" {
   type = "string"
   default = "./scripts/cognito.sh"
 }
-variable "cognitoDelete_cmd" {
-  type = "string"
-  default = "./scripts/cognitoDelete.sh"
-}
 variable "deployS3Webapp_cmd" {
   type = "string"
   default = "./scripts/deployS3Webapp.sh"
