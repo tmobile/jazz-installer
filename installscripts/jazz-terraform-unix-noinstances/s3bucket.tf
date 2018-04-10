@@ -128,7 +128,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
-  }
+  }  
 }
 
 resource "aws_s3_bucket" "jazz-web" {
