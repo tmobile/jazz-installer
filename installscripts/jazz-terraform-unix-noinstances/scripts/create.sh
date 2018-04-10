@@ -1,5 +1,6 @@
 #!/bin/bash
 rm -f ./settings.txt
+rm -f ./stack_details.json
 date
 terraform apply \
           -var "aws_access_key=${AWS_ACCESS_KEY_ID}" \
