@@ -525,8 +525,8 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
                         "s3:GetObject"
         ]
         principals  {
-                        type="*",
-                        identifiers = ["*"]
+                        type="AWS",
+                        identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ element(split( "/",  "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"), 2)}"]
                         }
         resources = [
                 "${aws_s3_bucket.jazz-web.arn}/*"
@@ -536,9 +536,12 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
 
 }
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
+        depends_on = ["aws_cloudfront_distribution.jazz" ]
         bucket = "${aws_s3_bucket.jazz-web.id}"
         policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
 }
+
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
   policy_id = "jazz-s3-api-doc-bucket-contents"
@@ -548,11 +551,37 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
                         "s3:*"
         ]
         principals  {
+                        type="AWS",
+                        identifiers = ["${data.aws_caller_identity.current.arn}"]
+                        }
+        resources = [
+                "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
+        ]
+  },
+  statement {
+        sid = "jazz-s3-api-doc"
+        actions = [
+                        "s3:GetObject"
+        ]
+        principals  {
                         type="*",
                         identifiers = ["*"]
                         }
         resources = [
                 "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
+        ]
+  },
+  statement {
+        sid = "jazz-s3-api-doc"
+        actions = [
+                        "s3:ListBucket"
+        ]
+        principals  {
+                        type="*",
+                        identifiers = ["*"]
+                        }
+        resources = [
+                "${aws_s3_bucket.jazz_s3_api_doc.arn}"
         ]
   }
 }
