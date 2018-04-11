@@ -4,9 +4,7 @@ import re
 import subprocess
 
 # Global variables
-HOME_FOLDER = os.path.expanduser("~")
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
-
+INSTALL_SCRIPT_FOLDER = os.environ["JAZZ_ROOT"] + "/installscripts/"
 TERRAFORM_FOLDER_PATH = INSTALL_SCRIPT_FOLDER + "/jazz-terraform-unix-noinstances/"
 TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
 
@@ -66,8 +64,7 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
 def replace_tfvars(key, value, fileName):
     subprocess.call([
         'sed', "-i\'.bak\'",
-        r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value),
-        fileName
+        r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value), fileName
     ])
 
 
