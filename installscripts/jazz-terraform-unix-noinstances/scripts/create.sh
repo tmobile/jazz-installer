@@ -1,5 +1,4 @@
 #!/bin/bash
-rm -f ./settings.txt
 rm -f ./stack_details.json
 date
 terraform apply \
@@ -14,7 +13,7 @@ terraform state list
 echo " ======================================================="
 echo " Please use the following values for checking out Jazz"
 echo " ________________________________________________"
-cat ./settings.txt
+cat ./stack_details.json
 echo " ======================================================="
 echo " Installation complete! To cleanup Jazz stack and its resources execute ./destroy.sh in this directory."
 realpath ../../
