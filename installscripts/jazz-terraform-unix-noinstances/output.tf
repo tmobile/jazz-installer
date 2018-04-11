@@ -1,31 +1,7 @@
 #
-# This resource will add necessary setting needed for the user into settings.txt
+# This resource will add necessary setting needed for the user into stack_details.json
 #
-resource "null_resource" "outputVariables" {
-  provisioner "local-exec" {
-    command = "touch settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Jenkins ELB = http://${lookup(var.jenkinsservermap, "jenkins_elb")} > settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Jenkins Username = ${lookup(var.jenkinsservermap, "jenkinsuser")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Jenkins Password = ${lookup(var.jenkinsservermap, "jenkinspasswd")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Jenkins Subnet = ${lookup(var.jenkinsservermap, "jenkins_subnet")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Jazz Home = http://${aws_cloudfront_distribution.jazz.domain_name} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Admin Username = ${var.cognito_pool_username} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Admin Password = ${var.cognito_pool_password} >> settings.txt"
-  }
+resource "null_resource" "outputVariables" { 
   provisioner "local-exec" {
     command = "touch stack_details.json"
   }
@@ -41,6 +17,9 @@ resource "null_resource" "outputVariables" {
   provisioner "local-exec" {
     command = "echo \"jenkins_password\" : \"${lookup(var.jenkinsservermap, "jenkinspasswd")}\", >> stack_details.json"
   } 
+  provisioner "local-exec" {
+    command = "echo \"jenkins_subnet\" : \"${lookup(var.jenkinsservermap, "jenkins_subnet")}\", >> stack_details.json"
+  }
   provisioner "local-exec" {
     command = "echo \"jazz_home\" : \"http://${aws_cloudfront_distribution.jazz.domain_name}\", >> stack_details.json"
   }
@@ -63,19 +42,6 @@ resource "null_resource" "outputVariablesBB" {
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "echo Bitbucket ELB = http://${lookup(var.scmmap, "scm_elb")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Bitbucket Home = ${lookup(var.scmmap, "scm_publicip")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Bitbucket Username = ${lookup(var.scmmap, "scm_username")}  >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Bitbucket Password = ${lookup(var.scmmap, "scm_passwd")}  >> settings.txt"
-  }
-
-  provisioner "local-exec" {
     command = "echo \"bitbucket_elb\" : \"http://${lookup(var.scmmap, "scm_elb")}\", >> stack_details.json"
   }
   provisioner "local-exec" {
@@ -95,16 +61,6 @@ resource "null_resource" "outputVariablesBB" {
 resource "null_resource" "outputVariablesGitlab" {
   depends_on = ["null_resource.outputVariables"]
   count = "${var.scmgitlab}"
-
-  provisioner "local-exec" {
-    command = "echo Gitlab Home = http://${lookup(var.scmmap, "scm_publicip")} >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Gitlab Username = ${lookup(var.scmmap, "scm_username")}  >> settings.txt"
-  }
-  provisioner "local-exec" {
-    command = "echo Gitlab Password = ${lookup(var.scmmap, "scm_passwd")}  >> settings.txt"
-  }
 
   provisioner "local-exec" {
     command = "echo \"gitlab_home\" : \"http://${lookup(var.scmmap, "scm_publicip")}\", >> stack_details.json"
