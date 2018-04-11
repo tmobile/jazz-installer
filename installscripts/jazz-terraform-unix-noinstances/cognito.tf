@@ -42,15 +42,6 @@ resource "aws_cognito_user_pool_client" "client" {
   generate_secret = false
   user_pool_id = "${aws_cognito_user_pool.pool.id}"
 
-  provisioner "local-exec" {
-    command = "${var.cognito_cmd} ${var.envPrefix} ${aws_cognito_user_pool.pool.id} ${aws_cognito_user_pool_client.client.id} ${var.cognito_pool_username} ${var.cognito_pool_password}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} USER_POOL_ID ${aws_cognito_user_pool.pool.id} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} CLIENT_ID ${aws_cognito_user_pool_client.client.id} ${var.jenkinsjsonpropsfile}"
-  }
 }
 
 resource "aws_cognito_user_pool_domain" "domain" {

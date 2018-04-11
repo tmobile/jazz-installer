@@ -94,9 +94,6 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   index_document = "index.html"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
     command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
   }
   provisioner "local-exec" {
@@ -126,9 +123,6 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
     command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
 
   }
-  provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
-  }  
 }
 
 resource "aws_s3_bucket" "jazz-web" {
@@ -164,11 +158,6 @@ EOF
   provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
   }
-
-  provisioner "local-exec" {
-    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-
 
   provisioner "local-exec" {
 	when = "destroy"
@@ -223,9 +212,6 @@ resource "aws_iam_role" "lambda_role" {
 }
 EOF
 
-  provisioner "local-exec" {
-  command = "${var.modifyPropertyFile_cmd} ROLEID ${aws_iam_role.lambda_role.arn}  ${var.jenkinsjsonpropsfile}"
-  }
   provisioner "local-exec" {
         when = "destroy"
 	on_failure = "continue"
@@ -320,12 +306,6 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JAZZ_REGION ${var.region} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
 	when = "destroy"
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
@@ -346,9 +326,6 @@ resource "aws_s3_bucket" "stg-serverless-static" {
   tags {
     Application = "Jazz"
     JazzInstance = "${var.envPrefix}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} WEBSITE_STG_BUCKET ${aws_s3_bucket.stg-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
 	when = "destroy"
@@ -373,9 +350,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     JazzInstance = "${var.envPrefix}"
   }
 
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} WEBSITE_PROD_BUCKET ${aws_s3_bucket.prod-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"
-  }
+  # TODO do we need this, or does `force_destroy` suffice?
   provisioner "local-exec" {
 	when = "destroy"
 	on_failure = "continue"
