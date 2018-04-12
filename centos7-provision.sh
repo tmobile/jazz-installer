@@ -92,12 +92,36 @@ function install_packages () {
     fi
     print_info "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
 
+    sudo yum check-update >>$LOG_FILE &
+    spin_wheel $! "Updating yum DB"
+
     # Install git
     if command -v git > /dev/null; then
         print_info "Git already installed, using it"
     else
         sudo yum install -y git >>$LOG_FILE &
         spin_wheel $! "Installing git"
+    fi
+
+    #Install Docker
+    if command -v docker > /dev/null; then
+        print_info "Docker already installed, using it"
+    else
+        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >>$LOG_FILE &
+        spin_wheel $! "Installing prerequisites for docker-ce"
+        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >>$LOG_FILE &
+        spin_wheel $! "Adding yum repo for docker-ce"
+        sudo yum install docker-ce -y >>$LOG_FILE &
+        spin_wheel $! "Installing docker-ce"
+
+        sudo systemctl start docker >>$LOG_FILE &
+        spin_wheel $! "Starting docker-ce"
+        sudo systemctl status docker >>$LOG_FILE &
+        spin_wheel $! "Checking docker-ce service"
+        sudo systemctl enable docker >>$LOG_FILE &
+        spin_wheel $! "Enabling docker-ce service"
+        sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
+        spin_wheel $! "Adding the present user to docker group"
     fi
 
     # Download and Install java
