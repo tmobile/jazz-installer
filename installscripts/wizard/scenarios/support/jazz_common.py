@@ -23,6 +23,14 @@ def get_tfvars_file():
     return get_terraform_folder() + "terraform.tfvars"
 
 
+def get_docker_path():
+    return get_script_folder() + "dockerfiles/"
+
+
+def get_jenkins_pem():
+    return get_docker_path() + "jenkins/jenkinskey.pem"
+
+
 def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     """
         Method parse the parameters send from run.py and these common variables
