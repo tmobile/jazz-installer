@@ -114,11 +114,6 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
         Launch a dockerized Jenkins server.
     """
     os.chdir(jenkins_docker_path)
-    print("Running docker-ce install script")
-    subprocess.call([
-        'sh', 'install_docker_centos.sh', '|', 'tee', '-a',
-        '../../docker_creation.out'
-    ])
     print("Running docker launch script")
     subprocess.call([
         'sg', 'docker', './launch_jenkins_docker.sh', '|', 'tee', '-a',
