@@ -2,13 +2,9 @@
 import os
 import sys
 import subprocess
-from support.jazz_common import get_script_folder, get_terraform_folder, parse_and_replace_parameter_list
+from support.jazz_common import get_script_folder, get_docker_path, get_jenkins_pem, get_terraform_folder, parse_and_replace_parameter_list
 from support.jazz_jenkins import get_and_add_docker_jenkins_config
 from support.jazz_bitbucket import get_and_add_existing_bitbucket_config
-
-# Global variables
-JENKINS_DOCKER_PATH = get_script_folder() + "dockerfiles/jenkins/"
-JENKINS_PEM = JENKINS_DOCKER_PATH + "/jenkinskey.pem"
 
 
 def pause():
@@ -20,12 +16,12 @@ def check_dockerised_jenkins_pem():
         Check if the jenkins dockerised has created jenkinskey.pem private keys
     """
     # Check if both files are been added to home derectory
-    if not os.path.isfile(JENKINS_PEM):
+    if not os.path.isfile(get_jenkins_pem()):
         sys.exit("File jenkinskey.pem missing. Aborting! ")
 
     # Copy the pem keys and give relavant permissions to a dockerkeys Location. This is different from Scenario 1.
     subprocess.call('cp -f {0} {1}sshkeys/dockerkeys'.format(
-        JENKINS_PEM, get_script_folder()).split(' '))
+        get_jenkins_pem(), get_script_folder()).split(' '))
     subprocess.call(
         'sudo chmod 400 {0}sshkeys/dockerkeys/jenkinskey.pem'.format(
             get_script_folder()).split(' '))
@@ -42,7 +38,7 @@ def start(parameter_list):
 
     # Launch the Jenkins Docker
     print("Deploying Dockerized Jenkins server==============>")
-    get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
+    get_and_add_docker_jenkins_config(get_docker_path() + "/jenkins/")
     check_dockerised_jenkins_pem()
 
     # All variables are set and ready to call terraform
