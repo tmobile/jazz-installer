@@ -7,7 +7,7 @@
 # Usage:
 # ---------------------------------------------
 # To Installer, run:
-# ./Installer -b branch_name
+# ./Installer.sh
 # ---------------------------------------------
 
 # Variables section
@@ -27,7 +27,8 @@ REPO_PATH=$INSTALL_DIR/jazz-installer
 # Log file to record the installation logs
 LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
-JAZZ_BRANCH=""
+JAZZ_BRANCH="master"
+JAZZ_INSTALLER_BRANCH="master"
 
 # Default verbosity of the installation
 VERBOSE=0
@@ -78,7 +79,6 @@ trap '' 20
 
 function install_packages () {
   # Download and Installing Softwares required for Jazz Installer
-  # 1. GIT
   # 2. Java Jdk - 8u112-linux-x64
   # 3. Unzip
   # 4. AWSCLI
@@ -148,7 +148,7 @@ function install_packages () {
 
   #Get Jazz Installer code base
   sudo rm -rf jazz-installer
-  git clone -b $JAZZ_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
+  git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
   spin_wheel $! "Downloading jazz Installer"
 
   #Download and install pip
@@ -202,7 +202,8 @@ while [ $# -gt 0 ] ; do
     echo "./Installer.sh [options]"
     echo ""
     echo "options:"
-    echo "-b, --branch                                [mandatory] Branch to build Jazz framework from"
+    echo "-b, --branch                                [optional] Branch to build Jazz framework from. Defaults to `master`"
+    echo "-ib, --installer-branch                     [optional] Installer repo branch to use. Defaults to `master`"
     echo "-v, --verbose 1|0                           [optional] Enable/Disable verbose Installer logs. Default:0(Disabled)"
     echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
     echo "-h, --help                                  [optional] Describe help"
@@ -213,11 +214,22 @@ while [ $# -gt 0 ] ; do
     if [ ! -z "$1" ] ; then
       JAZZ_BRANCH="$1"
     else
-      echo "No arguments supplied for branch name. We need atleast branch name to kickoff the Installer.sh"
+      echo "No arguments supplied for branch name."
       echo "Usage: ./Installer.sh -b branch_name"
       exit 1
     fi
     shift ;;
+
+    -ib|--installer-branch)
+        shift
+        if [ ! -z "$1" ] ; then
+            JAZZ_INSTALLER_BRANCH="$1"
+        else
+            echo "No arguments supplied for installer branch name."
+            echo "Usage: ./Installer.sh -ib installer_branch_name"
+            exit 1
+        fi
+        shift ;;
 
     -v|--verbose)
     shift
@@ -226,8 +238,6 @@ while [ $# -gt 0 ] ; do
     else
       echo "Please specify 1 or 0 for verbosity. Enable/Disable verbose Installer logs. Default:0(Disabled)"
       echo "Usage: ./Installer --verbose 1"
-      echo "---------------------"
-      echo "Missing: Mandatory flag branchname '-b|--branch' not provided."
       exit 1
     fi
     shift ;;
@@ -253,11 +263,4 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-
-# Check if mandatory flag branchname is provided and verbosity is either 0|1
-if [[ ! -z $JAZZ_BRANCH ]] && [[ ($VERBOSE == 0) || ($VERBOSE == 1) ]]; then
-  install_packages $VERBOSE && post_installation
-elif [ -z $JAZZ_BRANCH ]; then
-  echo "Missing: Mandatory flag branchname '-b|--branch' not provided." 1>&3 2>&4
-  echo "Please run './Installer.sh -h' to see all the available options." 1>&3 2>&4
-fi
+install_packages $VERBOSE && post_installation

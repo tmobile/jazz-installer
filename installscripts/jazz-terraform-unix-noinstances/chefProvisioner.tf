@@ -24,11 +24,14 @@ resource "null_resource" "chef_provision_jenkins_server" {
     command = "sed -i 's#AWS_SECRET_KEY=.*.$#AWS_SECRET_KEY='${var.aws_secret_key}'#g' ${var.cookbooksDir}/jenkins/files/credentials/aws.sh"
   }
 
-  # Update git branch in jenkins cookbook
+  # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
     command = "sed -i 's|default\\['git_branch'\\].*.|default\\['git_branch'\\]='${var.github_branch}'|g' ${var.jenkinsattribsfile}"
   }
 
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['git_repo'\\].*.|default\\['git_repo'\\]='${var.github_repo}'|g' ${var.jenkinsattribsfile}"
+  }
 
   # Update cognito script in cookbook
   provisioner "local-exec" {
