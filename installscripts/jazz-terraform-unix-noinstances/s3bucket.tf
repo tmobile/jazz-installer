@@ -120,7 +120,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
     command = "rm -rf jazz-core"
   }
   provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} https://github.com/tmobile/jazz.git jazz-core"
+    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core"
 
   }
 }
