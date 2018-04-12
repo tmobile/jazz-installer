@@ -25,11 +25,11 @@ VERBOSE=0
 
 function start_wizard () {
     # Set the permissions
-    chmod -R +x $REPO_PATH/installscripts/*
-    mkdir -p $REPO_PATH/installscripts/sshkeys/dockerkeys
+    chmod -R +x $INSTALL_DIR/installscripts/*
+    mkdir -p $INSTALL_DIR/installscripts/sshkeys/dockerkeys
 
     # Call the python script to continue installation process
-    cd $REPO_PATH/installscripts/wizard
+    cd $INSTALL_DIR/installscripts/wizard
 
     python ./run.py $JAZZ_BRANCH $INSTALL_DIR
 
