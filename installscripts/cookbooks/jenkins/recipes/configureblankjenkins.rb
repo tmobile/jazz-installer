@@ -52,7 +52,7 @@ if (File.exist?("/home/#{node['jenkins']['SSH_user']}/jazz-core"))
 	end
 end
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
 
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
