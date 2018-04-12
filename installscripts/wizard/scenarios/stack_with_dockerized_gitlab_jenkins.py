@@ -2,13 +2,13 @@
 import os
 import sys
 import subprocess
-from support.jazz_common import INSTALL_SCRIPT_FOLDER, TERRAFORM_FOLDER_PATH, parse_and_replace_parameter_list
+from support.jazz_common import get_script_folder, get_terraform_folder, parse_and_replace_parameter_list
 from support.jazz_jenkins import get_and_add_docker_jenkins_config
 from support.jazz_gitlab import get_and_add_docker_gitlab_config
 
 # Global variables
-JENKINS_DOCKER_PATH = INSTALL_SCRIPT_FOLDER + "dockerfiles/jenkins/"
-GITLAB_DOCKER_PATH = INSTALL_SCRIPT_FOLDER + "dockerfiles/gitlab/"
+JENKINS_DOCKER_PATH = get_script_folder() + "dockerfiles/jenkins/"
+GITLAB_DOCKER_PATH = get_script_folder() + "dockerfiles/gitlab/"
 JENKINS_PEM = JENKINS_DOCKER_PATH + "/jenkinskey.pem"
 
 
@@ -24,17 +24,17 @@ def check_jenkins_pem():
 
     # Copy the pem keys and give relavant permissions to a dockerkeys location. This is different from Scenario 1.
     subprocess.call('cp -f {0} {1}sshkeys/dockerkeys'.format(
-        JENKINS_PEM, INSTALL_SCRIPT_FOLDER).split(' '))
+        JENKINS_PEM, get_script_folder()).split(' '))
     subprocess.call(
         'sudo chmod 400 {0}sshkeys/dockerkeys/jenkinskey.pem'.format(
-            INSTALL_SCRIPT_FOLDER).split(' '))
+            get_script_folder()).split(' '))
 
 
 def start(parameter_list):
     """
         start stack creation
     """
-    parse_and_replace_parameter_list(TERRAFORM_FOLDER_PATH, parameter_list)
+    parse_and_replace_parameter_list(get_terraform_folder(), parameter_list)
     print("Deploying Dockerized Jenkins server==============>")
     get_and_add_docker_jenkins_config(JENKINS_DOCKER_PATH)
     check_jenkins_pem()
@@ -44,7 +44,7 @@ def start(parameter_list):
     get_and_add_docker_gitlab_config(GITLAB_DOCKER_PATH)
 
     # All variables are set and ready to call terraform
-    os.chdir(TERRAFORM_FOLDER_PATH)
+    os.chdir(get_terraform_folder())
 
     print("Invoking Terraform==============================>")
     subprocess.call(

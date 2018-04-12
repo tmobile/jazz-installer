@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import HOME_FOLDER, TFVARS_FILE, replace_tfvars
+from jazz_common import get_installer_root, get_tfvars_file, replace_tfvars
 
 
 def add_bitbucket_config_to_files(parameter_list):
@@ -14,19 +14,19 @@ def add_bitbucket_config_to_files(parameter_list):
                             bitbucket_server_public_ip]
      """
 
-    replace_tfvars('scm_elb', parameter_list[0], TFVARS_FILE)
-    replace_tfvars('scm_username', parameter_list[1], TFVARS_FILE)
-    replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
-    replace_tfvars('scm_publicip', parameter_list[3], TFVARS_FILE)
-    replace_tfvars('scm_type', 'bitbucket', TFVARS_FILE)
-    replace_tfvars('scm_pathext', '/scm', TFVARS_FILE)
+    replace_tfvars('scm_elb', parameter_list[0], get_tfvars_file())
+    replace_tfvars('scm_username', parameter_list[1], get_tfvars_file())
+    replace_tfvars('scm_passwd', parameter_list[2], get_tfvars_file())
+    replace_tfvars('scm_publicip', parameter_list[3], get_tfvars_file())
+    replace_tfvars('scm_type', 'bitbucket', get_tfvars_file())
+    replace_tfvars('scm_pathext', '/scm', get_tfvars_file())
 
 
 def check_bitbucket_user(url, username, passwd):
     """
         Check if the bitbucket user is present in Bitbucket server
     """
-    bitbucket_sh = HOME_FOLDER + "/atlassian-cli-6.7.1/bitbucket.sh"
+    bitbucket_sh = get_installer_root() + "/atlassian-cli-6.7.1/bitbucket.sh"
     bitbucket_url = 'http://' + url + ''
     subprocess.call(['sudo', 'chmod', '+x', bitbucket_sh])
     cmd = [

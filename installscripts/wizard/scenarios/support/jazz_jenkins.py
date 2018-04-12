@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import replace_tfvars, INSTALL_SCRIPT_FOLDER, TFVARS_FILE
+from jazz_common import replace_tfvars, get_script_folder, get_tfvars_file
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -18,21 +18,23 @@ def add_jenkins_config_to_files(parameter_list):
                                 jenkins_server_subnet]
     """
 
-    replace_tfvars('jenkins_elb', parameter_list[0], TFVARS_FILE)
-    replace_tfvars('jenkinsuser', parameter_list[1], TFVARS_FILE)
-    replace_tfvars('jenkinspasswd', parameter_list[2], TFVARS_FILE)
-    replace_tfvars('jenkins_public_ip', parameter_list[3], TFVARS_FILE)
-    replace_tfvars('jenkins_ssh_login', parameter_list[4], TFVARS_FILE)
-    replace_tfvars('jenkins_ssh_port', parameter_list[5], TFVARS_FILE)
-    replace_tfvars('jenkins_security_group', parameter_list[6], TFVARS_FILE)
-    replace_tfvars('jenkins_subnet', parameter_list[7], TFVARS_FILE)
+    replace_tfvars('jenkins_elb', parameter_list[0], get_tfvars_file())
+    replace_tfvars('jenkinsuser', parameter_list[1], get_tfvars_file())
+    replace_tfvars('jenkinspasswd', parameter_list[2], get_tfvars_file())
+    replace_tfvars('jenkins_public_ip', parameter_list[3], get_tfvars_file())
+    replace_tfvars('jenkins_ssh_login', parameter_list[4], get_tfvars_file())
+    replace_tfvars('jenkins_ssh_port', parameter_list[5], get_tfvars_file())
+    replace_tfvars('jenkins_security_group', parameter_list[6],
+                   get_tfvars_file())
+    replace_tfvars('jenkins_subnet', parameter_list[7], get_tfvars_file())
 
 
 def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_cli = INSTALL_SCRIPT_FOLDER + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
+    jenkins_cli = get_script_folder(
+    ) + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
     jenkins_url = 'http://' + url + ''
 
     cmd = [

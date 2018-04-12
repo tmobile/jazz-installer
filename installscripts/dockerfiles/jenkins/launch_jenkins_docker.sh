@@ -64,7 +64,7 @@ spin_wheel $! "Spinning up the Jenkins Docker container"
 # Grab the pem key for further jenkins configurations
 docker cp jenkins-server:/root/.ssh/id_rsa ./jenkinskey.pem
 sudo chmod +r ./jenkinskey.pem
-variablesfile=$JAZZ_ROOT/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
+variablesfile=$JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
 sed -i'.bak' 's|\(jenkins_ssh_key \= \)\(.*\)|\1\"../sshkeys/dockerkeys/jenkinskey.pem\"|g' $variablesfile
 
 sleep 20 &
