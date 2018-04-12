@@ -49,22 +49,22 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     # -----------------------------------------------------------
 
     # populating BRANCH name
-    replace_tfvars('github_branch', jazz_branch, get_tfvars_file()())
+    replace_tfvars('github_branch', jazz_branch, get_tfvars_file())
 
     # Populating Jazz Account ID
-    replace_tfvars('jazz_accountid', jazz_account_id, get_tfvars_file()())
+    replace_tfvars('jazz_accountid', jazz_account_id, get_tfvars_file())
 
     # Populating Cognito Details
     replace_tfvars('cognito_pool_username', cognito_details[0],
-                   get_tfvars_file()())
+                   get_tfvars_file())
     replace_tfvars('cognito_pool_password', cognito_details[1],
-                   get_tfvars_file()())
+                   get_tfvars_file())
 
     # Populating Jazz Tag env
-    replace_tfvars('envPrefix', jazz_tag_details[0], get_tfvars_file()())
-    replace_tfvars('tagsEnvironment', jazz_tag_details[1], get_tfvars_file()())
-    replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file()())
-    replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file()())
+    replace_tfvars('envPrefix', jazz_tag_details[0], get_tfvars_file())
+    replace_tfvars('tagsEnvironment', jazz_tag_details[1], get_tfvars_file())
+    replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file())
+    replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file())
 
     # TODO look into why we need a script to tear down AWS resources,
     # my understanding is that Terraform should be able to delete everything
