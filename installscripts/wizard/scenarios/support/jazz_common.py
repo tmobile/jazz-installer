@@ -4,9 +4,23 @@ import re
 import subprocess
 
 # Global variables
-INSTALL_SCRIPT_FOLDER = os.environ["JAZZ_ROOT"] + "/installscripts/"
-TERRAFORM_FOLDER_PATH = INSTALL_SCRIPT_FOLDER + "/jazz-terraform-unix-noinstances/"
-TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
+HOME_FOLDER = "~"
+
+
+def get_installer_root():
+    return os.environ['JAZZ_INSTALLER_ROOT']
+
+
+def get_script_folder():
+    return get_installer_root() + "/installscripts/"
+
+
+def get_terraform_folder():
+    return get_script_folder() + "/jazz-terraform-unix-noinstances/"
+
+
+def get_tfvars_file():
+    return get_terraform_folder() + "terraform.tfvars"
 
 
 def parse_and_replace_parameter_list(terraform_folder, parameter_list):
@@ -27,20 +41,22 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     # -----------------------------------------------------------
 
     # populating BRANCH name
-    replace_tfvars('github_branch', jazz_branch, TFVARS_FILE)
+    replace_tfvars('github_branch', jazz_branch, get_tfvars_file()())
 
     # Populating Jazz Account ID
-    replace_tfvars('jazz_accountid', jazz_account_id, TFVARS_FILE)
+    replace_tfvars('jazz_accountid', jazz_account_id, get_tfvars_file()())
 
     # Populating Cognito Details
-    replace_tfvars('cognito_pool_username', cognito_details[0], TFVARS_FILE)
-    replace_tfvars('cognito_pool_password', cognito_details[1], TFVARS_FILE)
+    replace_tfvars('cognito_pool_username', cognito_details[0],
+                   get_tfvars_file()())
+    replace_tfvars('cognito_pool_password', cognito_details[1],
+                   get_tfvars_file()())
 
     # Populating Jazz Tag env
-    replace_tfvars('envPrefix', jazz_tag_details[0], TFVARS_FILE)
-    replace_tfvars('tagsEnvironment', jazz_tag_details[1], TFVARS_FILE)
-    replace_tfvars('tagsExempt', jazz_tag_details[2], TFVARS_FILE)
-    replace_tfvars('tagsOwner', jazz_tag_details[3], TFVARS_FILE)
+    replace_tfvars('envPrefix', jazz_tag_details[0], get_tfvars_file()())
+    replace_tfvars('tagsEnvironment', jazz_tag_details[1], get_tfvars_file()())
+    replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file()())
+    replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file()())
 
     # TODO look into why we need a script to tear down AWS resources,
     # my understanding is that Terraform should be able to delete everything

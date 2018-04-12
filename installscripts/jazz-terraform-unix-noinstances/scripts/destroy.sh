@@ -18,7 +18,7 @@ if [ "$1" != "all" ] && [ "$1" != "frameworkonly" ]; then
 fi
 
 # Rename any stack_deletion out files if any
-for x in $JAZZ_ROOT/stack_de*.out
+for x in $JAZZ_INSTALLER_ROOT/stack_de*.out
 do
     if [ -f "$x" ]
     then
@@ -49,11 +49,11 @@ if [ "$1" == "all" ]; then
     python scripts/DeleteStackPlatformServices.py $stack_name true
 
     #Deleting Cloud Front Distributions
-    cd $JAZZ_ROOT/installscripts/jazz-terraform-unix-noinstances
+    cd $JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances
     python scripts/DeleteStackCloudFrontDists.py $stack_name true
 
     echo "Destroy cloudfronts"
-    cd $JAZZ_ROOT/installscripts/jazz-terraform-unix-noinstances
+    cd $JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances
     python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
     while [ $loopIndx -le 2 ];
@@ -93,7 +93,7 @@ if [ "$1" == "frameworkonly" ]; then
 fi
 
 
-cd $JAZZ_ROOT
+cd $JAZZ_INSTALLER_ROOT
 
 if (grep -q "Error applying plan" ./stack_deletion_$loopIndx.out) then
     echo "Error occured in destroy, please refer stack_deletion.out and re-run destroy after resolving the issues."

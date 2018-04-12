@@ -184,7 +184,7 @@ function post_installation () {
   # Call the python script to continue installation process
   cd $REPO_PATH/installscripts/wizard
   #sed -i "s|\"jazz_install_dir\".*$|\"jazz_install_dir\": \"$INSTALL_DIR\"|g" config.py
-  python ./run.py $JAZZ_BRANCH $REPO_PATH
+  python ./run.py $JAZZ_BRANCH $INSTALL_DIR
 
   # Clean up the jazz_tmp folder
   sudo rm -rf $INSTALL_DIR/jazz_tmp
