@@ -23,7 +23,7 @@ JAZZ_BRANCH="master"
 # Default verbosity of the installation
 VERBOSE=0
 
-start_wizard() {
+function start_wizard {
     # Set the permissions
     chmod -R +x $INSTALL_DIR/installscripts/*
     mkdir -p $INSTALL_DIR/installscripts/sshkeys/dockerkeys
