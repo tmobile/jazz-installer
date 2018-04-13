@@ -4,7 +4,7 @@ resource "null_resource" "createProjectsInBB" {
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
-    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_elb")}"
+    command = "${var.scmclient_cmd} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_elb")} ${var.atlassian_jar_path}"
   }
 }
 
