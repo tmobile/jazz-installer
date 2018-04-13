@@ -94,7 +94,11 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   index_document = "index.html"
   }
   provisioner "local-exec" {
+<<<<<<< HEAD
     command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
+=======
+    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
+>>>>>>> v1.4.6
   }
   provisioner "local-exec" {
 	when = "destroy"
