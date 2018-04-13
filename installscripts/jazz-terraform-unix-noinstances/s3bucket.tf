@@ -97,9 +97,6 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
-  }
-  provisioner "local-exec" {
 	when = "destroy"
 	on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
