@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # File: Installer.sh
 # Description: Starts the Jazz serverless installer wizard.
@@ -23,7 +23,7 @@ JAZZ_BRANCH="master"
 # Default verbosity of the installation
 VERBOSE=0
 
-start_wizard () {
+start_wizard() {
     # Set the permissions
     chmod -R +x $INSTALL_DIR/installscripts/*
     mkdir -p $INSTALL_DIR/installscripts/sshkeys/dockerkeys
