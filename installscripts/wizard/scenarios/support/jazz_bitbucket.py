@@ -26,7 +26,7 @@ def check_bitbucket_user(url, username, passwd):
     """
         Check if the bitbucket user is present in Bitbucket server
     """
-    bitbucket_sh = get_installer_root() + "/atlassian-cli-6.7.1/bitbucket.sh"
+    bitbucket_sh = get_installer_root() + "/jazz_tmp/atlassian-cli-6.7.1/bitbucket.sh"
     bitbucket_url = 'http://' + url + ''
     subprocess.call(['sudo', 'chmod', '+x', bitbucket_sh])
     cmd = [
