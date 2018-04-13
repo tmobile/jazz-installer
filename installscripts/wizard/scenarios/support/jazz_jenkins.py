@@ -33,8 +33,9 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_cli = get_script_folder(
-    ) + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
+    jenkins_cli = get_script_folder()
+    + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
+
     jenkins_url = 'http://' + url + ''
 
     cmd = [
@@ -62,9 +63,11 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     # Get Existing Jenkins Details form user
     print "\nPlease provide Jenkins Details.."
     jenkins_server_elb = raw_input(
-        """\nInstaller would like to install and configure the following jenkins plugins.
+        """\nInstaller would like to install and configure the following \
+        jenkins plugins.
     'https://github.com/tmobile/jazz-installer/wiki/Jazz-Supported-Installations#jenkins-plugins'
-    If jenkins is already configured with any of these plugins, please provide a blank jenkins and continue.
+    If jenkins is already configured with any of these plugins, please \
+        provide a blank jenkins and continue. \
     Yes to proceed and No to abort [y/n] :""")
 
     if jenkins_server_elb != 'y':

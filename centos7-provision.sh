@@ -159,8 +159,8 @@ function install_packages () {
     #Downloading and Install atlassian-cli
     curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
     spin_wheel $! "Downloading atlassian-cli"
-    unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip  >>$LOG_FILE &
-    spin_wheel $! "Installing atlassian-cli"
+    unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip -d $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1 >>$LOG_FILE &
+    spin_wheel $! "Fetching atlassian-cli"
 
     #Get Jazz installer code base
     sudo rm -rf jazz-installer
