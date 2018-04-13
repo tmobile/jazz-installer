@@ -425,6 +425,25 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Dev" {
     type = "S"
   }
 
+  attribute {
+    name = "SERVICE_DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE_NAME"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "EnvironmentsDomainServiceIndex"
+    hash_key           = "SERVICE_DOMAIN"
+    range_key          = "SERVICE_NAME"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
   tags {
     Name        = "${var.envPrefix}"
     Application = "Jazz"
@@ -446,6 +465,25 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Stg" {
     type = "S"
   }
 
+  attribute {
+    name = "SERVICE_DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE_NAME"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "EnvironmentsDomainServiceIndex"
+    hash_key           = "SERVICE_DOMAIN"
+    range_key          = "SERVICE_NAME"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
   tags {
     Name        = "${var.envPrefix}"
     Application = "Jazz"
@@ -465,6 +503,25 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Prod" {
   attribute {
     name = "ENVIRONMENT_ID"
     type = "S"
+  }
+
+  attribute {
+    name = "SERVICE_DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE_NAME"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "EnvironmentsDomainServiceIndex"
+    hash_key           = "SERVICE_DOMAIN"
+    range_key          = "SERVICE_NAME"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
   }
 
   tags {
