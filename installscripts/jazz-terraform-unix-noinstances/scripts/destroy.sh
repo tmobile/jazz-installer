@@ -100,9 +100,4 @@ if (grep -q "Error applying plan" ./stack_deletion_$loopIndx.out) then
     exit 1
 fi
 
-echo "Proceeding to delete Jazz instance."
-shopt -s extglob
-sudo rm -rf !(*.out)
-sudo rm -rf ../Installer.sh ../atlassian-cli*
-
 date

@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import get_installer_root, get_tfvars_file, replace_tfvars
+from jazz_common import get_atlassian_tools_path, get_tfvars_file, replace_tfvars
 
 
 def add_bitbucket_config_to_files(parameter_list):
@@ -26,7 +26,7 @@ def check_bitbucket_user(url, username, passwd):
     """
         Check if the bitbucket user is present in Bitbucket server
     """
-    bitbucket_sh = get_installer_root() + "/jazz_tmp/atlassian-cli-6.7.1/bitbucket.sh"
+    bitbucket_sh = get_atlassian_tools_path() + "bitbucket.sh"
     bitbucket_url = 'http://' + url + ''
     subprocess.call(['sudo', 'chmod', '+x', bitbucket_sh])
     cmd = [

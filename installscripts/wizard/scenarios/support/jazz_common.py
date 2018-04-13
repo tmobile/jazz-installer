@@ -31,6 +31,10 @@ def get_jenkins_pem():
     return get_docker_path() + "jenkins/jenkinskey.pem"
 
 
+def get_atlassian_tools_path():
+    return get_installer_root + "jazz_tmp/atlassian-cli-6.7.1/"
+
+
 def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     """
         Method parse the parameters send from run.py and these common variables
@@ -66,14 +70,10 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file())
     replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file())
 
-    # TODO look into why we need a script to tear down AWS resources,
-    # my understanding is that Terraform should be able to delete everything
-    # it creates, by definition.
-    subprocess.call([
-        'sed', '-i',
-        's|stack_name=.*.$|stack_name="%s"|g' % (jazz_tag_details[0]),
-        "scripts/destroy.sh"
-    ])
+    # Terraform provisioning script needs the jar file path
+    replace_tfvars('atlassian_jar_path',
+                   get_atlassian_tools_path() + "lib/bitbucket-cli-6.7.0.jar",
+                   get_tfvars_file())
 
 
 # Uses sed to modify the values of key-value pairs within a file
