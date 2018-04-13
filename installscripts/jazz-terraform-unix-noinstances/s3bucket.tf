@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
   provisioner "local-exec" {
-	when = "destroy"
+    when = "destroy"
     on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
   }
@@ -43,8 +43,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
   }
 
@@ -67,8 +67,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
   }
 
@@ -91,18 +91,14 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     JazzInstance = "${var.envPrefix}"
   }
   website {
-  index_document = "index.html"
+    index_document = "index.html"
   }
   provisioner "local-exec" {
-<<<<<<< HEAD
-    command = "${var.configureapidoc_cmd} ${aws_s3_bucket.jazz_s3_api_doc.bucket}"
-=======
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
->>>>>>> v1.4.6
   }
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
   }
 }
@@ -164,8 +160,8 @@ EOF
   }
 
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
   }
 }
@@ -197,103 +193,103 @@ resource "aws_iam_role" "lambda_role" {
 {
   "Version": "2012-10-17",
   "Statement": [
-		{
-			"Sid": "",
-			"Effect": "Allow",
-			"Principal": {
-						"Service": "apigateway.amazonaws.com"
-			},
-			"Action": "sts:AssumeRole"
-		},
-		{
-			"Effect": "Allow",
-			"Principal": {
-						"Service": "lambda.amazonaws.com"
-			},
-			"Action": "sts:AssumeRole"
-		}
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                        "Service": "apigateway.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                        "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
    ]
 }
 EOF
 
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn ${aws_iam_policy.basic_execution_policy.arn}"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AWSLambdaFullAccess"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
-        when = "destroy"
-	on_failure = "continue"
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess"
   }
   provisioner "local-exec" {
-        when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
   }
 }
 
 
 resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
 }
 resource "aws_iam_role_policy_attachment" "apigatewayinvokefullAccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
 }
 resource "aws_iam_role_policy_attachment" "cloudwatchlogaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "${aws_iam_policy.basic_execution_policy.arn}"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "${aws_iam_policy.basic_execution_policy.arn}"
 }
 resource "aws_iam_role_policy_attachment" "kinesisaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
 }
 resource "aws_iam_role_policy_attachment" "networkadminaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
 }
 resource "aws_iam_role_policy_attachment" "vpccrossaccountaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
 }
 resource "aws_iam_role_policy_attachment" "s3fullaccess" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
@@ -310,8 +306,8 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
   }
 
@@ -332,8 +328,8 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     JazzInstance = "${var.envPrefix}"
   }
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
   }
 
@@ -356,8 +352,8 @@ resource "aws_s3_bucket" "prod-serverless-static" {
 
   # TODO do we need this, or does `force_destroy` suffice?
   provisioner "local-exec" {
-	when = "destroy"
-	on_failure = "continue"
+    when = "destroy"
+    on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
   }
 
@@ -366,158 +362,158 @@ resource "aws_s3_bucket" "prod-serverless-static" {
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
   policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
-        actions = [
-                        "s3:*"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.dev-serverless-static.arn}/*"
-        ]
+    actions = [
+      "s3:*"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.dev-serverless-static.arn}/*"
+    ]
 
   }
-   statement {
-        actions = [
-                        "s3:ListBucket"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.dev-serverless-static.arn}"
-        ]
+  statement {
+    actions = [
+      "s3:ListBucket"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.dev-serverless-static.arn}"
+    ]
 
   }
 }
 resource "aws_s3_bucket_policy" "dev-serverless-static-bucket-contents-policy" {
-        bucket = "${aws_s3_bucket.dev-serverless-static.id}"
-        policy = "${data.aws_iam_policy_document.dev-serverless-static-policy-data-contents.json}"
+  bucket = "${aws_s3_bucket.dev-serverless-static.id}"
+  policy = "${data.aws_iam_policy_document.dev-serverless-static-policy-data-contents.json}"
 }
 
 data "aws_iam_policy_document" "stg-serverless-static-policy-data-contents" {
   policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
-        actions = [
-                        "s3:*"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.stg-serverless-static.arn}/*"
-        ]
+    actions = [
+      "s3:*"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.stg-serverless-static.arn}/*"
+    ]
 
   }
   statement {
-        actions = [
-                        "s3:ListBucket"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.stg-serverless-static.arn}"
-        ]
+    actions = [
+      "s3:ListBucket"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.stg-serverless-static.arn}"
+    ]
 
   }
 }
 
 resource "aws_s3_bucket_policy" "stg-serverless-static-bucket-contents-policy" {
-        bucket = "${aws_s3_bucket.stg-serverless-static.id}"
-        policy = "${data.aws_iam_policy_document.stg-serverless-static-policy-data-contents.json}"
+  bucket = "${aws_s3_bucket.stg-serverless-static.id}"
+  policy = "${data.aws_iam_policy_document.stg-serverless-static-policy-data-contents.json}"
 }
 
 data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
   policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
-        sid = "1"
-        actions = [
-                        "s3:*"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.prod-serverless-static.arn}/*"
-        ]
+    sid = "1"
+    actions = [
+      "s3:*"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.prod-serverless-static.arn}/*"
+    ]
 
   }
   statement {
-        sid = "ListBucket"
-        actions = [
-                        "s3:ListBucket"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.prod-serverless-static.arn}"
-        ]
+    sid = "ListBucket"
+    actions = [
+      "s3:ListBucket"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.prod-serverless-static.arn}"
+    ]
   }
 
 }
 resource "aws_s3_bucket_policy" "prod-serverless-static-bucket-contents-policy" {
-        bucket = "${aws_s3_bucket.prod-serverless-static.id}"
-        policy = "${data.aws_iam_policy_document.prod-serverless-static-policy-data-contents.json}"
+  bucket = "${aws_s3_bucket.prod-serverless-static.id}"
+  policy = "${data.aws_iam_policy_document.prod-serverless-static-policy-data-contents.json}"
 }
 
 data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
   policy_id = "PolicyForCloudFrontPrivateContent"
   statement {
-        sid = "1"
-        actions = [
-                        "s3:*"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz-web.arn}/*"
-        ]
+    sid = "1"
+    actions = [
+      "s3:*"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz-web.arn}/*"
+    ]
 
   }
   statement {
-        sid = "ListBucket"
-        actions = [
-                        "s3:ListBucket"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${aws_iam_role.lambda_role.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz-web.arn}"
-        ]
+    sid = "ListBucket"
+    actions = [
+      "s3:ListBucket"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${aws_iam_role.lambda_role.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz-web.arn}"
+    ]
 
   }
   statement {
-        sid = "jazzwebsite"
-        actions = [
-                        "s3:GetObject"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ element(split( "/",  "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"), 2)}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz-web.arn}/*"
-        ]
+    sid = "jazzwebsite"
+    actions = [
+      "s3:GetObject"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ element(split( "/",  "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"), 2)}"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz-web.arn}/*"
+    ]
 
   }
 
 }
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
-        depends_on = ["aws_cloudfront_distribution.jazz" ]
-        bucket = "${aws_s3_bucket.jazz-web.id}"
-        policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
+  depends_on = ["aws_cloudfront_distribution.jazz" ]
+  bucket = "${aws_s3_bucket.jazz-web.id}"
+  policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
 }
 
 data "aws_caller_identity" "current" {}
@@ -525,46 +521,46 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
   policy_id = "jazz-s3-api-doc-bucket-contents"
   statement {
-        sid = "jazz-s3-api-doc"
-        actions = [
-                        "s3:*"
-        ]
-        principals  {
-                        type="AWS",
-                        identifiers = ["${data.aws_caller_identity.current.arn}"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
-        ]
+    sid = "jazz-s3-api-doc"
+    actions = [
+      "s3:*"
+    ]
+    principals  {
+      type="AWS",
+      identifiers = ["${data.aws_caller_identity.current.arn}"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
+    ]
   },
   statement {
-        sid = "jazz-s3-api-doc"
-        actions = [
-                        "s3:GetObject"
-        ]
-        principals  {
-                        type="*",
-                        identifiers = ["*"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
-        ]
+    sid = "jazz-s3-api-doc"
+    actions = [
+      "s3:GetObject"
+    ]
+    principals  {
+      type="*",
+      identifiers = ["*"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
+    ]
   },
   statement {
-        sid = "jazz-s3-api-doc"
-        actions = [
-                        "s3:ListBucket"
-        ]
-        principals  {
-                        type="*",
-                        identifiers = ["*"]
-                        }
-        resources = [
-                "${aws_s3_bucket.jazz_s3_api_doc.arn}"
-        ]
+    sid = "jazz-s3-api-doc"
+    actions = [
+      "s3:ListBucket"
+    ]
+    principals  {
+      type="*",
+      identifiers = ["*"]
+    }
+    resources = [
+      "${aws_s3_bucket.jazz_s3_api_doc.arn}"
+    ]
   }
 }
 resource "aws_s3_bucket_policy" "jazz-s3-api-doc-bucket-contents-policy" {
-        bucket = "${aws_s3_bucket.jazz_s3_api_doc.id}"
-        policy = "${data.aws_iam_policy_document.jazz_s3_api_doc_bucket_contents.json}"
+  bucket = "${aws_s3_bucket.jazz_s3_api_doc.id}"
+  policy = "${data.aws_iam_policy_document.jazz_s3_api_doc_bucket_contents.json}"
 }
