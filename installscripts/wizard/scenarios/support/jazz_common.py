@@ -32,7 +32,7 @@ def get_jenkins_pem():
 
 
 def get_atlassian_tools_path():
-    return get_installer_root + "jazz_tmp/atlassian-cli-6.7.1/"
+    return get_installer_root() + "jazz_tmp/atlassian-cli-6.7.1/"
 
 
 def parse_and_replace_parameter_list(terraform_folder, parameter_list):
