@@ -163,7 +163,8 @@ function install_packages () {
     spin_wheel $! "Fetching atlassian-cli"
 
     #Get Jazz installer code base
-    if [-z "$JAZZ_INSTALLER_BRANCH"]; then
+    if [ -z "$JAZZ_INSTALLER_BRANCH" ]; then
+        echo "Jazz branch to clone"
         print_info "Skipping installer repo clone based on CLI flag"
     else
         sudo rm -rf jazz-installer
@@ -222,7 +223,7 @@ while [ $# -gt 0 ] ; do
 
         -nc|--no-clone)
             shift
-            JAZZ_INSTALLER_BRANCH=""
+            JAZZ_INSTALLER_BRANCH=''
             shift ;;
 
         -v|--verbose)
