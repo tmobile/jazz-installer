@@ -163,9 +163,13 @@ function install_packages () {
     spin_wheel $! "Fetching atlassian-cli"
 
     #Get Jazz installer code base
-    sudo rm -rf jazz-installer
-    git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
-    spin_wheel $! "Fetching jazz-installer repo"
+    if [-z "$JAZZ_INSTALLER_BRANCH"]; then
+        print_info "Skipping installer repo clone based on CLI flag"
+    else
+        sudo rm -rf jazz-installer
+        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
+        spin_wheel $! "Fetching jazz-installer repo"
+    fi
 
     #Download and install pip
     if command -v pip > /dev/null; then
@@ -199,6 +203,7 @@ while [ $# -gt 0 ] ; do
             echo ""
             echo "options:"
             echo "-ib, --installer-branch                     [optional] centos7-provision repo branch to use. Defaults to `master`"
+            echo "-nc, --no-clone                             [optional] Skip cloning the jazz-installer repo into the current directory. Default: repo is cloned."
             echo "-v, --verbose 1|0                           [optional] Enable/Disable verbose centos7-provision logs. Default:0(Disabled)"
             echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
             echo "-h, --help                                  [optional] Describe help"
@@ -213,6 +218,11 @@ while [ $# -gt 0 ] ; do
                 echo "Usage: ./centos7-provision.sh -ib installer_branch_name"
                 exit 1
             fi
+            shift ;;
+
+        -nc|--no-clone)
+            shift
+            JAZZ_INSTALLER_BRANCH=""
             shift ;;
 
         -v|--verbose)
