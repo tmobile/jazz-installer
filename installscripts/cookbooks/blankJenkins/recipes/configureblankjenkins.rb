@@ -98,10 +98,10 @@ if node[:platform_family].include?("rhel")
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
 	  execute 'createJob-platform_api_services' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Jazz_Core_Services #{node['scmelb']}  #{node['jenkins']['SSH_user']}"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} #{node['jenkins']['SSH_user']}"
@@ -229,11 +229,11 @@ if node[:platform_family].include?("debian")
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
-      command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['scmelb']}  root"
+      command "/root/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['scmelb']}  root"
     end
     execute 'createJob-platform_api_services' do
       only_if  { node[:scm] == 'bitbucket' }
-      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['scmelb']}  root"
+      command "/root/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Jazz_Core_Services #{node['scmelb']}  root"
     end
     execute 'job_cleanup_cloudfront_distributions' do
       command "/root/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['scmpath']} root"
