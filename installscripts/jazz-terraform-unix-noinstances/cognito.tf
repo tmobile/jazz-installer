@@ -38,6 +38,7 @@ resource "aws_cognito_user_pool" "pool"{
 }
 
 resource "aws_cognito_user_pool_client" "client" {
+  depends_on = ["aws_cognito_user_pool_domain.domain"]
   name = "${var.envPrefix}-api-onboarding"
   generate_secret = false
   user_pool_id = "${aws_cognito_user_pool.pool.id}"
