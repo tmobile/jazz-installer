@@ -1,4 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
+  depends_on = ["aws_cognito_user_pool_domain.domain"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
