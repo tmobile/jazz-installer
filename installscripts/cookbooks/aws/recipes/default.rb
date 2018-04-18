@@ -1,14 +1,4 @@
-if node[:platform_family].include?("rhel")
-    yum_package 'unzip' do
-      action :install
-    end
-end
-
-if node[:platform_family].include?("debian")
-   execute 'unzipinstall' do
-      command 'apt-get install unzip -y'
-   end
-end
+package "unzip"
 
 remote_file "/tmp/awscli-bundle.zip" do
   source "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
