@@ -74,6 +74,11 @@ def get_stack_generic_details(jazz_branch):
     knownWorkingRegions = ['us-east-1', 'us-west-2']
 
     region = raw_input("AWS Region (e.g. us-east-1): ")
+
+    if region is "":
+        print("No region entered, defaulting to 'us-east-1'")
+        region = "us-east-1"
+
     if region not in knownWorkingRegions:
         print(
             'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.\n\n'
