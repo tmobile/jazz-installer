@@ -84,10 +84,10 @@ execute 'createJob-job_build_pack_api' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-bitbucketteam_newService' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} bitbucketteam_newService #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-platform_api_services' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Platform_API_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} Jazz_Core_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'job_cleanup_cloudfront_distributions' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} cleanup_cloudfront_distributions  #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"

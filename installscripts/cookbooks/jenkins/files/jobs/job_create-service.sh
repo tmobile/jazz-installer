@@ -22,65 +22,15 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>service_type</name>
+          <name>service_id</name>
           <description></description>
-          <defaultValue>api</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>runtime</name>
-          <description></description>
-          <defaultValue>java</defaultValue>
-        </hudson.model.StringParameterDefinition>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>        
         <hudson.model.StringParameterDefinition>
           <name>admin_group</name>
           <description></description>
           <defaultValue>admin</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>service_name</name>
-          <description></description>
-          <defaultValue>JazzJS2</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>domain</name>
-          <description></description>
-          <defaultValue>slf</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>username</name>
-          <description></description>
-          <defaultValue>jenkins1</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>slack_channel</name>
-          <description></description>
-          <defaultValue>NA</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>require_internal_access</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>rateExpression</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>create_cloudfront_url</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>enableEventSchedule</name>
-          <description></description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>        
-        <hudson.model.StringParameterDefinition>
-          <name>description</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
+        </hudson.model.StringParameterDefinition>        
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
