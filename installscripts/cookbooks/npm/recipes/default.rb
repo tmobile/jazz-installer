@@ -23,12 +23,12 @@ execute 'npmversion' do
    #cwd "/usr/local"
 end
 execute 'installserverless' do
-   command 'npm config set unsafe-perm=true; npm install -g serverless'
+   command 'npm config set unsafe-perm=true; npm install -g serverless@1.26.1'
    cwd "/usr/local"
 end
 execute 'setup permissions for symbol-observable node module' do
    command 'sudo chmod -R o+r /usr/lib/node_modules/serverless/node_modules/symbol-observable/'
 end
 execute 'install ng-cli' do
-   command 'sudo npm install -g @angular/cli'
+   command 'sudo npm install -g @angular/cli@1.7.3'
 end
