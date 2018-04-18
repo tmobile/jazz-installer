@@ -47,8 +47,7 @@ do
 				  "iamRoleARN":{"S":"'$iamRoleARN'"},
 				  "providerMemorySize":{"S":"256"},
 				  "providerRuntime":{"S":"nodejs6.10"},
-				  "providerTimeout":{"S":"160"},
-				  "runtime":{"S":"nodejs"}
+				  "providerTimeout":{"S":"160"}
 			    }
 			}
 	  }'
@@ -68,8 +67,7 @@ do
 						  "iamRoleARN":{"S":"'$iamRoleARN'"},
 						  "providerMemorySize":{"S":"256"},
 						  "providerRuntime":{"S":"nodejs4.3"},
-						  "providerTimeout":{"S":"160"},
-						  "runtime":{"S":"nodejs"}
+						  "providerTimeout":{"S":"160"}
 						}
 					}
 			  }'
@@ -89,8 +87,7 @@ do
 					  "iamRoleARN":{"S":"'$iamRoleARN'"},
 					  "providerMemorySize":{"S":"256"},
 					  "providerRuntime":{"S":"nodejs4.3"},
-					  "providerTimeout":{"S":"160"},
-					  "runtime":{"S":"nodejs"}
+					  "providerTimeout":{"S":"160"}
 					}
 				}
 		  }' 
