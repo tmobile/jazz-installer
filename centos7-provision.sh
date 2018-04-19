@@ -40,8 +40,7 @@ print_error()
 }
 
 #Spin wheel
-spin_wheel()
-{
+function spin_wheel () {
     pid=$1 # Process Id of the previous running command
     message=$2
     spin='-\|/'
@@ -91,9 +90,6 @@ function install_packages () {
         print_info "You have started the installer in non-verbose mode" 1>&3 2>&4
     fi
     print_info "You may view the detailed installation logs at $LOG_FILE" 1>&3 2>&4
-
-    sudo yum check-update >>$LOG_FILE &
-    spin_wheel $! "Updating yum DB"
 
     # Install git
     if command -v git > /dev/null; then
