@@ -125,7 +125,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
   provisioner "local-exec" {
     command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
-  }  
+  }
 }
 
 resource "aws_s3_bucket" "jazz-web" {
@@ -543,7 +543,7 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
   policy_id = "jazz-s3-api-doc-bucket-contents"
   statement {
-        sid = "jazz-s3-api-doc"
+        sid = "jazz-s3-api-doc-admin-access"
         actions = [
                         "s3:*"
         ]
@@ -554,9 +554,9 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
         resources = [
                 "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
         ]
-  },
+  }
   statement {
-        sid = "jazz-s3-api-doc"
+        sid = "jazz-s3-api-doc-get-object"
         actions = [
                         "s3:GetObject"
         ]
@@ -567,9 +567,9 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
         resources = [
                 "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
         ]
-  },
+  }
   statement {
-        sid = "jazz-s3-api-doc"
+        sid = "jazz-s3-api-doc-list-bucket"
         actions = [
                         "s3:ListBucket"
         ]
