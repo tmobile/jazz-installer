@@ -9,6 +9,7 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"JENKINS\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"ONBOARDING_API\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"BITBUCKET\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"GITLAB\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"DELETE_SERVICE_API\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"AWS\"}}"
    ;;
@@ -38,6 +39,15 @@ case "$TABLE_FAMILY" in
 		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_PROJECT\"}}"
 		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"BUILD\"}}"
 		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"VALIDATE_PRE_BUILD_CONF\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_BRANCH\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_TAG\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"COMMIT_TEMPLATE\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_BRANCH\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"MERGE_PR\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DECLINE_PR\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_PR\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"COMMENT_PR\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_TAG\"}}"
    ;;
    "EVENT_STATUS") 
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"COMPLETED\"}}"
