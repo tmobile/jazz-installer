@@ -33,8 +33,8 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_cli = get_script_folder()
-    + "/cookbooks/jenkins/files/default/jenkins-cli.jar"
+    jenkins_cli = get_script_folder() + \
+        "/cookbooks/jenkins/files/default/jenkins-cli.jar"
 
     jenkins_url = 'http://' + url + ''
 
