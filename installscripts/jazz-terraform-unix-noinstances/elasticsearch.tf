@@ -18,6 +18,10 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
       Application = "Jazz"
       JazzInstance = "${var.envPrefix}"
 		}
+    vpc_options {
+         security_group_ids = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"],
+         subnet_ids = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}"]
+       }
 		  access_policies = <<POLICIES
 {
     "Version": "2012-10-17",
@@ -40,4 +44,11 @@ POLICIES
         command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
     }
 
+}
+
+resource "null_resource" "updateSecurityGroup" {
+   provisioner "local-exec" {
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 443 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"
+    on_failure = "continue"
+  }
 }

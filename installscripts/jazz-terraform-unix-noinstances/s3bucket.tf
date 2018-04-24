@@ -302,6 +302,10 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
     role       = "${aws_iam_role.lambda_role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
+resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AWSLambdaVPCAccessExecutionRole"
+}
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
   request_payer = "BucketOwner"
