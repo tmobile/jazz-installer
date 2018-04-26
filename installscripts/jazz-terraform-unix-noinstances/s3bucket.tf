@@ -267,6 +267,11 @@ EOF
 	on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
   }
+  provisioner "local-exec" {
+        when = "destroy"
+	on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  }
 }
 
 
@@ -304,7 +309,7 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
 }
 resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
     role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "arn:aws:iam::aws:policy/AWSLambdaVPCAccessExecutionRole"
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
