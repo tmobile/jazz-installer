@@ -81,5 +81,10 @@
     "CAS_NAMESPACE_ID": "",
     "USERNAME": "scm_username",
     "PASSWORD": ""
-   }
+   },
+   "UI_CONFIG":{ 
+      "feature":{
+        "multi_env":false
+      }
+    }
 }
