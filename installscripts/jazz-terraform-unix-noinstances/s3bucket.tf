@@ -94,9 +94,6 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     index_document = "index.html"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
     command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
@@ -256,6 +253,11 @@ EOF
     on_failure = "continue"
     command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
   }
+  provisioner "local-exec" {
+    when = "destroy"
+    on_failure = "continue"
+    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  }
 }
 
 
@@ -290,6 +292,10 @@ resource "aws_iam_role_policy_attachment" "s3fullaccess" {
 resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
   role       = "${aws_iam_role.lambda_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+}
+resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
@@ -521,7 +527,7 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
   policy_id = "jazz-s3-api-doc-bucket-contents"
   statement {
-    sid = "jazz-s3-api-doc"
+    sid = "jazz-s3-api-doc-admin-access"
     actions = [
       "s3:*"
     ]
@@ -532,9 +538,9 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
     ]
-  },
+  }
   statement {
-    sid = "jazz-s3-api-doc"
+    sid = "jazz-s3-api-doc-get-object"
     actions = [
       "s3:GetObject"
     ]
@@ -545,9 +551,9 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
     ]
-  },
+  }
   statement {
-    sid = "jazz-s3-api-doc"
+    sid = "jazz-s3-api-doc-list-bucket"
     actions = [
       "s3:ListBucket"
     ]
