@@ -20,9 +20,6 @@ LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 JAZZ_BRANCH="master"
 
-# Default verbosity of the installation
-VERBOSE=0
-
 function start_wizard {
     # Set the permissions
     chmod -R +x $INSTALL_DIR/installscripts/*
