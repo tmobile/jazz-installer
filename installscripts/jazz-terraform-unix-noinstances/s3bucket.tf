@@ -120,6 +120,9 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
     command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core"
 
   }
+  provisioner "local-exec" {
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
+  }
 }
 
 resource "aws_s3_bucket" "jazz-web" {
@@ -296,6 +299,10 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
 resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
   role       = "${aws_iam_role.lambda_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
+    role       = "${aws_iam_role.lambda_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
