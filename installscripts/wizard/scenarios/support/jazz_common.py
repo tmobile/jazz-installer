@@ -4,11 +4,35 @@ import re
 import subprocess
 
 # Global variables
-HOME_FOLDER = os.path.expanduser("~")
-INSTALL_SCRIPT_FOLDER = HOME_FOLDER + "/jazz-installer/installscripts/"
+HOME_FOLDER = "~"
 
-TERRAFORM_FOLDER_PATH = INSTALL_SCRIPT_FOLDER + "/jazz-terraform-unix-noinstances/"
-TFVARS_FILE = TERRAFORM_FOLDER_PATH + "terraform.tfvars"
+
+def get_installer_root():
+    return os.environ['JAZZ_INSTALLER_ROOT']
+
+
+def get_script_folder():
+    return get_installer_root() + "/installscripts/"
+
+
+def get_terraform_folder():
+    return get_script_folder() + "/jazz-terraform-unix-noinstances/"
+
+
+def get_tfvars_file():
+    return get_terraform_folder() + "terraform.tfvars"
+
+
+def get_docker_path():
+    return get_script_folder() + "dockerfiles/"
+
+
+def get_jenkins_pem():
+    return get_docker_path() + "jenkins/jenkinskey.pem"
+
+
+def get_atlassian_tools_path():
+    return get_installer_root() + "/jazz_tmp/atlassian-cli-6.7.1/"
 
 
 def parse_and_replace_parameter_list(terraform_folder, parameter_list):
@@ -29,29 +53,27 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     # -----------------------------------------------------------
 
     # populating BRANCH name
-    replace_tfvars('github_branch', jazz_branch, TFVARS_FILE)
+    replace_tfvars('github_branch', jazz_branch, get_tfvars_file())
 
     # Populating Jazz Account ID
-    replace_tfvars('jazz_accountid', jazz_account_id, TFVARS_FILE)
+    replace_tfvars('jazz_accountid', jazz_account_id, get_tfvars_file())
 
     # Populating Cognito Details
-    replace_tfvars('cognito_pool_username', cognito_details[0], TFVARS_FILE)
-    replace_tfvars('cognito_pool_password', cognito_details[1], TFVARS_FILE)
+    replace_tfvars('cognito_pool_username', cognito_details[0],
+                   get_tfvars_file())
+    replace_tfvars('cognito_pool_password', cognito_details[1],
+                   get_tfvars_file())
 
     # Populating Jazz Tag env
-    replace_tfvars('envPrefix', jazz_tag_details[0], TFVARS_FILE)
-    replace_tfvars('tagsEnvironment', jazz_tag_details[1], TFVARS_FILE)
-    replace_tfvars('tagsExempt', jazz_tag_details[2], TFVARS_FILE)
-    replace_tfvars('tagsOwner', jazz_tag_details[3], TFVARS_FILE)
+    replace_tfvars('envPrefix', jazz_tag_details[0], get_tfvars_file())
+    replace_tfvars('tagsEnvironment', jazz_tag_details[1], get_tfvars_file())
+    replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file())
+    replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file())
 
-    # TODO look into why we need a script to tear down AWS resources,
-    # my understanding is that Terraform should be able to delete everything
-    # it creates, by definition.
-    subprocess.call([
-        'sed', '-i',
-        's|stack_name=.*.$|stack_name="%s"|g' % (jazz_tag_details[0]),
-        "scripts/destroy.sh"
-    ])
+    # Terraform provisioning script needs the jar file path
+    replace_tfvars('atlassian_jar_path',
+                   get_atlassian_tools_path() + "lib/bitbucket-cli-6.7.0.jar",
+                   get_tfvars_file())
 
 
 # Uses sed to modify the values of key-value pairs within a file
@@ -66,8 +88,7 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
 def replace_tfvars(key, value, fileName):
     subprocess.call([
         'sed', "-i\'.bak\'",
-        r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value),
-        fileName
+        r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value), fileName
     ])
 
 
