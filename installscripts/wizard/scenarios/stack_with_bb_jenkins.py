@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from support.jazz_common import parse_and_replace_parameter_list, INSTALL_SCRIPT_FOLDER, TERRAFORM_FOLDER_PATH, HOME_FOLDER
+from support.jazz_common import parse_and_replace_parameter_list, get_script_folder, get_terraform_folder, get_installer_root
 from support.jazz_jenkins import get_and_add_existing_jenkins_config
 from support.jazz_bitbucket import get_and_add_existing_bitbucket_config
 
@@ -19,23 +19,23 @@ def check_jenkins_pem():
         " Please make sure that you have the ssh login user names of jenkins and bitbucket servers."
     )
     print(
-        " Please create jenkinskey.pem with private keys of Jenkins Server in your home directory"
+        " Please place the private key to your Jenkins server in the installer root directory with a filenameof 'jenkinskey.pem"
     )
 
     pause()
 
     # Check if file is been added to home derectory
-    jenkins_pem = HOME_FOLDER + "/jenkinskey.pem"
+    jenkins_pem =  get_installer_root() + "/jenkinskey.pem"
     if not os.path.isfile(jenkins_pem):
         sys.exit(
-            "File jenkinskey.pem is not present in your home (~/) folder, kindly add and run the installer again! "
+            "File jenkinskey.pem not found in installer root directory, kindly add and run the installer again! "
         )
 
     # Copy the pem keys and give relavant permisions
     subprocess.call('cp -f {0} {1}sshkeys'.format(
-        jenkins_pem, INSTALL_SCRIPT_FOLDER).split(' '))
+        jenkins_pem, get_script_folder()).split(' '))
     subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(
-        INSTALL_SCRIPT_FOLDER).split(' '))
+        get_script_folder()).split(' '))
 
 
 def start(parameter_list):
@@ -43,20 +43,20 @@ def start(parameter_list):
         start stack creation
     """
     # Parse the parameter list
-    parse_and_replace_parameter_list(TERRAFORM_FOLDER_PATH, parameter_list)
-    os.chdir(TERRAFORM_FOLDER_PATH)
+    parse_and_replace_parameter_list(get_terraform_folder(), parameter_list)
+    os.chdir(get_terraform_folder())
 
     # Get Jenkins configuration details
-    get_and_add_existing_jenkins_config(TERRAFORM_FOLDER_PATH)
+    get_and_add_existing_jenkins_config(get_terraform_folder())
 
     # Get Bitbucket configuration details
-    get_and_add_existing_bitbucket_config(TERRAFORM_FOLDER_PATH)
+    get_and_add_existing_bitbucket_config(get_terraform_folder())
 
     # Make Sure Jenkins pem file is present in home folder
     check_jenkins_pem()
 
     # All variables are set and ready to call terraform
-    os.chdir(TERRAFORM_FOLDER_PATH)
+    os.chdir(get_terraform_folder())
 
     subprocess.call(
         'nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)

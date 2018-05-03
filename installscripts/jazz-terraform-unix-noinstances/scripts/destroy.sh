@@ -18,7 +18,7 @@ if [ "$1" != "all" ] && [ "$1" != "frameworkonly" ]; then
 fi
 
 # Rename any stack_deletion out files if any
-for x in ~/jazz-installer/stack_de*.out
+for x in $JAZZ_INSTALLER_ROOT/stack_de*.out
 do
     if [ -f "$x" ]
     then
@@ -43,18 +43,18 @@ echo " ======================================================="
 # Calling the Delete platform services py script
 if [ "$1" == "all" ]; then
     #Deleting the event source handler mapping
-    /usr/bin/python scripts/DeleteEventSourceMapping.py $stack_name
+    python scripts/DeleteEventSourceMapping.py $stack_name
 
     #Deleting Platform services
-    /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name true
+    python scripts/DeleteStackPlatformServices.py $stack_name true
 
     #Deleting Cloud Front Distributions
-    cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
-    /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name true
+    cd $JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances
+    python scripts/DeleteStackCloudFrontDists.py $stack_name true
 
     echo "Destroy cloudfronts"
-    cd ~/jazz-installer/installscripts/jazz-terraform-unix-noinstances
-    /usr/bin/python scripts/DeleteStackCloudFrontDists.py $stack_name false
+    cd $JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances
+    python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
     while [ $loopIndx -le 2 ];
     do
@@ -80,10 +80,10 @@ fi
 
 if [ "$1" == "frameworkonly" ]; then
     #Deleting the event source handler mapping
-    /usr/bin/python scripts/DeleteEventSourceMapping.py $stack_name
+    python scripts/DeleteEventSourceMapping.py $stack_name
 
     #Deleting Platform services
-    /usr/bin/python scripts/DeleteStackPlatformServices.py $stack_name false
+    python scripts/DeleteStackPlatformServices.py $stack_name false
 
     #Calling the terraform destroy
     # TODO This is a code smell, if we have correctly declared resource dependencies in our terraform scripts, terraform should destroy everything we created without us having to maintan a list of every resource and pass it to `terraform destroy` like this.
@@ -94,16 +94,11 @@ if [ "$1" == "frameworkonly" ]; then
 fi
 
 
-cd ~/jazz-installer
+cd $JAZZ_INSTALLER_ROOT
 
 if (grep -q "Error applying plan" ./stack_deletion_$loopIndx.out) then
     echo "Error occured in destroy, please refer stack_deletion.out and re-run destroy after resolving the issues."
     exit 1
 fi
-
-echo "Proceeding to delete Jazz instance."
-shopt -s extglob
-sudo rm -rf !(*.out)
-sudo rm -rf ../Installer.sh ../atlassian-cli*
 
 date
