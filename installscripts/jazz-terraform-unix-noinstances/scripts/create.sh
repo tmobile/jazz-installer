@@ -2,7 +2,7 @@
 
 print_error()
 {
-    printf "\r${RED}$1${NC}\n" 1>&3 2>&4
+    printf "\r${RED}$1${NC}\n"
 }
 
 rm -f ./stack_details.json

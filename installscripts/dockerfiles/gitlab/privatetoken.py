@@ -9,6 +9,7 @@ root_route = urljoin(endpoint, u"/")
 sign_in_route = urljoin(endpoint, u"/users/sign_in")
 pat_route = urljoin(endpoint, u"/profile/personal_access_tokens")
 
+
 def find_csrf_token(text):
     soup = BeautifulSoup(text, u"lxml")
     token = soup.find(attrs={u"name": u"csrf-token"})
@@ -16,10 +17,12 @@ def find_csrf_token(text):
     data = {param.get(u"content"): token.get(u"content")}
     return data
 
+
 def obtain_csrf_token():
     r = requests.get(root_route)
     token = find_csrf_token(r.text)
     return token, r.cookies
+
 
 def sign_in(login, password, csrf, cookies):
     data = {
@@ -33,6 +36,7 @@ def sign_in(login, password, csrf, cookies):
     token = find_csrf_token(r.text)
     return token, r.history[0].cookies
 
+
 def obtain_personal_access_token(name, expires_at, csrf, cookies):
     data = {
         u"personal_access_token[expires_at]": expires_at,
@@ -43,8 +47,10 @@ def obtain_personal_access_token(name, expires_at, csrf, cookies):
     data.update(csrf)
     r = requests.post(pat_route, data=data, cookies=cookies)
     soup = BeautifulSoup(r.text, u"lxml")
-    token = soup.find(u'input', id=u'created-personal-access-token').get('value')
+    token = soup.find(
+        u'input', id=u'created-personal-access-token').get('value')
     return token
+
 
 def main():
     login = u"root"
@@ -56,9 +62,10 @@ def main():
     name = sys.argv[1]
     expires_at = sys.argv[2]
     token = obtain_personal_access_token(name, expires_at, csrf2, cookies2)
-    f = open("credentials.txt","a")
+    f = open("credentials.txt", "a")
     f.write("Private Token: %s" % token)
     f.close()
+
 
 if __name__ == u"__main__":
     main()
