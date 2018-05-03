@@ -14,7 +14,7 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 
 #-------------------------------------------
 
-platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" )
+platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" "jazz_deployments" )
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
