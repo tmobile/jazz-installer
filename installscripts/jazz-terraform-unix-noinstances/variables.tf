@@ -3,6 +3,7 @@
 #
 variable "region" { type = "string" default = "us-east-1" }
 variable "github_branch" { type = "string" default = "development" }
+variable "github_repo" { type = "string" default = "https://github.com/tmobile/jazz.git" }
 variable "aws_access_key" { type = "string" default = "aws_access_key" }
 variable "aws_secret_key" { type = "string" default = "aws_secret_key" }
 variable "jazz_accountid" { type = "string" default = "jazz_accountid" }
@@ -89,3 +90,4 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
+variable "atlassian_jar_path" { type = "string" }
