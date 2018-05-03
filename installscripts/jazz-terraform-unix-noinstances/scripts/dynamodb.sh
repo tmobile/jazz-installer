@@ -48,6 +48,10 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_PR\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"COMMENT_PR\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_TAG\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_DEPLOYMENT\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_DEPLOYMENT\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_ENVIRONMENT\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_ENVIRONMENT\"}}"
    ;;
    "EVENT_STATUS") 
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"COMPLETED\"}}"
