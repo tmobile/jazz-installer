@@ -75,6 +75,12 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
                    get_atlassian_tools_path() + "lib/bitbucket-cli-6.7.0.jar",
                    get_tfvars_file())
 
+    subprocess.call([
+        'sed', '-i',
+        's|stack_name=.*.$|stack_name="%s"|g' % (jazz_tag_details[0]),
+        "scripts/destroy.sh"
+    ])
+
 
 # Uses sed to modify the values of key-value pairs within a file
 # (such as a .tfvars file) that follow the form 'key = value'
