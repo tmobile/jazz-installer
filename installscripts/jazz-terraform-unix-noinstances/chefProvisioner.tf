@@ -79,7 +79,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
   provisioner "remote-exec" {
     inline = [
       "sudo sh ~/cookbooks/installChef.sh",
-      "curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
+      "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
       "sudo chmod 755 /usr/local/bin/jq",
       "cat ~/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
       "chmod 777 plugins.tar",
