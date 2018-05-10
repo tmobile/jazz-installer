@@ -67,12 +67,12 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.cookbooksDir}"
+    source      = "${var.cookbooksDir}/"
     destination = "~/cookbooks"
   }
 
   provisioner "file" {
-    source      = "${var.chefconfigDir}"
+    source      = "${var.chefconfigDir}/"
     destination = "~/chefconfig"
   }
 
