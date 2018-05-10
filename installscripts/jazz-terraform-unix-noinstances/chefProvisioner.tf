@@ -90,55 +90,50 @@ resource "null_resource" "chef_provision_jenkins_server" {
     ]
   }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}"
-    destination = "~/cookbooks"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/recipes"
+  #   destination = "~/cookbooks/jenkins"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/recipes"
-    destination = "~/cookbooks/jenkins"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/files/default"
+  #   destination = "~/cookbooks/jenkins/files"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/files/default"
-    destination = "~/cookbooks/jenkins/files"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/files/jobs"
+  #   destination = "~/cookbooks/jenkins/files"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/files/jobs"
-    destination = "~/cookbooks/jenkins/files"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/files/node"
+  #   destination = "~/cookbooks/jenkins/files"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/files/node"
-    destination = "~/cookbooks/jenkins/files"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/files/scriptapproval"
+  #   destination = "~/cookbooks/jenkins/files"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/files/scriptapproval"
-    destination = "~/cookbooks/jenkins/files"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/files/credentials"
+  #   destination = "~/cookbooks/jenkins/files"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/files/credentials"
-    destination = "~/cookbooks/jenkins/files"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/attributes"
+  #   destination = "~/cookbooks/jenkins"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/attributes"
-    destination = "~/cookbooks/jenkins"
-  }
+  # provisioner "file" {
+  #   source      = "${var.cookbooksDir}/jenkins/attributes/"
+  #   destination = "~/cookbooks/blankJenkins/attributes/"
+  # }
 
-  provisioner "file" {
-    source      = "${var.cookbooksDir}/jenkins/attributes/"
-    destination = "~/cookbooks/blankJenkins/attributes/"
-  }
-
-  provisioner "file" {
-    source      = "${var.chefconfigDir}/"
-    destination = "~/chefconfig"
-  }
+  # provisioner "file" {
+  #   source      = "${var.chefconfigDir}/"
+  #   destination = "~/chefconfig"
+  # }
 
   provisioner "remote-exec" {
     inline = [
