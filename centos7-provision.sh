@@ -110,15 +110,15 @@ function install_packages () {
         sudo yum install docker-ce -y >>$LOG_FILE &
         spin_wheel $! "Installing docker-ce"
 
-        sudo systemctl start docker >>$LOG_FILE &
-        spin_wheel $! "Starting docker-ce"
-        sudo systemctl status docker >>$LOG_FILE &
-        spin_wheel $! "Checking docker-ce service"
-        sudo systemctl enable docker >>$LOG_FILE &
-        spin_wheel $! "Enabling docker-ce service"
-        sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
-        spin_wheel $! "Adding the present user to docker group"
     fi
+    sudo systemctl start docker >>$LOG_FILE &
+    spin_wheel $! "Starting docker-ce"
+    sudo systemctl status docker >>$LOG_FILE &
+    spin_wheel $! "Checking docker-ce service"
+    sudo systemctl enable docker >>$LOG_FILE &
+    spin_wheel $! "Enabling docker-ce service"
+    sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
+    spin_wheel $! "Adding the present user to docker group"
 
     # Download and Install java
     if command -v java > /dev/null; then
