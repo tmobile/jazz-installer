@@ -41,7 +41,7 @@ deleteClientServices = sys.argv[2]
 platformServices = ['jazz-cognito-authorizer', 'jazz-logs', 'jazz-usermanagement', 'jazz-services-handler', 'jazz-events', 'jazz-services', 'jazz-logout', 'jazz-login', 'jazz-cloud-logs-streamer', 'jazz-is-service-available', 'jazz-delete-serverless-service', 'jazz-create-serverless-service', 'jazz-email', 'jazz-events-handler', 'jazz-environments', 'jazz-scm-webhook' , 'jazz-environment-event-handler']
 
 for pservice in platformServices:
-    deleteCloudFormationService(stackName + pservice)
+    deleteCloudFormationService(stackName + pservice + '-prod')
 
 print ("\r\n\r\nCompleted deletion of platform services.")
 
