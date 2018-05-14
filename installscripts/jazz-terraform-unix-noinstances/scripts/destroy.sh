@@ -2,19 +2,22 @@
 date
 
 stack_name=""
-currentDir=`pwd`
 loopIndx=0
 
 if [ "$1" == "" ]; then
-     echo "Please provide Argument [all or frameworkonly]"
+     echo "Please provide argument [all or frameworkonly]"
      exit 1
 fi
 
 echo "parameter::$1"
 
 if [ "$1" != "all" ] && [ "$1" != "frameworkonly" ]; then
-     echo "Please provide Argument [all or frameworkonly]"
+     echo "Please provide argument [all or frameworkonly]"
      exit 1
+fi
+
+if [ -z "$JAZZ_INSTALLER_ROOT" ]; then
+    export JAZZ_INSTALLER_ROOT=`pwd`
 fi
 
 # Rename any stack_deletion out files if any
@@ -36,7 +39,7 @@ echo " ======================================================="
 
 echo " Destroying of stack initiated!!! "
 echo " Execute  'tail -f stack_deletion_X.out' in below directory to see the stack deletion progress (X=1 or 2 or 3)"
-echo $currentDir
+echo $JAZZ_INSTALLER_ROOT
 
 echo " ======================================================="
 
