@@ -18,8 +18,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>
-  	<org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  <properties>  	
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
