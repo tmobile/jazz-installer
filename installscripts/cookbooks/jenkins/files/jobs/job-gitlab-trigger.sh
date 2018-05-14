@@ -17,8 +17,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
 <flow-definition plugin="workflow-job@2.12">
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>
-  	<org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  <properties>  
     <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.2">
       <gitLabConnection>Jazz-Gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
