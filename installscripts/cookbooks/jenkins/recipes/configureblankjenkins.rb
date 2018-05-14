@@ -81,7 +81,7 @@ execute 'createJob-delete-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-job_build_pack_api' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
