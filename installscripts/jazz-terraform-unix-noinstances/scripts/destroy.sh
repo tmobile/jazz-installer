@@ -17,7 +17,7 @@ if [ "$1" != "all" ] && [ "$1" != "frameworkonly" ]; then
 fi
 
 if [ -z "$JAZZ_INSTALLER_ROOT" ]; then
-    export $JAZZ_INSTALLER_ROOT=`pwd`
+    export JAZZ_INSTALLER_ROOT=`pwd`
 fi
 
 # Rename any stack_deletion out files if any
@@ -39,7 +39,7 @@ echo " ======================================================="
 
 echo " Destroying of stack initiated!!! "
 echo " Execute  'tail -f stack_deletion_X.out' in below directory to see the stack deletion progress (X=1 or 2 or 3)"
-echo $JAZZ_INSTALLER_ROOT 
+echo $JAZZ_INSTALLER_ROOT
 
 echo " ======================================================="
 
