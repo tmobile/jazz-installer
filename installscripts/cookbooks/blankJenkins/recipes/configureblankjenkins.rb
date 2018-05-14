@@ -94,7 +94,7 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
@@ -225,7 +225,7 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} root"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} root"
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
