@@ -21,11 +21,11 @@ def deleteCloudFormationService(service_name):
         print ("Service::" + service_name + ": exists. Service deletion started.........")
         delete_return_code = deleteCFService(service_name)
         if delete_return_code == 0 :
-            print ("\tSuccessfully Deleted service " + service_name)
+            print ("\tSuccessfully deleted service " + service_name)
         else :
-            print ("\tError while Deleting service " + service_name + " errorcode=" + delete_return_code)
+            print ("\tError while deleting service " + service_name + " errorcode=" + delete_return_code)
     else:
-        print ('Error Service not found::' + service_name)
+        print ('Error service not found::' + service_name)
 
 
 if(len(sys.argv) != 3):
@@ -38,17 +38,17 @@ print (str(sys.argv))
 stackName = sys.argv[1].lower() + "-"
 deleteClientServices = sys.argv[2]
 
-platformServices = ['jazz_cognito-authorizer', 'jazz_logs', 'jazz_usermanagement', 'jazz_services-handler', 'jazz_events', 'jazz_services', 'jazz_logout', 'jazz_login', 'jazz_cloud-logs-streamer', 'jazz_is-service-available', 'jazz_delete-serverless-service', 'jazz_create-serverless-service', 'jazz_email', 'jazz_events-handler', 'jazz_environments', 'jazz_scm-webhook' , 'jazz_environment-event-handler']
+platformServices = ['jazz-cognito-authorizer', 'jazz-logs', 'jazz-usermanagement', 'jazz-services-handler', 'jazz-events', 'jazz-services', 'jazz-logout', 'jazz-login', 'jazz-cloud-logs-streamer', 'jazz-is-service-available', 'jazz-delete-serverless-service', 'jazz-create-serverless-service', 'jazz-email', 'jazz-events-handler', 'jazz-environments', 'jazz-scm-webhook' , 'jazz-environment-event-handler']
 
 for pservice in platformServices:
-    deleteCloudFormationService(stackName + pservice)
+    deleteCloudFormationService(stackName + pservice + '-prod')
 
-print ("\r\n\r\nCompleted Deletion Platform services.")
+print ("\r\n\r\nCompleted deletion of platform services.")
 
 if (deleteClientServices.lower() != 'true'):
     exit(0)
 
-print ("\r\nStarting deletions of Client Services\r\n\r\n")
+print ("\r\nStarting deletion of client services\r\n\r\n")
 
 ## Delete user services Cloud formations 
 fname = 'listservice.json'
