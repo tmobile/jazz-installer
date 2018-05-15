@@ -88,7 +88,7 @@
 		  "DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
 		  "DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
 		  "HOST_NAME": "",
-		  "CHECKSTYLE_LIB": "http://artifactory.corporate.t-mobile.com/artifactory/cld-release-local/com/puppycrawl/tools/checkstyle/7.6/checkstyle-7.6-all.jar"
+		  "CHECKSTYLE_LIB": ""
 		}
 	}
 }
