@@ -4,11 +4,11 @@ SSH_USER=$2
 SCM_ELB=$3
 
 if [ -f /etc/redhat-release ]; then
-  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+    AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+    JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
 elif [ -f /etc/lsb-release ]; then
-  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/root/jenkins-cli.jar
+    AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
+    JENKINS_CLI=/root/jenkins-cli.jar
 fi
 echo "$0 $1 $2 "
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
@@ -17,7 +17,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
 <flow-definition plugin="workflow-job@2.12">
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>  
+  <properties>
     <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.2">
       <gitLabConnection>Jazz-Gitlab</gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
