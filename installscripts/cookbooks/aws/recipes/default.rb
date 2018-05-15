@@ -16,8 +16,3 @@ execute 'installaws' do
   cwd '/tmp'
   ignore_failure true
 end
-
-execute 'installaws-apigateway-importer' do
-   command 'npm i aws-apigateway-importer'
-   #cwd "/usr/local"
-end
