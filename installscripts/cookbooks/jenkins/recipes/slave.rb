@@ -27,20 +27,6 @@ execute 'downloadgitproj' do
   command "/usr/local/git/bin/git clone -b Alpha-R1 #{node['jenkins']['git_repo']} jazz-core"
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
-execute 'runAwsgatewayImporter' do
-  command "/opt/apache-maven-3.5.0/bin/mvn assembly:assembly"
-  cwd "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer"
-end
-
-link '/usr/bin/aws-api-import' do
-  to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-end
-execute 'copylinkdir' do
-  command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
-end
 
 execute 'copyJenkinsPropertyfile' do
   command "cp #{node['jenkins']['propertyfile']} #{node['jenkins']['propertyfiletarget']};chmod 777  #{node['jenkins']['propertyfiletarget']}"
