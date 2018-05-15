@@ -14,7 +14,8 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 
 #-------------------------------------------
 
-platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" "jazz_environment-event-handler" )
+platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" "jazz_environment-event-handler" "jazz_deployments" "jazz_deployments-event-handler")
+
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
@@ -51,7 +52,7 @@ do
                 }
             }
       }'
-    elif [ $element == "jazz_cognito-authorizer" ] || $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] ; then
+    elif [ $element == "jazz_cognito-authorizer" ] || $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] || [ $element == "jazz_deployments-event-handler" ] ; then
                                                                                                  aws dynamodb put-item --table-name $tablename --item '{
               "SERVICE_ID":{"S":"'$uuid'"},
               "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
@@ -82,11 +83,11 @@ do
           "TIMESTAMP":{"S":"'$timestamp'"},
           "SERVICE_TYPE":{"S":"api"},
           "SERVICE_METADATA":{"M":{
-					  "securityGroupIds":{"S":"'$securityGroupIds'"},
-					  "subnetIds":{"S":"'$subnetIds'"},
-					  "iamRoleARN":{"S":"'$iamRoleARN'"},
-					  "providerMemorySize":{"S":"256"},
-					  "providerRuntime":{"S":"nodejs4.3"},
+                      "securityGroupIds":{"S":"'$securityGroupIds'"},
+                      "subnetIds":{"S":"'$subnetIds'"},
+                      "iamRoleARN":{"S":"'$iamRoleARN'"},
+                      "providerMemorySize":{"S":"256"},
+                      "providerRuntime":{"S":"nodejs4.3"},
 					  "providerTimeout":{"S":"160"}
 					}
 				}
