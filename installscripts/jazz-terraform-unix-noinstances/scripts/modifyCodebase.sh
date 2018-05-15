@@ -19,6 +19,7 @@ platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
+nodeRuntime="nodejs8.10"
 
 for element in "${platform_services[@]}"
 do
@@ -47,7 +48,7 @@ do
                   "subnetIds":{"S":"'$subnetIds'"},
                   "iamRoleARN":{"S":"'$iamRoleARN'"},
                   "providerMemorySize":{"S":"256"},
-                  "providerRuntime":{"S":"nodejs6.10"},
+                  "providerRuntime":{"S":"'$nodeRuntime'"},
                   "providerTimeout":{"S":"160"}
                 }
             }
@@ -67,7 +68,7 @@ do
                           "subnetIds":{"S":"'$subnetIds'"},
                           "iamRoleARN":{"S":"'$iamRoleARN'"},
                           "providerMemorySize":{"S":"256"},
-                          "providerRuntime":{"S":"nodejs4.3"},
+                          "providerRuntime":{"S":"'$nodeRuntime'"},
                           "providerTimeout":{"S":"160"}
                         }
                     }
@@ -87,11 +88,11 @@ do
                       "subnetIds":{"S":"'$subnetIds'"},
                       "iamRoleARN":{"S":"'$iamRoleARN'"},
                       "providerMemorySize":{"S":"256"},
-                      "providerRuntime":{"S":"nodejs4.3"},
-					  "providerTimeout":{"S":"160"}
-					}
-				}
-		  }'
+                      "providerRuntime":{"S":"'$nodeRuntime'"},
+                      "providerTimeout":{"S":"160"}
+                    }
+                }
+          }'
 
                                                                                              fi
                                                                                              done
