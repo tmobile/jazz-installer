@@ -4,11 +4,11 @@ BITBUCKET_ELB=$3
 SSH_USER=$4
 
 if [ -f /etc/redhat-release ]; then
-  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
+    AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
+    JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
 elif [ -f /etc/lsb-release ]; then
-  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/root/jenkins-cli.jar
+    AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
+    JENKINS_CLI=/root/jenkins-cli.jar
 fi
 
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
@@ -18,7 +18,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>  	
+  <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
