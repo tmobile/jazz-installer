@@ -24,7 +24,7 @@ execute 'configurenode' do
 end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b Alpha-R1 #{node['jenkins']['git_repo']} jazz-core"
+  command "/usr/local/git/bin/git clone -b Alpha-R1 #{node['jenkins']['git_repo']} jazz-core --depth 1"
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
 

@@ -64,7 +64,7 @@ if node[:platform_family].include?("rhel")
     	end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
+      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
 
       cwd "/home/#{node['jenkins']['SSH_user']}"
     end
@@ -176,7 +176,7 @@ if node[:platform_family].include?("debian")
       end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
+      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
       cwd "/root"
     end
     execute 'settingexecutepermissiononallscripts' do
