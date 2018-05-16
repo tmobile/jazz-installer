@@ -94,8 +94,8 @@ def get_stack_generic_details(jazz_branch):
     print("Please provide the details to setup Jazz")
 
     # Get the aws credentials & set required AWS env vars
-    get_aws_credentials()
     get_region()
+    get_aws_credentials()
 
     # Not sure we need this..
     os.environ['AWS_DEFAULT_OUTPUT'] = 'json'
