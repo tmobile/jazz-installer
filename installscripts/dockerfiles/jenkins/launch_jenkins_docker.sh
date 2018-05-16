@@ -75,9 +75,9 @@ docker exec jenkins-server apt-get update &> /dev/null &
 spin_wheel $! "Updating Jenkins docker container"
 docker exec jenkins-server apt-get install python-pip -y &> /dev/null &
 spin_wheel $! "Installing python-pip in Jenkins container"
-docker exec -u root jenkins-server sudo pip install --upgrade pip &> /dev/null &
+docker exec jenkins-server sudo pip install --upgrade pip &> /dev/null &
 spin_wheel $! "Upgrading pip in Jenkins container"
-docker exec -u root jenkins-server sudo pip install --upgrade virtualenv &> /dev/null &
+docker exec jenkins-server sudo pip install --upgrade virtualenv &> /dev/null &
 spin_wheel $! "Install and upgrade virtualenv in Jenkins container"
 
 # Grab the variables
