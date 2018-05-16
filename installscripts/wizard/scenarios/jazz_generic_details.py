@@ -38,10 +38,8 @@ def get_aws_credentials():
         os.environ['AWS_ACCESS_KEY_ID'] = raw_input("AWS Access Key ID :")
         os.environ['AWS_SECRET_ACCESS_KEY'] = raw_input(
             "AWS Secret Access Key :")
-        subprocess.call('aws configure set aws_access_key_id {0}'.format(
-            os.environ['AWS_ACCESS_KEY_ID']))
-        subprocess.call('aws configure set aws_secret_access_key {0}'.format(
-            os.environ['AWS_SECRET_ACCESS_KEY']))
+        subprocess.call(['aws', 'configure', 'set', 'aws_access_key_id', os.environ['AWS_ACCESS_KEY_ID']])
+        subprocess.call(['aws', 'configure', 'set', 'aws_secret_access_key', os.environ['AWS_SECRET_ACCESS_KEY']])
     else:
         print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' \
               and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
