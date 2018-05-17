@@ -8,8 +8,8 @@ end
 
 execute 'unzipaws' do
   command 'unzip -o awscli-bundle.zip'
-   cwd '/tmp'
- end
+  cwd '/tmp'
+end
 
 execute 'installaws' do
   command './awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws'
@@ -18,6 +18,5 @@ execute 'installaws' do
 end
 
 execute 'installaws-apigateway-importer' do
-   command 'npm i aws-apigateway-importer'
-   #cwd "/usr/local"
+  command 'npm i aws-apigateway-importer'
 end
