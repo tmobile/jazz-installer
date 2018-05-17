@@ -1,4 +1,6 @@
 default['jenkins']['home'] = '/var/lib/jenkins'
+default['chef_root'] = '/tmp/jazz-chef'
+default['cookbook_root'] = "#{node['chef_root']}/cookbooks"
 default['jenkins']['SSH_user']='sshUserName'
 default['jenkinsadmin']['file'] = "#{node['jenkins']['home']}/users/jenkinsadmin/config.xml"
 default['jenkinsadmin']['fullName'] = 'Jenkins Admin'
