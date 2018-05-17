@@ -46,10 +46,6 @@ variable "jenkinsattribsfile" {
   type = "string"
   default = "../cookbooks/jenkins/attributes/default.rb"
 }
-variable "jenkinsclientrbfile" {
-  type = "string"
-  default = "../chefconfig/jenkins_client.rb"
-}
 variable "jenkinsservermap" {
   type = "map"
   default = {
