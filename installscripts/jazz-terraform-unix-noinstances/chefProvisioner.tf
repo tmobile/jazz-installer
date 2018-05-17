@@ -86,13 +86,13 @@ resource "null_resource" "chef_provision_jenkins_server" {
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
       "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
       "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}' -j ${var.chefconfigDestDir}/chefconfig/node-jenkinsserver-packages.json"
+      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}/cookbooks' -j ${var.chefconfigDestDir}/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}' --override-runlist jenkins::configurejenkins"
+      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
     ]
   }
 

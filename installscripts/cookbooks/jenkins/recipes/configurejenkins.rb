@@ -7,7 +7,7 @@ end
 
 # Add execute bit to all shell scripts
 execute 'chmodjenkinsscripts' do
-  command "find #{node['cookbook_root']}/jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \;"
+  command "find #{node['cookbook_root']}/jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \\;"
 end
 
 directory '/var/lib/jenkins/workspace' do
@@ -29,10 +29,8 @@ service "jenkins" do
   action :start
 end
 
-# TODO This is different in orig script, figure out why
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
 execute 'copyJenkinsClientJar' do
-  # command "cp #{node['client']['jar']} /home/#{node['jenkins']['SSH_user']}/jenkins-cli.jar; chmod 755 /home/#{node['jenkins']['SSH_user']}/jenkins-cli.jar"
   command "curl -sL http://#{node['jenkinselb']}/jnlpJars/jenkins-cli.jar -o #{node['chef_root']}/jenkins-cli.jar; chmod 755 #{node['jenkins']['clientjar']}"
 end
 
