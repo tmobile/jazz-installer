@@ -54,13 +54,9 @@ service "jenkins" do
 end
 
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
 
   cwd "/home/#{node['jenkins']['SSH_user']}"
-end
-
-execute 'copylinkdir' do
-  command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
 end
 
 execute 'createcredentials-jenkins1' do
@@ -81,7 +77,7 @@ execute 'createJob-delete-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-job_pack_java_api' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
@@ -100,12 +96,6 @@ execute 'createJob-job-build-pack-website' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 
-link '/usr/bin/aws-api-import' do
-  to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-end
 link '/usr/bin/aws' do
   to '/usr/local/bin/aws'
   owner 'root'
