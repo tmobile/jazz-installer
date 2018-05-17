@@ -40,9 +40,9 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
           <name>tracking_id</name>
           <description></description>
           <defaultValue>1001</defaultValue>
-        </hudson.model.StringParameterDefinition>
+        </hudson.model.StringParameterDefinition>       
         <hudson.model.StringParameterDefinition>
-          <name>db_service_id</name>
+          <name>environment_id</name>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>        
