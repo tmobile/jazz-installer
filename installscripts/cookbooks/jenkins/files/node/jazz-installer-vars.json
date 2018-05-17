@@ -74,8 +74,24 @@
     	"PASSWORD": ""
    },
    "UI_CONFIG": { 
-      	"feature": {
-        	"multi_env": true
-      	}
-    }
+		 "feature": {
+			 "multi_env": true
+		 },
+		 "service_tabs":
+		 {
+			 "overview":true,
+			 "access_control":false,
+			 "metrics":false,
+			 "logs":true,
+			 "cost":false
+		 },
+		 "environment_tabs":
+		 {
+			 "overview":true,
+			 "deployments":true,
+			 "code_quality":false,
+			 "logs":false,
+			 "assets":false
+		 }
+   }
 }
