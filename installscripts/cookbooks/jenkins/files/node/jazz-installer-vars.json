@@ -79,19 +79,19 @@
 		 },
 		 "service_tabs":
 		 {
-			 "overview":true,
-			 "access_control":false,
-			 "metrics":false,
-			 "logs":true,
-			 "cost":false
+			 "overview": true,
+			 "access_control": false,
+			 "metrics": false,
+			 "logs": true,
+			 "cost": false
 		 },
 		 "environment_tabs":
 		 {
-			 "overview":true,
-			 "deployments":true,
-			 "code_quality":false,
-			 "logs":false,
-			 "assets":false
+			 "overview": true,
+			 "deployments": true,
+			 "code_quality": false,
+			 "logs": false,
+			 "assets": false
 		 }
    }
 }
