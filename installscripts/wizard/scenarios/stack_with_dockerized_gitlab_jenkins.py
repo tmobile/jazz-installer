@@ -36,7 +36,7 @@ def start(parameter_list):
 
     # Deploy Gitlab docker and get configuration details
     print("Deploying Dockerized Gitlab server==============>")
-    get_and_add_docker_gitlab_config(get_docker_path() + "/gitlab/")
+    get_and_add_docker_gitlab_config(get_docker_path() + "/gitlab/", parameter_list[1])
 
     # All variables are set and ready to call terraform
     os.chdir(get_terraform_folder())
