@@ -33,6 +33,7 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
+    # TODO re-eval if this is worth including a jar file in SCM
     jenkins_cli = get_script_folder() + \
         "/cookbooks/jenkins/files/default/jenkins-cli.jar"
 
