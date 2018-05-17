@@ -25,7 +25,7 @@ variable "chefconfigSourceDir" {
 }
 variable "chefconfigDestDir" {
   type = "string"
-  default = "/tmp/jazz-chefconfig"
+  default = "/tmp/jazz-chef/"
 }
 variable "cookbooksSourceDir" {
   type = "string"
@@ -33,7 +33,7 @@ variable "cookbooksSourceDir" {
 }
 variable "cookbooksDestDir" {
   type = "string"
-  default = "/tmp/jazz-cookbooks"
+  default = "/tmp/jazz-chef/"
 }
 #
 # Jenkins related variables
