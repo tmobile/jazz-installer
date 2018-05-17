@@ -110,15 +110,15 @@ function install_packages () {
         sudo yum install docker-ce -y >>$LOG_FILE &
         spin_wheel $! "Installing docker-ce"
 
-        sudo systemctl start docker >>$LOG_FILE &
-        spin_wheel $! "Starting docker-ce"
-        sudo systemctl status docker >>$LOG_FILE &
-        spin_wheel $! "Checking docker-ce service"
-        sudo systemctl enable docker >>$LOG_FILE &
-        spin_wheel $! "Enabling docker-ce service"
-        sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
-        spin_wheel $! "Adding the present user to docker group"
     fi
+    sudo systemctl start docker >>$LOG_FILE &
+    spin_wheel $! "Starting docker-ce"
+    sudo systemctl status docker >>$LOG_FILE &
+    spin_wheel $! "Checking docker-ce service"
+    sudo systemctl enable docker >>$LOG_FILE &
+    spin_wheel $! "Enabling docker-ce service"
+    sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
+    spin_wheel $! "Adding the present user to docker group"
 
     # Download and Install java
     if command -v java > /dev/null; then
@@ -164,7 +164,7 @@ function install_packages () {
         print_info "Skipping installer repo clone based on CLI flag"
     else
         sudo rm -rf jazz-installer
-        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
+        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL --depth 1 >>$LOG_FILE &
         spin_wheel $! "Fetching jazz-installer repo"
     fi
 
