@@ -16,16 +16,25 @@ variable "cognito_pool_password" {type = "string" default = "cognito_pool_passwo
 
 #
 # Chef and Cookbook variables
+# Copying these resources to TMP on remote machines,
+# since $HOME is not reliable for all of our scenarios.
 #
-variable "chefconfigDir" {
+variable "chefconfigSourceDir" {
   type = "string"
   default = "../chefconfig"
 }
-variable "cookbooksDir" {
+variable "chefconfigDestDir" {
+  type = "string"
+  default = "/tmp/jazz-chefconfig"
+}
+variable "cookbooksSourceDir" {
   type = "string"
   default = "../cookbooks"
 }
-
+variable "cookbooksDestDir" {
+  type = "string"
+  default = "/tmp/jazz-cookbooks"
+}
 #
 # Jenkins related variables
 #
