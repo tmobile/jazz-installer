@@ -64,12 +64,9 @@ if node[:platform_family].include?("rhel")
     	end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
+      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
 
       cwd "/home/#{node['jenkins']['SSH_user']}"
-    end
-    execute 'copylinkdir' do
-      command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
     end
     execute 'createcredentials-jenkins1' do
       only_if  { node[:scm] == 'bitbucket' }
@@ -94,7 +91,7 @@ if node[:platform_family].include?("rhel")
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} #{node['jenkins']['SSH_user']}"
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} #{node['jenkins']['SSH_user']}"
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
@@ -115,12 +112,6 @@ if node[:platform_family].include?("rhel")
     execute 'job-gitlab-trigger' do
       only_if  { node[:scm] == 'gitlab' }
       command "/home/#{node['jenkins']['SSH_user']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']} #{node['scmpath']}"
-    end
-    link '/usr/bin/aws-api-import' do
-      to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-      owner 'jenkins'
-      group 'jenkins'
-      mode '0777'
     end
     link '/usr/bin/aws' do
       to '/usr/local/bin/aws'
@@ -185,11 +176,8 @@ if node[:platform_family].include?("debian")
       end
     end
     execute 'downloadgitproj' do
-      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core"
+      command "git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
       cwd "/root"
-    end
-    execute 'copylinkdir' do
-      command "cp -rf /root/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
     end
     execute 'settingexecutepermissiononallscripts' do
       command "chmod +x /root/cookbooks/jenkins/files/credentials/*.sh"
@@ -225,7 +213,7 @@ if node[:platform_family].include?("debian")
       command "/root/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['scmpath']} root"
     end
     execute 'createJob-job_build_pack_api' do
-      command "/root/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} root"
+      command "/root/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['scmpath']} root"
     end
     execute 'createJob-bitbucketteam_newService' do
       only_if  { node[:scm] == 'bitbucket' }
@@ -251,12 +239,6 @@ if node[:platform_family].include?("debian")
     execute 'createJob-jazz_ui' do
       only_if  { node[:scm] == 'gitlab' }
       command "/root/cookbooks/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} root #{node['scmpath']}"
-    end
-    link '/usr/bin/aws-api-import' do
-      to "/root/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-      owner 'jenkins'
-      group 'jenkins'
-      mode '0777'
     end
     link '/usr/bin/aws' do
       to '/usr/local/bin/aws'
