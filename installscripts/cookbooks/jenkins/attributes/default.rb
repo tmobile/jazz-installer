@@ -19,6 +19,7 @@ default['scmpath']="#{node['scmelb']}/scm"
 default['jenkinselb']='jazz-jenkinselb-.us-east-1.elb.amazonaws.com'
 default['region']='us-east-1'
 default['git_branch']='master'
+default['git_repo']='https://github.com/tmobile/jazz.git'
 default['jenkins']['SES-defaultSuffix']='defaultSuffixValue'
 default['jenkins']['SES-smtpAuthUsername']='smtpAuthUsernameValue'
 default['jenkins']['SES-smtpAuthPassword']='smtpAuthPasswordValue'

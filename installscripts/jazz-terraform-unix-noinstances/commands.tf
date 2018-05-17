@@ -18,10 +18,6 @@ variable "configureApikey_cmd" {
   type = "string"
   default = "./scripts/configureApikey.sh"
 }
-variable "configureapidoc_cmd" {
-  type = "string"
-  default = "./scripts/configure-api-doc.sh"
-}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"
@@ -54,10 +50,6 @@ variable "configureJazzCore_cmd" {
 variable "cognito_cmd" {
   type = "string"
   default = "./scripts/cognito.sh"
-}
-variable "cognitoDelete_cmd" {
-  type = "string"
-  default = "./scripts/cognitoDelete.sh"
 }
 variable "deployS3Webapp_cmd" {
   type = "string"
