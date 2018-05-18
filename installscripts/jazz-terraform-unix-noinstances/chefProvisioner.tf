@@ -68,31 +68,31 @@ resource "null_resource" "chef_provision_jenkins_server" {
   #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
     source      = "${var.cookbooksSourceDir}"
-    destination = "${var.cookbooksDestDir}/"
+    destination = "${var.chefDestDir}/"
   }
 
   provisioner "file" {
     source      = "${var.chefconfigSourceDir}"
-    destination = "${var.chefconfigDestDir}/"
+    destination = "${var.chefDestDir}/"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo sh ${var.cookbooksDestDir}/cookbooks/installChef.sh",
+      "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
       "sudo chmod 755 /usr/local/bin/jq",
-      "cat ${var.cookbooksDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
+      "cat ${var.chefDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
       "chmod 777 plugins.tar",
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
       "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
       "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}/cookbooks' -j ${var.chefconfigDestDir}/chefconfig/node-jenkinsserver-packages.json"
+      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.cookbooksDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
+      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
     ]
   }
 
