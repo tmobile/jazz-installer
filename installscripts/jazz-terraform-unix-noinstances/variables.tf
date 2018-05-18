@@ -23,15 +23,11 @@ variable "chefconfigSourceDir" {
   type = "string"
   default = "../chefconfig"
 }
-variable "chefconfigDestDir" {
-  type = "string"
-  default = "/tmp/jazz-chef"
-}
 variable "cookbooksSourceDir" {
   type = "string"
   default = "../cookbooks"
 }
-variable "cookbooksDestDir" {
+variable "chefDestDir" {
   type = "string"
   default = "/tmp/jazz-chef"
 }
