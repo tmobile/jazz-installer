@@ -5,6 +5,7 @@ import subprocess
 from support.jazz_common import parse_and_replace_parameter_list, get_script_folder, get_terraform_folder, get_installer_root
 from support.jazz_jenkins import get_and_add_existing_jenkins_config
 from support.jazz_bitbucket import get_and_add_existing_bitbucket_config
+from support.jazz_sonar import get_add_existing_sonar_config
 
 
 def pause():
@@ -51,6 +52,10 @@ def start(parameter_list):
 
     # Get Bitbucket configuration details
     get_and_add_existing_bitbucket_config(get_terraform_folder())
+
+    if os.environ['CODE_QUALITY'] == 'true':
+        # Get Sonar configuration details
+        get_add_existing_sonar_config(get_terraform_folder())
 
     # Make Sure Jenkins pem file is present in home folder
     check_jenkins_pem()
