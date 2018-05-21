@@ -74,6 +74,21 @@ variable "scmmap" {
 }
 
 #
+# CodeQuality - SonarQube variables
+#
+variable "codeqmap" {
+  type = "map"
+  default = {
+    codequality_type = "replacecodeqtype"
+    sonar_server_elb = "replaceelb"
+    sonar_username = "replaceusername"
+    sonar_passwd = "replacepasswd"
+    sonar_token = "replacetoken"
+    sonar_server_public_ip = "replacepubip"
+  }
+}
+
+#
 # AWS resource variables
 #
 variable "lambdaCloudWatchProps" {

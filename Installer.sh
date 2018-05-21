@@ -28,7 +28,7 @@ function start_wizard {
     # Call the python script to continue installation process
     cd $INSTALL_DIR/installscripts/wizard
 
-    python ./run.py $JAZZ_BRANCH $INSTALL_DIR
+    python ./run.py $JAZZ_BRANCH $INSTALL_DIR $CODE_QUALITY
 
     setterm -term linux -fore green
     setterm -term linux -fore default
@@ -44,6 +44,7 @@ while [ $# -gt 0 ] ; do
             echo ""
             echo "options:"
             echo "-b, --branch                                [optional] Branch to build Jazz framework from. Defaults to `master`"
+            echo "-codeq, --codequality                       [optional] Code Quality. Defaults to `true`"
             echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
             echo "-h, --help                                  [optional] Describe help"
             exit 0 ;;
@@ -55,6 +56,17 @@ while [ $# -gt 0 ] ; do
             else
                 echo "No arguments supplied for branch name."
                 echo "Usage: ./Installer.sh -b branch_name"
+                exit 1
+            fi
+            shift ;;
+
+        -codeq|--codequality)
+            shift
+            if [ "$1" == "true" -o "$1" == "false" ]; then
+                CODE_QUALITY="$1"
+            else
+                echo "No arguments supplied for code quality."
+                echo "Usage: ./Installer.sh -codeq true/false"
                 exit 1
             fi
             shift ;;
