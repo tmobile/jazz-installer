@@ -82,3 +82,23 @@ def get_add_existing_sonar_config(terraform_folder):
     ]
 
     add_sonar_config_to_files(parameter_list)
+
+def get_and_add_docker_sonar_config(sonar_docker_path):
+    """
+        Launch a dockerized Sonar server.
+    """
+    os.chdir(sonar_docker_path)
+    print("Running docker launch script")
+    subprocess.call([
+        'sg', 'docker', './launch_sonar_docker.sh', '|', 'tee', '-a',
+        '../../docker_creation.out'
+    ])
+    # Get values to create the array
+    parameter_list = []
+    with open("docker_sonar_vars") as f:
+        for line in f:
+            parameter_list.append(line.rstrip())
+
+    print(parameter_list[0:])
+
+    add_sonar_config_to_files(parameter_list)
