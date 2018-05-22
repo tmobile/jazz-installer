@@ -6,4 +6,4 @@ cookbook 'git', path: 'cookbooks/git'
 cookbook 'maven', path: 'cookbooks/maven'
 cookbook 'npm', path: 'cookbooks/npm'
 cookbook 'aws', path: 'cookbooks/aws'
-run_list "git", "maven", "npm", "aws", "jenkins::configurejenkins"
+run_list "git", "maven", "npm", "aws", "jenkins::prereqs", "jenkins::configurejenkins"
