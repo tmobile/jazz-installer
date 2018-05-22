@@ -74,23 +74,39 @@
     	"PASSWORD": ""
     },
     "UI_CONFIG": {
-      	"feature": {
-        	"multi_env": true
-      	}
+        "feature": {
+            "multi_env": true
+        },
+        "service_tabs":
+        {
+            "overview": true,
+            "access_control": false,
+            "metrics": false,
+            "logs": true,
+            "cost": false
+        },
+        "environment_tabs":
+        {
+            "overview": true,
+            "deployments": true,
+            "code_quality": false,
+            "logs": false,
+            "assets": false
+        }
     },
     "CODE_QUALITY": {
-	"SONAR": {
+	    "SONAR": {
         	"CLEANUP": "true",
-		"KEY_PREFIX": "jazz",
-		"ENABLE_SONAR": "false",
-		"JAZZ_PROFILE": "JazzProfile",
+		    "KEY_PREFIX": "jazz",
+		    "ENABLE_SONAR": "false",
+		    "JAZZ_PROFILE": "JazzProfile",
           	"ENABLE_VULNERABILITY_SCAN": "false",
-          	"DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_test2/nistfiles/",
+          	"DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
           	"DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
           	"DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
           	"DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
-          	"HOST_NAME": "",
-          	"CHECKSTYLE_LIB": ""
-	}
+          	"HOST_NAME": "{SONAR_HOST_NAME}",
+          	"CHECKSTYLE_LIB": "{CHECKSTYLE_LIB_LOC}"
+	    }
     }
 }

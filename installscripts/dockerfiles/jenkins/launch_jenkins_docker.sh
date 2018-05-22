@@ -75,10 +75,10 @@ docker exec jenkins-server apt-get update &> /dev/null &
 spin_wheel $! "Updating Jenkins docker container"
 docker exec jenkins-server apt-get install python-pip -y &> /dev/null &
 spin_wheel $! "Installing python-pip in Jenkins container"
-docker exec jenkins-server pip install --upgrade pip &> /dev/null &
+docker exec jenkins-server sudo pip install --upgrade pip &> /dev/null &
 spin_wheel $! "Upgrading pip in Jenkins container"
-docker exec jenkins-server chmod -R o+w /usr/local/lib/python2.7/dist-packages &> /dev/null &
-spin_wheel $! "Granting permissions to other users to pip install"
+docker exec jenkins-server sudo pip install --upgrade virtualenv &> /dev/null &
+spin_wheel $! "Install and upgrade virtualenv in Jenkins container"
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
