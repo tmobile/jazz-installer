@@ -2,12 +2,12 @@
 
 # Make current user owner of these files
 execute 'chownjenkinsfiles' do
-  command "sudo chown -R $USER #{node['cookbook_root']}/jenkins/files"
+  command "sudo chown -R $(whoami) jenkins/files"
 end
 
 # Add execute bit to all shell scripts
 execute 'chmodjenkinsscripts' do
-  command "find #{node['cookbook_root']}/jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \\;"
+  command "find jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \\;"
 end
 
 directory '/var/lib/jenkins/workspace' do
