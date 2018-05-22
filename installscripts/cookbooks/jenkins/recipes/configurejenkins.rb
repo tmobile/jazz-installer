@@ -53,7 +53,7 @@ execute 'copyConfigXml' do
 end
 
 execute 'copyCredentialsXml' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/credentials.xml ."
+  command "cp #{node['cookbook_root']}/jenkins/files/credentials/credentials.xml ."
   cwd "/var/lib/jenkins"
 end
 
