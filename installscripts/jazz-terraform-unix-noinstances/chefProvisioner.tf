@@ -65,8 +65,8 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
   #END chef cookbook edits
 
-  #Note that because the SSH connector is weird, we must manually create this directory
-  #on the remote machine here before we copy things to it.
+  #Note that because the Terraform SSH connector is weird, we must manually create this directory
+  #on the remote machine here *before* we copy things to it.
   provisioner "remote-exec" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
@@ -85,8 +85,9 @@ resource "null_resource" "chef_provision_jenkins_server" {
   provisioner "remote-exec" {
     inline = [
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
-      "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
-      "sudo chmod 755 /usr/local/bin/jq",
+      #TODO can we avoid installing JQ here? Does chef-client need it?
+      # "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
+      # "sudo chmod 755 /usr/local/bin/jq",
       "cat ${var.chefDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
       "chmod 777 plugins.tar",
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
@@ -96,11 +97,11 @@ resource "null_resource" "chef_provision_jenkins_server" {
     ]
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
+  #   ]
+  # }
 
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
