@@ -73,7 +73,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.chefconfigSourceDir}"
+    source      = "${var.policyfileSource}"
     destination = "${var.chefDestDir}/"
   }
 
@@ -91,9 +91,12 @@ resource "null_resource" "chef_provision_jenkins_server" {
       "cat ${var.chefDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
       "chmod 777 plugins.tar",
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
-      "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
-      "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"
+      # "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
+      # "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
+      "chef install ${chefDestDir}/Policyfile.rb",
+      "chef export ${chefDestDir}/chef-export",
+      "cd ${chefDestDir}/chef-export && chef-client -z"
+      # "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
 
