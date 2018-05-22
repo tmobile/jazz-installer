@@ -65,8 +65,13 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
   #END chef cookbook edits
 
-  #Copy the chef playbooks and config over to the remote Jenkins server
+  #Note that because the SSH connector is weird, we must manually create this directory
+  #on the remote machine here before we copy things to it.
+  provisioner "remote-exec" {
+    inline = "mkdir -p ${var.chefDestDir}"
+  }
 
+  #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
     source      = "${var.chefconfigSourceDir}"
     destination = "${var.chefDestDir}/"
@@ -74,7 +79,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   provisioner "file" {
     source      = "${var.cookbooksSourceDir}"
-    destination = "${var.chefDestDir}/cookbooks/"
+    destination = "${var.chefDestDir}/"
   }
 
   provisioner "remote-exec" {
