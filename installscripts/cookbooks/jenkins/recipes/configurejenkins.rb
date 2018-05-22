@@ -94,10 +94,6 @@ git "#{node['chef_root']}/jazz-core" do
   action :sync
 end
 
-execute 'copylinkdir' do
-  command "cp -rf #{node['chef_root']}/jazz-core/aws-apigateway-importer /var/lib; chmod -R 777 /var/lib/aws-apigateway-importer"
-end
-
 execute 'createcredentials-jenkins1' do
   only_if  { node[:scm] == 'bitbucket' }
   command "sleep 300;#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
@@ -161,13 +157,6 @@ end
 execute 'createJob-jazz_ui' do
   only_if  { node[:scm] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
-end
-
-link '/usr/bin/aws-api-import' do
-  to "#{node['chef_root']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
 end
 
 directory '/var/lib/jenkins' do
