@@ -96,12 +96,6 @@ resource "null_resource" "chef_provision_jenkins_server" {
     ]
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
-    ]
-  }
-
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
