@@ -48,7 +48,7 @@ execute 'copyXmls' do
 end
 
 execute 'copyConfigXml' do
-  command "cp #{node['cookbook_root']}/cookbooks/jenkins/files/node/config.xml ."
+  command "cp #{node['cookbook_root']}/jenkins/files/node/config.xml ."
   cwd "/var/lib/jenkins"
 end
 
