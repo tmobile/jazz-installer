@@ -26,7 +26,7 @@ if node[:platform_family].include?("rhel")
 end
 
 service "jenkins" do
-  action :start
+  action :restart
 end
 
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
