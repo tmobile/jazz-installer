@@ -2,7 +2,7 @@
 
 # Make current user owner of these files
 execute 'chownjenkinsfiles' do
-  command "sudo chown -R $USER #{node['cookbook_root']}/jenkins/files"
+  command "sudo chown -R $(whoami) #{node['cookbook_root']}/jenkins/files"
 end
 
 # Add execute bit to all shell scripts
