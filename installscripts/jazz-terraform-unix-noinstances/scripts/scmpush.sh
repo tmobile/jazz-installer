@@ -73,8 +73,11 @@ function individual_repopush() {
     git push -u origin master
     echo "code has been pushed"
 
-    # Adding a sleep to ensure smaller jenkins boxes do not overload themselves.
-    sleep 10
+    # Adding a sleep to ensure smaller jenkins boxes do not overload themselves,
+    # and to work around the AWS API Gateway creation limit:
+    # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
+    # TODO this drastically inflates install time, look into ways to reduce this wait.
+    sleep 45
     cd ../../jazz-core/
 }
 
