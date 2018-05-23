@@ -40,8 +40,3 @@ aws ses put-identity-policy --identity $EMAIL_ADDRESS --policy-name $POLICY_NAME
 
 #Change the config values in JENKINSATTRIBSFILE
 sed -i "s/default\['jenkins'\]\['SES-defaultSuffix'\].*.$/default['jenkins']['SES-defaultSuffix']='$EMAIL_ADDRESS'/g"  $JENKINSATTRIBSFILE
-
-SMTP_HOST='email-smtp.'$REGION'.amazonaws.com'
-sed -i "s/default\['jenkins'\]\['SES-smtpHost'\].*.$/default['jenkins']['SES-smtpHost']='$SMTP_HOST'/g"  $JENKINSATTRIBSFILE
-
-sed -i "s/default\['jenkins'\]\['SES-smtpAuthUsername'\].*.$/default['jenkins']['SES-smtpAuthUsername']='$AWS_ACCESS_KEY'/g"  $JENKINSATTRIBSFILE
