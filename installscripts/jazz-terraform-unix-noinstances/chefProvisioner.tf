@@ -84,6 +84,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   provisioner "remote-exec" {
     inline = [
+      # TODO we can (and should) do all of this stuff in Chef and not here.
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
       "sudo chmod 755 /usr/local/bin/jq",
