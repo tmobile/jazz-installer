@@ -99,6 +99,7 @@ end
 git "#{node['chef_root']}/jazz-core" do
   repository node['git_repo']
   reference node['git_branch']
+  depth 1
   action :sync
 end
 

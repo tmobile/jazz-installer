@@ -163,7 +163,7 @@ function install_packages () {
         print_info "Skipping installer repo clone based on CLI flag"
     else
         sudo rm -rf jazz-installer
-        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL >>$LOG_FILE &
+        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL --depth 1 >>$LOG_FILE &
         spin_wheel $! "Fetching jazz-installer repo"
     fi
 
