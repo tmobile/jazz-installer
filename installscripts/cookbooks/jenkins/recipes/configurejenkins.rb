@@ -29,13 +29,18 @@ service "jenkins" do
   action :restart
 end
 
+#Wait a bit, Java apps don't coldboot very quickly...
+execute 'waitForSecondJenkinsRestart' do
+  command "sleep 30"
+end
+
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
 execute 'copyJenkinsClientJar' do
   command "curl -sL http://#{node['jenkinselb']}/jnlpJars/jenkins-cli.jar -o #{node['chef_root']}/jenkins-cli.jar; chmod 755 #{node['jenkins']['clientjar']}"
 end
 
 execute 'createJobExecUser' do
-  command "sleep 30;echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy ="
+  command "echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy ="
 end
 
 execute 'copyEncryptGroovyScript' do
@@ -84,6 +89,11 @@ service "jenkins" do
   action [:restart]
 end
 
+#Wait a bit, Java apps don't coldboot very quickly...
+execute 'waitForSecondJenkinsRestart' do
+  command "sleep 30"
+end
+
 directory "#{node['chef_root']}/jazz-core" do
   action :delete
 end
@@ -96,7 +106,7 @@ end
 
 execute 'createcredentials-jenkins1' do
   only_if  { node[:scm] == 'bitbucket' }
-  command "sleep 300;#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
 execute 'createcredentials-jobexecutor' do
@@ -108,7 +118,7 @@ execute 'createcredentials-aws' do
 end
 
 execute 'createcredentials-cognitouser' do
-  command "sleep 30;#{node['cookbook_root']}/jenkins/files/credentials/cognitouser.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['cookbook_root']}/jenkins/files/credentials/cognitouser.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
 execute 'configJenkinsLocConfigXml' do
