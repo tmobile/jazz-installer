@@ -105,7 +105,7 @@ def get_stack_generic_details(jazz_branch):
     while (1):
         cognito_email_id = raw_input(
             "Please provide admin email address (will be used to login into Jazz):"
-        )
+        ).lower()
         if validate_email_id(cognito_email_id):
             break
         else:
