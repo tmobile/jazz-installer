@@ -17,19 +17,19 @@ end
 
 # If we're on RHEL, adjust Java memory options
 # (not sure if this is needed, or actually RHEL-specific, but keeping it)
-if node['platform_family'].include?("rhel")
+if node['platform_family'].include?('rhel')
   execute 'resizeJenkinsMemorySettings' do
     command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
   end
 end
 
-service "jenkins" do
+service 'jenkins' do
   action :restart
 end
 
-#Wait a bit, Java apps don't coldboot very quickly...
+# Wait a bit, Java apps don't coldboot very quickly...
 execute 'waitForFirstJenkinsRestart' do
-  command "sleep 30"
+  command 'sleep 30'
 end
 
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
@@ -47,17 +47,17 @@ end
 
 execute 'copyXmls' do
   command "tar -xvf #{node['cookbook_root']}/jenkins/files/default/xmls.tar"
-  cwd "/var/lib/jenkins"
+  cwd '/var/lib/jenkins'
 end
 
 execute 'copyConfigXml' do
   command "cp #{node['cookbook_root']}/jenkins/files/node/config.xml ."
-  cwd "/var/lib/jenkins"
+  cwd '/var/lib/jenkins'
 end
 
 execute 'copyCredentialsXml' do
   command "cp #{node['cookbook_root']}/jenkins/files/credentials/credentials.xml ."
-  cwd "/var/lib/jenkins"
+  cwd '/var/lib/jenkins'
 end
 
 # script approvals going in with  xmls.tar will be overwritten
@@ -67,29 +67,29 @@ end
 
 # Configure Gitlab Plugin
 execute 'configuregitlabplugin' do
-  only_if  { node['scm'] == 'gitlab' }
+  only_if { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
 end
 
 execute 'configuregitlabuser' do
-  only_if  { node['scm'] == 'gitlab' }
+  only_if { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
 execute 'configuregitlabtoken' do
-  only_if  { node['scm'] == 'gitlab' }
+  only_if { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
-#TODO we do this at the end, do we need it here?
-service "jenkins" do
+# TODO: we do this at the end, do we need it here?
+service 'jenkins' do
   supports [:stop, :start, :restart]
   action [:restart]
 end
 
-#Wait a bit, Java apps don't coldboot very quickly...
+# Wait a bit, Java apps don't coldboot very quickly...
 execute 'waitForSecondJenkinsRestart' do
-  command "sleep 30"
+  command 'sleep 30'
 end
 
 directory "#{node['chef_root']}/jazz-core" do
@@ -103,7 +103,7 @@ git "#{node['chef_root']}/jazz-core" do
 end
 
 execute 'createcredentials-jenkins1' do
-  only_if  { node['scm'] == 'bitbucket' }
+  only_if { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
@@ -136,12 +136,12 @@ execute 'createJob-job_build_pack_api' do
 end
 
 execute 'createJob-bitbucketteam_newService' do
-  only_if  { node['scm'] == 'bitbucket' }
+  only_if { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-platform_api_services' do
-  only_if  { node['scm'] == 'bitbucket' }
+  only_if { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
@@ -158,12 +158,12 @@ execute 'createJob-job-build-pack-website' do
 end
 
 execute 'job-gitlab-trigger' do
-  only_if  { node['scm'] == 'gitlab' }
+  only_if { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-jazz_ui' do
-  only_if  { node['scm'] == 'gitlab' }
+  only_if { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
@@ -173,7 +173,7 @@ directory '/var/lib/jenkins' do
   action :create
 end
 
-service "jenkins" do
+service 'jenkins' do
   supports [:stop, :start, :restart]
   action [:restart]
 end
