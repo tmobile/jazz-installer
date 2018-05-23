@@ -1,5 +1,3 @@
-# TODO go thru all the scripts invoked here and make sure they don't assume HOME or SSH_USER
-
 # Make current user owner of these files
 execute 'chownjenkinsfiles' do
   command "sudo chown -R $(whoami) #{node['cookbook_root']}/jenkins/files"
@@ -19,7 +17,7 @@ end
 
 # If we're on RHEL, adjust Java memory options
 # (not sure if this is needed, or actually RHEL-specific, but keeping it)
-if node[:platform_family].include?("rhel")
+if node['platform_family'].include?("rhel")
   execute 'resizeJenkinsMemorySettings' do
     command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
   end
@@ -69,17 +67,17 @@ end
 
 # Configure Gitlab Plugin
 execute 'configuregitlabplugin' do
-  only_if  { node[:scm] == 'gitlab' }
+  only_if  { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
 end
 
 execute 'configuregitlabuser' do
-  only_if  { node[:scm] == 'gitlab' }
+  only_if  { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
 execute 'configuregitlabtoken' do
-  only_if  { node[:scm] == 'gitlab' }
+  only_if  { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
@@ -99,13 +97,13 @@ directory "#{node['chef_root']}/jazz-core" do
 end
 
 git "#{node['chef_root']}/jazz-core" do
-  repository "#{node['git_repo']}"
-  reference "#{node['git_branch']}"
+  repository node['git_repo']
+  reference node['git_branch']
   action :sync
 end
 
 execute 'createcredentials-jenkins1' do
-  only_if  { node[:scm] == 'bitbucket' }
+  only_if  { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
@@ -138,12 +136,12 @@ execute 'createJob-job_build_pack_api' do
 end
 
 execute 'createJob-bitbucketteam_newService' do
-  only_if  { node[:scm] == 'bitbucket' }
+  only_if  { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-platform_api_services' do
-  only_if  { node[:scm] == 'bitbucket' }
+  only_if  { node['scm'] == 'bitbucket' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
@@ -160,12 +158,12 @@ execute 'createJob-job-build-pack-website' do
 end
 
 execute 'job-gitlab-trigger' do
-  only_if  { node[:scm] == 'gitlab' }
+  only_if  { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-jazz_ui' do
-  only_if  { node[:scm] == 'gitlab' }
+  only_if  { node['scm'] == 'gitlab' }
   command "#{node['cookbook_root']}/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
