@@ -73,6 +73,8 @@ function individual_repopush() {
     git push -u origin master
     echo "code has been pushed"
 
+    # Adding a sleep to ensure smaller jenkins boxes do not overload themselves.
+    sleep 10
     cd ../../jazz-core/
 }
 
@@ -109,5 +111,3 @@ function push_to_scm() {
 }
 
 push_to_scm $jazzbuildmodule
-# Adding a sleep to ensure smaller jenkins boxes do not overload themselves.
-sleep 45
