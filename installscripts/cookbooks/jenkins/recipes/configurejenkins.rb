@@ -30,7 +30,7 @@ service "jenkins" do
 end
 
 #Wait a bit, Java apps don't coldboot very quickly...
-execute 'waitForSecondJenkinsRestart' do
+execute 'waitForFirstJenkinsRestart' do
   command "sleep 30"
 end
 
