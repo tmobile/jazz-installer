@@ -70,9 +70,9 @@ resource "null_resource" "chef_provision_jenkins_server" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
 
-  #Copy the chef playbooks and config over to the remote Jenkins server
+  #Copy the chef playbooks and support scripts over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.policyfileSource}"
+    source      = "${var.chefScriptsSourceDir}"
     destination = "${var.chefDestDir}/"
   }
 
@@ -84,9 +84,9 @@ resource "null_resource" "chef_provision_jenkins_server" {
   provisioner "remote-exec" {
     inline = [
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
-      "chef install ${chefDestDir}/Policyfile.rb",
+      "chef install ${chefDestDir}/cookbooks/Policyfile.rb",
       "chef export ${chefDestDir}/chef-export",
-      "cd ${chefDestDir}/chef-export && chef-client -z"
+      "cd ${chefDestDir}/chef-export && sudo chef-client -z"
     ]
   }
 
