@@ -36,7 +36,7 @@ variable "chefDestDir" {
 #
 variable "jenkinsjsonpropsfile" {
   type = "string"
-  default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
+  default = "../cookbooks/jenkins/files/default/jazz-installer-vars.json"
 }
 variable "jenkinsattribsfile" {
   type = "string"
