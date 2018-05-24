@@ -19,6 +19,7 @@ INSTALL_DIR=`pwd`
 LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 JAZZ_BRANCH="master"
+CODE_QUALITY='true'
 
 function start_wizard {
     # Set the permissions
