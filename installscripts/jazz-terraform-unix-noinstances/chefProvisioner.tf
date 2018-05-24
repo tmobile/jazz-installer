@@ -85,7 +85,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
     inline = [
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
-      "chef export ${var.chefDestDir}/chef-export",
+      "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
       "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
     ]
   }
