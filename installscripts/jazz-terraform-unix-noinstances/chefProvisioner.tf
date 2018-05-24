@@ -84,9 +84,9 @@ resource "null_resource" "chef_provision_jenkins_server" {
   provisioner "remote-exec" {
     inline = [
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
-      "chef install ${chefDestDir}/cookbooks/Policyfile.rb",
-      "chef export ${chefDestDir}/chef-export",
-      "cd ${chefDestDir}/chef-export && sudo chef-client -z"
+      "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
+      "chef export ${var.chefDestDir}/chef-export",
+      "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
     ]
   }
 
