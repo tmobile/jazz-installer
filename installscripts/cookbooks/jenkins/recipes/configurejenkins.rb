@@ -1,19 +1,30 @@
 # Make current user owner of these files
 execute 'chownjenkinsfiles' do
-  command "sudo chown -R $(whoami) #{node['cookbook_root']}/jenkins/files"
+  command "sudo chown -R $(whoami) #{node['script_root']}"
 end
 
 # Add execute bit to all shell scripts
 execute 'chmodjenkinsscripts' do
-  command "find #{node['cookbook_root']}/jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \\;"
+  command "find #{node['script_root']}/jobs -type f -iname \"*.sh\" -exec chmod +x {} \\;"
 end
 
 execute 'concatJenkinsPlugins' do
-  command "cat #{node['cookbook_root']}/jenkins/files/plugins/plugins0* > #{node['chef_root']}/plugins.tar"
+  command "cat #{node['script_root']}/plugins/plugins0* > #{node['chef_root']}/plugins.tar"
 end
 
 execute 'extractJenkinsPlugins' do
   command "tar -xf #{node['chef_root']}/plugins.tar -C /var/lib/jenkins/"
+end
+
+# Clean up the plugin tar from previous step, it is rather large
+file '#{node['chef_root']}/plugins.tar' do
+  action :delete
+end
+
+# Copy authfile
+cookbook_file '#{node['chef_root']}/authfile' do
+  source 'authfile'
+  action :create
 end
 
 directory '/var/lib/jenkins/workspace' do
@@ -25,10 +36,9 @@ end
 
 # If we're on RHEL, adjust Java memory options
 # (not sure if this is needed, or actually RHEL-specific, but keeping it)
-if node['platform_family'].include?('rhel')
-  execute 'resizeJenkinsMemorySettings' do
-    command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
-  end
+execute 'resizeJenkinsMemorySettings' do
+  only_if { node['platform_family'].include?('rhel') }
+  command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
 end
 
 service 'jenkins' do
@@ -54,8 +64,13 @@ cookbook_file '#{node['chef_root']}/encrypt.groovy' do
   action :create
 end
 
+cookbook_file '#{node['chef_root']}/xmls.tar' do
+  source 'xmls.tar'
+  action :create
+end
+
 execute 'extractXmls' do
-  command "tar -xvf #{node['cookbook_root']}/jenkins/files/default/xmls.tar"
+  command "tar -xvf #{node['chef_root']}/xmls.tar"
   cwd '/var/lib/jenkins'
 end
 
@@ -197,47 +212,47 @@ bash 'configJenkinsLocConfigXml' do
 end
 
 execute 'createJob-create-service' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_create-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-delete-service' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_delete-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-job_build_pack_api' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_build_pack_api.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-bitbucketteam_newService' do
   only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-platform_api_services' do
   only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'job_cleanup_cloudfront_distributions' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-job-pack-lambda' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-job-build-pack-website' do
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_build_pack_website.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'job-gitlab-trigger' do
   only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 execute 'createJob-jazz_ui' do
   only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
 end
 
 directory '/var/lib/jenkins' do

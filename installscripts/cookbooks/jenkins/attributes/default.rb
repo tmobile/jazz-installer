@@ -1,8 +1,8 @@
 default['jenkins']['home'] = '/var/lib/jenkins'
 default['chef_root'] = '/tmp/jazz-chef'
-default['cookbook_root'] = "#{node['chef_root']}/cookbooks"
+default['script_root'] = "#{node['chef_root']}/chefscripts"
 default['jenkins']['clientjar'] = "#{node['chef_root']}/jenkins-cli.jar"
-default['authfile'] = "#{node['cookbook_root']}/jenkins/files/default/authfile"
+default['authfile'] = "#{node['chef_root']}/authfile"
 default['scm'] = 'bitbucket'
 default['scmelb'] = 'jazz-bitbucketelb.us-east-1.elb.amazonaws.com'
 default['scmpath'] = "#{node['scmelb']}/scm"
