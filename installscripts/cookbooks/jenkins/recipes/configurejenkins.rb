@@ -8,6 +8,14 @@ execute 'chmodjenkinsscripts' do
   command "find #{node['cookbook_root']}/jenkins/files -type f -iname \"*.sh\" -exec chmod +x {} \\;"
 end
 
+execute 'concatJenkinsPlugins' do
+  command "cat #{node['cookbook_root']}/jenkins/files/plugins/plugins0* > #{node['chef_root']}/plugins.tar"
+end
+
+execute 'extractJenkinsPlugins' do
+  command "tar -xf #{node['chef_root']}/plugins.tar -C /var/lib/jenkins/"
+end
+
 directory '/var/lib/jenkins/workspace' do
   owner 'jenkins'
   group 'jenkins'
@@ -41,44 +49,61 @@ execute 'createJobExecUser' do
   command "echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy ="
 end
 
-execute 'copyEncryptGroovyScript' do
-  command "cp #{node['cookbook_root']}/jenkins/files/default/encrypt.groovy #{node['chef_root']}/encrypt.groovy"
+cookbook_file '#{node['chef_root']}/encrypt.groovy' do
+  source 'encrypt.groovy'
+  action :create
 end
 
-execute 'copyXmls' do
+execute 'extractXmls' do
   command "tar -xvf #{node['cookbook_root']}/jenkins/files/default/xmls.tar"
   cwd '/var/lib/jenkins'
 end
 
-execute 'copyConfigXml' do
-  command "cp #{node['cookbook_root']}/jenkins/files/node/config.xml ."
-  cwd '/var/lib/jenkins'
+cookbook_file '/var/lib/jenkins/config.xml' do
+  source 'config.xml'
+  action :create
 end
 
-execute 'copyCredentialsXml' do
-  command "cp #{node['cookbook_root']}/jenkins/files/credentials/credentials.xml ."
-  cwd '/var/lib/jenkins'
-end
-
-# script approvals going in with  xmls.tar will be overwritten
-execute 'copyScriptApprovals' do
-  command "cp #{node['jenkins']['scriptApprovalfile']} #{node['jenkins']['scriptApprovalfiletarget']}"
+cookbook_file '/var/lib/jenkins/credentials.xml' do
+  source 'credentials.xml'
+  action :create
 end
 
 # Configure Gitlab Plugin
-execute 'configuregitlabplugin' do
+bash 'configuregitlabplugin' do
   only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/node/configuregitlab.sh #{node['scmelb']}"
+  code <<-EOH
+    sed -i "s/ip/#{node['scmelb']}/g" /var/lib/jenkins/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
+  EOH
 end
 
-execute 'configuregitlabuser' do
+bash 'configureGitlabUser' do
   only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+      <scope>GLOBAL</scope>
+      <id>jenkins1cred</id>
+      <description>Gitlab user</description>
+      <username>#{node['gitlabuser']}</username>
+      <password>#{node['gitlabpassword']}</password>
+    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+    EOF
+  EOH
 end
 
-execute 'configuregitlabtoken' do
+bash 'configureGitlabToken' do
   only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+      <com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl plugin="gitlab-plugin@1.5.2">
+        <scope>GLOBAL</scope>
+        <id>Jazz-Gitlab-API-Cred</id>
+        <description>Jazz-Gitlab-API-Cred</description>
+        <apiToken>#{node['gitlabtoken']}</apiToken>
+      </com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl>
+    EOF
+  EOH
 end
 
 # TODO: we do this at the end, do we need it here?
@@ -103,25 +128,72 @@ git "#{node['chef_root']}/jazz-core" do
   action :sync
 end
 
-execute 'createcredentials-jenkins1' do
+bash 'createcredentials-jenkins1' do
   only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+      <scope>GLOBAL</scope>
+      <id>jenkins1cred</id>
+      <description>user created on bitbucket</description>
+      <username>#{node['bbuser']}</username>
+      <password>#{node['bbpassword']}</password>
+    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+    EOF
+  EOH
 end
 
-execute 'createcredentials-jobexecutor' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+bash 'createcredentials-jobexecutor' do
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+      <scope>GLOBAL</scope>
+      <id>jobexecutor</id>
+      <description>user created on bitbucket</description>
+      <username>jobexec</username>
+      <password>jenkinsadmin</password>
+    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+    EOF
+  EOH
 end
 
-execute 'createcredentials-aws' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+bash 'createcredentials-aws' do
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+    <com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl plugin="aws-credentials@1.21">
+      <scope>GLOBAL</scope>
+      <id>awscreds1</id>
+      <description>AWS Credentials</description>
+      <accessKey>#{node['aws_access_key']}</accessKey>
+      <secretKey>#{node['aws_secret_key']}</secretKey>
+      <iamRoleArn></iamRoleArn>
+      <iamMfaSerialNumber></iamMfaSerialNumber>
+    </com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl>
+    EOF
+  EOH
 end
 
-execute 'createcredentials-cognitouser' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/cognitouser.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+bash 'createcredentials-cognitouser' do
+  code <<-EOH
+    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+      <scope>GLOBAL</scope>
+      <id>SVC_ADMIN</id>
+      <description>Jazz Admin User</description>
+      <username>#{node['cognitouser']}</username>
+      <password>#{node['cognitopassword']}</password>
+    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+    EOF
+  EOH
 end
 
-execute 'configJenkinsLocConfigXml' do
-  command "#{node['cookbook_root']}/jenkins/files/node/configJenkinsLocConfigXml.sh  #{node['jenkinselb']} #{node['jenkins']['SES-defaultSuffix']}"
+bash 'configJenkinsLocConfigXml' do
+  code <<-EOH
+    JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+
+    sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
+    sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
+  EOH
 end
 
 execute 'createJob-create-service' do
