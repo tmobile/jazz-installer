@@ -65,15 +65,15 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
   #END chef cookbook edits
 
-  #Note that because the SSH connector is weird, we must manually create this directory
-  #on the remote machine here before we copy things to it.
+  #Note that because the Terraform SSH connector is weird, we must manually create this directory
+  #on the remote machine here *before* we copy things to it.
   provisioner "remote-exec" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
 
   #Copy the chef playbooks and config over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.chefconfigSourceDir}"
+    source      = "${var.policyfileSource}"
     destination = "${var.chefDestDir}/"
   }
 
@@ -84,16 +84,27 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   provisioner "remote-exec" {
     inline = [
-      # TODO we can (and should) do all of this stuff (python, jq, plugins)in Chef and not here.
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
+      #TODO can we avoid installing JQ here? Does chef-client need it?
+      # "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
+      # "sudo chmod 755 /usr/local/bin/jq",
       "cat ${var.chefDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
       "chmod 777 plugins.tar",
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
-      "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
-      "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"
+      # "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
+      # "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
+      "chef install ${chefDestDir}/Policyfile.rb",
+      "chef export ${chefDestDir}/chef-export",
+      "cd ${chefDestDir}/chef-export && chef-client -z"
+      # "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"
     ]
   }
+
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' --override-runlist jenkins::configurejenkins"
+  #   ]
+  # }
 
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
