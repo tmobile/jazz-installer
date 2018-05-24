@@ -22,7 +22,7 @@ file '#{node['chef_root']}/plugins.tar' do
 end
 
 # Copy authfile
-cookbook_file '#{node['chef_root']}/authfile' do
+cookbook_file "#{node['chef_root']}/authfile" do
   source 'authfile'
   action :create
 end
@@ -59,12 +59,12 @@ execute 'createJobExecUser' do
   command "echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy ="
 end
 
-cookbook_file '#{node['chef_root']}/encrypt.groovy' do
+cookbook_file "#{node['chef_root']}/encrypt.groovy" do
   source 'encrypt.groovy'
   action :create
 end
 
-cookbook_file '#{node['chef_root']}/xmls.tar' do
+cookbook_file "#{node['chef_root']}/xmls.tar" do
   source 'xmls.tar'
   action :create
 end
