@@ -52,7 +52,7 @@ sleep 20 &
 spin_wheel $! "Initializing the SonarQube container"
 
 passwd=`date | md5sum | cut -d ' ' -f1`
-sleep 20 &
+sleep 30 &
 spin_wheel $! "Setup Credentials the SonarQube container"
 
 curl -u admin:admin -X POST -F 'login=admin' -F 'password='''$passwd'''' -F 'previousPassword=admin' http://$ip:9000/api/users/change_password
