@@ -1,4 +1,3 @@
-python_runtime '2'
 package 'git'
 include_recipe 'maven::default'
 include_recipe 'nodejs'
