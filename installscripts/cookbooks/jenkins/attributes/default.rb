@@ -23,3 +23,6 @@ default['bbpassword'] = 'REPLACEME'
 #Maven cookbook property
 default['maven']['version'] = "3.5.2"
 default['maven']['setup_bin'] = true
+default['maven']['setup_bin'] = true
+#Node cookbook property
+default['nodejs']['version'] = "8.11.2"
