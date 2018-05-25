@@ -105,4 +105,5 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
+variable "codeq" { default = false }
 variable "atlassian_jar_path" { type = "string" }
