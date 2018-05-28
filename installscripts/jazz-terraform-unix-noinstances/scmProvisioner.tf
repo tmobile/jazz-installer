@@ -32,7 +32,7 @@ resource "null_resource" "configureJazzBuildModule" {
 
   provisioner "remote-exec"{
     inline = [
-      "git clone http://${lookup(var.scmmap, "scm_username")}:${lookup(var.scmmap, "scm_passwd")}@${lookup(var.scmmap, "scm_elb")}${lookup(var.scmmap, "scm_pathext")}/slf/jazz-build-module.git",
+      "git clone http://${lookup(var.scmmap, "scm_username")}:${urlencode(lookup(var.scmmap, "scm_passwd"))}@${lookup(var.scmmap, "scm_elb")}${lookup(var.scmmap, "scm_pathext")}/slf/jazz-build-module.git",
       "cd jazz-build-module",
       "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
       "git add jazz-installer-vars.json",
