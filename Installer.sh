@@ -19,7 +19,7 @@ INSTALL_DIR=`pwd`
 LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 JAZZ_BRANCH="master"
-CODE_QUALITY='true'
+CODE_QUALITY='false'
 
 function start_wizard {
     # Set the permissions
@@ -45,7 +45,7 @@ while [ $# -gt 0 ] ; do
             echo ""
             echo "options:"
             echo "-b, --branch                                [optional] Branch to build Jazz framework from. Defaults to `master`"
-            echo "-codeq, --codequality                       [optional] Code Quality. Defaults to `true`"
+            echo "-c, --codequality                           [optional] Install code quality module (sonarqube). Defaults to `false`"
             echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
             echo "-h, --help                                  [optional] Describe help"
             exit 0 ;;
@@ -61,13 +61,13 @@ while [ $# -gt 0 ] ; do
             fi
             shift ;;
 
-        -codeq|--codequality)
+        -c|--codequality)
             shift
             if [ "$1" == "true" -o "$1" == "false" ]; then
                 CODE_QUALITY="$1"
             else
                 echo "No arguments supplied for code quality."
-                echo "Usage: ./Installer.sh -codeq true/false"
+                echo "Usage: ./Installer.sh -c true/false"
                 exit 1
             fi
             shift ;;
