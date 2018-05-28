@@ -75,6 +75,9 @@ if node[:platform_family].include?("rhel")
     execute 'createcredentials-jobexecutor' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
+    execute 'createcredentials-sonar' do
+      command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+    end
     execute 'createcredentials-aws' do
       command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
     end
@@ -196,6 +199,9 @@ if node[:platform_family].include?("debian")
     end
     execute 'createcredentials-jobexecutor' do
       command "/root/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} root"
+    end
+    execute 'createcredentials-sonar' do
+      command "/root/cookbooks/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} root"
     end
     execute 'createcredentials-aws' do
       command "/root/cookbooks/jenkins/files/credentials/aws.sh #{node['jenkinselb']} root"
