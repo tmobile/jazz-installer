@@ -106,7 +106,7 @@
           	"DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
           	"DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
           	"HOST_NAME": "{SONAR_HOST_NAME}",
-            "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
+                "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
           	"CHECKSTYLE_LIB": "{CHECKSTYLE_LIB_LOC}"
 	    }
     }
