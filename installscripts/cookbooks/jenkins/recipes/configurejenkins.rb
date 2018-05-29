@@ -112,6 +112,10 @@ execute 'createcredentials-jobexecutor' do
   command "#{node['cookbook_root']}/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
 
+execute 'createcredentials-sonar' do
+  command "#{node['cookbook_root']}/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+end
+
 execute 'createcredentials-aws' do
   command "#{node['cookbook_root']}/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
 end
