@@ -75,6 +75,21 @@ variable "scmmap" {
 }
 
 #
+# CodeQuality - SonarQube variables
+#
+variable "codeqmap" {
+  type = "map"
+  default = {
+    codequality_type = "replacecodeqtype"
+    sonar_server_elb = "replaceelb"
+    sonar_username = "replaceusername"
+    sonar_passwd = "replacepasswd"
+    sonar_token = "replacetoken"
+    sonar_server_public_ip = "replacepubip"
+  }
+}
+
+#
 # AWS resource variables
 #
 variable "lambdaCloudWatchProps" {
@@ -91,4 +106,5 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
+variable "codeq" { default = false }
 variable "atlassian_jar_path" { type = "string" }
