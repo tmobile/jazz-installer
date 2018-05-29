@@ -21,6 +21,20 @@ resource "null_resource" "outputVariables" {
    }
 }
 
+resource "null_resource" "outputVariablesSonar" {
+  depends_on = ["null_resource.outputVariables"]
+  count = "${var.codeq}"
+
+  provisioner "local-exec" {
+    command = <<EOF
+              echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
+              echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
+              echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
+              echo \""Sonar Token\"" : \""${lookup(var.codeqmap, "sonar_token")}\"",  >> stack_details.json
+              EOF
+  }
+}
+
 resource "null_resource" "outputVariablesBB" {
   depends_on = ["null_resource.outputVariables"]
   count = "${var.scmbb}"
@@ -44,21 +58,6 @@ resource "null_resource" "outputVariablesGitlab" {
               echo \""Gitlab Home\"" : \""http://${lookup(var.scmmap, "scm_publicip")}\"",  >> stack_details.json
               echo \""Gitlab Username\"" : \""${lookup(var.scmmap, "scm_username")}\"",   >> stack_details.json
               echo \""Gitlab Password\"" : \""${lookup(var.scmmap, "scm_passwd")}\""  >> stack_details.json
-              echo } >> stack_details.json
-              EOF
-  }
-}
-
-resource "null_resource" "outputVariablesSonar" {
-  depends_on = ["null_resource.outputVariables"]
-  count = "${var.codeq}"
-
-  provisioner "local-exec" {
-    command = <<EOF
-              echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
-              echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
-              echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\""  >> stack_details.json
-              echo \""Sonar Token\"" : \""${lookup(var.codeqmap, "sonar_token")}\""  >> stack_details.json
               echo } >> stack_details.json
               EOF
   }
