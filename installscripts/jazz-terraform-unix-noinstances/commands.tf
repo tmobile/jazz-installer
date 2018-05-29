@@ -18,6 +18,10 @@ variable "configureApikey_cmd" {
   type = "string"
   default = "./scripts/configureApikey.sh"
 }
+variable "configureSonar_cmd" {
+  type = "string"
+  default = "./scripts/configureSonar.sh"
+}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"
