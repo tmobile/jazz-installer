@@ -12,7 +12,10 @@ def main():
         git_branch_name = sys.argv[1]
         # Set the passed-in repo root path as an env var here,
         # so subsequent scripts don't need to hardcode absolute paths.
-        os.environ['CODE_QUALITY'] = sys.argv[3] if sys.argv[3] else 'true'
+        os.environ['CODE_QUALITY'] = 'false'
+        if len(sys.argv) > 3:
+            os.environ['CODE_QUALITY'] = sys.argv[3]
+
         os.environ['JAZZ_INSTALLER_ROOT'] = sys.argv[2]
         key = 0
         while 1:
