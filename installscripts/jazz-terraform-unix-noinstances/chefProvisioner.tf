@@ -44,13 +44,13 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   # Update sonar script in cookbook
   provisioner "local-exec" {
-    command = "sed -i 's|<username>sonaruser</username>|<username>${lookup(var.codeqmap, "sonar_username")}</username>|g' ${var.cookbooksDir}/jenkins/files/credentials/sonar.sh"
+    command = "sed -i 's|<username>sonaruser</username>|<username>${lookup(var.codeqmap, "sonar_username")}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/sonar.sh"
   }
 
   provisioner "local-exec" {
     command = "sed -i 's|<password>sonarpasswd</password>|<password>${lookup(var.codeqmap, "sonar_passwd")}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/sonar.sh"
   }
-  
+
   #Update Jenkins script in cookbook
   provisioner "local-exec" {
     command = "sed -i 's|<username>bitbucketuser</username>|<username>${lookup(var.scmmap, "scm_username")}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/jenkins1.sh"
