@@ -21,7 +21,7 @@ def add_gitlab_config_to_files(parameter_list):
     replace_tfvars('scm_pathext', '/', get_tfvars_file())
 
 
-def get_and_add_docker_gitlab_config(gitlab_docker_path):
+def get_and_add_docker_gitlab_config(gitlab_docker_path, parameter_cred_list=[]):
     """
         Launch a Dockerized Gitlab server.
     """
@@ -29,7 +29,7 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path):
     print("Running docker launch script  for gitlab")
 
     subprocess.call([
-        'sg', 'docker', './launch_gitlab_docker.sh', '|', 'tee', '-a',
+        'sg', 'docker',  './launch_gitlab_docker.sh %s %s' %( str(parameter_cred_list[1]) , str(parameter_cred_list[0])), '|', 'tee', '-a',
         '../../gitlab_creation.out'
     ])
 
