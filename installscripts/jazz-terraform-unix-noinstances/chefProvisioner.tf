@@ -48,7 +48,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|<password>sonarpasswd</password>|<password>${lookup(var.codeqmap, "sonar_passwd")}</password>|g' ${var.cookbooksDir}/jenkins/files/credentials/sonar.sh"
+    command = "sed -i 's|<password>sonarpasswd</password>|<password>${lookup(var.codeqmap, "sonar_passwd")}</password>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/sonar.sh"
   }
 
   #Update Jenkins script in cookbook
