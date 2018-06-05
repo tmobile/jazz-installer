@@ -63,6 +63,9 @@ end
 execute 'createcredentials-jobexecutor' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
+execute 'createcredentials-sonar' do
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+end
 execute 'createcredentials-aws' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
