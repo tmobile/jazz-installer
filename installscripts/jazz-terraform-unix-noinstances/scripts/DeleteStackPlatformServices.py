@@ -64,7 +64,7 @@ platformServices = [
     'is-service-available', 'delete-serverless-service',
     'create-serverless-service', 'email', 'events-handler', 'environments',
     'scm-webhook', 'environment-event-handler', 'deployments',
-    'deployments-event-handler'
+    'deployments-event-handler', 'codeq'
 ]
 
 for pservice in platformServices:
@@ -81,7 +81,8 @@ print("\r\nStarting deletion of client services\r\n\r\n")
 fname = 'listservice.json'
 if os.path.isfile(fname):
     os.remove(fname)
-    valresp = getServicesList()
+
+valresp = getServicesList()
 if (valresp != 0):
     exit(1)
 
