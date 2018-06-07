@@ -53,8 +53,10 @@ spin_wheel $! "Initializing the SonarQube container"
 
 passwd=`date | md5sum | cut -d ' ' -f1`
 sleep 30 &
-spin_wheel $! "Setup admin credentials"
-
+spin_wheel $! "Setup admin credentials and qualityprofiles"
+curl -u admin:admin -X POST -F 'name=JazzProfile' -F 'language=java' http://$ip:9000/api/qualityprofiles/create
+curl -u admin:admin -X POST -F 'name=JazzProfile' -F 'language=js' http://$ip:9000/api/qualityprofiles/create
+curl -u admin:admin -X POST -F 'name=JazzProfile' -F 'language=py' http://$ip:9000/api/qualityprofiles/create
 curl -u admin:admin -X POST -F 'login=admin' -F 'password='''$passwd'''' -F 'previousPassword=admin' http://$ip:9000/api/users/change_password
 # Values to be passed to parameter list
 sonar_server_elb="$ip:9000"

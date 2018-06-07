@@ -22,7 +22,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #SONAR
   provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
   }
   #Elasticsearch
   provisioner "local-exec" {

@@ -1,3 +1,5 @@
+package "unzip"
+
 if node[:platform_family].include?("rhel")
   execute 'getnode' do
      command 'curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -'
@@ -31,4 +33,69 @@ execute 'setup permissions for symbol-observable node module' do
 end
 execute 'install ng-cli' do
    command 'sudo npm install -g @angular/cli@1.7.3'
+end
+execute 'install jshint' do
+   command 'sudo npm install -g jshint'
+end
+remote_file '/tmp/sonar-scanner-cli-3.0.3.778-linux.zip' do
+  source 'https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip'
+  mode '0755'
+  action :create
+end
+execute 'install_sonarscanner' do
+  command 'unzip /tmp/sonar-scanner-cli-3.0.3.778-linux.zip'
+  cwd '/opt'
+end
+directory '/opt/sonar-scanner-3.0.3.778-linux' do
+  owner 'jenkins'
+  group 'jenkins'
+  mode '0777'
+  recursive true
+  action :create
+end
+execute 'createsymlink' do
+  command 'sudo ln -sf /opt/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner /bin/sonar-scanner'
+end
+execute 'dependency_folder' do
+  command 'mkdir depcheck_jazz'
+  cwd '/var/log'
+end
+execute 'dependency_folder_nistfiles' do
+  command 'mkdir nistfiles'
+  cwd '/var/log/depcheck_jazz'
+end
+directory '/var/log/depcheck_jazz' do
+  owner 'jenkins'
+  group 'jenkins'
+  mode '0777'
+  recursive true
+  action :create
+end
+remote_file '/tmp/dependency-check-3.2.1-release.zip' do
+  source 'https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-3.2.1-release.zip'
+  mode '0755'
+  action :create
+end
+execute 'install_dependency_check' do
+  command 'unzip /tmp/dependency-check-3.2.1-release.zip'
+  cwd '/opt'
+end
+directory '/opt/dependency-check' do
+  owner 'jenkins'
+  group 'jenkins'
+  mode '0777'
+  recursive true
+  action :create
+end
+execute 'createsymlink' do
+  command 'sudo ln -sf /opt/dependency-check/bin/dependency-check.sh /bin/dependency-check.sh'
+end
+remote_file '/tmp/checkstyle-7.6-all.jar' do
+  source 'https://downloads.sourceforge.net/checkstyle/OldFiles/7.6/checkstyle-7.6-all.jar'
+  mode '0755'
+  action :create
+end
+execute 'copy_checkstyle_jar' do
+  command 'cp /tmp/checkstyle-7.6-all.jar .'
+  cwd '/opt'
 end
