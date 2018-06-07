@@ -50,7 +50,7 @@ resource "null_resource" "outputVariablesBB" {
 }
 
 resource "null_resource" "outputVariablesGitlab" {
-  depends_on = ["null_resource.outputVariables"]
+  depends_on = ["null_resource.outputVariables", "null_resource.outputVariablesSonar"]
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
