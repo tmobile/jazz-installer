@@ -46,12 +46,8 @@ execute 'install_sonarscanner' do
   command 'unzip /tmp/sonar-scanner-cli-3.0.3.778-linux.zip'
   cwd '/opt'
 end
-directory '/opt/sonar-scanner-3.0.3.778-linux' do
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-  recursive true
-  action :create
+execute 'setup permissions for sonar scanner' do
+   command 'sudo chown -R jenkins:jenkins /opt/sonar-scanner-3.0.3.778-linux/'
 end
 execute 'createsymlink' do
   command 'sudo ln -sf /opt/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner /bin/sonar-scanner'
@@ -64,12 +60,8 @@ execute 'dependency_folder_nistfiles' do
   command 'mkdir nistfiles'
   cwd '/var/log/depcheck_jazz'
 end
-directory '/var/log/depcheck_jazz' do
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-  recursive true
-  action :create
+execute 'setup permissions for dependency check log' do
+   command 'sudo chown -R jenkins:jenkins /var/log/depcheck_jazz/'
 end
 remote_file '/tmp/dependency-check-3.2.1-release.zip' do
   source 'https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-3.2.1-release.zip'
@@ -80,12 +72,8 @@ execute 'install_dependency_check' do
   command 'unzip /tmp/dependency-check-3.2.1-release.zip'
   cwd '/opt'
 end
-directory '/opt/dependency-check' do
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-  recursive true
-  action :create
+execute 'setup permissions for dependency check' do
+   command 'sudo chown -R jenkins:jenkins /opt/dependency-check/'
 end
 execute 'createsymlink' do
   command 'sudo ln -sf /opt/dependency-check/bin/dependency-check.sh /bin/dependency-check.sh'
