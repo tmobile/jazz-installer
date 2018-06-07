@@ -71,7 +71,7 @@
         "PRIVATE_TOKEN": "",
         "CAS_NAMESPACE_ID": "",
         "USERNAME": "scm_username",
-    	"PASSWORD": ""
+        "PASSWORD": ""
     },
     "UI_CONFIG": {
         "feature": {
@@ -95,19 +95,19 @@
         }
     },
     "CODE_QUALITY": {
-	    "SONAR": {
-        	"CLEANUP": "true",
-		    "KEY_PREFIX": "jazz",
-		    "ENABLE_SONAR": "false",
-		    "JAZZ_PROFILE": "JazzProfile",
-          	"ENABLE_VULNERABILITY_SCAN": "false",
-          	"DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
-          	"DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
-          	"DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
-          	"DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
-          	"HOST_NAME": "{SONAR_HOST_NAME}",
-                "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
-          	"CHECKSTYLE_LIB": "{CHECKSTYLE_LIB_LOC}"
-	    }
+        "SONAR": {
+            "CLEANUP": "true",
+            "KEY_PREFIX": "jazz",
+            "ENABLE_SONAR": "false",
+            "JAZZ_PROFILE": "JazzProfile",
+            "ENABLE_VULNERABILITY_SCAN": "false",
+            "DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
+            "DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
+            "DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
+            "DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
+            "HOST_NAME": "{SONAR_HOST_NAME}",
+            "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
+            "CHECKSTYLE_LIB": "{CHECKSTYLE_LIB_LOC}"
+        }
     }
 }
