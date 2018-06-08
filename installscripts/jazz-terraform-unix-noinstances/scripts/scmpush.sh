@@ -64,7 +64,7 @@ function individual_repopush() {
     fi
 
     # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
-    cp -rf ../jazz-core/$1/* $1
+    cp -rf ../jazz-core/$1/. $1
     cd $1
     pwd
     git add --all
