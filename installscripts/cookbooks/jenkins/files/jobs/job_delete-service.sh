@@ -69,7 +69,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-0714-delserv</authToken>
+  <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF
