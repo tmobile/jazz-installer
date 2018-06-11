@@ -146,7 +146,7 @@ end
 
 execute 'createcredentials-jenkins1' do
   only_if { node['scm'] == 'bitbucket' }
-  command "cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+  command "cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins \"(global)\"
     <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
       <scope>GLOBAL</scope>
       <id>jenkins1cred</id>
