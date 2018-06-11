@@ -89,14 +89,14 @@ end
 # Configure Gitlab Plugin
 bash 'configuregitlabplugin' do
   only_if { node['scm'] == 'gitlab' }
-  code <<-EOH
+  code <<-SCRIPT
     sed -i "s/ip/#{node['scmelb']}/g" /var/lib/jenkins/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
-  EOH
+  SCRIPT
 end
 
 bash 'configureGitlabUser' do
   only_if { node['scm'] == 'gitlab' }
-  code <<-EOS
+  code <<-SCRIPT
 cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
     <scope>GLOBAL</scope>
@@ -106,21 +106,21 @@ cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinse
     <password>#{node['gitlabpassword']}</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
 EOF
-EOS
+SCRIPT
 end
 
 bash 'configureGitlabToken' do
   only_if { node['scm'] == 'gitlab' }
-  code <<-EOH
-    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
-      <com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl plugin="gitlab-plugin@1.5.2">
-        <scope>GLOBAL</scope>
-        <id>Jazz-Gitlab-API-Cred</id>
-        <description>Jazz-Gitlab-API-Cred</description>
-        <apiToken>#{node['gitlabtoken']}</apiToken>
-      </com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl>
-    EOF
-  EOH
+  code <<-SCRIPT
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl plugin="gitlab-plugin@1.5.2">
+  <scope>GLOBAL</scope>
+  <id>Jazz-Gitlab-API-Cred</id>
+  <description>Jazz-Gitlab-API-Cred</description>
+  <apiToken>#{node['gitlabtoken']}</apiToken>
+</com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl>
+EOF
+SCRIPT
 end
 
 # TODO: we do this at the end, do we need it here?
@@ -145,70 +145,72 @@ git "#{node['chef_root']}/jazz-core" do
   action :sync
 end
 
-execute 'createcredentials-jenkins1' do
+bash 'createcredentials-jenkins1' do
   only_if { node['scm'] == 'bitbucket' }
-  command "cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins \"(global)\"
-    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-      <scope>GLOBAL</scope>
-      <id>jenkins1cred</id>
-      <description>user created on bitbucket</description>
-      <username>#{node['bbuser']}</username>
-      <password>#{node['bbpassword']}</password>
-    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-    EOF"
+  code <<-SCRIPT
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+  <scope>GLOBAL</scope>
+  <id>jenkins1cred</id>
+  <description>user created on bitbucket</description>
+  <username>#{node['bbuser']}</username>
+  <password>#{node['bbpassword']}</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+EOF
+SCRIPT
 end
 
 bash 'createcredentials-jobexecutor' do
-  code <<-EOH
-    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
-    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-      <scope>GLOBAL</scope>
-      <id>jobexecutor</id>
-      <description>user created on bitbucket</description>
-      <username>jobexec</username>
-      <password>jenkinsadmin</password>
-    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-    EOF
-  EOH
+  code <<-SCRIPT
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+  <scope>GLOBAL</scope>
+  <id>jobexecutor</id>
+  <description>user created on bitbucket</description>
+  <username>jobexec</username>
+  <password>jenkinsadmin</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+EOF
+SCRIPT
 end
 
 bash 'createcredentials-aws' do
-  code <<-EOH
-    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
-    <com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl plugin="aws-credentials@1.21">
-      <scope>GLOBAL</scope>
-      <id>awscreds1</id>
-      <description>AWS Credentials</description>
-      <accessKey>#{node['aws_access_key']}</accessKey>
-      <secretKey>#{node['aws_secret_key']}</secretKey>
-      <iamRoleArn></iamRoleArn>
-      <iamMfaSerialNumber></iamMfaSerialNumber>
-    </com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl>
-    EOF
-  EOH
+  code <<-SCRIPT
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl plugin="aws-credentials@1.21">
+  <scope>GLOBAL</scope>
+  <id>awscreds1</id>
+  <description>AWS Credentials</description>
+  <accessKey>#{node['aws_access_key']}</accessKey>
+  <secretKey>#{node['aws_secret_key']}</secretKey>
+  <iamRoleArn></iamRoleArn>
+  <iamMfaSerialNumber></iamMfaSerialNumber>
+</com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl>
+EOF
+SCRIPT
 end
 
 bash 'createcredentials-cognitouser' do
-  code <<-EOH
-    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
-    <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-      <scope>GLOBAL</scope>
-      <id>SVC_ADMIN</id>
-      <description>Jazz Admin User</description>
-      <username>#{node['cognitouser']}</username>
-      <password>#{node['cognitopassword']}</password>
-    </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-    EOF
-  EOH
+  code <<-SCRIPT
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+  <scope>GLOBAL</scope>
+  <id>SVC_ADMIN</id>
+  <description>Jazz Admin User</description>
+  <username>#{node['cognitouser']}</username>
+  <password>#{node['cognitopassword']}</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+EOF
+SCRIPT
 end
 
 bash 'configJenkinsLocConfigXml' do
-  code <<-EOH
-    JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+  code <<-SCRIPT
+JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
-    sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
-    sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
-  EOH
+sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
+sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
+SCRIPT
 end
 
 execute 'createJob-create-service' do
