@@ -144,10 +144,9 @@ git "#{node['chef_root']}/jazz-core" do
   action :sync
 end
 
-bash 'createcredentials-jenkins1' do
+execute 'createcredentials-jenkins1' do
   only_if { node['scm'] == 'bitbucket' }
-  code <<-EOH
-    cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+  command "cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth #{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
     <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
       <scope>GLOBAL</scope>
       <id>jenkins1cred</id>
@@ -155,8 +154,7 @@ bash 'createcredentials-jenkins1' do
       <username>#{node['bbuser']}</username>
       <password>#{node['bbpassword']}</password>
     </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-    EOF
-  EOH
+    EOF"
 end
 
 bash 'createcredentials-jobexecutor' do
