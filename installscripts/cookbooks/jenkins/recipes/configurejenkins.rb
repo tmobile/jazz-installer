@@ -94,17 +94,19 @@ bash 'configuregitlabplugin' do
   EOH
 end
 
-execute 'configureGitlabUser' do
+bash 'configureGitlabUser' do
   only_if { node['scm'] == 'gitlab' }
-  command "cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins \"(global)\"
-           <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-            <scope>GLOBAL</scope>
-            <id>jenkins1cred</id>
-            <description>Gitlab user</description>
-            <username>#{node['gitlabuser']}</username>
-            <password>#{node['gitlabpassword']}</password>
-           </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-           EOF"
+  code <<-EOS
+cat <<EOF | java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']} create-credentials-by-xml system::system::jenkins "(global)"
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+    <scope>GLOBAL</scope>
+    <id>jenkins1cred</id>
+    <description>Gitlab user</description>
+    <username>#{node['gitlabuser']}</username>
+    <password>#{node['gitlabpassword']}</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+EOF
+EOS
 end
 
 bash 'configureGitlabToken' do
