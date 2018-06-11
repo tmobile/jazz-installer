@@ -5,7 +5,7 @@ BITBUCKET_ELB=$4
 
 echo "$0 $1 $2 $3 $4"
 
-JOB_NAME="delete_service"
+JOB_NAME="delete-service"
 
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
@@ -69,7 +69,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-0714-delserv</authToken>
+  <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF
