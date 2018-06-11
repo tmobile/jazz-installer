@@ -20,6 +20,10 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
+  #SONAR
+  provisioner "local-exec" {
+    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
+  }
   #Elasticsearch
   provisioner "local-exec" {
     command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.region}"
