@@ -41,8 +41,7 @@ def get_aws_credentials():
         subprocess.call(['aws', 'configure', 'set', 'aws_access_key_id', os.environ['AWS_ACCESS_KEY_ID']])
         subprocess.call(['aws', 'configure', 'set', 'aws_secret_access_key', os.environ['AWS_SECRET_ACCESS_KEY']])
     else:
-        print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' \
-              and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
+        print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
 
 
 def get_region():
