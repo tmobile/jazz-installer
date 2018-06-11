@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-from jazz_common import TFVARS_FILE, replace_tfvars
+from jazz_common import get_tfvars_file, replace_tfvars
 
 
 def add_gitlab_config_to_files(parameter_list):
@@ -13,15 +13,15 @@ def add_gitlab_config_to_files(parameter_list):
                         gitlab_passwd ]
     """
     print("Adding Gitlab config to Terraform variables")
-    replace_tfvars('scm_publicip', parameter_list[0], TFVARS_FILE)
-    replace_tfvars('scm_elb', parameter_list[0], TFVARS_FILE)
-    replace_tfvars('scm_username', parameter_list[1], TFVARS_FILE)
-    replace_tfvars('scm_passwd', parameter_list[2], TFVARS_FILE)
-    replace_tfvars('scm_type', 'gitlab', TFVARS_FILE)
-    replace_tfvars('scm_pathext', '/', TFVARS_FILE)
+    replace_tfvars('scm_publicip', parameter_list[0], get_tfvars_file())
+    replace_tfvars('scm_elb', parameter_list[0], get_tfvars_file())
+    replace_tfvars('scm_username', parameter_list[1], get_tfvars_file())
+    replace_tfvars('scm_passwd', parameter_list[2], get_tfvars_file())
+    replace_tfvars('scm_type', 'gitlab', get_tfvars_file())
+    replace_tfvars('scm_pathext', '/', get_tfvars_file())
 
 
-def get_and_add_docker_gitlab_config(gitlab_docker_path):
+def get_and_add_docker_gitlab_config(gitlab_docker_path, parameter_cred_list=[]):
     """
         Launch a Dockerized Gitlab server.
     """
@@ -29,7 +29,7 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path):
     print("Running docker launch script  for gitlab")
 
     subprocess.call([
-        'sg', 'docker', './launch_gitlab_docker.sh', '|', 'tee', '-a',
+        'sg', 'docker',  './launch_gitlab_docker.sh %s %s' %( str(parameter_cred_list[1]) , str(parameter_cred_list[0])), '|', 'tee', '-a',
         '../../gitlab_creation.out'
     ])
 

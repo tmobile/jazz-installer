@@ -52,15 +52,10 @@ if (File.exist?("/home/#{node['jenkins']['SSH_user']}/jazz-core"))
 	end
 end
 execute 'downloadgitproj' do
-  command "/usr/local/git/bin/git clone -b #{node['git_branch']} https://github.com/tmobile/jazz.git jazz-core"
+  command "/usr/local/git/bin/git clone -b #{node['git_branch']} #{node['git_repo']} jazz-core --depth 1"
 
   cwd "/home/#{node['jenkins']['SSH_user']}"
 end
-
-execute 'copylinkdir' do
-  command "cp -rf /home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer /tmp; chmod -R 777 /tmp/aws-apigateway-importer"
-end
-
 
 execute 'createcredentials-jenkins1' do
   command "sleep 30;/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
@@ -68,11 +63,12 @@ end
 execute 'createcredentials-jobexecutor' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
+execute 'createcredentials-sonar' do
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
+end
 execute 'createcredentials-aws' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['SSH_user']}"
 end
-
-
 
 execute 'createJob-create-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_create-service.sh #{node['jenkinselb']} create-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
@@ -81,7 +77,7 @@ execute 'createJob-delete-service' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_delete-service.sh #{node['jenkinselb']} delete-service #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-job_build_pack_api' do
-  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_java_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
+  command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_api.sh #{node['jenkinselb']} build_pack_api #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
 end
 execute 'createJob-bitbucketteam_newService' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} Jazz_User_Services #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
@@ -97,12 +93,6 @@ execute 'createJob-job-pack-lambda' do
 end
 execute 'createJob-job-build-pack-website' do
   command "/home/#{node['jenkins']['SSH_user']}/cookbooks/jenkins/files/jobs/job_build_pack_website.sh #{node['jenkinselb']} build-pack-website #{node['bitbucketelb']} #{node['jenkins']['SSH_user']}"
-end
-link '/usr/bin/aws-api-import' do
-  to "/home/#{node['jenkins']['SSH_user']}/jazz-core/aws-apigateway-importer/aws-api-import.sh"
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
 end
 link '/usr/bin/aws' do
   to '/usr/local/bin/aws'

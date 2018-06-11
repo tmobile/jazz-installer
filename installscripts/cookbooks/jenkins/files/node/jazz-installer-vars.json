@@ -1,85 +1,113 @@
 {
-  "AWS_CREDENTIAL_ID": "awscreds1",
-  "INSTANCE_PREFIX": "",
-  
-  "AWS": {
-  "SECURITY_GROUP_IDS": "",
-  "SUBNET_IDS": "",
-  "LAMBDA_EXECUTION_ROLE": "",
-	"CLOUDFRONT_ORIGIN_ID": "",
-	"ACCOUNTID": "",
-	"REGION": "",
-	"ROLEID": "",
-	"ES_HOSTNAME": "",
-	"COGNITO": {
-      "USER_POOL_ID": "",
-      "CLIENT_ID": ""
-  },
-    
-	"API": {
-    "PROD": {
-      "*": "{AWS_PROD_API_ID_DEFAULT}",
-      "jazz_*": "{AWS_PROD_API_ID_JAZZ}"
+    "AWS_CREDENTIAL_ID": "awscreds1",
+    "INSTANCE_PREFIX": "",
+    "AWS": {
+        "SECURITY_GROUP_IDS": "",
+        "SUBNET_IDS": "",
+        "LAMBDA_EXECUTION_ROLE": "",
+        "CLOUDFRONT_ORIGIN_ID": "",
+        "ACCOUNTID": "",
+        "REGION": "",
+        "ROLEID": "",
+        "ES_HOSTNAME": "",
+        "COGNITO": {
+            "USER_POOL_ID": "",
+            "CLIENT_ID": ""
+        },
+        "API": {
+            "PROD": {
+                "*": "{AWS_PROD_API_ID_DEFAULT}",
+                "jazz_*": "{AWS_PROD_API_ID_JAZZ}"
+            },
+            "STG": {
+                "*": "{AWS_STG_API_ID_DEFAULT}",
+                "jazz_*": "{AWS_STG_API_ID_JAZZ}"
+            },
+            "DEV": {
+                "*": "{AWS_DEV_API_ID_DEFAULT}"
+            }
+        },
+        "S3": {
+            "API_DOC": "",
+            "DEV_BUCKET": "",
+            "STG_BUCKET": "",
+            "PROD_BUCKET": ""
+        }
     },
-    "STG": {
-      "*": "{AWS_STG_API_ID_DEFAULT}",
-      "jazz_*": "{AWS_STG_API_ID_JAZZ}"
+    "REPOSITORY": {
+        "BASE_URL": "",
+        "CREDENTIAL_ID": "jenkins1cred",
+        "REPO_BASE_SERVICES": "cas",
+        "REPO_BASE_PLATFORM" : "slf"
     },
-    "DEV": {
-      "*": "{AWS_DEV_API_ID_DEFAULT}"
+    "API": {
+        "API_BUILD_URI": "/job/build_pack_api/buildWithParameters?token=slf-java-api-build-101"
+    },
+    "LAMBDA": {
+        "LAMBDA_BUILD_URI": "/job/build-pack-lambda/buildWithParameters?token=slf-lambda-build-101"
+    },
+    "WEBSITE": {
+        "WEBSITE_BUILD_URI": "/job/build-pack-website/buildWithParameters?token=slf-website-build-0907"
+    },
+    "JAZZ": {
+        "ADMIN": "",
+        "PASSWD": "",
+        "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
+        "S3_BUCKET_WEB": "",
+        "BUCKET_PER_SERVICE": "false",
+        "S3": {
+            "WEBSITE_DEV_BUCKET": "",
+            "WEBSITE_STG_BUCKET": "",
+            "WEBSITE_PROD_BUCKET": ""
+        }
+    },
+    "JENKINS": {
+        "USERNAME": "jenkins_username",
+        "JENKINS_PASSWORD": "",
+        "CREDENTIAL_ID": "jobexecutor"
+    },
+    "SCM": {
+        "TYPE": "bitbucket",
+        "PRIVATE_TOKEN": "",
+        "CAS_NAMESPACE_ID": "",
+        "USERNAME": "scm_username",
+    	"PASSWORD": ""
+    },
+    "UI_CONFIG": {
+        "feature": {
+            "multi_env": true
+        },
+        "service_tabs":
+        {
+            "overview": true,
+            "access_control": false,
+            "metrics": false,
+            "logs": true,
+            "cost": false
+        },
+        "environment_tabs":
+        {
+            "overview": true,
+            "deployments": true,
+            "code_quality": false,
+            "logs": false,
+            "assets": false
+        }
+    },
+    "CODE_QUALITY": {
+	    "SONAR": {
+        	"CLEANUP": "true",
+		    "KEY_PREFIX": "jazz",
+		    "ENABLE_SONAR": "false",
+		    "JAZZ_PROFILE": "JazzProfile",
+          	"ENABLE_VULNERABILITY_SCAN": "false",
+          	"DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
+          	"DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
+          	"DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
+          	"DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
+          	"HOST_NAME": "{SONAR_HOST_NAME}",
+                "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
+          	"CHECKSTYLE_LIB": "{CHECKSTYLE_LIB_LOC}"
+	    }
     }
-  },
-    
-	"S3": {
-    "API_DOC": "",
-    "DEV_BUCKET": "",
-    "STG_BUCKET": "",
-    "PROD_BUCKET": ""  
-    }
-  },
-  
-  "REPOSITORY": {
-    "BASE_URL": "",
-    "CREDENTIAL_ID": "jenkins1cred",
-    "REPO_BASE_SERVICES": "cas",
-    "REPO_BASE_PLATFORM" : "slf"
-  },
-
-  "API": {
-    "API_BUILD_URI": "/job/build_pack_api/buildWithParameters?token=slf-java-api-build-101"
-  },
-
-  "LAMBDA": {
-    "LAMBDA_BUILD_URI": "/job/build-pack-lambda/buildWithParameters?token=slf-lambda-build-101"
-  },
-
-  "WEBSITE": {
-    "WEBSITE_BUILD_URI": "/job/build-pack-website/buildWithParameters?token=slf-website-build-0907"
-   },
-
-  "JAZZ": {
-    "ADMIN": "",
-    "PASSWD": "",
-	  "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
-	  "S3_BUCKET_WEB": "",
-	  "S3": {     
-       "WEBSITE_DEV_BUCKET": "",
-       "WEBSITE_STG_BUCKET": "",
-       "WEBSITE_PROD_BUCKET": ""
-	  }
-   },
-   
-  "JENKINS": {
-    "USERNAME": "jenkins_username",
-    "JENKINS_PASSWORD": "",
-    "CREDENTIAL_ID": "jobexecutor"
-   },
-
-   "SCM": {
-    "TYPE": "bitbucket",
-    "PRIVATE_TOKEN": "",
-    "CAS_NAMESPACE_ID": "",
-    "USERNAME": "scm_username",
-    "PASSWORD": ""
-   }
 }
