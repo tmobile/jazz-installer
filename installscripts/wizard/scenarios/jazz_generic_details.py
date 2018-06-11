@@ -24,22 +24,43 @@ def passwd_generator():
 
 def get_aws_credentials():
     """
-        If the AWS credentials have not already been defined as env vars, populate those env vars
+        There's a strong argument to be made that we should drop all this
+        and ask users to configure their AWS credentials on their own,
+        and simply error out if they aren't configured.
+
+        If the AWS credentials have not already been defined as env vars,
+        populate those env vars and update the user's AWSCLI config
+
+        If credentials WERE set thru env vars, just use those values and don't
+        clobber the user's AWSCLI config.
     """
     if "AWS_ACCESS_KEY_ID" and "AWS_SECRET_ACCESS_KEY" not in os.environ:
         os.environ['AWS_ACCESS_KEY_ID'] = raw_input("AWS Access Key ID :")
         os.environ['AWS_SECRET_ACCESS_KEY'] = raw_input(
             "AWS Secret Access Key :")
+        subprocess.call(['aws', 'configure', 'set', 'aws_access_key_id', os.environ['AWS_ACCESS_KEY_ID']])
+        subprocess.call(['aws', 'configure', 'set', 'aws_secret_access_key', os.environ['AWS_SECRET_ACCESS_KEY']])
     else:
         print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' \
               and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
 
 
-def set_aws_config(region):
-    """
-        Writing the aws credential ~/aws/config file
-    """
-    os.environ['AWS_DEFAULT_OUTPUT'] = 'json'
+def get_region():
+    region = None
+    knownWorkingRegions = ['us-east-1', 'us-west-2']
+
+    region = raw_input("AWS Region (e.g. us-east-1): ")
+
+    if region is "":
+        print("No region entered, defaulting to 'us-east-1'")
+        region = "us-east-1"
+
+    if region not in knownWorkingRegions:
+        print(
+            'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.\n\n'
+        )
+        raw_input('Press Enter to continue anyway, or Control+C to abort...')
+
     os.environ['AWS_DEFAULT_REGION'] = region
 
 
@@ -70,24 +91,12 @@ def get_stack_generic_details(jazz_branch):
     print("")
     print("Please provide the details to setup Jazz")
 
-    region = None
-    knownWorkingRegions = ['us-east-1', 'us-west-2']
-
-    region = raw_input("AWS Region (e.g. us-east-1): ")
-
-    if region is "":
-        print("No region entered, defaulting to 'us-east-1'")
-        region = "us-east-1"
-
-    if region not in knownWorkingRegions:
-        print(
-            'Warning: This installer has not been tested against the region you specified.\nPlease check the Jazz documentation (https://github.com/tmobile/jazz-installer/wiki#prerequisites) to verify the region you have chosen supports the required AWS resources.\n\n'
-        )
-        raw_input('Press Enter to continue anyway, or Control+C to abort...')
-
     # Get the aws credentials & set required AWS env vars
+    get_region()
     get_aws_credentials()
-    set_aws_config(region)
+
+    # Not sure we need this..
+    os.environ['AWS_DEFAULT_OUTPUT'] = 'json'
 
     # get Jazz Tag details
     jazz_tag_details = get_jazz_tag_config_details()
@@ -101,9 +110,10 @@ def get_stack_generic_details(jazz_branch):
             break
         else:
             print("The email address is invalid.")
-    cognito_passwd = passwd_generator()
 
+    cognito_passwd = passwd_generator()
     jazz_account_id = ""
+
     try:
         jazz_accountid_cmd = [
             'aws', 'sts', 'get-caller-identity', '--output', 'text', '--query',
@@ -116,6 +126,7 @@ def get_stack_generic_details(jazz_branch):
             "Unable to get caller identity. Are you sure the credentials are correct? Please retry..."
         )
         exit(0)
+
     jazz_account_id = jazz_account_id[:-1]
 
     # Determine the scenario
