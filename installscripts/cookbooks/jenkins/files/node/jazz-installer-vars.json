@@ -91,7 +91,7 @@
             "deployments": true,
             "code_quality": false,
             "logs": false,
-            "assets": false
+            "assets": true
         }
     },
     "CODE_QUALITY": {
