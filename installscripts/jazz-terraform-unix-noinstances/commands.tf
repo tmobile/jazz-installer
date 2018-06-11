@@ -38,14 +38,9 @@ variable "scmpush_cmd" {
   type = "string"
   default = "./scripts/scmpush.sh"
 }
-
 variable "configureESEndpoint_cmd" {
   type = "string"
   default = "./scripts/configureESEndpoint.sh"
-}
-variable "configureJazzCore_cmd" {
-  type = "string"
-  default = "./scripts/configureJazzCore.sh"
 }
 variable "cognito_cmd" {
   type = "string"

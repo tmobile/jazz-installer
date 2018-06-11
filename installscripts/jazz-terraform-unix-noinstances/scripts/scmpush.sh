@@ -82,9 +82,7 @@ function individual_repopush() {
 }
 
 function push_to_scm() {
-    if [[ "$1" == "jazz-build-module" && "$scm" == "bitbucket" ]]; then
-        individual_repopush $1
-    elif [[ "$1" == "jazz-build-module" && "$scm" == "gitlab" ]]; then
+    if [ "$1" == "jazz-build-module" ]; then
         individual_repopush $1
     else
         # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
