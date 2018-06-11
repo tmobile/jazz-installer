@@ -89,7 +89,7 @@
         {
             "overview": true,
             "deployments": true,
-            "code_quality": false,
+            "code_quality": true,
             "logs": false,
             "assets": false
         }
