@@ -46,7 +46,7 @@ fi
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 
 # Replacing Gitlab IP in default.rb file of Jenkins cookbook
-attrbsfile=~/jazz-installer/installscripts/cookbooks/jenkins/attributes/default.rb
+attrbsfile=$JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/attributes/default.rb
 sed -i "s|default\['scm'\].*.|default\['scm'\]='gitlab'|g" $attrbsfile
 sed -i "s|default\['scmelb'\].*.|default\['scmelb'\]='$ip'|g" $attrbsfile
 sed -i "s|default\['scmpath'\].*.|default\['scmpath'\]='$ip'|g" $attrbsfile
@@ -67,9 +67,10 @@ sleep 180 &
 spin_wheel $! "Launching the Gitlab Docker"
 
 # Setting up admin credentials
-passwd=`date | md5sum | cut -d ' ' -f1`
+passwd=$1
+rootemail=$2
 docker cp gitlab.sh gitlab:/root/gitlab.sh
-docker exec gitlab /bin/bash /root/gitlab.sh $passwd > credentials.txt 2>&1&
+docker exec gitlab /bin/bash /root/gitlab.sh $passwd $rootemail > credentials.txt 2>&1&
 spin_wheel $! "Setting up admin credentials"
 
 # Installing epel
@@ -95,7 +96,7 @@ gitlab_passwd=`cat credentials.txt | grep password| awk '{print $2}'`
 token=`grep -i private credentials.txt | awk '{print $3}'`
 
 # Replacing private token in jenkins file
-sed -i "s|replace|$token|g" ~/jazz-installer/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
+sed -i "s|replace|$token|g" $JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
 
 # Create Groups CAS and SLF
 echo "\nCreating SLF group"
@@ -125,7 +126,7 @@ echo "$gitlab_passwd" >> docker_gitlab_vars
 
 #Populating Gitlab config in Jenkins json file
 echo "Updating Jenkins config with Gitlab info"
-jenkinsJsonfile=~/jazz-installer/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
+jenkinsJsonfile=$JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
 sed -i "s/TYPE\".*.$/TYPE\": \"gitlab\",/g" $jenkinsJsonfile
 sed -i "s/PRIVATE_TOKEN\".*.$/PRIVATE_TOKEN\": \"$token\",/g" $jenkinsJsonfile
 sed -i "s/CAS_NAMESPACE_ID\".*.$/CAS_NAMESPACE_ID\": \"$ns_id_cas\",/g" $jenkinsJsonfile
@@ -133,7 +134,7 @@ sed -i "s/BASE_URL\".*.$/BASE_URL\": \"$ip\",/g" $jenkinsJsonfile
 
 # SCM selection for Gitlab trigger job in Jenkins
 echo "Updating Jenkins job config"
-variablesfile=~/jazz-installer/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
+variablesfile=$JAZZ_INSTALLER_ROOT/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars
 sed -i'.bak' 's|\(scmbb \= \)\(.*\)|\1false|g' $variablesfile
 sed -i'.bak' 's|\(scmgitlab \= \)\(.*\)|\1true|g' $variablesfile
 sed -i'.bak' 's|\(scm_slfid \= \)\(.*\)|\1\"'$ns_id_slf'\"|g' $variablesfile
