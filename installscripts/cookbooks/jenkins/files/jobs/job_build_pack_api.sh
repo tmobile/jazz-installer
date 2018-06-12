@@ -1,25 +1,20 @@
-JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JENKINS_CLI=$2
-AUTHFILE=$3
-BITBUCKET_ELB=$4
+JENKINS_CLI_CMD=$1
+BITBUCKET_ELB=$2
 
-echo "$0 $1 $2 $3 $4"
-
-JOB_NAME="delete-service"
-
-JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+cat <<EOF | $JENKINS_CLI_CMD create-job "build_pack_api"
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
+	<org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>service_name</name>
           <description></description>
-          <defaultValue>newServissceX</defaultValue>
+          <defaultValue>JazzJS1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>domain</name>
@@ -27,19 +22,9 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
           <defaultValue>slf</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>version</name>
+          <name>scm_branch</name>
           <description></description>
-          <defaultValue>1.0</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>tracking_id</name>
-          <description></description>
-          <defaultValue>1001</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>environment_id</name>
-          <description></description>
-          <defaultValue></defaultValue>
+          <defaultValue>master</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -52,7 +37,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/slf/delete-serverless-service-build-pack.git</url>
+          <url>http://$BITBUCKET_ELB/slf/jenkins-build-pack-api.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
