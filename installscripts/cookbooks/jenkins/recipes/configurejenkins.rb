@@ -1,15 +1,7 @@
-# Make current user owner of these files
-execute 'chownjenkinsfiles' do
-  command "sudo chown -R $(whoami) #{node['script_root']}"
-end
-
-# Add execute bit to all shell scripts
-execute 'chmodjenkinsscripts' do
-  command "find #{node['script_root']}/jobs -type f -iname \"*.sh\" -exec chmod +x {} \\;"
-end
-
+# TODO: These plugins should be `curl`-ed from a server here,
+# they should not be part of this cookbook.
 execute 'concatJenkinsPlugins' do
-  command "cat #{node['script_root']}/plugins/plugins0* > #{node['chef_root']}/plugins.tar"
+  command "cat #{node['chef_root']}/jenkinsplugins/plugins0* > #{node['chef_root']}/plugins.tar"
 end
 
 execute 'extractJenkinsPlugins' do
@@ -57,7 +49,7 @@ end
 
 bash 'createJobExecUser' do
   code <<-EOH
-       echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy =
+       echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | #{node['jenkins']['clicommand']}/ groovy =
   EOH
 end
 
@@ -86,22 +78,58 @@ cookbook_file '/var/lib/jenkins/credentials.xml' do
   action :create
 end
 
-# Configure Gitlab Plugin
-bash 'configuregitlabplugin' do
-  only_if { node['scm'] == 'gitlab' }
+bash 'configJenkinsLocConfigXml' do
   code <<-SCRIPT
-    sed -i "s/ip/#{node['scmelb']}/g" /var/lib/jenkins/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
+  JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+
+  sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
+  sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
   SCRIPT
 end
 
-execute 'configuregitlabuser' do
-  only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-user.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+# Optional Gitlab block
+if node['scm'] == 'gitlab'
+
+  # Configure Gitlab Plugin
+  bash 'configuregitlabplugin' do
+    code <<-SCRIPT
+    sed -i "s/ip/#{node['scmelb']}/g" /var/lib/jenkins/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
+  SCRIPT
+  end
+
+  #Copy and run gitlab-user script
+  cookbook_file "#{node['script_root']}/gitlab-user.sh" do
+    source 'credentials/gitlab-user.sh'
+    mode 0755
+  end
+
+  execute 'configureGitlabuser' do
+    command "#{node['script_root']}/gitlab-user.sh #{node['jenkins']['clicommand']} #{node['gitlabuser']} #{node['gitlabpassword']}"
+  end
+
+  #Copy and run gitlab-token script
+  cookbook_file "#{node['script_root']}/gitlab-token.sh" do
+    source 'credentials/gitlab-token.sh'
+    mode 0755
+  end
+
+  execute 'configuregitlabtoken' do
+    command "#{node['script_root']}/gitlab-token.sh #{node['jenkins']['clicommand']} #{node['gitlabtoken']}"
+  end
 end
 
-execute 'configuregitlabtoken' do
-  only_if { node['scm'] == 'gitlab' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/gitlab-token.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+# Optional Bitbucket block
+if node['scm'] == 'bitbucket'
+
+  #Copy and run bitbucket-creds script
+  cookbook_file "#{node['script_root']}/bitbucket-creds.sh" do
+    source 'credentials/bitbucket-creds.sh'
+    mode 0755
+  end
+
+  execute 'createcredentials-bitbucket' do
+    command "#{node['script_root']}/bitbucket-creds.sh #{node['jenkins']['clicommand']} #{node['bbuser']} #{node['bbpassword']}"
+  end
 end
 
 # TODO: we do this at the end, do we need it here?
@@ -115,10 +143,12 @@ execute 'waitForSecondJenkinsRestart' do
   command 'sleep 30'
 end
 
+# If this happens to already exist, remove it before we clone again.
 directory "#{node['chef_root']}/jazz-core" do
   action :delete
 end
 
+# We only need a shallow clone
 git "#{node['chef_root']}/jazz-core" do
   repository node['git_repo']
   reference node['git_branch']
@@ -126,80 +156,148 @@ git "#{node['chef_root']}/jazz-core" do
   action :sync
 end
 
-execute 'createcredentials-jenkins1' do
-  only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/credentials/jenkins1.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+# Set up jenkins job executor account
+cookbook_file "#{node['script_root']}/jobexec.sh" do
+  source 'credentials/jobexec.sh'
+  mode 0755
 end
 
 execute 'createcredentials-jobexecutor' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/jobexec.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['script_root']}/jobexec.sh #{node['jenkins']['clicommand']}"
+end
+
+# Set up sonar
+cookbook_file "#{node['script_root']}/sonar.sh" do
+  source 'credentials/sonar.sh'
+  mode 0755
 end
 
 execute 'createcredentials-sonar' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/sonar.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['script_root']}/sonar.sh #{node['jenkins']['clicommand']}"
+end
+
+#Set up AWS creds
+cookbook_file "#{node['script_root']}/aws.sh" do
+  source 'credentials/aws.sh'
+  mode 0755
 end
 
 execute 'createcredentials-aws' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/aws.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['script_root']}/aws.sh #{node['jenkins']['clicommand']} #{node['aws_access_key']} #{node['aws_secret_key']}"
 end
 
+#Set up Cognito creds
+cookbook_file "#{node['script_root']}/cognitouser.sh" do
+  source 'credentials/cognitouser.sh'
+  mode 0755
+end
 
 execute 'createcredentials-cognitouser' do
-  command "#{node['cookbook_root']}/jenkins/files/credentials/cognitouser.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']}"
+  command "#{node['script_root']}/cognitouser.sh #{node['jenkins']['clicommand']} #{node['cognitouser']} #{node['cognitopassword']}"
 end
 
-
-bash 'configJenkinsLocConfigXml' do
-  code <<-SCRIPT
-JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
-
-sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
-sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
-SCRIPT
+#Set up create-service job
+cookbook_file "#{node['script_root']}/job_create-service.sh" do
+  source 'jobs/job_create-service.sh'
+  mode 0755
 end
 
 execute 'createJob-create-service' do
-  command "#{node['script_root']}/jobs/job_create-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_create-service.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+end
+
+#Set up delete-service job
+cookbook_file "#{node['script_root']}/job_delete-service.sh" do
+  source 'jobs/job_delete-service.sh'
+  mode 0755
 end
 
 execute 'createJob-delete-service' do
-  command "#{node['script_root']}/jobs/job_delete-service.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_delete-service.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+end
+
+#Set up build_pack_api job
+cookbook_file "#{node['script_root']}/job_build_pack_api.sh" do
+  source 'jobs/job_build_pack_api.sh'
+  mode 0755
 end
 
 execute 'createJob-job_build_pack_api' do
-  command "#{node['script_root']}/jobs/job_build_pack_api.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_build_pack_api.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
 end
 
-execute 'createJob-bitbucketteam_newService' do
-  only_if { node['scm'] == 'bitbucket' }
-  command "#{node['script_root']}/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+if node['scm'] == 'bitbucket'
+  #Set up bitbucketteam_newService job
+  cookbook_file "#{node['script_root']}/job_bitbucketteam_newService.sh" do
+    source 'jobs/job_bitbucketteam_newService.sh'
+    mode 0755
+  end
+
+  execute 'createJob-bitbucketteam_newService' do
+    command "#{node['script_root']}/job_bitbucketteam_newService.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+  end
+end
+
+#Set up platform_api_services job
+cookbook_file "#{node['script_root']}/job_platform_api_services.sh" do
+  source 'jobs/job_platform_api_services.sh'
+  mode 0755
 end
 
 execute 'createJob-platform_api_services' do
-  only_if { node['scm'] == 'bitbucket' }
-  command "#{node['script_root']}/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_platform_api_services.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+end
+
+#Set up cleanup_cloudfront_distributions job
+cookbook_file "#{node['script_root']}/job_cleanup_cloudfront_distributions.sh" do
+  source 'jobs/job_cleanup_cloudfront_distributions.sh'
+  mode 0755
 end
 
 execute 'job_cleanup_cloudfront_distributions' do
-  command "#{node['script_root']}/jobs/job_cleanup_cloudfront_distributions.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_cleanup_cloudfront_distributions.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+end
+
+# Set up build_pack_lambda job
+cookbook_file "#{node['script_root']}/job_build_pack_lambda.sh" do
+  source 'jobs/job_build_pack_lambda.sh'
+  mode 0755
 end
 
 execute 'createJob-job-pack-lambda' do
-  command "#{node['script_root']}/jobs/job_build_pack_lambda.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_build_pack_lambda.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+end
+
+# Set up build_pack_website job
+cookbook_file "#{node['script_root']}/job_build_pack_website.sh" do
+  source 'jobs/job_build_pack_website.sh'
+  mode 0755
 end
 
 execute 'createJob-job-build-pack-website' do
-  command "#{node['script_root']}/jobs/job_build_pack_website.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['script_root']}/job_build_pack_website.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
 end
 
-execute 'job-gitlab-trigger' do
-  only_if { node['scm'] == 'gitlab' }
-  command "#{node['script_root']}/jobs/job-gitlab-trigger.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
-end
+if node['scm'] == 'gitlab'
+  # Set up gitlab-trigger job
+  cookbook_file "#{node['script_root']}/job-gitlab-trigger.sh" do
+    source 'jobs/job-gitlab-trigger.sh'
+    mode 0755
+  end
 
-execute 'createJob-jazz_ui' do
-  only_if { node['scm'] == 'gitlab' }
-  command "#{node['script_root']}/jobs/job_jazz_ui.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  execute 'job-gitlab-trigger' do
+    command "#{node['script_root']}/job-gitlab-trigger.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+  end
+
+  # Set up jazz_ui job
+  cookbook_file "#{node['script_root']}/job_jazz_ui.sh" do
+    source 'jobs/job_jazz_ui.sh'
+    mode 0755
+  end
+
+  execute 'createJob-jazz_ui' do
+    command "#{node['script_root']}/job_jazz_ui.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+  end
 end
 
 directory '/var/lib/jenkins' do
