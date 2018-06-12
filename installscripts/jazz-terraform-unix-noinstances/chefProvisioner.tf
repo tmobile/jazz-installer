@@ -70,9 +70,9 @@ resource "null_resource" "chef_provision_jenkins_server" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
 
-  #Copy the chef playbooks and support scripts over to the remote Jenkins server
+  #Copy the chef playbooks and jenkins binary plugin blobs over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.chefScriptsSourceDir}"
+    source      = "${var.jenkinsPluginsSourceDir}"
     destination = "${var.chefDestDir}/"
   }
 
@@ -81,6 +81,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
     destination = "${var.chefDestDir}/"
   }
 
+  #TODO consider doing the export locally.
   provisioner "remote-exec" {
     inline = [
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
