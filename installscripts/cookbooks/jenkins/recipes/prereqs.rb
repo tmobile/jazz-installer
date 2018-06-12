@@ -1,7 +1,7 @@
 apt_update 'update' #force-update apt cache on Debian-derivatives to avoid pkg fetch errors
 package 'git'
 include_recipe 'maven::default'
-include_recipe 'nodejs::nodejs_from_binary'
+include_recipe 'nodejs'
 include_recipe 'cloudcli'
 
 npm_package 'serverless' do
