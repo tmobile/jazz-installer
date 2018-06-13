@@ -2,7 +2,6 @@ remote_file "#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linu
   source 'https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip'
   mode '0755'
   action :create
-  ignore_failure true
 end
 
 execute 'install_sonarscanner' do
