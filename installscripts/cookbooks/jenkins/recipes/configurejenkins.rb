@@ -234,7 +234,17 @@ if node['scm'] == 'bitbucket'
   end
 
   execute 'createJob-bitbucketteam_newService' do
-    command "#{node['script_root']}/job_bitbucketteam_newService.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
+    command "#{node['script_root']}/job_bitbucketteam_newService.sh #{node['jenkins']['clicommand']} #{node['scmelb']}"
+  end
+
+  #Set up platform_api_services job
+  cookbook_file "#{node['script_root']}/job_platform_api_services.sh" do
+    source 'jobs/job_platform_api_services.sh'
+    mode 0755
+  end
+
+  execute 'createJob-platform_api_services_bitbucket' do
+    command "#{node['script_root']}/job_platform_api_services.sh #{node['jenkins']['clicommand']} #{node['scmelb']}"
   end
 end
 
