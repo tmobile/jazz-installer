@@ -609,12 +609,12 @@ resource "aws_dynamodb_table" "dynamodb-Assets_Dev" {
   }
 
   attribute {
-    name = "SERVICE_DOMAIN"
+    name = "DOMAIN"
     type = "S"
   }
 
   attribute {
-    name = "SERVICE_NAME"
+    name = "SERVICE"
     type = "S"
   }
 
@@ -649,12 +649,12 @@ resource "aws_dynamodb_table" "dynamodb-Assets_Stg" {
   }
 
   attribute {
-    name = "SERVICE_DOMAIN"
+    name = "DOMAIN"
     type = "S"
   }
 
   attribute {
-    name = "SERVICE_NAME"
+    name = "SERVICE"
     type = "S"
   }
 
@@ -689,12 +689,12 @@ resource "aws_dynamodb_table" "dynamodb-Assets_Prod" {
   }
 
   attribute {
-    name = "SERVICE_DOMAIN"
+    name = "DOMAIN"
     type = "S"
   }
 
   attribute {
-    name = "SERVICE_NAME"
+    name = "SERVICE"
     type = "S"
   }
 
