@@ -28,6 +28,14 @@ default['bbpassword'] = 'REPLACEME'
 default['maven']['version'] = '3.5.2'
 default['maven']['setup_bin'] = true
 default['maven']['setup_bin'] = true
+
 #Node cookbook property
-default['nodejs']['version'] = '8.11.2'
-default['nodejs']['install_method'] = 'binary'
+default['nodejs']['version'] = '8'
+default['nodejs']['install_method'] = 'package'
+#This monkeypatch is necessary because the node cookbook brokenly defaults to a 6.x sources.list otherwise
+case node['platform_family']
+when 'debian'
+  override['nodejs']['repo'] = 'https://deb.nodesource.com/node_8.x'
+when 'rhel', 'amazon'
+  default['nodejs']['repo'] = "https://rpm.nodesource.com/pub_8.x/el/#{release_ver}/$basearch"
+end
