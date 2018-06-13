@@ -26,6 +26,10 @@ directory '/var/lib/jenkins/workspace' do
   recursive true
 end
 
+directory node['script_root'] do
+  recursive true
+end
+
 # If we're on RHEL, adjust Java memory options
 # (not sure if this is needed, or actually RHEL-specific, but keeping it)
 execute 'resizeJenkinsMemorySettings' do
