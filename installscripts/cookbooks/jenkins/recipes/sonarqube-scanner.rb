@@ -1,4 +1,4 @@
-remote_file '#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip' do
+remote_file "#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip" do
   source 'https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip'
   mode '0755'
   action :create
@@ -6,7 +6,7 @@ remote_file '#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linu
 end
 
 execute 'install_sonarscanner' do
-  command 'unzip #{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip'
+  command "unzip #{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip"
   cwd '/opt'
 end
 
@@ -26,14 +26,14 @@ directory '/var/log/depcheck_jazz/nistfiles' do
   recursive true
 end
 
-remote_file '#{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip' do
+remote_file "#{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip" do
   source 'https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-3.2.1-release.zip'
   mode '0755'
   action :create
 end
 
 execute 'install_dependency_check' do
-  command 'unzip #{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip'
+  command "unzip #{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip"
   cwd '/opt'
 end
 
