@@ -81,10 +81,10 @@ resource "null_resource" "chef_provision_jenkins_server" {
     destination = "${var.chefDestDir}/"
   }
 
-  #TODO consider doing the export locally, so we only need to install `chef-client`.
+  #TODO consider doing the export locally, so we only need to install `chef-client on the remote box`.
   provisioner "remote-exec" {
     inline = [
-      "curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -v 14.2",
+      "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
       "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
       "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
