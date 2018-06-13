@@ -12,6 +12,4 @@ npm_package '@angular/cli' do
   version '1.7.3'
 end
 
-npm_package 'jshint' do
-  version '1.7.3'
-end
+npm_package 'jshint'
