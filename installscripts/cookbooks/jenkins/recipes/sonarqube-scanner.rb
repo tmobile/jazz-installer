@@ -6,7 +6,7 @@ remote_file "#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linu
 end
 
 execute 'install_sonarscanner' do
-  command "unzip #{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip"
+  command "unzip -o #{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip"
   cwd '/opt'
 end
 
@@ -33,7 +33,7 @@ remote_file "#{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.z
 end
 
 execute 'install_dependency_check' do
-  command "unzip #{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip"
+  command "unzip -o #{Chef::Config['file_cache_path']}/dependency-check-3.2.1-release.zip"
   cwd '/opt'
 end
 

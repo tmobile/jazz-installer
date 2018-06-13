@@ -3,6 +3,7 @@ default['chef_root'] = '/tmp/jazz-chef'
 default['script_root'] = "#{node['chef_root']}/chefscripts"
 default['jenkins']['clientjar'] = "#{node['chef_root']}/jenkins-cli.jar"
 default['authfile'] = "#{node['chef_root']}/authfile"
+default['jenkinselb'] = 'jazz-jenkinselb-.us-east-1.elb.amazonaws.com'
 
 #This is the universal invocation that all scripts will use/append to.
 default['jenkins']['clicommand'] = "java -jar #{node['jenkins']['clientjar']} -s http://#{node['jenkinselb']}/ -auth @#{node['authfile']}"
@@ -10,7 +11,6 @@ default['jenkins']['clicommand'] = "java -jar #{node['jenkins']['clientjar']} -s
 default['scm'] = 'bitbucket'
 default['scmelb'] = 'jazz-bitbucketelb.us-east-1.elb.amazonaws.com'
 default['scmpath'] = "#{node['scmelb']}/scm"
-default['jenkinselb'] = 'jazz-jenkinselb-.us-east-1.elb.amazonaws.com'
 default['region'] = 'us-east-1'
 default['git_branch'] = 'master'
 default['git_repo'] = 'https://github.com/tmobile/jazz.git'
