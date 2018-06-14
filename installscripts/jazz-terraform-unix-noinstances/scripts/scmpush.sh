@@ -79,7 +79,7 @@ function individual_repopush() {
     # Adding a sleep to ensure smaller jenkins boxes do not overload themselves,
     # and to work around the AWS API Gateway creation limit:
     # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
-    # TODO this drastically inflates install time, look into ways to reduce this wait.
+    # since micro services are now only in the core folder, giving sleep for core folder.
     if [[ $parentfolder == "core" ]]; then
         sleep 45
     fi

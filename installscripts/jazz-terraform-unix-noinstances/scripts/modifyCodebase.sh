@@ -14,6 +14,7 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/builds/serverless-conf
 
 #-------------------------------------------
 
+
 platform_services=()
 cd ./jazz-core
 for d in core/* ; do
@@ -23,7 +24,6 @@ for d in core/* ; do
   fi
   done
 cd ..
-
 
 servicename="_services_prod"
 tablename=$stackprefix$servicename
@@ -41,7 +41,7 @@ do
     service_name=$element
   fi
 
-  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] ; then
+  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] || [ $element == "jazz_codeq" ] ; then
 	  aws dynamodb put-item --table-name $tablename --item '{
 	  "SERVICE_ID":{"S":"'$uuid'"},
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
