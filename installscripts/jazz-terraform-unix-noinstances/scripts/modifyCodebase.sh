@@ -25,20 +25,20 @@ do
   uuid=`uuidgen -t`
   echo -n > ./jazz-core/$element/deployment-env.yml
   echo "service_id: "$uuid >> ./jazz-core/$element/deployment-env.yml
-  
+
   if [[ $element =~ ^jazz ]] ; then
     service_name="${element:5}"
   else
     service_name=$element
   fi
-  
-  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] ; then		  
+
+  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] ; then
 	  aws dynamodb put-item --table-name $tablename --item '{
 	  "SERVICE_ID":{"S":"'$uuid'"},
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
 	  "SERVICE_DOMAIN":{"S":"jazz"},
 	  "SERVICE_NAME":{"S":"'$service_name'"},
-	  "SERVICE_RUNTIME":{"S":"nodejs"}, 
+	  "SERVICE_RUNTIME":{"S":"nodejs"},
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
 	  "SERVICE_TYPE":{"S":"api"},
@@ -91,7 +91,7 @@ do
 					  "providerTimeout":{"S":"160"}
 					}
 				}
-		  }' 
+		  }'
 
    fi
 done
