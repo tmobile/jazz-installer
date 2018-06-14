@@ -85,7 +85,7 @@
         "environment_tabs": {
             "overview": true,
             "deployments": true,
-            "code_quality": false,
+            "code_quality": "{ENABLE_CODEQUALITY_TAB}",
             "logs": false,
             "assets": false
         }

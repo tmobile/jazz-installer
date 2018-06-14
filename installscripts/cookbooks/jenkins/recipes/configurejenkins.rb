@@ -142,12 +142,12 @@ end
 
 execute 'createJob-bitbucketteam_newService' do
   only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['cookbook_root']}/jenkins/files/jobs/job_bitbucketteam_newService.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmelb']}"
 end
 
 execute 'createJob-platform_api_services' do
   only_if { node['scm'] == 'bitbucket' }
-  command "#{node['cookbook_root']}/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmpath']}"
+  command "#{node['cookbook_root']}/jenkins/files/jobs/job_platform_api_services.sh #{node['jenkinselb']} #{node['jenkins']['clientjar']} #{node['authfile']} #{node['scmelb']}"
 end
 
 execute 'job_cleanup_cloudfront_distributions' do
