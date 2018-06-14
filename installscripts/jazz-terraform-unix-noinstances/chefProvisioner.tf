@@ -15,29 +15,29 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''git_branch'\\''\\].*.|default\\['\\''git_branch'\\''\\]='\\''${var.github_branch}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''git_branch'\\''\\].*.|default\\['\\''git_branch'\\''\\]='\\''${var.github_branch}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''git_repo'\\''\\].*.|default\\['\\''git_repo'\\''\\]='\\''${var.github_repo}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''git_repo'\\''\\].*.|default\\['\\''git_repo'\\''\\]='\\''${var.github_repo}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   # Update AWS credentials in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${var.aws_access_key}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${var.aws_access_key}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${var.aws_secret_key}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${var.aws_secret_key}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   # Update cognito attribs in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''congnitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''congnitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''cognitopassword'\\''\\].*.|default\\['\\''cognitopassword'\\''\\]='\\''${var.cognito_pool_password}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''cognitopassword'\\''\\].*.|default\\['\\''cognitopassword'\\''\\]='\\''${var.cognito_pool_password}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   #Update Gitlab attribs in Jenkins Chef cookbook attributes
@@ -46,16 +46,16 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabpassword'\\''\\].*.|default\\['\\''gitlabpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''gitlabpassword'\\''\\].*.|default\\['\\''gitlabpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   #Update Jenkins attribs in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''bbuser'\\''\\].*.|default\\['\\''bbuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''bbuser'\\''\\].*.|default\\['\\''bbuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''bbpassword'\\''\\].*.|default\\['\\''bbpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''bbpassword'\\''\\].*.|default\\['\\''bbpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
