@@ -42,7 +42,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   #Update Gitlab attribs in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabuser'\\''\\].*.|default\\['\\''gitlabuser'\\''\\]='${lookup(var.scmmap, "scm_username")}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''gitlabuser'\\''\\].*.|default\\['\\''gitlabuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
