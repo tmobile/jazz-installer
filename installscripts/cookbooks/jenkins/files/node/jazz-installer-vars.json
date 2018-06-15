@@ -87,7 +87,7 @@
             "deployments": true,
             "code_quality": "{ENABLE_CODEQUALITY_TAB}",
             "logs": false,
-            "assets": false
+            "assets": true
         }
     },
     "CODE_QUALITY": {
