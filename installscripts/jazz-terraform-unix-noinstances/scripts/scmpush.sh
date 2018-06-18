@@ -57,7 +57,7 @@ function individual_repopush() {
         if [[ $parentfolder == "core" ]]; then
            if [[ $reponame == "jazz-ui" ]]; then
                 curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_jazz_ui_webhook_url"
-           else 
+           elif [[ $reponame != "jazz-web" ]]; then
                 curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
            fi
         fi 
