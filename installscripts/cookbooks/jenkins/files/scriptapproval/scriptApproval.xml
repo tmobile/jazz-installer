@@ -12,7 +12,12 @@
     <string>staticMethod java.lang.System getenv java.lang.String</string>
     <string>staticMethod jenkins.model.JenkinsLocationConfiguration get</string>
     <string>new groovy.json.JsonSlurperClassic</string>
-    <string>method groovy.json.JsonSlurperClassic parseText java.lang.String </string>     
+    <string>method groovy.json.JsonSlurperClassic parseText java.lang.String </string>
+    <string>method groovy.lang.GString getBytes</string>
+    <string>staticMethod org.codehaus.groovy.runtime.EncodingGroovyMethods encodeBase64 byte[]</string>
+    <string>staticMethod hudson.model.User get java.lang.String</string>
+    <string>method hudson.model.User getProperty java.lang.Class</string>
+    <string>method jenkins.security.ApiTokenProperty getApiToken</string>
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
