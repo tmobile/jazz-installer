@@ -77,6 +77,11 @@ cookbook_file '/var/lib/jenkins/config.xml' do
   action :create
 end
 
+cookbook_file '/var/lib/jenkins/scriptApproval.xml' do
+  source 'scriptApproval.xml'
+  action :create
+end
+
 cookbook_file '/var/lib/jenkins/credentials.xml' do
   source 'credentials.xml'
   action :create
