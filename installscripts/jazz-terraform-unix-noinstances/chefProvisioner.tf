@@ -33,7 +33,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
 
   # Update cognito attribs in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''congnitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'\\''|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''cognitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
