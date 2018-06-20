@@ -42,7 +42,6 @@ codeqmap = {
   sonar_server_elb = "REPLACEME"
   sonar_username = "REPLACEME"
   sonar_passwd = "REPLACEME"
-  sonar_token = "REPLACEME"
   sonar_server_public_ip = "REPLACEME"
 }
 
