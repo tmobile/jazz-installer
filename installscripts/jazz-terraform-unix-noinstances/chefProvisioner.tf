@@ -8,11 +8,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
     type = "ssh"
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
-
-  provisioner "local-exec" {
-    command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
-  }
-
+  
   #BEGIN chef cookbook edits TODO consider moving these to their own .tf file
   #Because we have to provision a preexisting machine here and can't use the terraform ses command,
   #we must use sed to insert AWS creds from the provisioner environment into a script chef will run later, before we copy the cookbook to the remote box.
