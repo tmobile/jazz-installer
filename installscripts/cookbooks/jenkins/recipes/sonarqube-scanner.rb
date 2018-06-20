@@ -15,8 +15,8 @@ directory '/opt/sonar-scanner-3.0.3.778-linux/' do
   recursive true
 end
 
-link '/opt/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner' do
-  to '/bin/sonar-scanner'
+link '/bin/sonar-scanner' do
+  to '/opt/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner'
 end
 
 directory '/var/log/depcheck_jazz/nistfiles' do
@@ -36,14 +36,14 @@ execute 'install_dependency_check' do
   cwd '/opt'
 end
 
-directory '/opt/depency-check' do
+directory '/opt/dependency-check' do
   owner 'jenkins'
   group 'jenkins'
   recursive true
 end
 
-link '/opt/dependency-check/bin/dependency-check.sh' do
-  to '/bin/dependency-check.sh'
+link '/bin/dependency-check.sh' do
+  to '/opt/dependency-check/bin/dependency-check.sh'
 end
 
 remote_file '/opt/checkstyle-7.6-all.jar' do
