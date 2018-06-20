@@ -58,12 +58,10 @@ print(str(sys.argv))
 stackName = sys.argv[1].lower() + "-"
 deleteClientServices = sys.argv[2]
 
-print("\r\n\r\nCompleted deletion of platform services.")
-
 if (deleteClientServices.lower() != 'true'):
     exit(0)
 
-print("\r\nStarting micro services\r\n\r\n")
+print("\r\nStarting deletion of micro services\r\n\r\n")
 
 ## Delete user services Cloud formations
 fname = 'listservice.json'
