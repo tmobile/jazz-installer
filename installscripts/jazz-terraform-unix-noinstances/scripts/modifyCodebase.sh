@@ -61,7 +61,7 @@ do
 			  "SERVICE_RUNTIME":{"S":"nodejs"},
 			  "SERVICE_STATUS":{"S":"active"},
 			  "TIMESTAMP":{"S":"'$timestamp'"},
-			  "SERVICE_TYPE":{"S":"lambda"},
+			  "SERVICE_TYPE":{"S":"function"},
 			  "SERVICE_METADATA":{"M":{
 						  "securityGroupIds":{"S":"'$securityGroupIds'"},
 						  "subnetIds":{"S":"'$subnetIds'"},
