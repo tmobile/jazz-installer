@@ -102,8 +102,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
       "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
       "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
       "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json",
-      "sudo rm -rf -f ${var.chefDestDir}"
+      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"      
     ]
   }
 
