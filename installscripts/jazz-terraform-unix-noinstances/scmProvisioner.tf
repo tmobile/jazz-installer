@@ -39,6 +39,7 @@ resource "null_resource" "configureJazzBuildModule" {
       "git config --global user.email ${var.cognito_pool_username}",
       "git commit -m 'Adding Json file to repo'",
       "git push -u origin master",
+      "sudo rm -rf -f ${var.chefDestDir}",     
       "cd ..",
       "sudo rm -rf jazz-build-module" ]
   }
