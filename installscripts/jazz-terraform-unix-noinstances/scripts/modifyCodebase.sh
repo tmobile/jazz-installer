@@ -14,7 +14,8 @@ sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/serverless-config-pack
 
 #-------------------------------------------
 
-platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" "jazz_environment-event-handler" "jazz_deployments" "jazz_deployments-event-handler" "jazz_test-lambda")
+platform_services=("jazz_cognito-authorizer" "jazz_logs" "jazz_usermanagement" "jazz_services-handler" "jazz_events" "jazz_services" "jazz_logout" "jazz_login" "jazz_cloud-logs-streamer" "jazz_is-service-available" "jazz_delete-serverless-service" "jazz_create-serverless-service" "jazz_email" "jazz_events-handler" "jazz_environments" "jazz_scm-webhook" "jazz_environment-event-handler" "jazz_deployments" "jazz_deployments-event-handler" "jazz_codeq" "jazz_assets" "jazz_asset-event-handler" "jazz_test-lambda")
+
 
 servicename="_services_prod"
 tablename=$stackprefix$servicename
@@ -25,20 +26,20 @@ do
   uuid=`uuidgen -t`
   echo -n > ./jazz-core/$element/deployment-env.yml
   echo "service_id: "$uuid >> ./jazz-core/$element/deployment-env.yml
-  
+
   if [[ $element =~ ^jazz ]] ; then
     service_name="${element:5}"
   else
     service_name=$element
   fi
-  
-  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] ; then		  
+
+  if [ $element == "jazz_email" ] || [ $element == "jazz_usermanagement" ] || [ $element == "jazz_codeq" ] ; then
 	  aws dynamodb put-item --table-name $tablename --item '{
 	  "SERVICE_ID":{"S":"'$uuid'"},
 	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
 	  "SERVICE_DOMAIN":{"S":"jazz"},
 	  "SERVICE_NAME":{"S":"'$service_name'"},
-	  "SERVICE_RUNTIME":{"S":"nodejs"}, 
+	  "SERVICE_RUNTIME":{"S":"nodejs"},
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
 	  "SERVICE_TYPE":{"S":"api"},
@@ -52,7 +53,7 @@ do
 			    }
 			}
 	  }'
-	elif [ $element == "jazz_cognito-authorizer" ] || $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] || [ $element == "jazz_deployments-event-handler" ] ; then
+	elif [ $element == "jazz_cognito-authorizer" ] || $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] || [ $element == "jazz_deployments-event-handler" ] || [ $element == "jazz_asset-event-handler" ]; then
 			aws dynamodb put-item --table-name $tablename --item '{
 			  "SERVICE_ID":{"S":"'$uuid'"},
 			  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
@@ -61,7 +62,7 @@ do
 			  "SERVICE_RUNTIME":{"S":"nodejs"},
 			  "SERVICE_STATUS":{"S":"active"},
 			  "TIMESTAMP":{"S":"'$timestamp'"},
-			  "SERVICE_TYPE":{"S":"lambda"},
+			  "SERVICE_TYPE":{"S":"function"},
 			  "SERVICE_METADATA":{"M":{
 						  "securityGroupIds":{"S":"'$securityGroupIds'"},
 						  "subnetIds":{"S":"'$subnetIds'"},
@@ -91,7 +92,7 @@ do
 					  "providerTimeout":{"S":"160"}
 					}
 				}
-		  }' 
+		  }'
 
    fi
 done
