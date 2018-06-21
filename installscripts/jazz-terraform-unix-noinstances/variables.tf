@@ -84,7 +84,6 @@ variable "codeqmap" {
     sonar_server_elb = "replaceelb"
     sonar_username = "replaceusername"
     sonar_passwd = "replacepasswd"
-    sonar_token = "replacetoken"
     sonar_server_public_ip = "replacepubip"
   }
 }
