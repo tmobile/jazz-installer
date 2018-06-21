@@ -93,5 +93,13 @@
 			 "logs": false,
 			 "assets": false
 		 }
-   }
+   },
+    "APIGEE": {
+        "API_ENDPOINTS": {
+            "PROD": "{APIGEE_PROD_API}",
+            "TEST": "{APIGEE_TEST_API}",
+            "STG": "{APIGEE_STG_API}",
+            "DEV": "{APIGEE_DEV_API}"
+        }
+    }
 }
