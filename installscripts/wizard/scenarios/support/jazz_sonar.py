@@ -11,14 +11,12 @@ def add_sonar_config_to_files(parameter_list):
         parameter_list = [  sonar_server_elb ,
                             sonar_username,
                             sonar_passwd,
-                            sonar_token,
                             sonar_server_public_ip]
      """
 
     replace_tfvars('sonar_server_elb', parameter_list[0], get_tfvars_file())
     replace_tfvars('sonar_username', parameter_list[1], get_tfvars_file())
     replace_tfvars('sonar_passwd', parameter_list[2], get_tfvars_file())
-    replace_tfvars('sonar_token', parameter_list[3], get_tfvars_file())
     replace_tfvars('sonar_server_public_ip', parameter_list[4], get_tfvars_file())
     replace_tfvars('codequality_type', 'sonarqube', get_tfvars_file())
     replace_tfvars('codeq', 1, get_tfvars_file())
@@ -60,11 +58,10 @@ def get_add_existing_sonar_config(terraform_folder):
         "Sonar URL (Please ignore http from URL) :")
     sonar_username = raw_input("Sonar username :")
     sonar_passwd = raw_input("Sonar password :")
-    sonar_token = raw_input("Sonar Token (Optional) :")
 
     # Check if the user provided Sonar user exist
     if check_sonar_user(sonar_server_elb, sonar_username,
-                            sonar_passwd, sonar_token):
+                            sonar_passwd):
         print(
             "Great! We can proceed with this Sonar user....We will need few more details of Sonar server"
         )
@@ -79,7 +76,7 @@ def get_add_existing_sonar_config(terraform_folder):
     # Create paramter list
     parameter_list = [
         sonar_server_elb, sonar_username, sonar_passwd,
-        sonar_token, sonar_server_public_ip
+        sonar_server_public_ip
     ]
 
     add_sonar_config_to_files(parameter_list)

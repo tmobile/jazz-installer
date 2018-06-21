@@ -74,7 +74,6 @@
         "feature": {
             "multi_env": true
         },
-
         "service_tabs": {
             "overview": true,
             "access_control": false,
@@ -86,8 +85,8 @@
             "overview": true,
             "deployments": true,
             "code_quality": "{ENABLE_CODEQUALITY_TAB}",
-            "logs": false,
-            "assets": false
+            "logs": true,
+            "assets": true
         }
     },
     "CODE_QUALITY": {
