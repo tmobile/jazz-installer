@@ -72,18 +72,15 @@ curl -u admin:$passwd -X POST http://$ip:9000/api/system/restart
 sonar_server_elb="$ip:9000"
 sonar_username="admin"
 sonar_passwd="$passwd"
-sonar_token=""
 sonar_server_public_ip="$ip"
 
 # Writing values to credentials.txt
 echo "Sonar URL: http://$sonar_server_elb" > credentials.txt
 echo "USERNAME: $sonar_username"  >> credentials.txt
 echo "PASSWORD: $sonar_passwd" >> credentials.txt
-echo "PRIVATE TOKEN: $sonar_token" >> credentials.txt
 
 # Print the values to a temp file to be read from calling python script
 echo "$sonar_server_elb" > docker_sonar_vars
 echo "$sonar_username" >> docker_sonar_vars
 echo "$sonar_passwd" >> docker_sonar_vars
-echo "$sonar_token" >> docker_sonar_vars
 echo "$sonar_server_public_ip" >> docker_sonar_vars
