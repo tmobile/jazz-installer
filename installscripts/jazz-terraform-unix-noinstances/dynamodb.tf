@@ -596,3 +596,123 @@ resource "aws_dynamodb_table" "dynamodb-Deployments_Prod" {
     Owner = "${var.tagsOwner}"
   }
 }
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Dev" {
+  name           = "${var.envPrefix}_Assets_Dev"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Stg" {
+  name           = "${var.envPrefix}_Assets_Stg"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Prod" {
+  name           = "${var.envPrefix}_Assets_Prod"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags {
+    Name        = "${var.envPrefix}"
+    Application = "Jazz"
+    JazzInstance = "${var.envPrefix}"
+    Environment = "${var.tagsEnvironment}"
+    Exempt = "${var.tagsExempt}"
+    Owner = "${var.tagsOwner}"
+  }
+}
