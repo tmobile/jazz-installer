@@ -38,5 +38,5 @@ case node['platform_family']
 when 'debian'
   override['nodejs']['repo'] = 'https://deb.nodesource.com/node_8.x'
 when 'rhel', 'amazon'
-  default['nodejs']['repo'] = "https://rpm.nodesource.com/pub_8.x/el/#{release_ver}/$basearch"
+  default['nodejs']['repo'] = "https://rpm.nodesource.com/pub_8.x/el/$releasever/$basearch"
 end
