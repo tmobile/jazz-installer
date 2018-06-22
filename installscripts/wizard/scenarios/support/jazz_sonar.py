@@ -17,7 +17,7 @@ def add_sonar_config_to_files(parameter_list):
     replace_tfvars('sonar_server_elb', parameter_list[0], get_tfvars_file())
     replace_tfvars('sonar_username', parameter_list[1], get_tfvars_file())
     replace_tfvars('sonar_passwd', parameter_list[2], get_tfvars_file())
-    replace_tfvars('sonar_server_public_ip', parameter_list[4], get_tfvars_file())
+    replace_tfvars('sonar_server_public_ip', parameter_list[3], get_tfvars_file())
     replace_tfvars('codequality_type', 'sonarqube', get_tfvars_file())
     replace_tfvars('codeq', 1, get_tfvars_file())
 
