@@ -182,7 +182,7 @@ cookbook_file "#{node['script_root']}/sonar.sh" do
 end
 
 execute 'createcredentials-sonar' do
-  command "#{node['script_root']}/sonar.sh #{node['jenkins']['clicommand']}"
+  command "#{node['script_root']}/sonar.sh #{node['jenkins']['clicommand']} #{node['sonaruser']} #{node['sonarpassword']}"
 end
 
 #Set up AWS creds
