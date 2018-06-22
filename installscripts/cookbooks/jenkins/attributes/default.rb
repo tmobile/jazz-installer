@@ -23,6 +23,8 @@ default['gitlabuser'] = 'REPLACEME'
 default['gitlabpassword'] = 'REPLACEME'
 default['bbuser'] = 'REPLACEME'
 default['bbpassword'] = 'REPLACEME'
+default['sonaruser'] = 'REPLACEME'
+default['sonarpassword'] = 'REPLACEME'
 
 #Maven cookbook property
 default['maven']['version'] = '3.5.2'

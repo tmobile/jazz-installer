@@ -59,6 +59,14 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
 
   provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''sonaruser'\\''\\].*.|default\\['\\''sonaruser'\\''\\]='\\''${lookup(var.codeqmap, "sonar_username")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''sonarpassword'\\''\\].*.|default\\['\\''sonarpassword'\\''\\]='\\''${lookup(var.scmmap, "sonar_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
     command = "sed -i 's|jenkinsuser:jenkinspasswd|${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")}|g' ${var.cookbooksSourceDir}/jenkins/files/default/authfile"
   }
 
