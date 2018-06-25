@@ -106,8 +106,17 @@ function push_to_scm() {
         # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
         # "builds" is already pushed at this stage.
         repos=()
+        # Including dependent repos first
+        for d in core/* ; do                        
+            if [[ ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ${d%/} =~ "jazz-ui" ]] ; then
+                 repos+=("${d%/}")            
+            fi          
+        done    
+
         for d in **/*/ ; do
-           repos+=("${d%/}")
+            if [[ ! ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ! ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ! ${d%/} =~ "jazz-ui" ]] ; then
+                repos+=("${d%/}")
+            fi
         done
 
         # Push to SLF by traversing the array
