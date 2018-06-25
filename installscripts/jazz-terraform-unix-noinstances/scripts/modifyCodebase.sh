@@ -60,7 +60,7 @@ do
 			    }
 			}
 	  }'
-	elif [ $element == "jazz_cognito-authorizer" ] || $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] || [ $element == "jazz_deployments-event-handler" ] || [ $element == "jazz_asset-event-handler" ]; then
+	elif [ $element == "jazz_cognito-authorizer" ] || [ $element == "jazz_cloud-logs-streamer" ] || [ $element == "jazz_services-handler" ]  || [ $element == "jazz_events-handler" ] || [ $element == "jazz_environment-event-handler" ] || [ $element == "jazz_deployments-event-handler" ] || [ $element == "jazz_asset-event-handler" ] || [ $element == "jazz_slack-event-handler" ]; then
 			aws dynamodb put-item --table-name $tablename --item '{
 			  "SERVICE_ID":{"S":"'$uuid'"},
 			  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
