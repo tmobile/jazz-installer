@@ -9,10 +9,6 @@ resource "null_resource" "chef_provision_jenkins_server" {
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
 
-  provisioner "local-exec" {
-    command = "${var.configureJazzCore_cmd} ${var.envPrefix} ${var.cognito_pool_username}"
-  }
-
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
     command = "sed -i 's|default\\['\\''git_branch'\\''\\].*.|default\\['\\''git_branch'\\''\\]='\\''${var.github_branch}'\\''|g' ${var.jenkinsattribsfile}"
