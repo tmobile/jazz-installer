@@ -59,7 +59,7 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''sonarpassword'\\''\\].*.|default\\['\\''sonarpassword'\\''\\]='\\''${lookup(var.scmmap, "sonar_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''sonarpassword'\\''\\].*.|default\\['\\''sonarpassword'\\''\\]='\\''${lookup(var.codeqmap, "sonar_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
