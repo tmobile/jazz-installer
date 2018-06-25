@@ -104,5 +104,10 @@
             "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
             "CHECKSTYLE_LIB": "/opt/checkstyle-7.6-all.jar"
         }
+    },
+    "SLACK": {
+        "ENABLE_SLACK": "false",
+        "SLACK_USER": "{slack_user}",
+        "SLACK_TOKEN": "{slack_token}"
     }
 }
