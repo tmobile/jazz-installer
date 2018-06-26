@@ -18,6 +18,10 @@ variable "configureApikey_cmd" {
   type = "string"
   default = "./scripts/configureApikey.sh"
 }
+variable "configureSonar_cmd" {
+  type = "string"
+  default = "./scripts/configureSonar.sh"
+}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"
@@ -25,10 +29,6 @@ variable "modifyCodebase_cmd" {
 variable "configureJenkinselb_cmd" {
   type = "string"
   default = "./scripts/configureJenkinselb.sh"
-}
-variable "configureJenkinsSSHUser_cmd" {
-  type = "string"
-  default = "./scripts/configureJenkinsSSHUser.sh"
 }
 variable "scmclient_cmd" {
   type = "string"

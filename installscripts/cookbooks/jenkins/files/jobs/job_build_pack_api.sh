@@ -1,18 +1,13 @@
 JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME=$2
-BITBUCKET_ELB=$3
-SSH_USER=$4
+JENKINS_CLI=$2
+AUTHFILE=$3
+BITBUCKET_ELB=$4
 
-if [ -f /etc/redhat-release ]; then
-  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
-elif [ -f /etc/lsb-release ]; then
-  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/root/jenkins-cli.jar
-fi
+echo "$0 $1 $2 $3 $4"
+
+JOB_NAME="build_pack_api"
 
 JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-echo "$0 $1 $2 "
 cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
@@ -65,7 +60,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-java-api-build-101</authToken>
+  <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF
