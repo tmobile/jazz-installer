@@ -12,7 +12,7 @@ execute 'unzipaws' do
  end
 
 execute 'installaws' do
-  command './awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws'
+  command 'sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws'
   cwd '/tmp'
   ignore_failure true
 end
