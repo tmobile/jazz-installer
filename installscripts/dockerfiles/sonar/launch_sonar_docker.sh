@@ -45,7 +45,7 @@ fi
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 
 # Run the docker container from the using the above image and volumes.
-docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube &> /dev/null &
+docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 -v sonarqube-temp:/opt/sonarqube/temp sonarqube &> /dev/null &
 spin_wheel $! "Spinning up the SonarQube Docker container"
 
 sleep 20 &
