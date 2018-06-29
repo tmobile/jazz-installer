@@ -8,77 +8,75 @@ resource "null_resource" "chef_provision_jenkins_server" {
     type = "ssh"
     private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
   }
-  
-  #BEGIN chef cookbook edits TODO consider moving these to their own .tf file
-  #Because we have to provision a preexisting machine here and can't use the terraform ses command,
-  #we must use sed to insert AWS creds from the provisioner environment into a script chef will run later, before we copy the cookbook to the remote box.
-  provisioner "local-exec" {
-    command = "sed -i 's/AWS_ACCESS_KEY=.*.$/AWS_ACCESS_KEY='${var.aws_access_key}'/g' ${var.cookbooksSourceDir}/jenkins/files/credentials/aws.sh"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's#AWS_SECRET_KEY=.*.$#AWS_SECRET_KEY='${var.aws_secret_key}'#g' ${var.cookbooksSourceDir}/jenkins/files/credentials/aws.sh"
-  }
 
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['git_branch'\\].*.|default\\['git_branch'\\]='${var.github_branch}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''git_branch'\\''\\].*.|default\\['\\''git_branch'\\''\\]='\\''${var.github_branch}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['git_repo'\\].*.|default\\['git_repo'\\]='${var.github_repo}'|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''git_repo'\\''\\].*.|default\\['\\''git_repo'\\''\\]='\\''${var.github_repo}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
-  # Update cognito script in cookbook
+  # Update AWS credentials in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|<username>cognitouser</username>|<username>${var.cognito_pool_username}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/cognitouser.sh"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|<password>cognitopasswd</password>|<password>${var.cognito_pool_password}</password>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/cognitouser.sh"
-  }
-
-  # Update sonar script in cookbook
-  provisioner "local-exec" {
-    command = "sed -i 's|<username>sonaruser</username>|<username>${lookup(var.codeqmap, "sonar_username")}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/sonar.sh"
+    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${var.aws_access_key}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|<password>sonarpasswd</password>|<password>${lookup(var.codeqmap, "sonar_passwd")}</password>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/sonar.sh"
+    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${var.aws_secret_key}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
-  #Update Jenkins script in cookbook
+  # Update cognito attribs in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|<username>bitbucketuser</username>|<username>${lookup(var.scmmap, "scm_username")}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/jenkins1.sh"
+    command = "sed -i 's|default\\['\\''cognitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|<password>bitbucketpasswd</password>|<password>${lookup(var.scmmap, "scm_passwd")}</password>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/jenkins1.sh"
+    command = "sed -i 's|default\\['\\''cognitopassword'\\''\\].*.|default\\['\\''cognitopassword'\\''\\]='\\''${var.cognito_pool_password}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  #Update Gitlab attribs in Jenkins Chef cookbook attributes
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''gitlabuser'\\''\\].*.|default\\['\\''gitlabuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''gitlabpassword'\\''\\].*.|default\\['\\''gitlabpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  #Update Jenkins attribs in Jenkins Chef cookbook attributes
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''bbuser'\\''\\].*.|default\\['\\''bbuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''bbpassword'\\''\\].*.|default\\['\\''bbpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''sonaruser'\\''\\].*.|default\\['\\''sonaruser'\\''\\]='\\''${lookup(var.codeqmap, "sonar_username")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''sonarpassword'\\''\\].*.|default\\['\\''sonarpassword'\\''\\]='\\''${lookup(var.codeqmap, "sonar_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
     command = "sed -i 's|jenkinsuser:jenkinspasswd|${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")}|g' ${var.cookbooksSourceDir}/jenkins/files/default/authfile"
   }
 
-  #Update Gitlab script in cookbook
-  provisioner "local-exec" {
-    command = "sed -i 's|<username>gitlabuser</username>|<username>${lookup(var.scmmap, "scm_username")}</username>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/gitlab-user.sh"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|<password>gitlabpassword</password>|<password>${lookup(var.scmmap, "scm_passwd")}</password>|g' ${var.cookbooksSourceDir}/jenkins/files/credentials/gitlab-user.sh"
-  }
   #END chef cookbook edits
 
-  #Note that because the SSH connector is weird, we must manually create this directory
-  #on the remote machine here before we copy things to it.
+  #Note that because the Terraform SSH connector is weird, we must manually create this directory
+  #on the remote machine here *before* we copy things to it.
   provisioner "remote-exec" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
 
-  #Copy the chef playbooks and config over to the remote Jenkins server
+  #Copy the chef playbooks and jenkins binary plugin blobs over to the remote Jenkins server
   provisioner "file" {
-    source      = "${var.chefconfigSourceDir}"
+    source      = "${var.jenkinsPluginsSourceDir}"
     destination = "${var.chefDestDir}/"
   }
 
@@ -87,18 +85,13 @@ resource "null_resource" "chef_provision_jenkins_server" {
     destination = "${var.chefDestDir}/"
   }
 
+  #TODO consider doing the export locally, so we only need to install `chef-client on the remote box`.
   provisioner "remote-exec" {
     inline = [
-      # TODO we can (and should) do all of this stuff (python, jq, plugins)in Chef and not here.
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
-      "sudo curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/local/bin/jq",
-      "sudo chmod 755 /usr/local/bin/jq",
-      "cat ${var.chefDestDir}/cookbooks/jenkins/files/plugins/plugins0* > plugins.tar",
-      "chmod 777 plugins.tar",
-      "sudo tar -xf plugins.tar -C /var/lib/jenkins/",
-      "curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py",
-      "sudo chmod -R o+w /usr/lib/python2.7/* /usr/bin/",
-      "sudo chef-client --local-mode --config-option cookbook_path='${var.chefDestDir}/cookbooks' -j ${var.chefDestDir}/chefconfig/node-jenkinsserver-packages.json"      
+      "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
+      "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
+      "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
     ]
   }
 

@@ -1,14 +1,8 @@
-JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JENKINS_CLI=$2
-AUTHFILE=$3
-BITBUCKET_ELB=$4
+JENKINS_CLI_CMD=$1
+BITBUCKET_ELB=$2
 
-echo "$0 $1 $2 $3 $4"
-
-JOB_NAME="build_pack_api"
-
-JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+cat <<EOF | $JENKINS_CLI_CMD create-job "build_pack_api"
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description></description>
