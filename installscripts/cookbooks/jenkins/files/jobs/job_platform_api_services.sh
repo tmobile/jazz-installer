@@ -1,18 +1,14 @@
-JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JENKINS_CLI=$2
-AUTHFILE=$3
-BITBUCKET_ELB=$4
-
-echo "$0 $1 $2 $3 $4"
+JENKINS_CLI_CMD=$1
+BITBUCKET_ELB=$2
 
 JOB_NAME="Jazz_Core_Services"
 
-JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+cat <<EOF | $JENKINS_CLI_CMD create-job "Jazz_Core_Services"
 <jenkins.branch.OrganizationFolder plugin="branch-api@2.0.10">
   <actions/>
   <description></description>
-  <displayName>$JOB_NAME</displayName>
+  <displayName>Jazz_Core_Services</displayName>
   <properties>
     <org.jenkinsci.plugins.pipeline.modeldefinition.config.FolderConfig plugin="pipeline-model-definition@1.1.6">
       <dockerLabel></dockerLabel>
