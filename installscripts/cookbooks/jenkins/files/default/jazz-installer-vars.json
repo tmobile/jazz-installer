@@ -46,6 +46,7 @@
         "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
         "S3_BUCKET_WEB": "",
         "BUCKET_PER_SERVICE": "false",
+        "API_DETAILED_MONITORING" : "true",
         "S3": {
             "WEBSITE_DEV_BUCKET": "",
             "WEBSITE_STG_BUCKET": "",
