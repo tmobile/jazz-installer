@@ -12,14 +12,34 @@ ns_id_slf=$6
 # Config variables
 scm=$7
 jenkins_elb=$8
-jenkins_user=$9
-jenkins_password=${10}
-jazzbuildmodule=${11}
-gitlab_trigger_job_url="/project/Gitlab-Trigger-Job"
-jazz_ui_trigger_job_url="/project/jazz_ui"
+jazzbuildmodule=$9
+jenkins_user="jobexec"
 
-gitlab_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$gitlab_trigger_job_url"
-gitlab_jazz_ui_webhook_url="http://$jenkins_user:$jenkins_password@$jenkins_elb$jazz_ui_trigger_job_url"
+gitlab_trigger_job_url="/project/Gitlab-Trigger-Job?token=jazz-101-job"
+jazz_ui_trigger_job_url="/project/jazz_ui?token=jazz-101-job"
+
+if [ ! -d ./jenkins-tmp ] ; then
+    mkdir ./jenkins-tmp
+    wget -O ./jenkins-tmp/jenkins-cli.jar http://$jenkins_elb/jnlpJars/jenkins-cli.jar
+fi
+
+alias jcli="java -jar ./jenkins-tmp/jenkins-cli.jar -auth jobexec:jenkinsadmin -s  http://$jenkins_elb"
+
+function get_jenkinsuser_apitoken() {
+ jcli groovy = <<'EOF'
+ import hudson.model.User
+ import jenkins.security.ApiTokenProperty;
+ import hudson.util.Secret.*;
+ User u = User.get('jobexec')
+ ApiTokenProperty t = u.getProperty(ApiTokenProperty.class)
+ def token = t.getApiToken()
+println token
+EOF
+}
+
+jenkins_apitoken=$( get_jenkinsuser_apitoken )
+gitlab_webhook_url="http://$jenkins_user:$jenkins_apitoken@$jenkins_elb$gitlab_trigger_job_url"
+gitlab_jazz_ui_webhook_url="http://$jenkins_user:$jenkins_apitoken@$jenkins_elb$jazz_ui_trigger_job_url"
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
@@ -60,7 +80,7 @@ function individual_repopush() {
            elif [[ $reponame != "jazz-web" ]]; then
                 curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
            fi
-        fi 
+        fi
 
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
         git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$reponame.git
@@ -90,28 +110,28 @@ function push_to_scm() {
     if [[ "$1" == "builds" ]] ; then
         repos=()
         for d in builds/* ; do
-            # Including SCM specific repos             
+            # Including SCM specific repos
             if [[ $scm == "gitlab" && ${d%/} =~ "gitlab-build-pack" ]]; then
                  repos+=("${d%/}")
             elif [[ ! ${d%/} =~ "gitlab-build-pack" ]] ; then
                  repos+=("${d%/}")
-            fi          
+            fi
         done
         # Push builds to SLF by traversing the array
         for dirname in "${repos[@]}"
         do
-            individual_repopush $dirname           
-        done   
+            individual_repopush $dirname
+        done
     else
         # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
         # "builds" is already pushed at this stage.
         repos=()
         # Including dependent repos first
-        for d in core/* ; do                        
+        for d in core/* ; do
             if [[ ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ${d%/} =~ "jazz-ui" ]] ; then
-                 repos+=("${d%/}")            
-            fi          
-        done    
+                 repos+=("${d%/}")
+            fi
+        done
 
         for d in **/*/ ; do
             if [[ ! ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ! ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ! ${d%/} =~ "jazz-ui" ]] ; then
@@ -124,7 +144,7 @@ function push_to_scm() {
         do
          if [[ "${dirname%/*}" != "builds" ]] ; then
            individual_repopush $dirname
-         fi            
+         fi
         done
     fi
 }
