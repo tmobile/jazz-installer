@@ -1,24 +1,13 @@
-JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME=$2
-BITBUCKET_ELB=$3
-SSH_USER=$4
+JENKINS_CLI_CMD=$1
+BITBUCKET_ELB=$2
 
-if [ -f /etc/redhat-release ]; then
-  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
-elif [ -f /etc/lsb-release ]; then
-  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/root/jenkins-cli.jar
-fi
-
-JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-echo "$0 $1 $2 "
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-website"
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>  	
+  <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -69,6 +58,6 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
-  <authToken>slf-website-build-0907</authToken>
+  <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
