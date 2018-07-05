@@ -13,7 +13,7 @@ resource "null_resource" "copyJazzBuildModule" {
   depends_on = ["null_resource.chef_provision_jenkins_server","null_resource.createProjectsInBB"]
 
   provisioner "local-exec" {
-    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.scmmap, "scm_slfid")} ${lookup(var.scmmap, "scm_type")}  ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} jazz-build-module"
+    command = "${var.scmpush_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.scmmap, "scm_slfid")} ${lookup(var.scmmap, "scm_type")}  ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} builds"
   }
 }
 
@@ -34,11 +34,12 @@ resource "null_resource" "configureJazzBuildModule" {
     inline = [
       "git clone http://${lookup(var.scmmap, "scm_username")}:${urlencode(lookup(var.scmmap, "scm_passwd"))}@${lookup(var.scmmap, "scm_elb")}${lookup(var.scmmap, "scm_pathext")}/slf/jazz-build-module.git",
       "cd jazz-build-module",
-      "cp ~/cookbooks/jenkins/files/node/jazz-installer-vars.json .",
+      "cp ${var.chefDestDir}/cookbooks/jenkins/files/default/jazz-installer-vars.json .",
       "git add jazz-installer-vars.json",
       "git config --global user.email ${var.cognito_pool_username}",
       "git commit -m 'Adding Json file to repo'",
       "git push -u origin master",
+      "sudo rm -rf -f ${var.chefDestDir}",     
       "cd ..",
       "sudo rm -rf jazz-build-module" ]
   }
