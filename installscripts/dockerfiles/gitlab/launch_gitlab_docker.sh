@@ -67,9 +67,10 @@ sleep 180 &
 spin_wheel $! "Launching the Gitlab Docker"
 
 # Setting up admin credentials
-passwd=`date | md5sum | cut -d ' ' -f1`
+passwd=$1
+rootemail=$2
 docker cp gitlab.sh gitlab:/root/gitlab.sh
-docker exec gitlab /bin/bash /root/gitlab.sh $passwd > credentials.txt 2>&1&
+docker exec gitlab /bin/bash /root/gitlab.sh $passwd $rootemail > credentials.txt 2>&1&
 spin_wheel $! "Setting up admin credentials"
 
 # Installing epel
