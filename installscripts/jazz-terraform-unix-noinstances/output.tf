@@ -30,7 +30,6 @@ resource "null_resource" "outputVariablesSonar" {
               echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
               echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
               echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
-              echo \""Sonar Token\"" : \""${lookup(var.codeqmap, "sonar_token")}\"",  >> stack_details.json
               EOF
   }
 }
@@ -50,7 +49,7 @@ resource "null_resource" "outputVariablesBB" {
 }
 
 resource "null_resource" "outputVariablesGitlab" {
-  depends_on = ["null_resource.outputVariables"]
+  depends_on = ["null_resource.outputVariables", "null_resource.outputVariablesSonar"]
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {

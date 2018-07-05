@@ -91,13 +91,13 @@ python privatetoken.py mytoken 2018-12-31 $passwd
 echo "Private tokens generated"
 
 # Grabbing the admin credentials
-gitlab_admin=`cat credentials.txt | grep login| awk '{print $2}'`
+gitlab_admin=${rootemail//[^a-zA-Z0-9_-]/-}
 gitlab_passwd=`cat credentials.txt | grep password| awk '{print $2}'`
 token=`grep -i private credentials.txt | awk '{print $3}'`
 
-# Replacing private token in jenkins file
-sed -i "s|replace|$token|g" $JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/files/credentials/gitlab-token.sh
-
+# Setting gitlab token attribute in Jenkins Chef cookbook
+sed -i "s|default\['gitlabtoken'\].*.|default\['gitlabtoken'\]='$token'|g" $attrbsfile
+curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X PUT http://localhost/api/v4/users/1 -d '{"username":"'''$gitlab_admin'''"}'
 # Create Groups CAS and SLF
 echo "\nCreating SLF group"
 curl -H "Content-Type: application/json" --header "PRIVATE-TOKEN: $token" -X POST http://localhost/api/v4/groups -d '{"name":"SLF","path":"slf", "description": "Jazz framework, templates and services"}'
@@ -126,7 +126,7 @@ echo "$gitlab_passwd" >> docker_gitlab_vars
 
 #Populating Gitlab config in Jenkins json file
 echo "Updating Jenkins config with Gitlab info"
-jenkinsJsonfile=$JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/files/node/jazz-installer-vars.json
+jenkinsJsonfile=$JAZZ_INSTALLER_ROOT/installscripts/cookbooks/jenkins/files/default/jazz-installer-vars.json
 sed -i "s/TYPE\".*.$/TYPE\": \"gitlab\",/g" $jenkinsJsonfile
 sed -i "s/PRIVATE_TOKEN\".*.$/PRIVATE_TOKEN\": \"$token\",/g" $jenkinsJsonfile
 sed -i "s/CAS_NAMESPACE_ID\".*.$/CAS_NAMESPACE_ID\": \"$ns_id_cas\",/g" $jenkinsJsonfile
