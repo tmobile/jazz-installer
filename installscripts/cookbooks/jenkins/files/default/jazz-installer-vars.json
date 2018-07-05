@@ -78,7 +78,7 @@
         "service_tabs": {
             "overview": true,
             "access_control": false,
-            "metrics": false,
+            "metrics": true,
             "logs": true,
             "cost": false
         },
