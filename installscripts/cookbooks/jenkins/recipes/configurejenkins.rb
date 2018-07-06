@@ -1,18 +1,3 @@
-# TODO: These plugins should be `curl`-ed from a server here,
-# they should not be part of this cookbook.
-execute 'concatJenkinsPlugins' do
-  command "cat #{node['chef_root']}/jenkinsplugins/plugins0* > #{node['chef_root']}/plugins.tar"
-end
-
-execute 'extractJenkinsPlugins' do
-  command "tar -xf #{node['chef_root']}/plugins.tar -C #{node['jenkins']['home']}/"
-end
-
-# Clean up the plugin tar from previous step, it is rather large
-file "#{node['chef_root']}/plugins.tar" do
-  action :delete
-end
-
 #
 if node['scenario'] == 'scenario1'
   # Copy authfile
