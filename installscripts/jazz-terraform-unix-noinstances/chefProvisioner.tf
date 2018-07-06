@@ -1,13 +1,6 @@
-resource "null_resource" "chef_provision_jenkins_server" {
+resource "null_resource" "preJenkinsConfiguration" {
   #TODO verify s3 dependency is valid
   depends_on = ["aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
-  connection {
-    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
-    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
-    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
-    type = "ssh"
-    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
-  }
 
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
@@ -67,6 +60,19 @@ resource "null_resource" "chef_provision_jenkins_server" {
   }
 
   #END chef cookbook edits
+}
+
+resource "null_resource" "configureJenkinsInstance" {
+  count = "${var.scenario1}"
+  depends_on = ["null_resource.preJenkinsConfiguration", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
+
+  connection {
+    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
+    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
+    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
+    type = "ssh"
+    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
+  }
 
   #Note that because the Terraform SSH connector is weird, we must manually create this directory
   #on the remote machine here *before* we copy things to it.
@@ -94,7 +100,19 @@ resource "null_resource" "chef_provision_jenkins_server" {
       "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
     ]
   }
+}
 
+resource "null_resource" "configureJenkinsDocker" {
+  count = "${var.scenario2or3}"
+  depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
+  // Chef Process inside docker
+  provisioner "local-exec" {
+    command = "bash ${var.launchJenkinsCE_cmd}"
+  }
+}
+
+resource "null_resource" "postJenkinsConfiguration" {
+  depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
