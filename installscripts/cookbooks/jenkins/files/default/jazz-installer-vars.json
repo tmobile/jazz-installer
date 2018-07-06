@@ -53,7 +53,7 @@
             "WEBSITE_PROD_BUCKET": ""
         },
         "SWAGGER": {
-            "EDITOR_BASE_URL": "http://editor.swagger.io/"
+            "EDITOR_URL": "http://editor.swagger.io/?url="
         }
     },
     "JENKINS": {
