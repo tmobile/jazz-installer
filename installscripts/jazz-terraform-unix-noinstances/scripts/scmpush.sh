@@ -14,16 +14,14 @@ scm=$7
 jenkins_elb=$8
 jazzbuildmodule=$9
 jenkins_user="jobexec"
-
-gitlab_trigger_job_url="/project/Gitlab-Trigger-Job?token=jazz-101-job"
-jazz_ui_trigger_job_url="/project/jazz_ui?token=jazz-101-job"
+jenkins_password="jenkinsadmin"
 
 if [ ! -d ./jenkins-tmp ] ; then
     mkdir ./jenkins-tmp
     wget -O ./jenkins-tmp/jenkins-cli.jar http://$jenkins_elb/jnlpJars/jenkins-cli.jar
 fi
 
-alias jcli="java -jar ./jenkins-tmp/jenkins-cli.jar -auth jobexec:jenkinsadmin -s  http://$jenkins_elb"
+alias jcli="java -jar ./jenkins-tmp/jenkins-cli.jar -auth $jenkins_user:$jenkins_password -s  http://$jenkins_elb"
 
 function get_jenkinsuser_apitoken() {
  jcli groovy = <<'EOF'
@@ -38,8 +36,6 @@ EOF
 }
 
 jenkins_apitoken=$( get_jenkinsuser_apitoken )
-gitlab_webhook_url="http://$jenkins_user:$jenkins_apitoken@$jenkins_elb$gitlab_trigger_job_url"
-gitlab_jazz_ui_webhook_url="http://$jenkins_user:$jenkins_apitoken@$jenkins_elb$jazz_ui_trigger_job_url"
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
@@ -72,16 +68,6 @@ function individual_repopush() {
     elif [ $scm == "gitlab" ]; then
         # Creating the repo in SLF folder in SCM
         repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$reponame&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
-
-        # Adding webhook to the platform services and separate webhook for jazz_ui repo
-        if [[ $parentfolder == "core" ]]; then
-           if [[ $reponame == "jazz-ui" ]]; then
-                curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_jazz_ui_webhook_url"
-           elif [[ $reponame != "jazz-web" ]]; then
-                curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$gitlab_webhook_url"
-           fi
-        fi
-
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
         git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$reponame.git
     fi
@@ -100,8 +86,19 @@ function individual_repopush() {
     # and to work around the AWS API Gateway creation limit:
     # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
     # since micro services are now only in the core folder, giving sleep for core folder.
-     if [[ $parentfolder == "core" ]]; then
+    if [[ $parentfolder == "core" ]]; then
         sleep 45
+        if [[ $scm == "gitlab" ]]; then
+            if [[ $reponame == "jazz-ui" ]]; then
+                curl -X POST  "http://$jenkins_user:$jenkins_apitoken@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
+            elif [[ $reponame != "jazz-web" ]]; then
+                file=`find . -type f -name "build.*"`
+                file_name=${file#*/}
+                service_type="${file_name:6}"
+                service_name="${reponame:5}"
+                curl -X POST  "http://$jenkins_user:$jenkins_apitoken@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
+            fi
+        fi
     fi
     cd ../../jazz-core/
 }

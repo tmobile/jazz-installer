@@ -59,7 +59,7 @@
         "CREDENTIAL_ID": "jobexecutor",
         "JOB_AUTH_TOKEN": "jazz-101-job",
         "BUILD_URI": {
-            "API": "build_pack_api",
+            "API": "build-pack-api",
             "LAMBDA": "build-pack-lambda",
             "WEBSITE": "build-pack-website"
         }
