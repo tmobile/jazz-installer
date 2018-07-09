@@ -57,6 +57,7 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "Gitlab-Trigger-Job"
     <lightweight>true</lightweight>
   </definition>
 <triggers/>
+<authToken>jazz-101-job</authToken>
 <disabled>false</disabled>
 </flow-definition>
 EOF
