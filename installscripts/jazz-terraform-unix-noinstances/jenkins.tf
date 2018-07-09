@@ -66,7 +66,7 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configureJenkinscontainer_cmd} ${var.scenario2or3} ${var.jenkinsattribsfile}"
+    command = "${var.configureJenkinscontainer_cmd} ${var.dockerizedJenkins} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
     command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"

@@ -1,5 +1,5 @@
 #
-if node['scenario'] == 'scenario1'
+if node['dockerizedJenkins'] == false
   # Copy authfile
   cookbook_file "#{node['chef_root']}/authfile" do
     source 'authfile'
@@ -24,17 +24,7 @@ execute 'resizeJenkinsMemorySettings' do
   only_if { node['platform_family'].include?('rhel') }
   command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
 end
-#Docker container has no service jenkins
-if node['scenario'] == 'scenario1'
-  service 'jenkins' do
-    action :restart
-  end
 
-  # Wait a bit, Java apps don't coldboot very quickly...
-  execute 'waitForFirstJenkinsRestart' do
-    command 'sleep 30'
-  end
-end
 
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
 execute 'copyJenkinsClientJar' do
@@ -56,7 +46,7 @@ cookbook_file "#{node['chef_root']}/xmls.tar" do
   source 'xmls.tar'
   action :create
 end
-
+#ToDo ChefRemoval
 execute 'extractXmls' do
   command "tar -xvf #{node['chef_root']}/xmls.tar"
   cwd "#{node['jenkins']['home']}"
@@ -131,19 +121,6 @@ if node['scm'] == 'bitbucket'
   end
 end
 
-#Docker container has no service jenkins
-if node['scenario'] == 'scenario1'
-  #TODo: we do this at the end, do we need it here?
-  service 'jenkins' do
-    supports [:stop, :start, :restart]
-    action [:restart]
-  end
-
-  # Wait a bit, Java apps don't coldboot very quickly...
-  execute 'waitForSecondJenkinsRestart' do
-    command 'sleep 30'
-  end
-end
 
 # If this happens to already exist, remove it before we clone again.
 directory "#{node['chef_root']}/jazz-core" do
@@ -308,7 +285,7 @@ directory "#{node['jenkins']['home']}" do
   action :create
 end
 #Docker container has no service jenkins
-if node['scenario'] == 'scenario1'
+if node['dockerizedJenkins'] == false
   service 'jenkins' do
     supports [:stop, :start, :restart]
     action [:restart]
