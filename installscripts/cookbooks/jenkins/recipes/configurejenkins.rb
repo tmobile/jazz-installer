@@ -1,25 +1,13 @@
-# TODO: These plugins should be `curl`-ed from a server here,
-# they should not be part of this cookbook.
-execute 'concatJenkinsPlugins' do
-  command "cat #{node['chef_root']}/jenkinsplugins/plugins0* > #{node['chef_root']}/plugins.tar"
+#
+if node['dockerizedJenkins'] == false
+  # Copy authfile
+  cookbook_file "#{node['chef_root']}/authfile" do
+    source 'authfile'
+    action :create
+  end
 end
 
-execute 'extractJenkinsPlugins' do
-  command "tar -xf #{node['chef_root']}/plugins.tar -C /var/lib/jenkins/"
-end
-
-# Clean up the plugin tar from previous step, it is rather large
-file "#{node['chef_root']}/plugins.tar" do
-  action :delete
-end
-
-# Copy authfile
-cookbook_file "#{node['chef_root']}/authfile" do
-  source 'authfile'
-  action :create
-end
-
-directory '/var/lib/jenkins/workspace' do
+directory "#{node['jenkins']['home']}/workspace" do
   owner 'jenkins'
   group 'jenkins'
   mode '0777'
@@ -37,14 +25,6 @@ execute 'resizeJenkinsMemorySettings' do
   command "sudo sed -i 's/JENKINS_JAVA_OPTIONS=.*.$/JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m\"/' /etc/sysconfig/jenkins"
 end
 
-service 'jenkins' do
-  action :restart
-end
-
-# Wait a bit, Java apps don't coldboot very quickly...
-execute 'waitForFirstJenkinsRestart' do
-  command 'sleep 30'
-end
 
 # Try to fetch the version-appropriate Jenkins CLI jar from the server itself.
 execute 'copyJenkinsClientJar' do
@@ -66,30 +46,30 @@ cookbook_file "#{node['chef_root']}/xmls.tar" do
   source 'xmls.tar'
   action :create
 end
-
+#ToDo ChefRemoval
 execute 'extractXmls' do
   command "tar -xvf #{node['chef_root']}/xmls.tar"
-  cwd '/var/lib/jenkins'
+  cwd "#{node['jenkins']['home']}"
 end
 
-cookbook_file '/var/lib/jenkins/config.xml' do
+cookbook_file "#{node['jenkins']['home']}/config.xml" do
   source 'config.xml'
   action :create
 end
 
-cookbook_file '/var/lib/jenkins/scriptApproval.xml' do
+cookbook_file "#{node['jenkins']['home']}/scriptApproval.xml" do
   source 'scriptApproval.xml'
   action :create
 end
 
-cookbook_file '/var/lib/jenkins/credentials.xml' do
+cookbook_file "#{node['jenkins']['home']}/credentials.xml" do
   source 'credentials.xml'
   action :create
 end
 
 bash 'configJenkinsLocConfigXml' do
   code <<-SCRIPT
-  JENKINS_LOC_CONFIG_XML=/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+  JENKINS_LOC_CONFIG_XML=#{node['jenkins']['home']}/jenkins.model.JenkinsLocationConfiguration.xml
 
   sed  -i "s=adminAddress.*.$=adminAddress>#{node['jenkins']['SES-defaultSuffix']}</adminAddress>=g" $JENKINS_LOC_CONFIG_XML
   sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://#{node['jenkinselb']}/</jenkinsUrl>=g" $JENKINS_LOC_CONFIG_XML
@@ -102,7 +82,7 @@ if node['scm'] == 'gitlab'
   # Configure Gitlab Plugin
   bash 'configuregitlabplugin' do
     code <<-SCRIPT
-    sed -i "s/ip/#{node['scmelb']}/g" /var/lib/jenkins/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
+    sed -i "s/ip/#{node['scmelb']}/g" #{node['jenkins']['home']}/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml
   SCRIPT
   end
 
@@ -141,16 +121,6 @@ if node['scm'] == 'bitbucket'
   end
 end
 
-# TODO: we do this at the end, do we need it here?
-service 'jenkins' do
-  supports [:stop, :start, :restart]
-  action [:restart]
-end
-
-# Wait a bit, Java apps don't coldboot very quickly...
-execute 'waitForSecondJenkinsRestart' do
-  command 'sleep 30'
-end
 
 # If this happens to already exist, remove it before we clone again.
 directory "#{node['chef_root']}/jazz-core" do
@@ -309,13 +279,15 @@ if node['scm'] == 'gitlab'
   end
 end
 
-directory '/var/lib/jenkins' do
+directory "#{node['jenkins']['home']}" do
   owner 'jenkins'
   group 'jenkins'
   action :create
 end
-
-service 'jenkins' do
-  supports [:stop, :start, :restart]
-  action [:restart]
+#Docker container has no service jenkins
+if node['dockerizedJenkins'] == false
+  service 'jenkins' do
+    supports [:stop, :start, :restart]
+    action [:restart]
+  end
 end
