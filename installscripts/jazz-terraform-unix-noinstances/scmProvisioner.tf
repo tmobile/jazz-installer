@@ -1,6 +1,6 @@
 // Create Projects in Bitbucket. Will be executed only if the SCM is Bitbucket.
 resource "null_resource" "createProjectsInBB" {
-  # TODO drop depends_on = ["null_resource.chef_provision_jenkins_server"]
+  # TODO drop depends_on = ["null_resource.postJenkinsConfiguration"]
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
@@ -10,7 +10,7 @@ resource "null_resource" "createProjectsInBB" {
 
 // Copy the jazz-build-module to SLF in SCM
 resource "null_resource" "copyJazzBuildModule" {
-  depends_on = ["null_resource.chef_provision_jenkins_server","null_resource.createProjectsInBB"]
+  depends_on = ["null_resource.postJenkinsConfiguration", "null_resource.createProjectsInBB"]
 
   provisioner "local-exec" {
     command = "${var.scmpush_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.scmmap, "scm_slfid")} ${lookup(var.scmmap, "scm_type")}  ${lookup(var.jenkinsservermap, "jenkins_elb")} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} builds"
@@ -20,28 +20,8 @@ resource "null_resource" "copyJazzBuildModule" {
 // Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
 resource "null_resource" "configureJazzBuildModule" {
   depends_on = ["null_resource.copyJazzBuildModule", "null_resource.update_jenkins_configs" ]
-
-  connection {
-    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
-    user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
-    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
-    type = "ssh"
-    port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
-    private_key = "${file("${lookup(var.jenkinsservermap, "jenkins_ssh_key")}")}"
-  }
-
-  provisioner "remote-exec"{
-    inline = [
-      "git clone http://${lookup(var.scmmap, "scm_username")}:${urlencode(lookup(var.scmmap, "scm_passwd"))}@${lookup(var.scmmap, "scm_elb")}${lookup(var.scmmap, "scm_pathext")}/slf/jazz-build-module.git",
-      "cd jazz-build-module",
-      "cp ${var.chefDestDir}/cookbooks/jenkins/files/default/jazz-installer-vars.json .",
-      "git add jazz-installer-vars.json",
-      "git config --global user.email ${var.cognito_pool_username}",
-      "git commit -m 'Adding Json file to repo'",
-      "git push -u origin master",
-      "sudo rm -rf -f ${var.chefDestDir}",     
-      "cd ..",
-      "sudo rm -rf jazz-build-module" ]
+  provisioner "local-exec" {
+    command = "${var.pushInstallervars_cmd} ${lookup(var.scmmap, "scm_username")} ${urlencode(lookup(var.scmmap, "scm_passwd"))} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_pathext")} ${var.cognito_pool_username}"
   }
 }
 
