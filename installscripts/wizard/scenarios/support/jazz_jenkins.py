@@ -112,6 +112,11 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         jenkins_server_subnet
     ]
 
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(dockerizedJenkins = \)\(.*\)|\1false|g', get_tfvars_file()
+    ])
+
     add_jenkins_config_to_files(parameter_list)
 
 
@@ -132,13 +137,5 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
             parameter_list.append(line.rstrip())
 
     print(parameter_list[0:])
-    
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(scenario1 = \)\(.*\)|\1false|g', get_tfvars_file()
-    ])
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(scenario2or3 = \)\(.*\)|\1true|g', get_tfvars_file()
-    ])
+
     add_jenkins_config_to_files(parameter_list)

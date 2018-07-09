@@ -1,4 +1,4 @@
-if node['scenario'] == 'scenario1'
+if node['dockerizedJenkins'] == false
   #prerequisites
   apt_update 'update' #force-update apt cache on Debian-derivatives to avoid pkg fetch errors
   package 'git'
@@ -28,6 +28,15 @@ if node['scenario'] == 'scenario1'
   # Clean up the plugin tar from previous step, it is rather large
   file "#{node['chef_root']}/plugins.tar" do
     action :delete
+  end
+
+  service 'jenkins' do
+    action :restart
+  end
+
+  # Wait a bit, Java apps don't coldboot very quickly...
+  execute 'waitForFirstJenkinsRestart' do
+    command 'sleep 30'
   end
 
 end
