@@ -1,5 +1,5 @@
 {
-    "AWS_CREDENTIAL_ID": "awscreds1",
+    "AWS_CREDENTIAL_ID": "jazz_awscreds",
     "INSTANCE_PREFIX": "",
     "AWS": {
         "SECURITY_GROUP_IDS": "",
@@ -36,7 +36,7 @@
     },
     "REPOSITORY": {
         "BASE_URL": "",
-        "CREDENTIAL_ID": "jenkins1cred",
+        "CREDENTIAL_ID": "jazz_repocreds",
         "REPO_BASE_SERVICES": "cas",
         "REPO_BASE_PLATFORM": "slf"
     },
@@ -62,7 +62,7 @@
         "CREDENTIAL_ID": "jobexecutor",
         "JOB_AUTH_TOKEN": "jazz-101-job",
         "BUILD_URI": {
-            "API": "build_pack_api",
+            "API": "build-pack-api",
             "LAMBDA": "build-pack-lambda",
             "WEBSITE": "build-pack-website"
         }
