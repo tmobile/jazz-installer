@@ -107,5 +107,4 @@ variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
 variable "codeq" { default = false }
 variable "atlassian_jar_path" { type = "string" }
-variable "scenario1" {default = true}
-variable "scenario2or3" {default = false}
+variable "dockerizedJenkins" {default = true}

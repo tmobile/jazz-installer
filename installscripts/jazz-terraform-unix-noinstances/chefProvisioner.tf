@@ -63,7 +63,7 @@ resource "null_resource" "preJenkinsConfiguration" {
 }
 
 resource "null_resource" "configureJenkinsInstance" {
-  count = "${var.scenario1}"
+  count = "${1-var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
 
   connection {
@@ -103,7 +103,7 @@ resource "null_resource" "configureJenkinsInstance" {
 }
 
 resource "null_resource" "configureJenkinsDocker" {
-  count = "${var.scenario2or3}"
+  count = "${var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
   // Chef Process inside docker
   provisioner "local-exec" {
