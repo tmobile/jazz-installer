@@ -12,30 +12,9 @@ ns_id_slf=$6
 # Config variables
 scm=$7
 jenkins_elb=$8
-jazzbuildmodule=$9
-jenkins_user="jobexec"
-jenkins_password="jenkinsadmin"
-
-if [ ! -d ./jenkins-tmp ] ; then
-    mkdir ./jenkins-tmp
-    wget -O ./jenkins-tmp/jenkins-cli.jar http://$jenkins_elb/jnlpJars/jenkins-cli.jar
-fi
-
-alias jcli="java -jar ./jenkins-tmp/jenkins-cli.jar -auth $jenkins_user:$jenkins_password -s  http://$jenkins_elb"
-
-function get_jenkinsuser_apitoken() {
- jcli groovy = <<'EOF'
- import hudson.model.User
- import jenkins.security.ApiTokenProperty;
- import hudson.util.Secret.*;
- User u = User.get('jobexec')
- ApiTokenProperty t = u.getProperty(ApiTokenProperty.class)
- def token = t.getApiToken()
-println token
-EOF
-}
-
-jenkins_apitoken=$( get_jenkinsuser_apitoken )
+jenkins_user=$9
+jenkins_password=${10}
+jazzbuildmodule=${11}
 
 git config --global user.email "$emailid"
 git config --global user.name "$scmuser"
@@ -90,13 +69,13 @@ function individual_repopush() {
         sleep 45
         if [[ $scm == "gitlab" ]]; then
             if [[ $reponame == "jazz-ui" ]]; then
-                curl -X POST  "http://$jenkins_user:$jenkins_apitoken@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
+                curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
             elif [[ $reponame != "jazz-web" ]]; then
                 file=`find . -type f -name "build.*"`
                 file_name=${file#*/}
                 service_type="${file_name:6}"
                 service_name="${reponame:5}"
-                curl -X POST  "http://$jenkins_user:$jenkins_apitoken@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
+                curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
             fi
         fi
     fi
