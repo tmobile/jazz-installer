@@ -1,5 +1,5 @@
 # This script injects installer-based values into all the Jenkinsfiles* from the core repo.
-repo_credential_id="jenkins1cred"
+repo_credential_id="jazz_repocreds"
 repo_base=$1
 repo_core="slf"
 scm_type=$2

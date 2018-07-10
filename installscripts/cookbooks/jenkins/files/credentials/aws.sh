@@ -5,7 +5,7 @@ AWS_SECRET_KEY=$3
 cat <<EOF | $JENKINS_CLI_CMD create-credentials-by-xml system::system::jenkins "(global)"
 <com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl plugin="aws-credentials@1.21">
   <scope>GLOBAL</scope>
-  <id>awscreds1</id>
+  <id>jazz_awscreds</id>
   <description>AWS Credentials</description>
   <accessKey>$AWS_ACCESS_KEY</accessKey>
   <secretKey>$AWS_SECRET_KEY</secretKey>
