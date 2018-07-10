@@ -82,7 +82,7 @@ sleep 60
 # Grabbing initial password and populating jenkins default authfile
 initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
 echo "initialPassword is: $initialPassword"
-sudo docker exec -it jenkins-server bash -c "echo 'admin:$initialPassword' > /tmp/jazz-chef/authfile"
+sudo docker exec -i jenkins-server bash -c "echo 'admin:$initialPassword' > /tmp/jazz-chef/authfile"
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
