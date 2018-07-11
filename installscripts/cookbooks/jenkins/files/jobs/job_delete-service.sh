@@ -1,7 +1,7 @@
 JENKINS_CLI_CMD=$1
 BITBUCKET_ELB=$2
 
-JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jazz_repocreds"|cut -d" " -f1`
 cat <<EOF | $JENKINS_CLI_CMD create-job "delete-service"
 <flow-definition plugin="workflow-job@2.12">
   <actions/>

@@ -72,18 +72,6 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "sed -i 's/\"jenkins_username\"/\"${lookup(var.jenkinsservermap, "jenkinsuser")}\"/g' ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} JENKINS_PASSWORD ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "sed -i 's/\"scm_username\"/\"${lookup(var.scmmap, "scm_username")}\"/g' ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PASSWORD ${lookup(var.scmmap, "scm_passwd")} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
