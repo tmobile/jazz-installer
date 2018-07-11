@@ -76,7 +76,8 @@
     },
     "UI_CONFIG": {
         "feature": {
-            "multi_env": true
+            "multi_env": true,
+            "slack_support":false
         },
         "service_tabs": {
             "overview": true,
