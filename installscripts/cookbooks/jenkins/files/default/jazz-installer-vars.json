@@ -57,8 +57,6 @@
         }
     },
     "JENKINS": {
-        "USERNAME": "jenkins_username",
-        "JENKINS_PASSWORD": "",
         "CREDENTIAL_ID": "jobexecutor",
         "JOB_AUTH_TOKEN": "jazz-101-job",
         "BUILD_URI": {
@@ -70,9 +68,7 @@
     "SCM": {
         "TYPE": "bitbucket",
         "PRIVATE_TOKEN": "",
-        "CAS_NAMESPACE_ID": "",
-        "USERNAME": "scm_username",
-        "PASSWORD": ""
+        "CAS_NAMESPACE_ID": ""
     },
     "UI_CONFIG": {
         "feature": {
