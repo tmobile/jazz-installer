@@ -1,7 +1,7 @@
 JENKINS_CLI_CMD=$1
 BITBUCKET_ELB=$2
 
-JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jazz_repocreds"|cut -d" " -f1`
 cat <<EOF | $JENKINS_CLI_CMD create-job "Jazz_User_Services"
 <jenkins.branch.OrganizationFolder plugin="branch-api@2.0.10">
   <actions/>
