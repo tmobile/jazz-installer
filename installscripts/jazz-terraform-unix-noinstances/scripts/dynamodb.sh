@@ -53,6 +53,11 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_ENVIRONMENT\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_ENVIRONMENT\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CALL_DELETE_ENV_WORKFLOW\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_GEN\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_BUILD\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_DEPLOY\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DEPLOY_TO_AWS_APIGATEWAY\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DEPLOY_TO_GCP_APIGEE\"}}"
    ;;
    "EVENT_STATUS") 
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"COMPLETED\"}}"
