@@ -47,8 +47,7 @@ function individual_repopush() {
         # Creating the repo in SLF folder in SCM
         curl -X POST -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$reponame\", \"scmId\": \"git\", \"forkable\": \"true\"}"
         # Adding webhook to the jazz core services
-        curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations  -d \'{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}\'"
-
+        curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations"  -d "{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
         git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/scm/SLF/$reponame.git
 
