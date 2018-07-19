@@ -205,28 +205,6 @@ execute 'createJob-job_build_pack_api' do
   command "#{node['script_root']}/job_build_pack_api.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
 end
 
-if node['scm'] == 'bitbucket'
-  #Set up bitbucketteam_newService job
-  cookbook_file "#{node['script_root']}/job_bitbucketteam_newService.sh" do
-    source 'jobs/job_bitbucketteam_newService.sh'
-    mode 0755
-  end
-
-  execute 'createJob-bitbucketteam_newService' do
-    command "#{node['script_root']}/job_bitbucketteam_newService.sh #{node['jenkins']['clicommand']} #{node['scmelb']}"
-  end
-
-  #Set up platform_api_services job
-  cookbook_file "#{node['script_root']}/job_platform_api_services.sh" do
-    source 'jobs/job_platform_api_services.sh'
-    mode 0755
-  end
-
-  execute 'createJob-platform_api_services_bitbucket' do
-    command "#{node['script_root']}/job_platform_api_services.sh #{node['jenkins']['clicommand']} #{node['scmelb']}"
-  end
-end
-
 #Set up cleanup_cloudfront_distributions job
 cookbook_file "#{node['script_root']}/job_cleanup_cloudfront_distributions.sh" do
   source 'jobs/job_cleanup_cloudfront_distributions.sh'
@@ -257,26 +235,14 @@ execute 'createJob-job-build-pack-website' do
   command "#{node['script_root']}/job_build_pack_website.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
 end
 
-if node['scm'] == 'gitlab'
-  # Set up gitlab-trigger job
-  cookbook_file "#{node['script_root']}/job-gitlab-trigger.sh" do
-    source 'jobs/job-gitlab-trigger.sh'
-    mode 0755
-  end
+# Set up jazz_ui job
+cookbook_file "#{node['script_root']}/job_jazz_ui.sh" do
+  source 'jobs/job_jazz_ui.sh'
+  mode 0755
+end
 
-  execute 'job-gitlab-trigger' do
-    command "#{node['script_root']}/job-gitlab-trigger.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
-  end
-
-  # Set up jazz_ui job
-  cookbook_file "#{node['script_root']}/job_jazz_ui.sh" do
-    source 'jobs/job_jazz_ui.sh'
-    mode 0755
-  end
-
-  execute 'createJob-jazz_ui' do
-    command "#{node['script_root']}/job_jazz_ui.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
-  end
+execute 'createJob-jazz_ui' do
+  command "#{node['script_root']}/job_jazz_ui.sh #{node['jenkins']['clicommand']} #{node['scmpath']}"
 end
 
 directory "#{node['jenkins']['home']}" do
