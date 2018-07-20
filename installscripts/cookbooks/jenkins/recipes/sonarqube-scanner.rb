@@ -46,7 +46,8 @@ link '/bin/dependency-check.sh' do
   to '/opt/dependency-check/bin/dependency-check.sh'
 end
 
-cookbook_file "/opt/checkstyle-7.6-all.jar" do
-  source 'checkstyle-7.6-all.jar'
+remote_file '/opt/checkstyle-7.6-all.jar' do
+  source 'https://github.com/checkstyle/checkstyle/releases/download/checkstyle-7.6.1/checkstyle-7.6.1-all.jar'
+  mode '0755'
   action :create
 end
