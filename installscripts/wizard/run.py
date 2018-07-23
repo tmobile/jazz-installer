@@ -2,6 +2,7 @@
 import sys
 import os
 import jazz_scenarios as scenarios
+import validate_tags
 
 
 def main():
@@ -15,6 +16,14 @@ def main():
         os.environ['CODE_QUALITY'] = 'false'
         if len(sys.argv) > 3:
             os.environ['CODE_QUALITY'] = sys.argv[3]
+
+        if len(sys.argv) > 4:
+            input_tags = validate_tags.prepare_tags(sys.argv[4])
+            try:
+                os.environ['TF_VAR_AWS_TAGS'] = str(validate_tags.validate_replication_tags(input_tags))
+            except ValueError as err:
+                print("Invalid Tag!" + str(err))
+                sys.exit()
 
         os.environ['JAZZ_INSTALLER_ROOT'] = sys.argv[2]
         key = 0
