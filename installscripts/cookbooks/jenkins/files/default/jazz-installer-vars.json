@@ -108,6 +108,8 @@
     "SLACK": {
         "ENABLE_SLACK": "false",
         "SLACK_USER": "{slack_user}",
-        "SLACK_TOKEN": "{slack_token}"
+        "SLACK_TOKEN": "{slack_token}",
+        "SLACK_URL": "{slack_url}",
+        "SLACK_SVC_ID": "{slack_svc_acc_id}"
     }
 }
