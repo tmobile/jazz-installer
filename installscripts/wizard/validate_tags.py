@@ -20,7 +20,7 @@ def validate_replication_tags(replication_tags):
         str_val = val.strip()
         if not len(str_val):
             raise ValueError("Empty " + s_type + " found.")
-        if len(str_val) >= s_max_length:
+        if len(str_val) > s_max_length:
             raise ValueError("Too long " + s_type + " found: " + str_val)
         if str_val.lower().startswith("aws"):
             raise ValueError(s_type + " starting with aws found: " + str_val)
@@ -52,8 +52,8 @@ def validate_replication_tags(replication_tags):
                 'Key' in tag and 'Value' in tag):
             raise ValueError("tags should be dicts with Keys 'Key' and 'Value'")
 
-        Key = validate_string(tag['Key'], 'Key', 127)
-        Value = validate_string(tag['Value'], 'Value', 255)
+        Key = validate_string(tag['Key'], 'Key', 128)
+        Value = validate_string(tag['Value'], 'Value', 256)
 
         validate_special_characters(Key)
         validate_special_characters(Value)
