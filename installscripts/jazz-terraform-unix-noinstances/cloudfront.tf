@@ -39,13 +39,12 @@ resource "aws_cloudfront_distribution" "jazz" {
 
   price_class = "PriceClass_All"
 
-
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "production"
-  }
-
+  tags = "${merge(var.additional_tags, map(
+          "Application", "Jazz",
+          "JazzInstance", "${var.envPrefix}",
+          "Environment", "production"
+          ))}"
+  
   custom_error_response{
     error_caching_min_ttl = "300"
     error_code = "404"
