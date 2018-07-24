@@ -71,7 +71,7 @@ def validate_replication_tags(replication_tags):
         tag_for_resource += Key+'="'+Value + '", '
         if len(new_replication_tags) > 49:
             raise ValueError("More than 50 tags in replication settings.")
-
+    tag_for_resource += '}'
     return new_replication_tags, tag_for_resource
 
 

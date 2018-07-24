@@ -83,6 +83,9 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} AWS_TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} 'nostring'"
+  }
   // Modifying subnet replacement before copying cookbooks to Jenkins server.
   provisioner "local-exec" {
     command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"

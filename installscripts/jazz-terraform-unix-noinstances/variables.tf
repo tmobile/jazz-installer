@@ -112,3 +112,4 @@ variable "additional_tags" {
   type = "map"
   default = {}
 }
+variable "aws_tags" { type = "string" }

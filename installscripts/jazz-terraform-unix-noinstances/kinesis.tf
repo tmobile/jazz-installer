@@ -8,14 +8,7 @@ resource "aws_kinesis_stream" "kinesis_stream_dev" {
     "OutgoingBytes",
   ]
 
-  tags = "${merge(var.additional_tags, map(
-          "Name", "${var.envPrefix}",
-          "Application", "Jazz",
-          "JazzInstance", "${var.envPrefix}",
-          "Environment", "${var.tagsEnvironment}",
-          "Exempt", "${var.tagsExempt}",
-          "Owner", "${var.tagsOwner}"
-          ))}"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_kinesis_stream" "kinesis_stream_stg" {
@@ -28,14 +21,7 @@ resource "aws_kinesis_stream" "kinesis_stream_stg" {
     "OutgoingBytes",
   ]
 
-  tags = "${merge(var.additional_tags, map(
-          "Name", "${var.envPrefix}",
-          "Application", "Jazz",
-          "JazzInstance", "${var.envPrefix}",
-          "Environment", "${var.tagsEnvironment}",
-          "Exempt", "${var.tagsExempt}",
-          "Owner", "${var.tagsOwner}"
-          ))}"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_kinesis_stream" "kinesis_stream_prod" {
@@ -48,12 +34,5 @@ resource "aws_kinesis_stream" "kinesis_stream_prod" {
     "OutgoingBytes",
   ]
 
-  tags = "${merge(var.additional_tags, map(
-          "Name", "${var.envPrefix}",
-          "Application", "Jazz",
-          "JazzInstance", "${var.envPrefix}",
-          "Environment", "${var.tagsEnvironment}",
-          "Exempt", "${var.tagsExempt}",
-          "Owner", "${var.tagsOwner}"
-          ))}"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }

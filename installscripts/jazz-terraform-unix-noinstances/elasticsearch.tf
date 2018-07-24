@@ -12,11 +12,11 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
     volume_type = "gp2"
     volume_size = 10
   }
-  tags = "${merge(var.additional_tags, map(
+
+  tags = "${merge(var.additional_tags, local.common_tags, map(
           "Domain", "${var.envPrefix}_elasticsearch_domain",
-          "Application", "Jazz",
-          "JazzInstance", "${var.envPrefix}",
           ))}"
+          
   //vpc_options {
   //  security_group_ids = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"],
   //  subnet_ids = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}"]

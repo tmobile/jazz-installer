@@ -3,6 +3,10 @@ import sys
 import os
 import jazz_scenarios as scenarios
 import validate_tags
+import subprocess
+import ast
+import json
+from scenarios.support.jazz_common import replace_tfvars_map, replace_tfvars, get_tfvars_file
 
 
 def main():
@@ -17,26 +21,18 @@ def main():
         if len(sys.argv) > 3:
             os.environ['CODE_QUALITY'] = sys.argv[3]
 
+        os.environ['JAZZ_INSTALLER_ROOT'] = sys.argv[2]
+
         if len(sys.argv) > 4:
             input_tags = validate_tags.prepare_tags(sys.argv[4])
             try:
-                aws_tags, aws_formatted_tags = ast.literal_eval(str(validate_tags.validate_replication_tags(input_tags)))
-                installervarsjson = sys.argv[2] + "/installscripts/cookbooks/jenkins/files/default/jazz-installer-vars.json"
-                terraformfile = sys.argv[2] + "/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars"
-                subprocess.call([
-                        'sed', '-i',
-                        's|AWS_TAGS".*.$|AWS_TAGS":%s|g' % (aws_tags),
-                        installervarsjson
-                        ])
-                subprocess.call([
-                        'sed', "-i\'.bak\'",
-                        r's|\(%s = \)\(.*\)|\1%s|g' % ("additional_tags", aws_formatted_tags), terraformfile
-                        ])
+                aws_tags, aws_formatted_tags = validate_tags.validate_replication_tags(input_tags)
+                replace_tfvars("aws_tags", str(aws_tags), get_tfvars_file())
+                replace_tfvars_map("additional_tags", aws_formatted_tags, get_tfvars_file())
             except ValueError as err:
                 print("Invalid Tag!" + str(err))
                 sys.exit()
 
-        os.environ['JAZZ_INSTALLER_ROOT'] = sys.argv[2]
         key = 0
         while 1:
             print("\n\nSelect your install option...\n")
