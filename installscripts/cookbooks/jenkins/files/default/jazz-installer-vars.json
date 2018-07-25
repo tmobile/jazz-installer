@@ -32,7 +32,8 @@
             "DEV_BUCKET": "",
             "STG_BUCKET": "",
             "PROD_BUCKET": ""
-        }
+        },
+        "TAGS": []
     },
     "REPOSITORY": {
         "BASE_URL": "",
@@ -112,7 +113,4 @@
         "SLACK_WORKSPACE": "{slack_workspace}",
         "SLACK_SVC_ID": "{slack_svc_acc_id}"
     }
-        "SLACK_TOKEN": "{slack_token}"
-    },
-    "AWS_TAGS": []
 }
