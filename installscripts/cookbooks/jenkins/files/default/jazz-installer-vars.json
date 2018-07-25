@@ -112,4 +112,7 @@
         "SLACK_WORKSPACE": "{slack_workspace}",
         "SLACK_SVC_ID": "{slack_svc_acc_id}"
     }
+        "SLACK_TOKEN": "{slack_token}"
+    },
+    "AWS_TAGS": []
 }

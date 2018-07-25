@@ -50,3 +50,4 @@ scmgitlab = false
 codeq = false
 atlassian_jar_path = "~/jazz_tmp/atlassian-cli-6.7.1/lib/bitbucket-cli-6.7.0.jar"
 dockerizedJenkins = true
+additional_tags = {}

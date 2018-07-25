@@ -20,7 +20,18 @@ def main():
         if len(sys.argv) > 4:
             input_tags = validate_tags.prepare_tags(sys.argv[4])
             try:
-                os.environ['TF_VAR_AWS_TAGS'] = str(validate_tags.validate_replication_tags(input_tags))
+                aws_tags, aws_formatted_tags = ast.literal_eval(str(validate_tags.validate_replication_tags(input_tags)))
+                installervarsjson = sys.argv[2] + "/installscripts/cookbooks/jenkins/files/default/jazz-installer-vars.json"
+                terraformfile = sys.argv[2] + "/installscripts/jazz-terraform-unix-noinstances/terraform.tfvars"
+                subprocess.call([
+                        'sed', '-i',
+                        's|AWS_TAGS".*.$|AWS_TAGS":%s|g' % (aws_tags),
+                        installervarsjson
+                        ])
+                subprocess.call([
+                        'sed', "-i\'.bak\'",
+                        r's|\(%s = \)\(.*\)|\1%s|g' % ("additional_tags", aws_formatted_tags), terraformfile
+                        ])
             except ValueError as err:
                 print("Invalid Tag!" + str(err))
                 sys.exit()

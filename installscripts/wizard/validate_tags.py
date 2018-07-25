@@ -42,10 +42,10 @@ def validate_replication_tags(replication_tags):
     if type(replication_tags) != list:
         raise ValueError("replication_tags should be a list")
 
-    reserved_tags = ["C01_USAGE"]
+    reserved_tags = ["name", "application", "jazzinstance", "environment", "exempt", "owner"]
     unique_tags = []
     new_replication_tags = []
-
+    tag_for_resource = '{'
     for tag in replication_tags:
 
         if not (type(tag) == dict and len(tag) == 2 and
@@ -68,11 +68,11 @@ def validate_replication_tags(replication_tags):
 
         unique_tags.append(Key)
         new_replication_tags.append({"Key": Key, "Value": Value})
-
+        tag_for_resource += Key+'="'+Value + '", '
         if len(new_replication_tags) > 49:
             raise ValueError("More than 50 tags in replication settings.")
 
-    return new_replication_tags
+    return new_replication_tags, tag_for_resource
 
 
 def prepare_tags(input_tags_param):
