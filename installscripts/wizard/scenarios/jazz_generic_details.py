@@ -18,6 +18,7 @@ def passwd_generator():
     pwd.append("@")
     for x in range(6):
         pwd.append(random.choice(string.letters))
+
     random.shuffle(pwd)
     return ''.join(pwd)
 
@@ -41,8 +42,7 @@ def get_aws_credentials():
         subprocess.call(['aws', 'configure', 'set', 'aws_access_key_id', os.environ['AWS_ACCESS_KEY_ID']])
         subprocess.call(['aws', 'configure', 'set', 'aws_secret_access_key', os.environ['AWS_SECRET_ACCESS_KEY']])
     else:
-        print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' \
-              and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
+        print("Found default AWS credentials in 'AWS_ACCESS_KEY_ID' and 'AWS_SECRET_ACCESS_KEY' env vars, using those...")
 
 
 def get_region():
@@ -76,6 +76,7 @@ def get_jazz_tag_config_details():
         tag_env_prefix = raw_input(
             "Please provide a prefix for your stack (limited to 13 characters)(eg: myjazz) :"
         )
+
     tag_env_prefix = tag_env_prefix.lower()
 
     # TODO Since most of these are currently static we could define them with interpolation in envprefix.tf
