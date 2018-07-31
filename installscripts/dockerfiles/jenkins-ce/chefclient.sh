@@ -30,12 +30,38 @@ spin_wheel()
 
     fi
 }
+read_default_var()
+{
+exec < $1
+while read line
+do
+        match=`echo $line|grep $2 `
+        if [ $? -eq 0 ]; then
+        echo `echo $line|cut -d '=' -f 2` | sed -e 's/^"//' -e 's/"$//' | sed -e "s/^'//" -e "s/'$//"
+        fi
+done
+}
+
+jenkinsurl=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['jenkinselb'\]")
+scmelb=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scmelb'\]")
+email=$(read_default_var ../jazz-terraform-unix-noinstances/terraform.tfvars "cognito_pool_username")
+
+#CHECK SCM IS Gitlab
+#All the hardcoded item should be parameterized
+sed -i "s/HOMEJENKINS/\/var\/jenkins_home/g" ../dockerfiles/jenkins-ce/configurejenkins.sh
+sed -i "s/ADMINREPLACEADDRESS/\"$email\"/g" ../dockerfiles/jenkins-ce/configurejenkins.sh
+sed -i "s/REPLACEJENKINSURL/$jenkinsurl/g" ../dockerfiles/jenkins-ce/configurejenkins.sh
+sed -i "s/SCMELB/$scmelb/g" ../dockerfiles/jenkins-ce/configurejenkins.sh
+
+
+sh ../dockerfiles/jenkins-ce/configurejenkins.sh
 
 
 cd ~/jazz-installer/installscripts
 sudo docker cp cookbooks/. jenkins-server:/tmp/jazz-chef/cookbooks/
 # sudo docker cp jenkinsplugins jenkins-server:/tmp/jazz-chef/
 # Running chef-client to execute cookbooks
+
 sudo docker exec -u root -i jenkins-server bash -c "chef install /tmp/jazz-chef/cookbooks/Policyfile.rb && chef export /tmp/jazz-chef/cookbooks/Policyfile.rb /tmp/jazz-chef/chef-export && cd /tmp/jazz-chef/chef-export && sudo chef-client -z"
 
 # Once the docker image is configured, we will commit the image.
