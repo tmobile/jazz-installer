@@ -97,7 +97,8 @@ resource "null_resource" "configureJenkinsInstance" {
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
       "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
-      "cd ${var.chefDestDir}/chef-export && sudo chef-client -z"
+      "cd ${var.chefDestDir}/chef-export && sudo chef-client -z",
+      "sudo rm -rf -f ${var.chefDestDir}"
     ]
   }
 }
