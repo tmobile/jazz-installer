@@ -1,4 +1,36 @@
-#!/bin/bash
+#Spin wheel for visual effects
+spin_wheel()
+{
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    NC='\033[0m'
+
+    pid=$1 # Process Id of the previous running command
+    message=$2
+    spin='-\|/'
+    printf "\r$message...."
+    i=0
+
+    while ps -p $pid > /dev/null
+    do
+        #echo $pid $i
+        i=$(( (i+1) %4 ))
+        printf "\r${GREEN}$message....${spin:$i:1}"
+        sleep .05
+    done
+
+    wait "$pid"
+    exitcode=$?
+    if [ $exitcode -gt 0 ]
+    then
+        printf "\r${RED}$message....Failed${NC}\n"
+        exit
+    else
+        printf "\r${GREEN}$message....Completed${NC}\n"
+
+    fi
+}
+
 read_default_var()
 {
 exec < $1
@@ -11,55 +43,24 @@ do
 done
 }
 
+#Prepare cli script with actual values since groovy does not suport bash script variables
 jenkinsurl=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['jenkinselb'\]")
-gitlabuser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabuser'\]")
-gitlabpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabpassword'\]")
-gitlabtoken=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabtoken'\]")
-jpassword=$(read_default_var ../jazz-terraform-unix-noinstances/terraform.tfvars "jenkinspasswd")
-scm_type=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scm'\]")
-bbuser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['bbuser'\]")
-bbpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['bbpassword'\]")
-sonaruser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['sonaruser'\]")
-sonarpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['sonarpassword'\]")
-aws_access_key=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['aws_access_key'\]")
-aws_secret_key=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['aws_secret_key'\]")
-cognitouser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['cognitouser'\]")
-cognitopassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['cognitopassword'\]")
-scmpath=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scmpath'\]")
+scmelb=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scmelb'\]")
+email=$(read_default_var ../jazz-terraform-unix-noinstances/terraform.tfvars "cognito_pool_username")
 
-curl -sL http://$jenkinsurl/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
-java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl groovy = <<'EOF'
-jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "jenkinsadmin")
-def cmd = ['/bin/sh',  '-c',  'sed  -i "s=adminAddress.*.$=adminAddress>ADMINREPLACEADDRESS</adminAddress>=g" HOMEJENKINS/jenkins.model.JenkinsLocationConfiguration.xml && \
-sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://REPLACEJENKINSURL/</jenkinsUrl>=g" HOMEJENKINS/jenkins.model.JenkinsLocationConfiguration.xml && \
-sed -i "s/ip/SCMELB/g" HOMEJENKINS/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
-cmd.execute().with{
-    def output = new StringWriter()
-    def error = new StringWriter()
-    //wait for process ended and catch stderr and stdout.
-    it.waitForProcessOutput(output, error)
-    //check there is no error
-    println "error=$error"
-    println "output=$output"
-    println "code=${it.exitValue()}"
-}
-EOF
+sed -i "s/HOMEJENKINS/\/var\/jenkins_home/g" ../dockerfiles/jenkins-ce/configure-cli.sh
+sed -i "s/ADMINREPLACEADDRESS/\"$email\"/g" ../dockerfiles/jenkins-ce/configure-cli.sh
+sed -i "s/REPLACEJENKINSURL/$jenkinsurl/g" ../dockerfiles/jenkins-ce/configure-cli.sh
+sed -i "s/SCMELB/$scmelb/g" ../dockerfiles/jenkins-ce/configure-cli.sh
 
-#If it is GitLab
-../cookbooks/jenkins/files/credentials/gitlab-user.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $gitlabuser $gitlabpassword
-../cookbooks/jenkins/files/credentials/gitlab-token.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $gitlabtoken
-#If it is Bitbucket
-../cookbooks/jenkins/files/credentials/bitbucket-creds.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $bbuser $bbpassword
+#Run jenkins cli to configure jobs, credentials etc through jenkins cli
+sh ../dockerfiles/jenkins-ce/configure-cli.sh
 
-../cookbooks/jenkins/files/credentials/jobexec.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl"
-../cookbooks/jenkins/files/credentials/sonar.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $sonaruser $sonarpassword
-../cookbooks/jenkins/files/credentials/aws.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $aws_access_key $aws_secret_key
-../cookbooks/jenkins/files/credentials/cognitouser.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $cognitouser $cognitopassword
+cd ~/jazz-installer/installscripts
 
-../cookbooks/jenkins/files/jobs/job_create-service.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_delete-service.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_build_pack_api.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_cleanup_cloudfront_distributions.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_build_pack_lambda.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_build_pack_website.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
-../cookbooks/jenkins/files/jobs/job_jazz_ui.sh "java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl" $scmpath
+# Once the docker image is configured, we will commit the image.
+sudo docker commit -m "JazzOSS-Custom Jenkins container" jenkins-server jazzoss-jenkins-server
+sudo docker restart jenkins-server
+# The image jazzoss-jenkins-server is now ready to be shipped to and/or spinned in any docker hosts like ECS cluster/fargate etc.
+sleep 20 &
+spin_wheel $! "Initializing the Jenkins container"

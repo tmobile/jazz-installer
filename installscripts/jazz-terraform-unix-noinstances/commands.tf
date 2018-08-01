@@ -64,7 +64,7 @@ variable "injectingBootstrapToJenkinsfiles_cmd" {
 }
 variable "launchJenkinsCE_cmd" {
   type = "string"
-  default = "../dockerfiles/jenkins-ce/chefclient.sh"
+  default = "../dockerfiles/jenkins-ce/configurejenkins.sh"
 }
 variable "pushInstallervars_cmd" {
   type= "string"
