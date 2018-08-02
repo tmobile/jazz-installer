@@ -7,8 +7,8 @@ JENKINSATTRIBSFILE=$3
 AWS_ACCESS_KEY=$4
 AWS_SECRET_KEY=$5
 ENV_PREFIX=$6
+ACCOUNT=$7
 POLICY_NAME="Policy-$ENV_PREFIX"
-ACCOUNT=`aws sts get-caller-identity --output text --query 'Account'`
 # Python Script create SMTP AUTH PASSWORD of the access key using the secret key
 # the write to default.db in the cook book
 python scripts/GetSESsmtpPassword.py $AWS_SECRET_KEY
