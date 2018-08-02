@@ -8,7 +8,7 @@ print_error()
 rm -f ./stack_details.json
 date
 terraform init && terraform apply \
-                            --auto-approve \
+                            -auto-approve \
                             -var "aws_access_key=${AWS_ACCESS_KEY_ID}" \
                             -var "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
                             -var "region=${AWS_DEFAULT_REGION}"
