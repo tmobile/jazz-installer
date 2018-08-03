@@ -67,7 +67,7 @@ if [ $? == 0 ] ; then
 fi
 
 # Building the custom docker image from the jenkins-ce base image
-cd ~/jazz-installer/installscripts
+cd ../../../installscripts
 sudo docker build -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
 
 # Create the volume that we host the jenkins_home dir on dockerhost.
