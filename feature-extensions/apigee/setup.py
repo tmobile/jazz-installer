@@ -55,6 +55,11 @@ def getRegion():
     return region
 
 
+# TODO Obviously it would be better if we could somehow automatically infer the
+# env prefix that the user used to install Jazz proper, but I don't see a
+# robust way to do that yet, so KISS is a better principal to follow here.
+# Also, there are no programmatic side effects if they happen to enter a
+# different prefix.
 def getEnvPrefix():
     return raw_input(
         "Please enter the environment prefix you used for your Jazz install: ")
