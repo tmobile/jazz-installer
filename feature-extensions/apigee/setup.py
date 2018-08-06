@@ -15,42 +15,39 @@ class colors:
 
 def main():
     print("WHOOP")
-    print(colors.OKGREEN +
-            "\nThis will install Apigee functionality into your Jazz deployment.\n"
-            + colors.ENDC)
-    print(colors.OKGREEN +
-            "This installer will use whatever AWS credentials you have configured by running 'aws configure'.\n"
-            + colors.ENDC)
-    print(colors.WARNING +
-            "Please make sure you are using the same AWS credentials you used to install your Jazz deployment\n\n"
-            + colors.ENDC)
-    awsRegion = getRegion()
-    awsAccountId = getAWSAccountID()
-    runTerraform(awsRegion, awsAccountId)
+    print(
+        colors.OKGREEN +
+        "\nThis will install Apigee functionality into your Jazz deployment.\n"
+        + colors.ENDC)
+    print(
+        colors.OKGREEN +
+        "This installer will use whatever AWS credentials you have configured by running 'aws configure'.\n"
+        + colors.ENDC)
+    print(
+        colors.WARNING +
+        "Please make sure you are using the same AWS credentials you used to install your Jazz deployment\n\n"
+        + colors.ENDC)
+    runTerraform(getRegion(), getAWSAccountID(), getEnvPrefix())
 
 
-def runTerraform(region, accountId):
-    print(colors.OKBLUE +
-            'Initializing and running Terraform.\n'
-            + colors.ENDC)
-    subprocess.check_call([
-        'terraform',
-        'init'
-    ], cwd='./terraform')
+def runTerraform(region, accountId, envPrefix):
+    print(
+        colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
+    subprocess.check_call(['terraform', 'init'], cwd='./terraform')
 
-    subprocess.check_call([
-        'terraform',
-        'apply',
-        '-auto-approve',
-        '-var',
-        'region={0}'.format(region),
-        '-var',
-        'jazz_aws_accountid={0}'.format(accountId)
-    ], cwd='./terraform')
+    subprocess.check_call(
+        [
+            'terraform', 'apply', '-auto-approve',
+            '-var', 'region={0}'.format(region),
+            '-var', 'jazz_aws_accountid={0}'.format(accountId),
+            '-var', 'env_prefix={0}'.format(envPrefix)
+        ],
+        cwd='./terraform')
 
 
 def getRegion():
-    region = raw_input("Please enter the region where your Jazz installation lives: ")
+    region = raw_input(
+        "Please enter the region where your Jazz installation lives: ")
 
     if region is "":
         print("No region entered, defaulting to 'us-east-1'")
@@ -58,10 +55,15 @@ def getRegion():
     return region
 
 
+def getEnvPrefix():
+    return raw_input(
+        "Please enter the environment prefix you used for your Jazz install: ")
+
+
 def getAWSAccountID():
     print(colors.OKBLUE +
-            'Obtaining AWS account ID using configured credentials\n'
-            + colors.ENDC)
+          'Obtaining AWS account ID using configured credentials\n' +
+          colors.ENDC)
     return subprocess.check_output([
         'aws',
         'sts',
