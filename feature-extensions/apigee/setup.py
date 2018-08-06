@@ -19,10 +19,10 @@ def main():
             "\nThis will install Apigee functionality into your Jazz deployment.\n"
             + colors.ENDC)
     print(colors.OKGREEN +
-            "\nThis installer will use whatever AWS credentials you have configured by running 'aws configure'.\n"
+            "This installer will use whatever AWS credentials you have configured by running 'aws configure'.\n"
             + colors.ENDC)
     print(colors.WARNING +
-            "\nPlease make sure you are using the same AWS credentials you used to install your Jazz deployment\n\n"
+            "Please make sure you are using the same AWS credentials you used to install your Jazz deployment\n\n"
             + colors.ENDC)
     awsRegion = getRegion()
     awsAccountId = getAWSAccountID()
@@ -30,6 +30,9 @@ def main():
 
 
 def runTerraform(region, accountId):
+    print(colors.OKBLUE +
+            'Initializing and running Terraform.\n'
+            + colors.ENDC)
     subprocess.check_call([
         'terraform',
         'init'
@@ -38,11 +41,11 @@ def runTerraform(region, accountId):
     subprocess.check_call([
         'terraform',
         'apply',
-        '--auto-approve',
+        '-auto-approve',
         '-var',
-        "'region=" + region + "'",
+        'region={0}'.format(region),
         '-var',
-        "'jazz_aws_accountid=" + accountId + "'"
+        'jazz_aws_accountid={0}'.format(accountId)
     ], cwd='./terraform')
 
 
@@ -56,7 +59,10 @@ def getRegion():
 
 
 def getAWSAccountID():
-    res = subprocess.check_output([
+    print(colors.OKBLUE +
+            'Obtaining AWS account ID using configured credentials\n'
+            + colors.ENDC)
+    return subprocess.check_output([
         'aws',
         'sts',
         'get-caller-identity',
@@ -64,8 +70,6 @@ def getAWSAccountID():
         'text',
         '--query',
         'Account']).rstrip()
-    print(res)
-    return res
 
 
 main()
