@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 import subprocess
+import argparse
+import os.path
 
 
 class colors:
@@ -13,11 +15,35 @@ class colors:
     UNDERLINE = '\033[4m'
 
 
+featureName = "Apigee"
+
+
 def main():
-    print("WHOOP")
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-i",
+        "--install",
+        help="Install {0} feature extension".format(featureName),
+        action="store_true")
+    group.add_argument(
+        "-u",
+        "--uninstall",
+        help="Uninstall {0} feature extension".format(featureName),
+        action="store_true")
+    args = parser.parse_args()
+
+    if args.install:
+        install()
+
+    if args.uninstall:
+        uninstall()
+
+
+def install():
     print(
         colors.OKGREEN +
-        "\nThis will install Apigee functionality into your Jazz deployment.\n"
+        "\nThis will install {0} functionality into your Jazz deployment.\n".format(featureName)
         + colors.ENDC)
     print(
         colors.OKGREEN +
@@ -27,22 +53,42 @@ def main():
         colors.WARNING +
         "Please make sure you are using the same AWS credentials you used to install your Jazz deployment\n\n"
         + colors.ENDC)
-    runTerraform(getRegion(), getAWSAccountID(), getEnvPrefix())
+    runTerraform(getRegion(), getAWSAccountID(), getEnvPrefix(), True)
 
 
-def runTerraform(region, accountId, envPrefix):
+def uninstall():
+    print(
+        colors.OKGREEN +
+        "\nThis will remove {0} functionality from your Jazz deployment.\n".format(featureName)
+        + colors.ENDC)
+
+    terraformStateSanityCheck()
+    runTerraform(getRegion(), getAWSAccountID(), getEnvPrefix(), False)
+
+
+def runTerraform(region, accountId, envPrefix, install):
     print(
         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
     subprocess.check_call(['terraform', 'init'], cwd='./terraform')
 
     subprocess.check_call(
         [
-            'terraform', 'apply', '-auto-approve',
+            'terraform', 'apply' if install else 'destroy', '-auto-approve',
             '-var', 'region={0}'.format(region),
             '-var', 'jazz_aws_accountid={0}'.format(accountId),
             '-var', 'env_prefix={0}'.format(envPrefix)
         ],
         cwd='./terraform')
+
+
+def terraformStateSanityCheck():
+    print(colors.OKBLUE +
+          'Making sure you have not deleted the Terraform .tfstate file...' +
+          colors.ENDC)
+    if not os.path.isfile('./terraform/terraform.tfstate'):
+        print(colors.FAIL +
+              'Cannot find the Terraform .tfstate file! No uninstall possible'
+              + colors.ENDC)
 
 
 def getRegion():
@@ -70,13 +116,8 @@ def getAWSAccountID():
           'Obtaining AWS account ID using configured credentials\n' +
           colors.ENDC)
     return subprocess.check_output([
-        'aws',
-        'sts',
-        'get-caller-identity',
-        '--output',
-        'text',
-        '--query',
-        'Account']).rstrip()
+        'aws', 'sts', 'get-caller-identity', '--output', 'text', '--query', 'Account'
+    ]).rstrip()
 
 
 main()
