@@ -53,9 +53,6 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Dev" {
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
 
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Dev"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
