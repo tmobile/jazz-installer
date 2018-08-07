@@ -112,5 +112,13 @@
         "SLACK_TOKEN": "{slack_token}",
         "SLACK_WORKSPACE": "{slack_workspace}",
         "SLACK_SVC_ID": "{slack_svc_acc_id}"
+    },
+    "APIGEE": {
+        "ENABLED": false,
+        "API_ENDPOINTS": {
+            "PROD": "{APIGEE_PROD_API}",
+            "STG": "{APIGEE_STG_API}",
+            "DEV": "{APIGEE_DEV_API}"
+        }
     }
 }
