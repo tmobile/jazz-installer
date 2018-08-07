@@ -2,7 +2,7 @@
 import os
 import sys
 import subprocess
-from jazz_common import replace_tfvars, get_script_folder, get_tfvars_file
+from jazz_common import get_tfvars_file, replace_tfvars
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -33,13 +33,16 @@ def check_jenkins_user(url, username, passwd):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_cli = get_script_folder() + \
-        "/cookbooks/jenkins/files/default/jenkins-cli.jar"
-
     jenkins_url = 'http://' + url + ''
+    # Download the CLI jar from the jenkins server
+    subprocess.call([
+        'curl', '-sL', jenkins_url + '/jnlpJars/jenkins-cli.jar', '-o',
+        'jenkins-cli.jar'
+    ])
 
+    # Call the server and make sure user exists
     cmd = [
-        'java', '-jar', jenkins_cli, '-s', jenkins_url, 'who-am-i',
+        'java', '-jar', 'jenkins-cli.jar', '-s', jenkins_url, 'who-am-i',
         '--username', username, '--password', passwd
     ]
     subprocess.call(
@@ -109,6 +112,11 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         jenkins_server_subnet
     ]
 
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(dockerizedJenkins = \)\(.*\)|\1false|g', get_tfvars_file()
+    ])
+
     add_jenkins_config_to_files(parameter_list)
 
 
@@ -119,7 +127,7 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     os.chdir(jenkins_docker_path)
     print("Running docker launch script")
     subprocess.call([
-        'sg', 'docker', './launch_jenkins_docker.sh', '|', 'tee', '-a',
+        'sg', 'docker', './launchscript.sh', '|', 'tee', '-a',
         '../../docker_creation.out'
     ])
     # Get values to create the array

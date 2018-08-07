@@ -1,18 +1,8 @@
-JENKINS_URL=http://$1/ # localhost or jenkins elb url
-JOB_NAME="jazz_ui"
-SSH_USER=$2
-SCM_ELB=$3
+JENKINS_CLI_CMD=$1
+SCM_ELB=$2
 
-if [ -f /etc/redhat-release ]; then
-  AUTHFILE=/home/$SSH_USER/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/home/$SSH_USER/jenkins-cli.jar
-elif [ -f /etc/lsb-release ]; then
-  AUTHFILE=/root/cookbooks/jenkins/files/default/authfile
-  JENKINS_CLI=/root/jenkins-cli.jar
-fi
-
-JENKINS_CREDENTIAL_ID=`java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE list-credentials system::system::jenkins | grep "jenkins1"|cut -d" " -f1`
-cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $JOB_NAME
+JENKINS_CREDENTIAL_ID=`$JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jazz_repocreds"|cut -d" " -f1`
+cat <<EOF | $JENKINS_CLI_CMD create-job "jazz_ui"
 <?xml version='1.0' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
@@ -53,7 +43,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
           <url>http://$SCM_ELB/slf/jazz-ui.git</url>
-          <credentialsId>jenkins1cred</credentialsId>
+          <credentialsId>jazz_repocreds</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
@@ -69,6 +59,7 @@ cat <<EOF | java -jar $JENKINS_CLI -s $JENKINS_URL -auth @$AUTHFILE create-job $
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
+  <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
 EOF

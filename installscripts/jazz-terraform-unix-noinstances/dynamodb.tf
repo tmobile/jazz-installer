@@ -9,14 +9,7 @@ resource "aws_dynamodb_table" "dynamodb-table-dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_dynamodb_table" "dynamodb-table-stg" {
@@ -30,14 +23,7 @@ resource "aws_dynamodb_table" "dynamodb-table-stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_dynamodb_table" "dynamodb-table-prod" {
@@ -51,14 +37,7 @@ resource "aws_dynamodb_table" "dynamodb-table-prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Dev" {
@@ -72,14 +51,7 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Dev"
@@ -97,14 +69,8 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Stg"
   }
@@ -121,14 +87,8 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Prod"
   }
@@ -145,15 +105,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 
-  }
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Dev"
   }
@@ -170,14 +123,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Stg"
   }
@@ -194,14 +141,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Prod"
   }
@@ -218,14 +159,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Dev"
   }
@@ -242,14 +177,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Stg"
   }
@@ -266,14 +195,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Prod"
   }
@@ -290,14 +213,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Dev"
   }
@@ -314,14 +231,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Stg"
   }
@@ -338,14 +249,8 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Prod"
   }
@@ -362,14 +267,8 @@ resource "aws_dynamodb_table" "dynamodb-Events_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Events_Stg" {
@@ -383,14 +282,8 @@ resource "aws_dynamodb_table" "dynamodb-Events_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
@@ -404,14 +297,8 @@ resource "aws_dynamodb_table" "dynamodb-Events_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Environments_Dev" {
@@ -444,14 +331,8 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Dev" {
     projection_type    = "ALL"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Environments_Stg" {
@@ -484,14 +365,8 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Stg" {
     projection_type    = "ALL"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Environments_Prod" {
@@ -524,14 +399,8 @@ resource "aws_dynamodb_table" "dynamodb-Environments_Prod" {
     projection_type    = "ALL"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Deployments_Dev" {
@@ -545,14 +414,8 @@ resource "aws_dynamodb_table" "dynamodb-Deployments_Dev" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Deployments_Stg" {
@@ -566,14 +429,8 @@ resource "aws_dynamodb_table" "dynamodb-Deployments_Stg" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }
 
 resource "aws_dynamodb_table" "dynamodb-Deployments_Prod" {
@@ -587,12 +444,108 @@ resource "aws_dynamodb_table" "dynamodb-Deployments_Prod" {
     type = "S"
   }
 
-  tags {
-    Name        = "${var.envPrefix}"
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-    Environment = "${var.tagsEnvironment}"
-    Exempt = "${var.tagsExempt}"
-    Owner = "${var.tagsOwner}"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
+}
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Dev" {
+  name           = "${var.envPrefix}_Assets_Dev"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
   }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
+}
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Stg" {
+  name           = "${var.envPrefix}_Assets_Stg"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
+}
+
+resource "aws_dynamodb_table" "dynamodb-Assets_Prod" {
+  name           = "${var.envPrefix}_Assets_Prod"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "ID"
+
+  attribute {
+    name = "ID"
+    type = "S"
+  }
+
+  attribute {
+    name = "DOMAIN"
+    type = "S"
+  }
+
+  attribute {
+    name = "SERVICE"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "AssetsDomainServiceIndex"
+    hash_key           = "DOMAIN"
+    range_key          = "SERVICE"
+    write_capacity     = 1
+    read_capacity      = 1
+    projection_type    = "ALL"
+  }
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
 }

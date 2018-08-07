@@ -10,10 +10,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -35,10 +32,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -59,10 +54,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
@@ -86,10 +79,8 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   website {
     index_document = "index.html"
   }
@@ -121,7 +112,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
 
   }
   provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
 }
 
@@ -136,10 +127,8 @@ resource "aws_s3_bucket" "jazz-web" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   website {
     index_document = "index.html"
 
@@ -310,10 +299,8 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
@@ -332,10 +319,8 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
@@ -354,10 +339,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  tags {
-    Application = "Jazz"
-    JazzInstance = "${var.envPrefix}"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 
   # TODO do we need this, or does `force_destroy` suffice?
   provisioner "local-exec" {

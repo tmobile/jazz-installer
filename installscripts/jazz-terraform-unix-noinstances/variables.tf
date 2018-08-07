@@ -16,30 +16,31 @@ variable "cognito_pool_password" {type = "string" default = "cognito_pool_passwo
 
 #
 # Chef and Cookbook variables
+# Copying these resources to TMP on remote machines,
+# since $HOME is not reliable for all of our scenarios.
 #
-variable "chefconfigDir" {
+variable "jenkinsPluginsSourceDir" {
   type = "string"
-  default = "../chefconfig"
+  default = "../jenkinsplugins"
 }
-variable "cookbooksDir" {
+variable "cookbooksSourceDir" {
   type = "string"
   default = "../cookbooks"
 }
-
+variable "chefDestDir" {
+  type = "string"
+  default = "/tmp/jazz-chef"
+}
 #
 # Jenkins related variables
 #
 variable "jenkinsjsonpropsfile" {
   type = "string"
-  default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
+  default = "../cookbooks/jenkins/files/default/jazz-installer-vars.json"
 }
 variable "jenkinsattribsfile" {
   type = "string"
   default = "../cookbooks/jenkins/attributes/default.rb"
-}
-variable "jenkinsclientrbfile" {
-  type = "string"
-  default = "../chefconfig/jenkins_client.rb"
 }
 variable "jenkinsservermap" {
   type = "map"
@@ -74,6 +75,20 @@ variable "scmmap" {
 }
 
 #
+# CodeQuality - SonarQube variables
+#
+variable "codeqmap" {
+  type = "map"
+  default = {
+    codequality_type = "replacecodeqtype"
+    sonar_server_elb = "replaceelb"
+    sonar_username = "replaceusername"
+    sonar_passwd = "replacepasswd"
+    sonar_server_public_ip = "replacepubip"
+  }
+}
+
+#
 # AWS resource variables
 #
 variable "lambdaCloudWatchProps" {
@@ -90,4 +105,11 @@ variable "lambdaCloudWatchProps" {
 # Set to true for respectively SCMs, and false for bitbucket. This variable decides which terraform block to run for SCM
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
+variable "codeq" { default = false }
 variable "atlassian_jar_path" { type = "string" }
+variable "dockerizedJenkins" {default = true}
+variable "additional_tags" {
+  type = "map"
+  default = {}
+}
+variable "aws_tags" { type = "string" }
