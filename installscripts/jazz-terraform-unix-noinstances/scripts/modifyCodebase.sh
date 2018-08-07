@@ -27,7 +27,7 @@ function inArray() {
 }
 
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler")
-nodejs61_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_admin")
+nodejs61_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler")
 
 platform_services=()
 cd ./jazz-core
@@ -59,14 +59,14 @@ do
 
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
-			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then			
+			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
 				provider_runtime="nodejs4.3"
 			fi
  else
 			service_type="api"
-			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then	  	
+			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
 				provider_runtime="nodejs4.3"
