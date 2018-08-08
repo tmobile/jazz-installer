@@ -109,5 +109,10 @@
         "ENABLE_SLACK": "false",
         "SLACK_USER": "{slack_user}",
         "SLACK_TOKEN": "{slack_token}"
+    },
+    "CONTAINER_REGISTRY": {
+        "ENABLE_REGISTRY": "{ENABLE_REGISTRY}",
+        "CREDENTIALID": "jazz_registrycreds",
+        "REGISTRY_URL": "url"
     }
 }
