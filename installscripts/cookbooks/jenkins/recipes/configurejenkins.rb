@@ -195,6 +195,16 @@ execute 'createcredentials-aws' do
   command "#{node['script_root']}/aws.sh #{node['jenkins']['clicommand']} #{node['aws_access_key']} #{node['aws_secret_key']}"
 end
 
+#Set up Docker Container creds
+cookbook_file "#{node['script_root']}/container_registry.sh" do
+  source 'credentials/container_registry.sh'
+  mode 0755
+end
+
+execute 'createcredentials-aws' do
+  command "#{node['script_root']}/container_registry.sh #{node['jenkins']['clicommand']} #{node['dockeruser']} #{node['dockerpassword']}"
+end
+
 #Set up Cognito creds
 cookbook_file "#{node['script_root']}/cognitouser.sh" do
   source 'credentials/cognitouser.sh'
