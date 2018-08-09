@@ -52,7 +52,6 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Dev" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
 }
 
 resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
@@ -67,10 +66,6 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Stg" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Stg"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Prod" {
@@ -85,10 +80,6 @@ resource "aws_dynamodb_table" "dynamodb-table_Event_Handler_Prod" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_HANDLER ${var.envPrefix}_Event_Handler_Prod"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Name_Dev" {
@@ -103,10 +94,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Dev" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Dev"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Name_Stg" {
@@ -121,10 +108,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Stg" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Stg"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Name_Prod" {
@@ -139,10 +122,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Name_Prod" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_NAME ${var.envPrefix}_Event_Name_Prod"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Status_Dev" {
@@ -157,10 +136,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Dev" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Dev"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Status_Stg" {
@@ -175,10 +150,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Stg" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Stg"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Status_Prod" {
@@ -193,10 +164,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Status_Prod" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_STATUS ${var.envPrefix}_Event_Status_Prod"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Type_Dev" {
@@ -211,10 +178,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Dev" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Dev"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Type_Stg" {
@@ -229,10 +192,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Stg" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Stg"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Event_Type_Prod" {
@@ -247,10 +206,6 @@ resource "aws_dynamodb_table" "dynamodb-Event_Type_Prod" {
   }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    command = "${var.dynamodb_cmd} EVENT_TYPE ${var.envPrefix}_Event_Type_Prod"
-  }
 }
 
 resource "aws_dynamodb_table" "dynamodb-Events_Dev" {
