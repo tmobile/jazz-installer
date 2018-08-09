@@ -11,16 +11,11 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
-  }
-
 }
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-stg-"
@@ -33,16 +28,11 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
-  }
-
 }
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-prod-"
@@ -55,16 +45,11 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
-  }
-
 }
 
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
@@ -80,14 +65,10 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   website {
     index_document = "index.html"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
   }
 }
 
@@ -104,6 +85,7 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API"
 
+  #TODO None of these steps have ANYTHING to do with S3
   provisioner "local-exec" {
     command = "rm -rf jazz-core"
   }
@@ -128,6 +110,7 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   website {
     index_document = "index.html"
@@ -146,12 +129,6 @@ EOF
 
   provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
-  }
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
   }
 }
 
@@ -300,13 +277,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
@@ -320,19 +291,12 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
   bucket_prefix = "${var.envPrefix}-prod-web-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -340,14 +304,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  # TODO do we need this, or does `force_destroy` suffice?
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
