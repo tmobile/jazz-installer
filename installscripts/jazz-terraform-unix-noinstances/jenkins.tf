@@ -1,5 +1,20 @@
 resource "null_resource" "update_jenkins_configs" {
   depends_on = ["aws_cognito_user_pool_domain.domain"]
+
+  #Clone jazz-core repo and update Jenkins configs
+  provisioner "local-exec" {
+    command = "rm -rf jazz-core"
+  }
+
+  provisioner "local-exec" {
+    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
+
+  }
+
+  provisioner "local-exec" {
+    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
+  }
+
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
