@@ -8,7 +8,7 @@ locals {
   ]
 }
 
-resource "aws_dynamodb_table_item" "event-type-dev" { YOOP
+resource "aws_dynamodb_table_item" "event-type-dev" {
   count = "${length(local.event_type_names)}"
   table_name = "${aws_dynamodb_table.dynamodb-table_Event_Type_Dev.name}"
   hash_key = "${aws_dynamodb_table.dynamodb-table_Event_Type_Dev.hash_key}"
