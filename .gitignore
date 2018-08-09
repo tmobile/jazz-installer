@@ -13,7 +13,5 @@ node_modules
 .nyc_output/
 npm-debug.log
 */package-lock.json
-*.tfstate
 *.backup
-jazz-apigee-proxy.zip
-/feature-extensions/apigee/terraform/.terraform/
+.terraform/
