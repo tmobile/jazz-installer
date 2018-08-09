@@ -8,7 +8,6 @@ def validate_replication_tags(replication_tags):
     - the 'Value' Values should be a string with length between 0 and 255
     - the 'Key' Values should be unique
     - the 'Key' and 'Value' Values must not start with 'aws'
-    - the 'Key' and 'Value' should be case sensitive
     - the 'Key' and 'Value' should be alphanumeric plus the \
       following special characters: + - = . _ : / @. with spaces
     """
@@ -31,18 +30,10 @@ def validate_replication_tags(replication_tags):
         if not re.match("^[a-zA-Z0-9\s\+\-\=\.\_\:\/\@\.]*$", item):
             raise ValueError("tag encountered with special character: " + item)
 
-    # helper method to validate case sensitive
-    def validate_case_sensitive(item):
-        to_check_str = item
-        for character in ["+", "-", "=", ".", "_", ":", "/", "@", ".", " "]:
-            to_check_str = to_check_str.replace(character, "")
-        if not to_check_str.islower() and not to_check_str.isupper() and to_check_str.isalnum():
-            raise ValueError("Tag Keys and Values are case sensitive: " + item)
-
     if type(replication_tags) != list:
         raise ValueError("replication_tags should be a list")
 
-    reserved_tags = ["name", "application", "jazzinstance", "environment", "exempt", "owner"]
+    reserved_tags = ["Name", "Application", "JazzInstance", "Environment", "Exempt", "Owner"]
     unique_tags = []
     new_replication_tags = []
     tag_for_resource = '{'
@@ -57,8 +48,6 @@ def validate_replication_tags(replication_tags):
 
         validate_special_characters(Key)
         validate_special_characters(Value)
-        validate_case_sensitive(Key)
-        validate_case_sensitive(Value)
 
         if Key in reserved_tags:
             raise ValueError("tag encountered with reserved Key: " + Key)
@@ -79,5 +68,5 @@ def prepare_tags(input_tags_param):
     input_tags = []
     input_tags_rel = input_tags_param.split()
     for item in input_tags_rel:
-      input_tags.append(dict(item2.split("=") for item2 in item.split(",")))
+      input_tags.append(dict(item2.split("=", 1) for item2 in item.split(",")))
     return input_tags
