@@ -59,7 +59,7 @@ resource "null_resource" "update_jenkins_configs" {
 
   #SES
   provisioner "local-exec" {
-    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.jenkinsattribsfile} ${var.aws_access_key} ${var.aws_secret_key} ${var.envPrefix} ${var.jazz_accountid}"
+    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.jenkinsattribsfile} ${var.aws_access_key} ${var.aws_secret_key} ${var.envPrefix}"
   }
   #TODO SORT!
   provisioner "local-exec" {
