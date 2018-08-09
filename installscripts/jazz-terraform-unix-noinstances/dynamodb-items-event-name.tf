@@ -59,7 +59,7 @@ resource "aws_dynamodb_table_item" "event-name-stg" {
   hash_key = "${aws_dynamodb_table.dynamodb-table_Event_Name_Stg.hash_key}"
   item = <<ITEM
 {
-  "EVENT_NAME": {"S": "${element(local.event_handler_names, count.index)}"}
+  "EVENT_NAME": {"S": "${element(local.event_name_names, count.index)}"}
 }
 ITEM
 }
@@ -70,7 +70,7 @@ resource "aws_dynamodb_table_item" "event-name-prod" {
   hash_key = "${aws_dynamodb_table.dynamodb-table_Event_Name_Prod.hash_key}"
   item = <<ITEM
 {
-  "EVENT_NAME": {"S": "${element(local.event_handler_names, count.index)}"}
+  "EVENT_NAME": {"S": "${element(local.event_name_names, count.index)}"}
 }
 ITEM
 }
