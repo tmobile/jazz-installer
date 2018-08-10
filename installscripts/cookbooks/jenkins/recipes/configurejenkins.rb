@@ -1,18 +1,3 @@
-#
-if node['dockerizedJenkins'] == false
-  # Copy authfile
-  cookbook_file "#{node['chef_root']}/authfile" do
-    source 'authfile'
-    action :create
-  end
-end
-
-directory "#{node['jenkins']['home']}/workspace" do
-  owner 'jenkins'
-  group 'jenkins'
-  mode '0777'
-  recursive true
-end
 
 directory node['script_root'] do
   recursive true
@@ -35,36 +20,6 @@ bash 'createJobExecUser' do
   code <<-EOH
   echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy =
   EOH
-end
-
-cookbook_file "#{node['chef_root']}/encrypt.groovy" do
-  source 'encrypt.groovy'
-  action :create
-end
-
-cookbook_file "#{node['chef_root']}/xmls.tar" do
-  source 'xmls.tar'
-  action :create
-end
-#ToDo ChefRemoval
-execute 'extractXmls' do
-  command "tar -xvf #{node['chef_root']}/xmls.tar"
-  cwd "#{node['jenkins']['home']}"
-end
-
-cookbook_file "#{node['jenkins']['home']}/config.xml" do
-  source 'config.xml'
-  action :create
-end
-
-cookbook_file "#{node['jenkins']['home']}/scriptApproval.xml" do
-  source 'scriptApproval.xml'
-  action :create
-end
-
-cookbook_file "#{node['jenkins']['home']}/credentials.xml" do
-  source 'credentials.xml'
-  action :create
 end
 
 bash 'configJenkinsLocConfigXml' do

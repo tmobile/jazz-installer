@@ -34,7 +34,7 @@ spin_wheel()
 
 cd ~/jazz-installer/installscripts
 sudo docker cp cookbooks/. jenkins-server:/tmp/jazz-chef/cookbooks/
-sudo docker cp jenkinsplugins jenkins-server:/tmp/jazz-chef/
+# sudo docker cp jenkinsplugins jenkins-server:/tmp/jazz-chef/
 # Running chef-client to execute cookbooks
 sudo docker exec -u root -i jenkins-server bash -c "chef install /tmp/jazz-chef/cookbooks/Policyfile.rb && chef export /tmp/jazz-chef/cookbooks/Policyfile.rb /tmp/jazz-chef/chef-export && cd /tmp/jazz-chef/chef-export && sudo chef-client -z"
 

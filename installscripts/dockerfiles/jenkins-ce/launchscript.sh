@@ -68,7 +68,8 @@ fi
 
 # Building the custom docker image from the jenkins-ce base image
 cd ../../../installscripts
-sudo docker build -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
+passwd=`date | md5sum | cut -d ' ' -f1`
+sudo docker build --build-arg adminpass=$passwd -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
 
 # Create the volume that we host the jenkins_home dir on dockerhost.
 sudo docker volume create jenkins-volume &> /dev/null &
@@ -79,14 +80,11 @@ sudo docker run -d --name jenkins-server -p 8081:8080 -v jenkins-volume:/var/jen
 
 # Wainting for the container to spin up
 sleep 60
-# Grabbing initial password and populating jenkins default authfile
-initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
-echo "initialPassword is: $initialPassword"
-sudo docker exec -i jenkins-server bash -c "echo 'admin:$initialPassword' > /tmp/jazz-chef/authfile"
+echo "initialPassword is: $passwd"
+sudo docker exec -u root -i jenkins-server bash -c "echo 'admin:$passwd' > /tmp/jazz-chef/authfile"
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
-initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
 mac=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs`
 security_groups=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs/${mac%/}/security-group-ids`
 subnet_id=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs/${mac%/}/subnet-id`
@@ -94,7 +92,7 @@ subnet_id=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/m
 # Values to be passed to parameter list
 jenkins_server_elb="$ip:8081"
 jenkins_username="admin"
-jenkins_passwd="$initialPassword"
+jenkins_passwd="$passwd"
 jenkins_server_public_ip="$ip"
 jenkins_server_ssh_login="root"
 jenkins_server_ssh_port="2200"
