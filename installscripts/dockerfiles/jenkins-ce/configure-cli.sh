@@ -1,48 +1,35 @@
 #!/bin/bash
-read_default_var()
-{
-exec < $1
-while read line
-do
-        match=`echo $line|grep $2 `
-        if [ $? -eq 0 ]; then
-        echo `echo $line|cut -d '=' -f 2` | sed -e 's/^"//' -e 's/"$//' | sed -e "s/^'//" -e "s/'$//"
-        fi
-done
-}
 
-jenkinsurl=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['jenkinselb'\]")
-gitlabuser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabuser'\]")
-gitlabpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabpassword'\]")
-gitlabtoken=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['gitlabtoken'\]")
-jpassword=$(read_default_var ../jazz-terraform-unix-noinstances/terraform.tfvars "jenkinspasswd")
-scm_type=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scm'\]")
-bbuser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['bbuser'\]")
-bbpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['bbpassword'\]")
-sonaruser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['sonaruser'\]")
-sonarpassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['sonarpassword'\]")
-aws_access_key=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['aws_access_key'\]")
-aws_secret_key=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['aws_secret_key'\]")
-cognitouser=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['cognitouser'\]")
-cognitopassword=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['cognitopassword'\]")
-scmpath=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scmpath'\]")
+jenkinsurl=$1
+email=$2
+jenkinshome=$3
+scm_elb=$4
+gitlabuser=$5
+gitlabpassword=$6
+gitlabtoken=$7
+jpassword=$8
+scm_type=$9
+bbuser=$5
+bbpassword=$6
+sonaruser=${10}
+sonarpassword=${11}
+aws_access_key=${12}
+aws_secret_key=${13}
+cognitouser=${2}
+cognitopassword=${15}
+scmpath=$4
 
 curl -sL http://$jenkinsurl/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
-java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl groovy = <<'EOF'
+java -jar jenkins-cli.jar -auth admin:$jpassword -s  http://$jenkinsurl groovy = <<EOF
+import jenkins.model.JenkinsLocationConfiguration
+c = JenkinsLocationConfiguration.get()
+c.url = 'https://$jenkinsurl'
+c.adminAddress = '$email'
+c.save()
+def jenkins_home
 jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "jenkinsadmin")
-def cmd = ['/bin/sh',  '-c',  'sed  -i "s=adminAddress.*.$=adminAddress>ADMINREPLACEADDRESS</adminAddress>=g" HOMEJENKINS/jenkins.model.JenkinsLocationConfiguration.xml && \
-sed  -i "s=jenkinsUrl.*.$=jenkinsUrl>http://REPLACEJENKINSURL/</jenkinsUrl>=g" HOMEJENKINS/jenkins.model.JenkinsLocationConfiguration.xml && \
-sed -i "s/ip/SCMELB/g" HOMEJENKINS/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
-cmd.execute().with{
-    def output = new StringWriter()
-    def error = new StringWriter()
-    //wait for process ended and catch stderr and stdout.
-    it.waitForProcessOutput(output, error)
-    //check there is no error
-    println "error=$error"
-    println "output=$output"
-    println "code=${it.exitValue()}"
-}
+def cmd = ['/bin/sh',  '-c',  'sed -i "s/ip/$scm_elb/g" $jenkinshome/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
+cmd.execute()
 EOF
 
 #If it is GitLab
