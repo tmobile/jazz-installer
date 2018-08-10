@@ -25,6 +25,14 @@ You can try out public preview version of Jazz by registering with your email ad
 
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
 
+## Development
+
+If you're interested in submitting a PR, it would be a good idea to set up your editor/IDE to use the following checkers:
+editorconfig
+flake8 for Python linting
+tflint for Terraform script linting
+foodcritic for Chef script linting
+
 ## License
 
 Jazz is released under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
