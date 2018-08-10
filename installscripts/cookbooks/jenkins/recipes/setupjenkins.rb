@@ -39,4 +39,45 @@ if node['dockerizedJenkins'] == false
     command 'sleep 30'
   end
 
+  # Copy authfile
+  cookbook_file "#{node['chef_root']}/authfile" do
+    source 'authfile'
+    action :create
+  end
+
+  directory "#{node['jenkins']['home']}/workspace" do
+    owner 'jenkins'
+    group 'jenkins'
+    mode '0777'
+    recursive true
+  end
+  cookbook_file "#{node['chef_root']}/encrypt.groovy" do
+    source 'encrypt.groovy'
+    action :create
+  end
+
+  cookbook_file "#{node['chef_root']}/xmls.tar" do
+    source 'xmls.tar'
+    action :create
+  end
+  #ToDo ChefRemoval
+  execute 'extractXmls' do
+    command "tar -xvf #{node['chef_root']}/xmls.tar"
+    cwd "#{node['jenkins']['home']}"
+  end
+
+  cookbook_file "#{node['jenkins']['home']}/config.xml" do
+    source 'config.xml'
+    action :create
+  end
+
+  cookbook_file "#{node['jenkins']['home']}/scriptApproval.xml" do
+    source 'scriptApproval.xml'
+    action :create
+  end
+
+  cookbook_file "#{node['jenkins']['home']}/credentials.xml" do
+    source 'credentials.xml'
+    action :create
+  end
 end
