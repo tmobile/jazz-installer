@@ -31,33 +31,6 @@ spin_wheel()
     fi
 }
 
-read_default_var()
-{
-exec < $1
-while read line
-do
-        match=`echo $line|grep $2 `
-        if [ $? -eq 0 ]; then
-        echo `echo $line|cut -d '=' -f 2` | sed -e 's/^"//' -e 's/"$//' | sed -e "s/^'//" -e "s/'$//"
-        fi
-done
-}
-
-#Prepare cli script with actual values since groovy does not suport bash script variables
-jenkinsurl=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['jenkinselb'\]")
-scmelb=$(read_default_var ../cookbooks/jenkins/attributes/default.rb "default\['scmelb'\]")
-email=$(read_default_var ../jazz-terraform-unix-noinstances/terraform.tfvars "cognito_pool_username")
-
-sed -i "s/HOMEJENKINS/\/var\/jenkins_home/g" ../dockerfiles/jenkins-ce/configure-cli.sh
-sed -i "s/ADMINREPLACEADDRESS/\"$email\"/g" ../dockerfiles/jenkins-ce/configure-cli.sh
-sed -i "s/REPLACEJENKINSURL/$jenkinsurl/g" ../dockerfiles/jenkins-ce/configure-cli.sh
-sed -i "s/SCMELB/$scmelb/g" ../dockerfiles/jenkins-ce/configure-cli.sh
-
-#Run jenkins cli to configure jobs, credentials etc through jenkins cli
-sh ../dockerfiles/jenkins-ce/configure-cli.sh
-
-cd ~/jazz-installer/installscripts
-
 # Once the docker image is configured, we will commit the image.
 sudo docker commit -m "JazzOSS-Custom Jenkins container" jenkins-server jazzoss-jenkins-server
 sudo docker restart jenkins-server
