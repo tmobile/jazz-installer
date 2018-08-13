@@ -20,6 +20,11 @@ cognitopassword=${14}
 scmpath=$4
 jenkinsuser=${15}
 curl -sL http://$jenkinsurl/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
+
+if [ "$scm_type" == "bitbucket" ]; then
+  scmpath=$scmpath/scm
+fi
+
 java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl groovy = <<EOF
 import jenkins.model.JenkinsLocationConfiguration
 c = JenkinsLocationConfiguration.get()
@@ -27,15 +32,18 @@ c.url = 'https://$jenkinsurl'
 c.adminAddress = '$email'
 c.save()
 jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "jenkinsadmin")
-def cmd = ['/bin/sh',  '-c',  'sed -i "s/ip/$scm_elb/g" $jenkinshome/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
-cmd.execute()
 EOF
 
-#If it is GitLab
-../jenkinscli/credentials/gitlab-user.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $gitlabuser $gitlabpassword
-../jenkinscli/credentials/gitlab-token.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $gitlabtoken
-#If it is Bitbucket
-../jenkinscli/credentials/bitbucket-creds.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $bbuser $bbpassword
+if [ "$scm_type" == "gitlab" ]; then
+  java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl groovy = <<EOF
+  def cmd = ['/bin/sh',  '-c',  'sed -i "s/ip/$scm_elb/g" $jenkinshome/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
+  cmd.execute()
+EOF
+  ../jenkinscli/credentials/gitlab-user.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $gitlabuser $gitlabpassword
+  ../jenkinscli/credentials/gitlab-token.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $gitlabtoken
+else
+  ../jenkinscli/credentials/bitbucket-creds.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $bbuser $bbpassword
+fi
 
 #credentials
 ../jenkinscli/credentials/jobexec.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl"
