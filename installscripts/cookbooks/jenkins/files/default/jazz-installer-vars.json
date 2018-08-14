@@ -127,19 +127,19 @@
         "API_ENDPOINTS": {
           "PROD": {
             "MGMT_ENV": "prod",
-            "MGMT_ORG": "{ORG_NAME}",
+            "MGMT_ORG": "{PROD_ORG_NAME}",
             "MGMT_HOST": "{MGMT_HOST}",
             "SERVICE_HOSTNAME": "{SVC_HOST}"
           },
           "STG": {
             "MGMT_ENV": "stg",
-            "MGMT_ORG": "{ORG_NAME}",
+            "MGMT_ORG": "{STG_ORG_NAME}",
             "MGMT_HOST": "{MGMT_HOST}",
             "SERVICE_HOSTNAME": "{SVC_HOST}"
           },
           "DEV": {
             "MGMT_ENV": "dev",
-            "MGMT_ORG": "{ORG_NAME}",
+            "MGMT_ORG": "{DEV_ORG_NAME}",
             "MGMT_HOST": "{MGMT_HOST}",
             "SERVICE_HOSTNAME": "{SVC_HOST}"
           }
