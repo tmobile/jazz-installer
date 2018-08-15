@@ -55,6 +55,11 @@
         },
         "SWAGGER": {
             "EDITOR_URL": "http://editor.swagger.io/?url="
+        },
+        "DEPLOYMENT_TARGETS": {
+          "api": ["aws_apigateway", "gcp_apigee"],
+          "function": ["aws_lambda"],
+          "website": ["aws_s3", "aws_cloudfront"]
         }
     },
     "JENKINS": {
@@ -115,10 +120,29 @@
     },
     "APIGEE": {
         "ENABLED": false,
+        "APIGEE_CRED_ID": "{APIGEE_CREDS}",
+        "MAVEN": "apache-maven-3.3.9",
+        "BUILD_VERSION": "1.0",
+        "USE_SECURE": false,
         "API_ENDPOINTS": {
-            "PROD": "{APIGEE_PROD_API}",
-            "STG": "{APIGEE_STG_API}",
-            "DEV": "{APIGEE_DEV_API}"
+          "PROD": {
+            "MGMT_ENV": "prod",
+            "MGMT_ORG": "{PROD_ORG_NAME}",
+            "MGMT_HOST": "{MGMT_HOST}",
+            "SERVICE_HOSTNAME": "{SVC_HOST}"
+          },
+          "STG": {
+            "MGMT_ENV": "stg",
+            "MGMT_ORG": "{STG_ORG_NAME}",
+            "MGMT_HOST": "{MGMT_HOST}",
+            "SERVICE_HOSTNAME": "{SVC_HOST}"
+          },
+          "DEV": {
+            "MGMT_ENV": "dev",
+            "MGMT_ORG": "{DEV_ORG_NAME}",
+            "MGMT_HOST": "{MGMT_HOST}",
+            "SERVICE_HOSTNAME": "{SVC_HOST}"
+          }
         }
     }
 }
