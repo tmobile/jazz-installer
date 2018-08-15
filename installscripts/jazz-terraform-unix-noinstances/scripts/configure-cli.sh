@@ -28,7 +28,7 @@ fi
 java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl groovy = <<EOF
 import jenkins.model.JenkinsLocationConfiguration
 c = JenkinsLocationConfiguration.get()
-c.url = 'https://$jenkinsurl'
+c.url = 'http://$jenkinsurl'
 c.adminAddress = '$email'
 c.save()
 jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "jenkinsadmin")
