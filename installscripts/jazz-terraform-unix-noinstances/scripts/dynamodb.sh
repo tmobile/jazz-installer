@@ -4,7 +4,7 @@ TABLE_FAMILY=$1
 TABLE_NAME=$2
 
 case "$TABLE_FAMILY" in
-   "EVENT_HANDLER") 
+   "EVENT_HANDLER")
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"CREATE_SERVERLESS_SERVICE\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"JENKINS\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"ONBOARDING_API\"}}"
@@ -13,7 +13,7 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"DELETE_SERVICE_API\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_HANDLER\":{\"S\":\"AWS\"}}"
    ;;
-   "EVENT_NAME") 
+   "EVENT_NAME")
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"MODIFY_TEMPLATE\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"TRIGGER_FOLDERINDEX\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CALL_ONBOARDING_WORKFLOW\"}}"
@@ -36,9 +36,9 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"PUSH_TEMPLATE_TO_SERVICE_REPO\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_ASSET\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CLONE_TEMPLATE\"}}"
-		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_PROJECT\"}}"
-		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"BUILD\"}}"
-		aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"VALIDATE_PRE_BUILD_CONF\"}}"
+		    aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_PROJECT\"}}"
+		    aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"BUILD\"}}"
+		    aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"VALIDATE_PRE_BUILD_CONF\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_BRANCH\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CREATE_TAG\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"COMMIT_TEMPLATE\"}}"
@@ -52,19 +52,24 @@ case "$TABLE_FAMILY" in
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_DEPLOYMENT\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"UPDATE_ENVIRONMENT\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DELETE_ENVIRONMENT\"}}"
-        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"CALL_DELETE_ENV_WORKFLOW\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_GEN\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_BUILD\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_DEPLOY\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"APIGEE_API_PROXY_DELETE\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DEPLOY_TO_AWS_APIGATEWAY\"}}"
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_NAME\":{\"S\":\"DEPLOY_TO_GCP_APIGEE\"}}"
    ;;
-   "EVENT_STATUS") 
+   "EVENT_STATUS")
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"COMPLETED\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"FAILED\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_STATUS\":{\"S\":\"STARTED\"}}"
    ;;
-   "EVENT_TYPE") 
+   "EVENT_TYPE")
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_UPDATE\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_DEPLOYMENT\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_CREATION\"}}"
         aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_DELETION\"}}"
-        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_ONBOARDING\"}}" 
+        aws dynamodb put-item --table-name $TABLE_NAME --item "{\"EVENT_TYPE\":{\"S\":\"SERVICE_ONBOARDING\"}}"
    ;;
 esac
 
