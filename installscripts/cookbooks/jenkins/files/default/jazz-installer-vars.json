@@ -116,7 +116,7 @@
         "SLACK_TOKEN": "{slack_token}"
     },
     "APIGEE": {
-        "ENABLED": true,
+        "ENABLED": false,
         "APIGEE_CRED_ID": "{APIGEE_CREDS}",
         "MAVEN": "apache-maven-3.3.9",
         "BUILD_VERSION": "1.0",
