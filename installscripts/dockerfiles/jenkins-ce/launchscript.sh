@@ -81,7 +81,9 @@ sudo docker run -d --name jenkins-server -p 8081:8080 -v jenkins-volume:/var/jen
 # Wainting for the container to spin up
 sleep 60
 echo "initialPassword is: $passwd"
-sudo docker exec -u root -i jenkins-server bash -c "echo 'admin:$passwd' > /tmp/jazz-chef/authfile"
+
+# Once the docker image is configured, we will commit the image.
+sudo docker commit -m "JazzOSS-Custom Jenkins container" jenkins-server jazzoss-jenkins-server
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
