@@ -59,3 +59,7 @@ fi
 ../jenkinscli/jobs/job_build_pack_lambda.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $scmpath
 ../jenkinscli/jobs/job_build_pack_website.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $scmpath
 ../jenkinscli/jobs/job_jazz_ui.sh "java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl" $scmpath
+
+#restart
+java -jar jenkins-cli.jar -auth $jenkinsuser:$jpassword -s  http://$jenkinsurl restart
+sleep 20 &

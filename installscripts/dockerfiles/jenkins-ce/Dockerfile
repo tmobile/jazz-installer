@@ -10,9 +10,7 @@ ENV JENKINS_PASS $adminpass
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 COPY dockerfiles/jenkins-ce/default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
 
-RUN curl -o chefdk.deb https://packages.chef.io/files/stable/chefdk/3.0.36/ubuntu/16.04/chefdk_3.0.36-1_amd64.deb && \
-dpkg -i chefdk.deb && apt-get update && \
-apt-get install -y vim curl sudo libtool autoconf make unzip rsync gcc autogen shtool pkg-config lsb-release python python-dev python-pip python-setuptools groff less && \
+RUN apt-get update && apt-get install -y vim curl sudo libtool autoconf make unzip rsync gcc autogen shtool pkg-config lsb-release python python-dev python-pip python-setuptools groff less && \
 curl https://bootstrap.pypa.io/get-pip.py | python && pip install --upgrade awscli && apt-get clean && pip install virtualenv && /usr/bin/easy_install virtualenv && \
 wget -O /opt/apache-maven-3.5.2-bin.tar.gz https://archive.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz && \
 tar xzvf /opt/apache-maven-3.5.2-bin.tar.gz -C  /opt && export PATH=$PATH:/opt/apache-maven-3.5.2/bin >> /etc/profile.d/maven.sh && ln -sf /opt/apache-maven-3.5.2/bin/mvn /usr/bin/mvn && \
