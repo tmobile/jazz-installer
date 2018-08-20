@@ -42,7 +42,7 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "jazz_ui"
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$SCM_ELB/slf/jazz-ui.git</url>
+          <url>http://$SCM_ELB/slf/jazz_ui.git</url>
           <credentialsId>jazz_repocreds</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
