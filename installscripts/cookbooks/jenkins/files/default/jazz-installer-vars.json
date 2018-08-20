@@ -56,9 +56,9 @@
             "EDITOR_URL": "http://editor.swagger.io/?url="
         },
         "DEPLOYMENT_TARGETS": {
-          "api": ["aws_apigateway", "gcp_apigee"],
-          "function": ["aws_lambda"],
-          "website": ["aws_s3", "aws_cloudfront"]
+          "API": ["aws_apigateway", "gcp_apigee"],
+          "FUNCTION": ["aws_lambda"],
+          "WEBSITE": ["aws_s3", "aws_cloudfront"]
         }
     },
     "JENKINS": {
