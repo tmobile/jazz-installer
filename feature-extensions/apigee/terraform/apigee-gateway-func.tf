@@ -5,7 +5,6 @@ data "archive_file" "apigee-gateway-zip" {
   output_path = "${path.module}/../jazz-apigee-proxy.zip"
 }
 
-#TODO put env prefix in here..somehow?
 # Create a role for the Lambda function to exec under
 resource "aws_iam_role" "apigee-lambda-role" {
   name = "${var.env_prefix}-jazz-apigee-lambda"
@@ -33,7 +32,7 @@ EOF
 # in this region that were installed under this account
 resource "aws_iam_role_policy" "apigee-lambda-policy" {
   name = "${var.env_prefix}-jazz-apigee-lambda"
-  role = "${aws_iam_role.apigee_lambda_role.id}"
+  role = "${aws_iam_role.apigee-lambda-role.id}"
 
   policy = <<EOF
 {
@@ -58,7 +57,7 @@ EOF
 resource "aws_lambda_function" "jazz-apigee-proxy" {
   filename         = "${data.archive_file.apigee-gateway-zip.output_path}"
   function_name    = "${var.env_prefix}-jazz-apigee-proxy"
-  role             = "${aws_iam_role.apigee_lambda_role.arn}"
+  role             = "${aws_iam_role.apigee-lambda-role.arn}"
   handler          = "jazz-apigee-proxy.handler"
   source_code_hash = "${data.archive_file.apigee-gateway-zip.output_base64sha256}"
   runtime          = "nodejs8.10"
@@ -119,4 +118,13 @@ output "apigee-lambda-user-id" {
 
 output "apigee-lambda-gateway-func-arn" {
   value = "${aws_lambda_function.jazz-apigee-proxy.arn}"
+}
+
+#Generic installer output vars. These will be saved so you can query and provide them during uninstall.
+output "installer-region" {
+  value = "${var.region}"
+}
+
+output "env-prefix" {
+  value = "${var.env_prefix}"
 }

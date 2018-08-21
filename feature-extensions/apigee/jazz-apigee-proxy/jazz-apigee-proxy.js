@@ -14,29 +14,23 @@
 // limitations under the License.
 // =========================================================================
 
-const AWS = require('aws-sdk');
 const errorHandlerModule = require("./components/error-handler.js");
 const logger = require("./components/logger.js");
-const validation = require("./components/validation.js");
+const AWS = require('aws-sdk');
 
 module.exports.handler = (event, context, callback) => {
   logger.init(event, context);
   const errorHandler = errorHandlerModule();
-
-  validation.validateEvent(event, callback);
-
   AWS.config.region = event.region;
   const lambda = new AWS.Lambda();
 
   //Defining the payload object
   const payload = {
+    operation: event.operation,
     body: event.body,
     query: event.queryStringParameters,
     headers: event.headers,
-    method: event.httpMethod,
-    path: event.path,
-    resource: event.resource,
-    pathParameters: event.pathParameters
+    method: event.httpMethod
   };
 
   logger.verbose(`payload : ${JSON.stringify(payload)}`);
@@ -62,11 +56,11 @@ module.exports.handler = (event, context, callback) => {
     } else {
       const responseObj = JSON.parse(data.Payload);
       if (!responseObj) {
-        logger.error(`No payload response received.`);
-        callback(errorHandler.throwInternalServerError(`No payload response received.`));
+        logger.error(`No payload response recieved.`);
+        callback(errorHandler.throwInternalServerError("No payload response recieved."));
       }
       else if (!responseObj.errorMessage && !responseObj.message) {
-        logger.verbose(`Successfully invoked lambda : ${JSON.stringify(responseObj)}`);
+        logger.info(`Successfully invoked lambda : ${JSON.stringify(responseObj)}`);
         callback(null, responseObj);
       } else {
         if (responseObj.errorMessage) {
@@ -92,8 +86,10 @@ module.exports.handler = (event, context, callback) => {
             callback(JSON.stringify(errorHandler.throwNotFoundError(errorMessage)));
             break;
           case 'InternalServerError':
-          default:
             callback(JSON.stringify(errorHandler.throwInternalServerError(errorMessage)));
+            break;
+          default:
+            callback(JSON.stringify(errorHandler.throwUnknownError(errorMessage)));
         }
       }
     }

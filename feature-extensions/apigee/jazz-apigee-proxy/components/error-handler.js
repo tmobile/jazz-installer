@@ -51,6 +51,13 @@ module.exports = () => {
         message: errorMessage
       }
     ),
+    throwUnknownError: (errorMessage) => (
+      {
+          errorType: "Service Unavailable",
+          errorCode: 503,
+          message: errorMessage
+      }
+    ),
     throwInternalServerError: (errorMessage) => (
       {
         errorType: "InternalServerError",
@@ -60,14 +67,14 @@ module.exports = () => {
     ),
     throwMissingParamsError: (errorMessage) => (
       {
-        errorType: "MissingRequiredParams",
+        errorType: "Missing Required Params",
         errorCode: 400,
         message: errorMessage
       }
     ),
     throwCommonLambdaError: (errorMessage) => (
       {
-        errorType: "LambdaIntegrationError",
+        errorType: "Common Lambda Integration Error",
         errorCode: 500,
         message: errorMessage
       }
