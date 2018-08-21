@@ -66,10 +66,6 @@ variable "configureJenkinsCE_cmd" {
   type = "string"
   default = "./scripts/configure-cli.sh"
 }
-variable "launchJenkinsCE_cmd" {
-  type = "string"
-  default = "../dockerfiles/jenkins-ce/configurejenkins.sh"
-}
 variable "pushInstallervars_cmd" {
   type= "string"
   default = "./scripts/pushInstallervars.sh"

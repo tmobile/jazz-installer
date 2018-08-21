@@ -101,21 +101,20 @@ resource "null_resource" "configureJenkinsInstance" {
       "sudo rm -rf -f ${var.chefDestDir}"
     ]
   }
-  provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} '/var/lib/jenkins' ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${var.aws_access_key} ${var.aws_secret_key} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
-  }
 }
 
 resource "null_resource" "configureJenkinsDocker" {
   count = "${var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
-
-  #Jenkins Cli process
-  provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} '/var/jenkins_home' ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${var.aws_access_key} ${var.aws_secret_key} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
-  }
 }
 
+resource "null_resource" "configureCliJenkins" {
+  depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
+  #Jenkins Cli process
+  provisioner "local-exec" {
+    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${var.aws_access_key} ${var.aws_secret_key} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+  }
+}
 resource "null_resource" "postJenkinsConfiguration" {
   depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
   provisioner "local-exec" {
