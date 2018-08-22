@@ -119,6 +119,18 @@ function install_packages () {
     sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
     spin_wheel $! "Adding the present user to docker group"
 
+    # Installing epel
+    sudo yum install epel-release -y &> /dev/null &
+    spin_wheel $! "Installing epel"
+
+    # Installing beautifulsoup4
+    sudo yum install python-beautifulsoup4 -y &> /dev/null &
+    spin_wheel $! "Installing beautifulsoup4"
+
+    # Installing lxml
+    sudo pip install lxml &> /dev/null &
+    spin_wheel $! "Installing lxml"
+    
     # Download and Install java
     if command -v java > /dev/null; then
         print_info "Java already installed, using it"
