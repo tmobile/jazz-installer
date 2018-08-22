@@ -76,6 +76,11 @@
         "CAS_NAMESPACE_ID": ""
     },
     "UI_CONFIG": {
+        "CREATE_SERVICE": {
+          "API_DEPLOYMENT_TARGETS": true,
+          "FUNCTION_DEPLOYMENT_TARGETS": false,
+          "WEBSITE_DEPLOYMENT_TARGETS": false
+        },
         "feature": {
             "multi_env": true
         },
