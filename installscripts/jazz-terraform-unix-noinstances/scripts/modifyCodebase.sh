@@ -44,6 +44,7 @@ tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
 service_type="
 provider_runtime="
+deployment_targets="
 
 for element in "${platform_services[@]}"
 do
@@ -57,16 +58,19 @@ do
     service_name=$element
   fi
 
+  #TODO: https://github.com/tmobile/jazz-installer/issues/322
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
-			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then			
+      deployment_targets={"function": {"S": "aws_lambda"}}
+			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
 				provider_runtime="nodejs4.3"
 			fi
  else
 			service_type="api"
-			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then	  	
+      deployment_targets={"api": {"S": "aws_apigateway"}}
+			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
 				provider_runtime="nodejs4.3"
@@ -83,6 +87,7 @@ do
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
 	  "SERVICE_TYPE":{"S":"'$service_type'"},
+    "SERVICE_DEPLOYMENT_TARGETS": {"M": $deployment_targets},
 	  "SERVICE_METADATA":{"M":{
 				  "securityGroupIds":{"S":"'$securityGroupIds'"},
 				  "subnetIds":{"S":"'$subnetIds'"},
