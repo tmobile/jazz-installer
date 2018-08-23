@@ -1,7 +1,7 @@
 ES_ENDPOINT=$1
 JENKINSELB=$2
 region=$3
-sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/jazz_cloud-logs-streamer/index.js
+sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/core/jazz_cloud-logs-streamer/index.js
 # this is done in bitbucketclient.sh since that is last script to run in this demo with existing instances
 
 # Add permission to Lambda function
@@ -15,13 +15,13 @@ sed -i "s/{inst_elastic_search_hostname}/$ES_ENDPOINT/g " ./jazz-core/jazz_cloud
 sleep 120
 # Configure ElasticSearch Template via json
 
-curl -X POST --url https://$ES_ENDPOINT/_template/apilogs  --data-binary @./jazz-core/jazz_cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
+curl -X POST --url https://$ES_ENDPOINT/_template/apilogs  --data-binary @./jazz-core/core/jazz_cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
 
-curl -X POST --url https://$ES_ENDPOINT/_template/applicationlogs  --data-binary @./jazz-core/jazz_cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
+curl -X POST --url https://$ES_ENDPOINT/_template/applicationlogs  --data-binary @./jazz-core/core/jazz_cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
 
-curl -XPUT https://$ES_ENDPOINT/apilogs?pretty --data-binary @./jazz-core/jazz_cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
+curl -XPUT https://$ES_ENDPOINT/apilogs?pretty --data-binary @./jazz-core/core/jazz_cloud-logs-streamer/_ES/apilogs.json --header "Content-Type: application/json"
 
-curl -XPUT https://$ES_ENDPOINT/applicationlogs?pretty --data-binary @./jazz-core/jazz_cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
+curl -XPUT https://$ES_ENDPOINT/applicationlogs?pretty --data-binary @./jazz-core/core/jazz_cloud-logs-streamer/_ES/applicationlogs.json --header "Content-Type: application/json"
 
 # Adding index-pattern in kibana
 curl_params="--include --silent --retry 5 --retry-delay 3  --output /dev/null"

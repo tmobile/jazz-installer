@@ -19,9 +19,9 @@ variable "cognito_pool_password" {type = "string" default = "cognito_pool_passwo
 # Copying these resources to TMP on remote machines,
 # since $HOME is not reliable for all of our scenarios.
 #
-variable "chefconfigSourceDir" {
+variable "jenkinsPluginsSourceDir" {
   type = "string"
-  default = "../chefconfig"
+  default = "../jenkinsplugins"
 }
 variable "cookbooksSourceDir" {
   type = "string"
@@ -36,7 +36,7 @@ variable "chefDestDir" {
 #
 variable "jenkinsjsonpropsfile" {
   type = "string"
-  default = "../cookbooks/jenkins/files/node/jazz-installer-vars.json"
+  default = "../cookbooks/jenkins/files/default/jazz-installer-vars.json"
 }
 variable "jenkinsattribsfile" {
   type = "string"

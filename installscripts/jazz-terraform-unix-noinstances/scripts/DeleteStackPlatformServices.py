@@ -58,17 +58,10 @@ print(str(sys.argv))
 stackName = sys.argv[1].lower() + "-"
 deleteClientServices = sys.argv[2]
 
-platformServices = ['cognito-authorizer', 'logs', 'usermanagement', 'services-handler', 'events', 'services', 'logout', 'login', 'cloud-logs-streamer', 'is-service-available', 'delete-serverless-service', 'create-serverless-service', 'email', 'events-handler', 'environments', 'scm-webhook' , 'environment-event-handler', 'deployments', 'deployments-event-handler', 'codeq']
-
-for pservice in platformServices:
-    deleteCloudFormationService(stackName + 'jazz-' + pservice + '-prod')
-
-print("\r\n\r\nCompleted deletion of platform services.")
-
 if (deleteClientServices.lower() != 'true'):
     exit(0)
 
-print("\r\nStarting deletion of client services\r\n\r\n")
+print("\r\nStarting deletion of micro services\r\n\r\n")
 
 ## Delete user services Cloud formations
 fname = 'listservice.json'
@@ -90,7 +83,4 @@ spLen = len(stackName)
 inval = 0
 for item in ss:
     if (item['StackName'].startswith(stackName)):
-        #print(item['StackName'][spLen:len(item['StackName'])])
-        if item['StackName'][spLen:len(item[
-                'StackName'])] not in platformServices:
-            deleteCloudFormationService(item['StackName'])
+         deleteCloudFormationService(item['StackName'])
