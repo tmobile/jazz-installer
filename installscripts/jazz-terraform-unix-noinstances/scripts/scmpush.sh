@@ -76,7 +76,7 @@ function individual_repopush() {
     # since micro services are now only in the core folder, giving sleep for core folder.
     if [[ $parentfolder == "core" ]]; then
         sleep 45
-        if [[ $reponame == "jazz-ui" ]]; then
+        if [[ $reponame == "jazz_ui" ]]; then
             curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
         elif [[ $reponame != "jazz-web" ]]; then
             file=`find . -type f -name "build.*"`
@@ -106,13 +106,13 @@ function push_to_scm() {
         repos=()
         # Including dependent repos first
         for d in core/* ; do
-            if [[ ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ${d%/} =~ "jazz-ui" ]] ; then
+            if [[ ${d%/} =~ "jazz_cognito-authorizer" ]] || [[ ${d%/} =~ "jazz_cloud-logs-streamer" ]] || [[ ${d%/} =~ "jazz_ui" ]] ; then
               repos+=("${d%/}")
             fi
         done
 
         for d in **/*/ ; do
-            if [[ ! ${d%/} =~ "jazz_cognito-authorizer" ]] && [[ ! ${d%/} =~ "jazz_cloud-logs-streamer" ]] && [[ ! ${d%/} =~ "jazz-ui" ]] && [[ ! ${d%/} =~ "jazz_scm-webhook" ]] ; then
+            if [[ ! ${d%/} =~ "jazz_cognito-authorizer" ]] && [[ ! ${d%/} =~ "jazz_cloud-logs-streamer" ]] && [[ ! ${d%/} =~ "jazz_ui" ]] && [[ ! ${d%/} =~ "jazz_scm-webhook" ]] ; then
                 repos+=("${d%/}")
             fi
             if [[ ${d%/} =~ "jazz_scm-webhook" ]] ; then
