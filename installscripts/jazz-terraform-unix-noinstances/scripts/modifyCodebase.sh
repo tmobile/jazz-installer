@@ -33,7 +33,7 @@ platform_services=()
 cd ./jazz-core
 for d in core/* ; do
   reponame="${d##*/}"
-  if [[ $reponame != "jazz-ui"  && $reponame != "jazz-web" ]] ; then
+  if [[ $reponame != "jazz_ui"  && $reponame != "jazz-web" ]] ; then
 		platform_services+=("$reponame")
   fi
   done
