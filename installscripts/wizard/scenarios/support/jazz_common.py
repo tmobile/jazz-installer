@@ -97,6 +97,12 @@ def replace_tfvars(key, value, fileName):
         r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value), fileName
     ])
 
+#replace it without double quotes
+def replace_tfvars_map(key, value, fileName):
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(%s = \)\(.*\)|\1%s|g' % (key, value), fileName
+    ])
 
 def validate_email_id(email_id):
     """

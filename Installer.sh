@@ -20,6 +20,7 @@ LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
 JAZZ_BRANCH="master"
 CODE_QUALITY='false'
+AWS_TAGS=''
 
 function start_wizard {
     # Set the permissions
@@ -29,7 +30,7 @@ function start_wizard {
     # Call the python script to continue installation process
     cd $INSTALL_DIR/installscripts/wizard
 
-    python ./run.py $JAZZ_BRANCH $INSTALL_DIR $CODE_QUALITY
+    python ./run.py $JAZZ_BRANCH $INSTALL_DIR $CODE_QUALITY "$AWS_TAGS"
 
     setterm -term linux -fore green
     setterm -term linux -fore default
@@ -76,11 +77,11 @@ while [ $# -gt 0 ] ; do
             shift
             while [ "$#" -gt 0 ] ; do
                 if [[ "$1" =~ Key=.*,Value=.* ]] && [[ ! "$1" =~ ";" ]] ; then
-                    arr+=("$1")
+                    AWS_TAGS="$AWS_TAGS $1"
                 elif [[ $1 == -* ]] ; then break
                 else
-                    echo "Please specify tags in format: Key=stackName,Value=production"
-                    echo "Usage: ./Installer --tags Key=stackName,Value=production Key=department,Value=devops"
+                    echo "Please specify tags in format: Key=stackname,Value=production"
+                    echo "Usage: ./Installer --tags Key=stackname,Value=production Key=department,Value=devops"
                     exit 1
                 fi
                 shift
