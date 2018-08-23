@@ -57,9 +57,9 @@
             "EDITOR_URL": "http://editor.swagger.io/?url="
         },
         "DEPLOYMENT_TARGETS": {
-          "api": ["aws_apigateway", "gcp_apigee"],
-          "function": ["aws_lambda"],
-          "website": ["aws_s3", "aws_cloudfront"]
+          "API": ["aws_apigateway", "gcp_apigee"],
+          "FUNCTION": ["aws_lambda"],
+          "WEBSITE": ["aws_s3", "aws_cloudfront"]
         }
     },
     "JENKINS": {
@@ -77,6 +77,11 @@
         "CAS_NAMESPACE_ID": ""
     },
     "UI_CONFIG": {
+        "CREATE_SERVICE": {
+          "API_DEPLOYMENT_TARGETS": true,
+          "FUNCTION_DEPLOYMENT_TARGETS": false,
+          "WEBSITE_DEPLOYMENT_TARGETS": false
+        },
         "feature": {
             "multi_env": true
         },
