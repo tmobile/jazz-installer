@@ -50,10 +50,6 @@ variable "deployS3Webapp_cmd" {
   type = "string"
   default = "./scripts/deployS3Webapp.sh"
 }
-variable "dynamodb_cmd" {
-  type = "string"
-  default = "./scripts/dynamodb.sh"
-}
 variable "modifyPropertyFile_cmd" {
   type = "string"
   default = "./scripts/modifyPropertyFile.sh"
@@ -65,4 +61,16 @@ variable "ses_cmd" {
 variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
   default = "./scripts/injectingToJenkinsfile.sh"
+}
+variable "launchJenkinsCE_cmd" {
+  type = "string"
+  default = "../dockerfiles/jenkins-ce/chefclient.sh"
+}
+variable "pushInstallervars_cmd" {
+  type= "string"
+  default = "./scripts/pushInstallervars.sh"
+}
+variable "configureJenkinscontainer_cmd" {
+  type = "string"
+  default = "./scripts/configureJenkinscontainer.sh"
 }

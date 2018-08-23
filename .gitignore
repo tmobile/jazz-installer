@@ -3,6 +3,7 @@
 node_modules
 .DS_Store
 .vscode/
+/.idea
 */.classpath
 */.project
 */.settings
@@ -13,3 +14,4 @@ node_modules
 .nyc_output/
 npm-debug.log
 */package-lock.json
+.terraform/
