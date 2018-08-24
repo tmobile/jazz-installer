@@ -20,6 +20,7 @@ featureName = "Apigee"
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.description = 'Installs the Apigee extension for the Jazz Serverless Development Platform (https://github.com/tmobile/jazz)'
     parser.add_argument(
         '--action',
         '-a',
