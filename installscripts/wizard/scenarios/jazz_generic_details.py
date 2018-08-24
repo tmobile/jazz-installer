@@ -9,7 +9,7 @@ from support.jazz_common import validate_email_id
 
 def passwd_generator():
     """
-        Random password generator for jazz-ui admin email ID login
+        Random password generator for jazz_ui admin email ID login
     """
     pwd = []
     pwd.append(random.choice(string.ascii_lowercase))

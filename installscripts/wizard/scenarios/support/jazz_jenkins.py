@@ -112,6 +112,11 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         jenkins_server_subnet
     ]
 
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(dockerizedJenkins = \)\(.*\)|\1false|g', get_tfvars_file()
+    ])
+
     add_jenkins_config_to_files(parameter_list)
 
 
@@ -122,7 +127,7 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     os.chdir(jenkins_docker_path)
     print("Running docker launch script")
     subprocess.call([
-        'sg', 'docker', './launch_jenkins_docker.sh', '|', 'tee', '-a',
+        'sg', 'docker', './launchscript.sh', '|', 'tee', '-a',
         '../../docker_creation.out'
     ])
     # Get values to create the array
