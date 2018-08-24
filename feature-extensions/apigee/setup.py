@@ -20,23 +20,17 @@ featureName = "Apigee"
 
 def main():
     parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-i",
-        "--install",
-        help="Install {0} feature extension".format(featureName),
-        action="store_true")
-    group.add_argument(
-        "-u",
-        "--uninstall",
-        help="Uninstall {0} feature extension".format(featureName),
-        action="store_true")
+    parser.add_argument(
+        '--action',
+        '-a',
+        help='Either "install" or "uninstall" to install or uninstall the feature extension',
+        nargs='?', choices=('install', 'uninstall'), required=True)
     args = parser.parse_args()
 
-    if args.install:
+    if args.action == 'install':
         install()
 
-    if args.uninstall:
+    if args.action == 'uninstall':
         uninstall()
 
 
@@ -118,6 +112,5 @@ def getAWSAccountID():
     return subprocess.check_output([
         'aws', 'sts', 'get-caller-identity', '--output', 'text', '--query', 'Account'
     ]).rstrip()
-
 
 main()
