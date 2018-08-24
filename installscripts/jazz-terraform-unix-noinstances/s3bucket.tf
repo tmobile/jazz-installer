@@ -11,16 +11,11 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
-  }
-
 }
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-stg-"
@@ -33,16 +28,11 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
-  }
-
 }
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-prod-"
@@ -55,23 +45,18 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
-  }
-
 }
 
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
-  depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
+  #TODO Verify this is a spurious depend.
+  # depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
   acl = "public-read"
   cors_rule {
     allowed_headers = ["Authorization"]
@@ -80,39 +65,10 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   website {
     index_document = "index.html"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
-  }
-}
-
-resource "aws_api_gateway_rest_api" "jazz-dev" {
-  name        = "${var.envPrefix}-dev"
-  description = "DEV API gateway"
-}
-resource "aws_api_gateway_rest_api" "jazz-stag" {
-  name        = "${var.envPrefix}-stag"
-  description = "STG API"
-}
-
-resource "aws_api_gateway_rest_api" "jazz-prod" {
-  name        = "${var.envPrefix}-prod"
-  description = "PROD API"
-
-  provisioner "local-exec" {
-    command = "rm -rf jazz-core"
-  }
-  provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
-
-  }
-  provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stag.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
   }
 }
 
@@ -128,6 +84,7 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  force_destroy = true
 
   website {
     index_document = "index.html"
@@ -146,12 +103,6 @@ EOF
 
   provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
-  }
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
   }
 }
 
@@ -176,119 +127,6 @@ resource "aws_iam_policy" "basic_execution_policy" {
 EOF
 }
 
-resource "aws_iam_role" "lambda_role" {
-  name = "${var.envPrefix}_lambda2_basic_execution_1"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Principal": {
-                        "Service": "apigateway.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        },
-        {
-            "Effect": "Allow",
-            "Principal": {
-                        "Service": "lambda.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-   ]
-}
-EOF
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn ${aws_iam_policy.basic_execution_policy.arn}"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AWSLambdaFullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    when = "destroy"
-    on_failure = "continue"
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = " aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-  }
-}
-
-
-resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "apigatewayinvokefullAccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "cloudwatchlogaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "${aws_iam_policy.basic_execution_policy.arn}"
-}
-resource "aws_iam_role_policy_attachment" "kinesisaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "networkadminaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/job-function/NetworkAdministrator"
-}
-resource "aws_iam_role_policy_attachment" "vpccrossaccountaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCCrossAccountNetworkInterfaceOperations"
-}
-resource "aws_iam_role_policy_attachment" "s3fullaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
-resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
-}
-resource "aws_iam_role_policy_attachment" "vpcaccessexecution" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
   request_payer = "BucketOwner"
@@ -300,13 +138,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
@@ -320,19 +152,12 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
   bucket_prefix = "${var.envPrefix}-prod-web-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -340,14 +165,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  # TODO do we need this, or does `force_destroy` suffice?
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
-  }
-
+  force_destroy = true
 }
 
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
