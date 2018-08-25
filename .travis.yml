@@ -22,5 +22,4 @@ before_install:
       terraform version ;
     fi
 script:
-  - cd installscripts/jazz-terraform-unix-noinstances
   - test/check-tf.sh
