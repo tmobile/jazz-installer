@@ -19,6 +19,7 @@ before_install:
       chmod +x "${HOME}/bin/terraform" ;
       popd ;
       terraform version ;
+      terraform init ;
     fi
 script:
   - test/check-tf.sh
