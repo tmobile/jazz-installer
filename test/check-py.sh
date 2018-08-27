@@ -6,11 +6,6 @@ else
   BRANCH="master"
 fi
 
-exitcode=0
 for file in $(git diff --name-only $BRANCH | grep .py\$); do
-  if [[ "$(flake8 "$file")" -gt 0 ]]; then
-    echo "ERROR: $file failed to pass Python lint step"
-    exitcode=1
-  fi
+  flake8 "$file"
 done
-exit $exitcode
