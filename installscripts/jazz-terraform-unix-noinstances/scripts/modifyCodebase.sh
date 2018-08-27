@@ -42,9 +42,9 @@ cd ..
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
-service_type="
-provider_runtime="
-deployment_targets="
+service_type=""
+provider_runtime=""
+deployment_targets=""
 
 for element in "${platform_services[@]}"
 do
@@ -87,7 +87,7 @@ do
 	  "SERVICE_STATUS":{"S":"active"},
 	  "TIMESTAMP":{"S":"'$timestamp'"},
 	  "SERVICE_TYPE":{"S":"'$service_type'"},
-    "SERVICE_DEPLOYMENT_TARGETS": {"M": $deployment_targets},
+    "SERVICE_DEPLOYMENT_TARGETS": {"M": "'$deployment_targets'"},
 	  "SERVICE_METADATA":{"M":{
 				  "securityGroupIds":{"S":"'$securityGroupIds'"},
 				  "subnetIds":{"S":"'$subnetIds'"},
