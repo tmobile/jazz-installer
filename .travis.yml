@@ -26,3 +26,4 @@ install:
 script:
   - test/check-tf.sh
   - test/check-py.sh
+  - test/check-bash.sh
