@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# This is inspired by:
-# https://github.com/mozilla-platform-ops/devservices-aws/blob/master/runtests.sh
-set -euo pipefail
-main() {
-  echo -e '\n-----> Running shellcheck'
-  for d in $(git ls-files '*.sh' | xargs -n1 dirname | LC_ALL=C sort | uniq); do
-    echo -en "${d} "
-    shellcheck "${d}"
-    echo "✓"
-  done
-  echo -e '\n-----> Success!'
-}
-main "$@"
+
+if [[ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]]; then
+  BRANCH="$TRAVIS_PULL_REQUEST_BRANCH"
+else
+  BRANCH="master"
+fi
+
+exitcode=0
+for file in $(git diff --name-only $BRANCH | grep .sh\$); do
+  if [[ "$(shellcheck "$file")" -gt 0 ]]; then
+    echo "ERROR: $file failed to pass shellcheck lint step"
+    exitcode=1
+  fi
+done
+exit $exitcode
