@@ -87,7 +87,7 @@ do
 	  \"SERVICE_STATUS\":{\"S\":\"active\"},
 	  \"TIMESTAMP\":{\"S\":\"$timestamp\"},
     \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
-    \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": \"$deployment_targets\"},
+    \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
 	  \"SERVICE_METADATA\":{\"M\":{
 				  \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
 				  \"subnetIds\":{\"S\":\"$subnetIds\"},
