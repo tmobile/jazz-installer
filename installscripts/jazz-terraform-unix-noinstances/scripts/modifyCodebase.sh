@@ -61,7 +61,7 @@ do
   #TODO: https://github.com/tmobile/jazz-installer/issues/322
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
-      deployment_targets={"function": {"S": "aws_lambda"}}
+      deployment_targets='{"function": {"S": "aws_lambda"}}'
 			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
@@ -69,7 +69,7 @@ do
 			fi
  else
 			service_type="api"
-      deployment_targets={"api": {"S": "aws_apigateway"}}
+      deployment_targets='{"api": {"S": "aws_apigateway"}}'
 			if [[ $(inArray "${nodejs61_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs6.10"
 			else
@@ -78,25 +78,25 @@ do
  fi
 
 #Updating to service catalog
-	aws dynamodb put-item --table-name $tablename --item '{
-	  "SERVICE_ID":{"S":"'$uuid'"},
-	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
-	  "SERVICE_DOMAIN":{"S":"jazz"},
-	  "SERVICE_NAME":{"S":"'$service_name'"},
-	  "SERVICE_RUNTIME":{"S":"nodejs"},
-	  "SERVICE_STATUS":{"S":"active"},
-	  "TIMESTAMP":{"S":"'$timestamp'"},
-	  "SERVICE_TYPE":{"S":"'$service_type'"},
-    "SERVICE_DEPLOYMENT_TARGETS": {"M": $deployment_targets},
-	  "SERVICE_METADATA":{"M":{
-				  "securityGroupIds":{"S":"'$securityGroupIds'"},
-				  "subnetIds":{"S":"'$subnetIds'"},
-				  "iamRoleARN":{"S":"'$iamRoleARN'"},
-				  "providerMemorySize":{"S":"256"},
-				  "providerRuntime":{"S":"'$provider_runtime'"},
-				  "providerTimeout":{"S":"160"}
-			    }
+	aws dynamodb put-item --table-name $tablename --item "{
+	  \"SERVICE_ID\":{\"S\":\"$uuid\"},
+	  \"SERVICE_CREATED_BY\":{\"S\":\"$jazz_admin\"},
+	  \"SERVICE_DOMAIN\":{\"S\":\"jazz\"},
+	  \"SERVICE_NAME\":{\"S\":\"$service_name\"},
+	  \"SERVICE_RUNTIME\":{\"S\":\"nodejs\"},
+	  \"SERVICE_STATUS\":{\"S\":\"active\"},
+	  \"TIMESTAMP\":{\"S\":\"$timestamp\"},
+    \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
+    \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
+	  \"SERVICE_METADATA\":{\"M\":{
+				  \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
+				  \"subnetIds\":{\"S\":\"$subnetIds\"},
+				  \"iamRoleARN\":{\"S\":\"$iamRoleARN\"},
+				  \"providerMemorySize\":{\"S\":\"256\"},
+				  \"providerRuntime\":{\"S\":\"$provider_runtime\"},
+				  \"providerTimeout\":{\"S\":\"160\"}
+			  }
 			}
-	  }'
+	  }"
 
 done
