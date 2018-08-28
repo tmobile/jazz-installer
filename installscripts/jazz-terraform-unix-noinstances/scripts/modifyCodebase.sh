@@ -42,9 +42,9 @@ cd ..
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=`date --utc +%FT%T`
-service_type="
-provider_runtime="
-deployment_targets="
+service_type=""
+provider_runtime=""
+deployment_targets=""
 
 for element in "${platform_services[@]}"
 do
