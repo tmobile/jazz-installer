@@ -62,9 +62,9 @@ variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
   default = "./scripts/injectingToJenkinsfile.sh"
 }
-variable "configureJenkinsCE_cmd" {
+variable "launchJenkinsCE_cmd" {
   type = "string"
-  default = "./scripts/configure-cli.sh"
+  default = "../dockerfiles/jenkins-ce/chefclient.sh"
 }
 variable "pushInstallervars_cmd" {
   type= "string"
