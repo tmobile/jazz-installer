@@ -73,6 +73,18 @@ docker cp gitlab.sh gitlab:/root/gitlab.sh
 docker exec gitlab /bin/bash /root/gitlab.sh $passwd $rootemail > credentials.txt 2>&1&
 spin_wheel $! "Setting up admin credentials"
 
+# Installing epel
+sudo yum install epel-release -y &> /dev/null &
+spin_wheel $! "Installing epel"
+
+# Installing beautifulsoup4
+sudo yum install python-beautifulsoup4 -y &> /dev/null &
+spin_wheel $! "Installing beautifulsoup4"
+
+# Installing lxml
+sudo pip install lxml &> /dev/null &
+spin_wheel $! "Installing lxml"
+
 # Generating private tokens
 echo "Generating private tokens:"
 python privatetoken.py mytoken 2018-12-31 $passwd
