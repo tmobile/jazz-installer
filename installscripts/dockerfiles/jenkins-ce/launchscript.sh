@@ -31,6 +31,24 @@ spin_wheel()
     fi
 }
 
+#Installing Docker-ce on centos7
+sudo yum check-update &> /dev/null
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2 &> /dev/null &
+spin_wheel $! "Installing prerequisites for docker-ce"
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo &> /dev/null &
+spin_wheel $! "Adding yum repo for docker-ce"
+sudo yum install docker-ce -y &> /dev/null &
+spin_wheel $! "Installing docker-ce"
+
+sudo systemctl start docker &> /dev/null &
+spin_wheel $! "Starting docker-ce"
+sudo systemctl status docker &> /dev/null &
+spin_wheel $! "Checking docker-ce service"
+sudo systemctl enable docker &> /dev/null &
+spin_wheel $! "Enabling docker-ce service"
+sudo usermod -aG docker $(whoami) &> /dev/null &
+spin_wheel $! "Adding the present user to docker group"
+
 # Check if docker with same name exists. If yes, stop and remove the docker container.
 sudo docker ps -a | grep -i jenkins-server &> /dev/null
 if [ $? == 0 ] ; then
@@ -50,8 +68,7 @@ fi
 
 # Building the custom docker image from the jenkins-ce base image
 cd ../../../installscripts
-passwd=`date | md5sum | cut -d ' ' -f1`
-sudo docker build --build-arg adminpass=$passwd -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
+sudo docker build -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
 
 # Create the volume that we host the jenkins_home dir on dockerhost.
 sudo docker volume create jenkins-volume &> /dev/null &
@@ -62,13 +79,14 @@ sudo docker run -d --name jenkins-server -p 8081:8080 -v jenkins-volume:/var/jen
 
 # Wainting for the container to spin up
 sleep 60
-echo "initialPassword is: $passwd"
-
-# Once the docker image is configured, we will commit the image.
-sudo docker commit -m "JazzOSS-Custom Jenkins container" jenkins-server jazzoss-jenkins-server
+# Grabbing initial password and populating jenkins default authfile
+initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
+echo "initialPassword is: $initialPassword"
+sudo docker exec -i jenkins-server bash -c "echo 'admin:$initialPassword' > /tmp/jazz-chef/authfile"
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
+initialPassword=`sudo cat /var/lib/docker/volumes/jenkins-volume/_data/secrets/initialAdminPassword`
 mac=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs`
 security_groups=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs/${mac%/}/security-group-ids`
 subnet_id=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/macs/${mac%/}/subnet-id`
@@ -76,7 +94,7 @@ subnet_id=`curl -sL http://169.254.169.254/latest/meta-data/network/interfaces/m
 # Values to be passed to parameter list
 jenkins_server_elb="$ip:8081"
 jenkins_username="admin"
-jenkins_passwd="$passwd"
+jenkins_passwd="$initialPassword"
 jenkins_server_public_ip="$ip"
 jenkins_server_ssh_login="root"
 jenkins_server_ssh_port="2200"
