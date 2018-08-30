@@ -51,21 +51,20 @@ fi
 # Building the custom docker image from the jenkins-ce base image
 cd ../../../installscripts
 passwd=`date | md5sum | cut -d ' ' -f1`
-sudo docker build --build-arg adminpass=$passwd -t jenkins-ce-image -f dockerfiles/jenkins-ce/Dockerfile .
+dockerhub='tmobile'
+dockertag='1.0.0'
+docker pull $dockerhub/jazzoss-jenkins:$dockertag
 
 # Create the volume that we host the jenkins_home dir on dockerhost.
 sudo docker volume create jenkins-volume &> /dev/null &
 spin_wheel $! "Creating the Jenkins volume"
 
 # Running the custom image
-sudo docker run -d --name jenkins-server -p 8081:8080 -v jenkins-volume:/var/jenkins_home jenkins-ce-image
+sudo docker run -d --name jenkins-server -p 8081:8080 -v jenkins-volume:/var/jenkins_home -e JENKINS_USER='admin' -e JENKINS_PASS=$passwd $dockerhub/jazzoss-jenkins:$dockertag
 
 # Wainting for the container to spin up
 sleep 60
 echo "initialPassword is: $passwd"
-
-# Once the docker image is configured, we will commit the image.
-sudo docker commit -m "JazzOSS-Custom Jenkins container" jenkins-server jazzoss-jenkins-server
 
 # Grab the variables
 ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
