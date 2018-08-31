@@ -61,4 +61,3 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-website"
   <authToken>jazz-101-job</authToken>
   <disabled>false</disabled>
 </flow-definition>
-EOF
