@@ -17,7 +17,7 @@ class colors:
 
 
 featureName = "Apigee"
-gatewayFunctionName = "jerp-jazz"
+gatewayFunctionName = "jazz_apigee-proxy-aws"
 terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
 
 
