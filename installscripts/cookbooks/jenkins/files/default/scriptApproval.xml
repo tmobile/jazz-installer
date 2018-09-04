@@ -18,6 +18,9 @@
     <string>staticMethod hudson.model.User get java.lang.String</string>
     <string>method hudson.model.User getProperty java.lang.Class</string>
     <string>method jenkins.security.ApiTokenProperty getApiToken</string>
+    <string>method groovy.json.JsonBuilder toPrettyString</string>
+    <string>staticMethod java.util.regex.Matcher quoteReplacement java.lang.String</string>
+    <string>new groovy.json.JsonBuilder java.lang.Object</string>
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
