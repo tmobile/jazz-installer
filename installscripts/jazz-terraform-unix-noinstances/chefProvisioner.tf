@@ -94,6 +94,8 @@ resource "null_resource" "configureJenkinsInstance" {
   #TODO consider doing the export locally, so we only need to install `chef-client on the remote box`.
   provisioner "remote-exec" {
     inline = [
+      "git clone ${var.contentRepo} --depth 1 ${var.chefDestDir}/jazz-content",
+      "cp -r ${var.chefDestDir}/jazz-content/jenkins/files/. ${var.chefDestDir}/cookbooks/jenkins/files/default/",
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
       "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
