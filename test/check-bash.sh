@@ -6,6 +6,6 @@ else
   BRANCH="master"
 fi
 
-for file in $(git diff --name-only $BRANCH | grep .py\$); do
-  flake8 "$file"
+for file in $(git diff --name-only $BRANCH | grep .sh\$); do
+  shellcheck "$file"
 done
