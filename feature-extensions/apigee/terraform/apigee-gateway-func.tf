@@ -1,10 +1,3 @@
-# Zip up function for deploy
-data "archive_file" "apigee-gateway-zip" {
-  type        = "zip"
-  source_dir = "${path.module}/../jazz-apigee-proxy"
-  output_path = "${path.module}/../jazz-apigee-proxy.zip"
-}
-
 # Create a role for the Lambda function to exec under
 resource "aws_iam_role" "apigee-lambda-role" {
   name = "${var.env_prefix}-jazz-apigee-lambda"
@@ -53,22 +46,6 @@ resource "aws_iam_role_policy" "apigee-lambda-policy" {
 EOF
 }
 
-# Deploy the function with the correct role.
-resource "aws_lambda_function" "jazz-apigee-proxy" {
-  filename         = "${data.archive_file.apigee-gateway-zip.output_path}"
-  function_name    = "${var.env_prefix}-jazz-apigee-proxy"
-  role             = "${aws_iam_role.apigee-lambda-role.arn}"
-  handler          = "jazz-apigee-proxy.handler"
-  source_code_hash = "${data.archive_file.apigee-gateway-zip.output_base64sha256}"
-  runtime          = "nodejs8.10"
-
-  # environment {
-  #   variables = {
-  #     foo = "bar"
-  #   }
-  # }
-}
-
 #Create a new IAM service user for Apigee to use
 #We will hand the creds for this service account off to Apigee.
 resource "aws_iam_user" "apigee-proxy-user" {
@@ -95,7 +72,7 @@ resource "aws_iam_user_policy" "apigee-lambda-exec" {
         "lambda:InvokeFunction"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_lambda_function.jazz-apigee-proxy.arn}"
+      "Resource": "${var.gateway_func_arn}"
     }
   ]
 }
@@ -117,7 +94,18 @@ output "apigee-lambda-user-id" {
 }
 
 output "apigee-lambda-gateway-func-arn" {
-  value = "${aws_lambda_function.jazz-apigee-proxy.arn}"
+  value = "${var.gateway_func_arn}"
+}
+
+# TODO remove when Terraform import bug fixed
+output "apigee-lambda-gateway-role-arn" {
+  value = "${aws_iam_role.apigee-lambda-role.arn}"
+}
+
+# TODO remove when Terraform import bug fixed
+# Because we want to restore the original func role on uninstall, save it here.
+output "previous-role-arn" {
+  value = "${var.previous_role_arn}"
 }
 
 #Generic installer output vars. These will be saved so you can query and provide them during uninstall.
