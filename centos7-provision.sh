@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # File: centos7-provision.sh
 # Description: Installs jazz prerequisites on a Centos7 ec2-instance.
@@ -14,11 +14,11 @@ INSTALLER_GITHUB_URL="https://github.com/tmobile/jazz-installer.git"
 PIP_URL="https://bootstrap.pypa.io/get-pip.py"
 
 # Installation directory
-INSTALL_DIR=`pwd`
+INSTALL_DIR=$(pwd)
 
 # Log file to record the installation logs
 LOG_FILE_NAME=provision_setup.out
-LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
+LOG_FILE=$(realpath "$INSTALL_DIR"/"$LOG_FILE_NAME")
 JAZZ_INSTALLER_BRANCH="master"
 
 # Default verbosity of the installation
@@ -30,12 +30,14 @@ RED='\033[0;31m'
 
 print_info()
 {
-    printf "\r${GREEN}$1${NC}\n" 1>&3 2>&4
+    # shellcheck disable=SC2059
+    printf "\\r${GREEN}$1${NC}\\n" 1>&3 2>&4
 }
 
 print_error()
 {
-    printf "\r${RED}$1${NC}\n" 1>&3 2>&4
+    # shellcheck disable=SC2059
+    printf "\\r${RED}$1${NC}\\n" 1>&3 2>&4
 }
 
 #Spin wheel
@@ -43,13 +45,14 @@ function spin_wheel () {
     pid=$1 # Process Id of the previous running command
     message=$2
     spin='-\|/'
-    printf "\r$message...." 1>&3 2>&4
+    printf "\\r%s...." "$message" 1>&3 2>&4
     i=0
 
-    while ps -p $pid > /dev/null
+    while ps -p "$pid" > /dev/null
     do
         i=$(( (i+1) %4 ))
-        printf "\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
+        # shellcheck disable=SC2059
+        printf "\\r${GREEN}$message....${spin:$i:1}" 1>&3 2>&4
         sleep .05
     done
 
@@ -65,7 +68,7 @@ function spin_wheel () {
     fi
 }
 trap 'printf "${RED}\nCancelled....\n${NC}" 1>&3 2>&4; exit' 2
-trap '' 20
+trap '' CHLD
 
 function install_packages () {
     # Download and Installing Softwares required for Jazz centos7-provision
@@ -94,7 +97,7 @@ function install_packages () {
     if command -v git > /dev/null; then
         print_info "Git already installed, using it"
     else
-        sudo yum install -y git >>$LOG_FILE &
+        sudo yum install -y git >> "$LOG_FILE" &
         spin_wheel $! "Installing git"
     fi
 
@@ -102,21 +105,21 @@ function install_packages () {
     if command -v docker > /dev/null; then
         print_info "Docker already installed, using it"
     else
-        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >>$LOG_FILE &
+        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >> "$LOG_FILE" &
         spin_wheel $! "Installing prerequisites for docker-ce"
-        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >>$LOG_FILE &
+        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >> "$LOG_FILE" &
         spin_wheel $! "Adding yum repo for docker-ce"
-        sudo yum install docker-ce -y >>$LOG_FILE &
+        sudo yum install docker-ce -y >> "$LOG_FILE" &
         spin_wheel $! "Installing docker-ce"
 
     fi
-    sudo systemctl start docker >>$LOG_FILE &
+    sudo systemctl start docker >> "$LOG_FILE" &
     spin_wheel $! "Starting docker-ce"
-    sudo systemctl status docker >>$LOG_FILE &
+    sudo systemctl status docker >> "$LOG_FILE" &
     spin_wheel $! "Checking docker-ce service"
-    sudo systemctl enable docker >>$LOG_FILE &
+    sudo systemctl enable docker >> "$LOG_FILE" &
     spin_wheel $! "Enabling docker-ce service"
-    sudo gpasswd -a $(whoami) docker >>$LOG_FILE &
+    sudo gpasswd -a "$(whoami)" docker >> "$LOG_FILE" &
     spin_wheel $! "Adding the present user to docker group"
 
     # Installing epel
@@ -130,15 +133,15 @@ function install_packages () {
     # Installing lxml
     sudo pip install lxml &> /dev/null &
     spin_wheel $! "Installing lxml"
-    
+
     # Download and Install java
     if command -v java > /dev/null; then
         print_info "Java already installed, using it"
     else
-        curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" $JAVA_URL -o jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+        curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" "$JAVA_URL" -o jdk-8u112-linux-x64.rpm >> "$LOG_FILE" &
         spin_wheel $! "Downloading java"
 
-        sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >>$LOG_FILE &
+        sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >> "$LOG_FILE" &
         spin_wheel $! "Installing java"
 
         rm -rf jdk-8u112-linux-x64.rpm
@@ -148,25 +151,25 @@ function install_packages () {
     if command -v unzip > /dev/null; then
         print_info "Unzip already installed, using it"
     else
-        sudo yum install -y unzip >>$LOG_FILE &
+        sudo yum install -y unzip >> "$LOG_FILE" &
         spin_wheel $! "Installing unzip"
     fi
 
     # Create a temporary folder .
     # Here we will have all the temporary files needed and delete it at the end
-    sudo rm -rf $INSTALL_DIR/jazz_tmp
-    mkdir $INSTALL_DIR/jazz_tmp
+    sudo rm -rf "$INSTALL"_DIR/jazz_tmp
+    mkdir "$INSTALL_DIR"/jazz_tmp
 
     #Download and Install Terraform
-    curl -v -L $TERRAFORM_URL -o $INSTALL_DIR/jazz_tmp/terraform.zip >>$LOG_FILE &
+    curl -v -L "$TERRAFORM_URL" -o "$INSTALL_DIR"/jazz_tmp/terraform.zip >> "$LOG_FILE" &
     spin_wheel $! "Downloading terraform"
-    sudo unzip -o $INSTALL_DIR/jazz_tmp/terraform.zip -d /usr/bin>>$LOG_FILE &
+    sudo unzip -o "$INSTALL_DIR"/jazz_tmp/terraform.zip -d /usr/bin >> "$LOG_FILE" &
     spin_wheel $! "Installing terraform"
 
     #Downloading and Install atlassian-cli
-    curl -L $ATLASSIAN_CLI_URL -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >>$LOG_FILE &
+    curl -L "$ATLASSIAN_CLI_URL" -o "$INSTALL_DIR"/jazz_tmp/atlassian-cli-6.7.1-distribution.zip >> "$LOG_FILE" &
     spin_wheel $! "Downloading atlassian-cli"
-    unzip -o $INSTALL_DIR/jazz_tmp/atlassian-cli-6.7.1-distribution.zip -d $INSTALL_DIR/jazz_tmp/ >>$LOG_FILE &
+    unzip -o "$INSTALL_DIR"/jazz_tmp/atlassian-cli-6.7.1-distribution.zip -d "$INSTALL_DIR"/jazz_tmp/ >> "$LOG_FILE" &
     spin_wheel $! "Fetching atlassian-cli"
 
     #Get Jazz installer code base
@@ -175,7 +178,7 @@ function install_packages () {
         print_info "Skipping installer repo clone based on CLI flag"
     else
         sudo rm -rf jazz-installer
-        git clone -b $JAZZ_INSTALLER_BRANCH $INSTALLER_GITHUB_URL --depth 1 >>$LOG_FILE &
+        git clone -b "$JAZZ_INSTALLER_BRANCH" "$INSTALLER_GITHUB_URL" --depth 1 >> "$LOG_FILE" &
         spin_wheel $! "Fetching jazz-installer repo"
     fi
 
@@ -183,8 +186,8 @@ function install_packages () {
     if command -v pip > /dev/null; then
         print_info "pip already installed, using it"
     else
-        curl -sL $PIP_URL -o get-pip.py
-        sudo python get-pip.py >>$LOG_FILE &
+        curl -sL "$PIP_URL" -o get-pip.py
+        sudo python get-pip.py >> "$LOG_FILE" &
         spin_wheel $! "Downloading and installing pip"
     fi
 
@@ -192,7 +195,7 @@ function install_packages () {
         print_info "awscli already installed, using it"
     else
         # Download and Install awscli
-        sudo pip install awscli >> $LOG_FILE &
+        sudo pip install awscli >> "$LOG_FILE" &
         spin_wheel $! "Downloading & installing awscli bundle"
     fi
 
@@ -210,7 +213,7 @@ while [ $# -gt 0 ] ; do
             echo "./centos7-provision.sh [options]"
             echo ""
             echo "options:"
-            echo "-ib, --installer-branch                     [optional] centos7-provision repo branch to use. Defaults to `master`"
+            echo "-ib, --installer-branch                     [optional] centos7-provision repo branch to use. Defaults to 'master'"
             echo "-nc, --no-clone                             [optional] Skip cloning the jazz-installer repo into the current directory. Default: repo is cloned."
             echo "-v, --verbose 1|0                           [optional] Enable/Disable verbose centos7-provision logs. Default:0(Disabled)"
             echo "-t, --tags Key=stackName,Value=production   [optional] Specify as space separated key/value pairs"
@@ -265,4 +268,4 @@ while [ $# -gt 0 ] ; do
     esac
 done
 
-install_packages $VERBOSE
+install_packages "$VERBOSE"
