@@ -35,10 +35,3 @@ resource "aws_iam_user_policy" "operational_policy" {
 }
 EOF
 }
-
-output "secret" {
-  value = "${aws_iam_access_key.operationalpolicy.secret}"
-}
-output "access" {
-  value = "${aws_iam_access_key.operationalpolicy.id}"
-}
