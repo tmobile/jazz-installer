@@ -214,7 +214,7 @@ function install_packages () {
     # Installing ec2-metadata
     sudo pip install ec2-metadata &> /dev/null &
     spin_wheel $! "Installing ec2-metadata"
-    
+
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
     exec 2>&4 4>&-
