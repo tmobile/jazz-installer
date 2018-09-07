@@ -25,7 +25,7 @@ resource "aws_cognito_user_pool" "pool"{
   auto_verified_attributes = ["email"]
   verification_message_template = {
     email_subject_by_link = "Jazz Notification - Account Verification"
-    email_message_by_link = "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##VERIFY EMAIL##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz-core/wiki\n<br><br>\nBest,<br>\nJazz Team"
+    email_message_by_link = "Hello,\n<br><br>\nThanks for signing up!\n<br><br>\nPlease click the link to verify your email address: {##VERIFY EMAIL##}\n<br><br>\nTo know more about Jazz, please refer to link https://github.com/tmobile/jazz/wiki\n<br><br>\nBest,<br>\nJazz Team"
     default_email_option = "CONFIRM_WITH_LINK"
   }
   password_policy = {
