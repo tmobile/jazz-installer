@@ -21,7 +21,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
   }
 }
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
   }
 }
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
@@ -65,7 +65,7 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
   }
 }
 
@@ -90,7 +90,7 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
   }
 }
 
@@ -257,7 +257,7 @@ resource "aws_s3_bucket" "dev-serverless-static" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
   }
 }
 
@@ -278,7 +278,7 @@ resource "aws_s3_bucket" "stg-serverless-static" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
   }
 
 }
@@ -302,7 +302,7 @@ resource "aws_s3_bucket" "prod-serverless-static" {
   provisioner "local-exec" {
     when = "destroy"
     on_failure = "continue"
-    command = "	aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
+    command = "aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
   }
 
 }
