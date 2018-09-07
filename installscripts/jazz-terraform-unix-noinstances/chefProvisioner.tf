@@ -111,10 +111,10 @@ resource "null_resource" "configureJenkinsDocker" {
 }
 
 resource "null_resource" "configureCliJenkins" {
-  depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance", "aws_iam_user_policy.operational_policy"]
+  depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
   #Jenkins Cli process
   provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operationalpolicy.id} ${aws_iam_access_key.operationalpolicy.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
   }
 }
 resource "null_resource" "postJenkinsConfiguration" {
