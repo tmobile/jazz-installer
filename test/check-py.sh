@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
-if [[ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]]; then
-  BRANCH="$TRAVIS_PULL_REQUEST_BRANCH"
+set -eo pipefail
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+if [[ -z "$TRAVIS_BRANCH" ]]; then
+  BRANCH="$TRAVIS_BRANCH"
 else
   BRANCH="master"
 fi
 
-echo "Diffing with " $BRANCH "and TRAVIS_BRANCH is " "$TRAVIS_BRANCH"
+echo "Diffing with" "$BRANCH"
 
-for file in $(git diff --name-only $BRANCH | grep .py\$); do
+for file in $(git diff --name-only "$TRAVIS_BRANCH" | grep .py\$); do
+  echo "Checking ${bold}$file${normal}..."
   flake8 "$file"
 done
