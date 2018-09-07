@@ -3,13 +3,11 @@ resource "aws_iam_user" "operational" {
   path = "/system/"
 }
 
-resource "aws_iam_access_key" "operationalpolicy" {
-  depends_on = ["aws_iam_user.operational"]
+resource "aws_iam_access_key" "operational_key" {
   user = "${aws_iam_user.operational.name}"
 }
 
 resource "aws_iam_user_policy" "operational_policy" {
-  depends_on = ["aws_iam_access_key.operationalpolicy"]
   name = "${var.envPrefix}-operationaluser-policy"
   user = "${aws_iam_user.operational.name}"
 
