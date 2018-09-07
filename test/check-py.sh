@@ -5,15 +5,9 @@ set -eo pipefail
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-if [[ -z "$TRAVIS_BRANCH" ]]; then
-  BRANCH="$TRAVIS_BRANCH"
-else
-  BRANCH="master"
-fi
+echo "Diffing commit range" "$TRAVIS_COMMIT_RANGE"
 
-echo "Diffing with" "$BRANCH"
-
-for file in $(git diff --name-only "$TRAVIS_BRANCH" | grep .py\$); do
+for file in $(git diff --name-only "$TRAVIS_COMMIT_RANGE" | grep .sh\$); do
   echo "Checking ${bold}$file${normal}..."
   flake8 "$file"
 done
