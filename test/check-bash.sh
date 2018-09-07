@@ -11,7 +11,7 @@ else
   BRANCH="master"
 fi
 
-echo "Diffing with" "$BRANCH"
+echo "Diffing with" "$BRANCH" " and TRAVIS_BRANCH is" "$TRAVIS_BRANCH"
 
 for file in $(git diff --name-only "$TRAVIS_BRANCH" | grep .sh\$); do
   # Globally ignore lint error SC2024: https://github.com/koalaman/shellcheck/wiki/SC2024
