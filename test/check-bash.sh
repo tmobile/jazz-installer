@@ -5,7 +5,7 @@ set -eo pipefail
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-if [[ -z "$TRAVIS_BRANCH" ]]; then
+if [[ -z $TRAVIS_BRANCH ]]; then
   BRANCH="$TRAVIS_BRANCH"
 else
   BRANCH="master"
