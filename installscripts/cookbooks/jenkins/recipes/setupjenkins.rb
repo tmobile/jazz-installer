@@ -7,7 +7,7 @@ if node['dockerizedJenkins'] == false
   include_recipe 'cloudcli'
 
   npm_package 'serverless' do
-    version '1.28.0'
+    version '1.30.0'
   end
 
   npm_package '@angular/cli' do
