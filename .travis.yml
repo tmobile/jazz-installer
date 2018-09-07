@@ -24,6 +24,7 @@ before_install:
 install:
   - "pip install flake8"
 script:
+  - test/python-unittests.sh
   - test/check-tf.sh
   - test/check-py.sh
   - test/check-bash.sh
