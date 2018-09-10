@@ -1,4 +1,6 @@
 ![Jazz Logo](logo.png)
+
+[![Build Status](https://travis-ci.org/tmobile/jazz-installer.svg?branch=master)](https://travis-ci.org/tmobile/jazz-installer)
 # Jazz Serverless Platform
 
 **Seamlessly build, deploy & manage cloud-native applications.**
