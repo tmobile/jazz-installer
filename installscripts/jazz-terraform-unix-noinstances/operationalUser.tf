@@ -18,16 +18,30 @@ resource "aws_iam_user_policy" "operational_policy" {
     {
       "Action": [
         "iam:PassRole",
-        "dynamodb:*",
-        "s3:*",
-        "cloudformation:*",
+        "iam:GetRole",
+        "iam:CreateRole",
         "apigateway:*",
         "lambda:*",
         "logs:*",
-        "cloudfront:*"
+        "cloudfront:*",
+        "cloudformation:ValidateTemplate",
+        "kinesis:*",
+        "sqs:*",
+        "dynamodb:*",
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+        "cloudformation:*"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+          "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stackset/${var.envPrefix}*:*",
+          "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stack/${var.envPrefix}*/*"
+      ]
     }
   ]
 }
