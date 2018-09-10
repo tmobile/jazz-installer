@@ -17,9 +17,8 @@ resource "aws_iam_user_policy" "operational_policy" {
   "Statement": [
     {
       "Action": [
-        "iam:PassRole",
-        "iam:GetRole",
-        "iam:CreateRole",
+        "iam:ListPolicies",
+        "iam:ListRoles",
         "apigateway:*",
         "lambda:*",
         "logs:*",
@@ -41,6 +40,24 @@ resource "aws_iam_user_policy" "operational_policy" {
       "Resource": [
           "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stackset/${var.envPrefix}*:*",
           "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stack/${var.envPrefix}*/*"
+      ]
+    },
+    {
+      "Action": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "iam:GetPolicy",
+        "iam:DeleteRolePolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:AttachRolePolicy",
+        "iam:UpdateRole",
+        "iam:PutRolePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.envPrefix}*",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.envPrefix}*"
       ]
     }
   ]
