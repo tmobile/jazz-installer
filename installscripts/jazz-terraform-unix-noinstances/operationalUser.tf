@@ -23,24 +23,14 @@ resource "aws_iam_user_policy" "operational_policy" {
         "lambda:*",
         "logs:*",
         "cloudfront:*",
-        "cloudformation:ValidateTemplate",
         "kinesis:*",
         "sqs:*",
         "dynamodb:*",
-        "s3:*"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    },
-    {
-      "Action": [
+        "s3:*",
         "cloudformation:*"
       ],
       "Effect": "Allow",
-      "Resource": [
-          "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stackset/${var.envPrefix}*:*",
-          "arn:aws:cloudformation:*:${data.aws_caller_identity.current.account_id}:stack/${var.envPrefix}*/*"
-      ]
+      "Resource": "*"
     },
     {
       "Action": [
