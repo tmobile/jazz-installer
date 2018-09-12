@@ -6,7 +6,7 @@ include_recipe 'nodejs'
 include_recipe 'cloudcli'
 
 npm_package 'serverless' do
-  version '1.26.1'
+  version '1.30.0'
 end
 
 npm_package '@angular/cli' do
