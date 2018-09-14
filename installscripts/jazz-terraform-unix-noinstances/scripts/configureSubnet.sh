@@ -5,7 +5,7 @@ securityGroupIds=$1
 subnetIds=$2
 stackprefix=$3
 jenkinsjsonpropsfile=$4
-role="_lambda2_basic_execution_1"
+role="_basic_execution"
 iam=$stackprefix$role
 
 sed -i "s/SECURITY_GROUP_IDS\".*.$/SECURITY_GROUP_IDS\": \"$securityGroupIds\",/g" $jenkinsjsonpropsfile
