@@ -28,7 +28,8 @@ resource "aws_iam_user_policy" "operational_policy" {
         "dynamodb:*",
         "s3:*",
         "cloudformation:*",
-        "sns:*"
+        "sns:*",
+        "cloudwatch:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
