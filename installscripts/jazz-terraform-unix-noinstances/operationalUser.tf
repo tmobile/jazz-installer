@@ -27,7 +27,8 @@ resource "aws_iam_user_policy" "operational_policy" {
         "sqs:*",
         "dynamodb:*",
         "s3:*",
-        "cloudformation:*"
+        "cloudformation:*",
+        "sns:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
