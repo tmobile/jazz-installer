@@ -1,5 +1,5 @@
 # Base Image and maintainer info
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:2.121.3
 MAINTAINER JazzOSS Team
 
 # Switching to root to configure the image with system packages
