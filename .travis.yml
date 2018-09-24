@@ -1,0 +1,30 @@
+language: python
+sudo: false
+cache:
+  directories:
+  - "${HOME}/bin"
+env:
+  global:
+  - PATH="${HOME}/bin
+  - TMPDIR="${TMPDIR:-/tmp}"
+  - VERSION="0.11.7"
+before_install:
+  - if ! terraform version ; then
+      mkdir -p "${HOME}/bin"
+      pushd "${TMPDIR}" ;
+      curl -sSL
+        -o terraform.zip
+        "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip" ;
+      unzip terraform.zip ;
+      mv -v terraform "${HOME}/bin/terraform" ;
+      chmod +x "${HOME}/bin/terraform" ;
+      popd ;
+      terraform version ;
+    fi
+install:
+  - "pip install flake8"
+script:
+  - test/python-unittests.sh
+  - test/check-tf.sh
+  - test/check-py.sh
+  - test/check-bash.sh
