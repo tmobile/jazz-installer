@@ -25,7 +25,7 @@ aws ses put-identity-policy --identity $EMAIL_ADDRESS --policy-name $POLICY_NAME
             "Effect": "Allow",
             "Principal": {
                 "AWS": [
-                    "arn:aws:iam::'$ACCOUNT':role/'$ENV_PREFIX'_lambda2_basic_execution_1",
+                    "arn:aws:iam::'$ACCOUNT':role/'$ENV_PREFIX'_basic_execution",
                     "arn:aws:iam::'$ACCOUNT':root"
                 ]
             },

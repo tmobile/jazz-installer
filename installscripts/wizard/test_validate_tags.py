@@ -1,13 +1,14 @@
 import unittest
 import validate_tags
 
+
 class TestTags(unittest.TestCase):
 
     def test_special_characters(self):
         try:
             replication_tags = [{'Value': 'testtag', 'Key': 'stackname'}]
             result, formatted = validate_tags.validate_replication_tags(replication_tags)
-        except :
+        except ValueError:
             pass
 
     def test_empty(self):
@@ -15,7 +16,7 @@ class TestTags(unittest.TestCase):
             replication_tags = [{'Value': '', 'Key': 'stackname#'}]
             result, formatted = validate_tags.validate_replication_tags(replication_tags)
             return True
-        except :
+        except ValueError:
             pass
 
     def test_unique(self):
@@ -23,7 +24,7 @@ class TestTags(unittest.TestCase):
             replication_tags = [{'Value': 'testtag1', 'Key': 'stackname'}, {'Value': 'testtag2', 'Key': 'stackname'}]
             result, formatted = validate_tags.validate_replication_tags(replication_tags)
             self.assertEqual(type(result), list)
-        except :
+        except ValueError:
             pass
 
     def test_key_length(self):
@@ -34,7 +35,7 @@ class TestTags(unittest.TestCase):
             replication_tags = [{'Value': 'testtag1', 'Key': lengthy_key}]
             result, formatted = validate_tags.validate_replication_tags(replication_tags)
             self.assertEqual(type(result), list)
-        except :
+        except ValueError:
             pass
 
     def test_value_length(self):
@@ -45,8 +46,9 @@ class TestTags(unittest.TestCase):
             replication_tags = [{'Value': lengthy_val, 'Key': 'testkey'}]
             result, formatted = validate_tags.validate_replication_tags(replication_tags)
             self.assertEqual(type(result), list)
-        except :
+        except ValueError:
             pass
+
 
 if __name__ == '__main__':
     unittest.main()
