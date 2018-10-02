@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 import sys
 import requests
 from datetime import date
