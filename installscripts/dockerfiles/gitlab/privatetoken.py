@@ -1,6 +1,7 @@
-#coding: utf-8
+# coding: utf-8
 import sys
 import requests
+from datetime import date
 from urlparse import urljoin
 from bs4 import BeautifulSoup
 
@@ -37,9 +38,10 @@ def sign_in(login, password, csrf, cookies):
     return token, r.history[0].cookies
 
 
-def obtain_personal_access_token(name, expires_at, csrf, cookies):
+def obtain_personal_access_token(name, csrf, cookies):
+    today = date.today()
     data = {
-        u"personal_access_token[expires_at]": expires_at,
+        u"personal_access_token[expires_at]": today.replace(year=today.year + 1),
         u"personal_access_token[name]": name,
         u"personal_access_token[scopes][]": u"api",
         u"utf8": u"✓"
@@ -54,14 +56,13 @@ def obtain_personal_access_token(name, expires_at, csrf, cookies):
 
 def main():
     login = u"root"
-    password = sys.argv[3]
+    password = sys.argv[2]
 
     csrf1, cookies1 = obtain_csrf_token()
     csrf2, cookies2 = sign_in(login, password, csrf1, cookies1)
 
     name = sys.argv[1]
-    expires_at = sys.argv[2]
-    token = obtain_personal_access_token(name, expires_at, csrf2, cookies2)
+    token = obtain_personal_access_token(name, csrf2, cookies2)
     f = open("credentials.txt", "a")
     f.write("Private Token: %s" % token)
     f.close()
