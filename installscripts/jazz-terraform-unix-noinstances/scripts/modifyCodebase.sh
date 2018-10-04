@@ -26,7 +26,6 @@ function inArray() {
 }
 
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler")
-nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets")
 
 platform_services=()
 "cd ./jazz-core"
@@ -58,22 +57,14 @@ do
   fi
 
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
-			service_type="function"
-      deployment_targets='{"function": {"S": "aws_lambda"}}'
-			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
-				provider_runtime="nodejs8.10"
-			else
-				provider_runtime="nodejs6.10"
-			fi
- else
-			service_type="api"
-      deployment_targets='{"api": {"S": "aws_apigateway"}}'
-			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
-				provider_runtime="nodejs8.10"
-			else
-				provider_runtime="nodejs6.10"
-			fi
- fi
+    service_type="function"
+    deployment_targets='{"function": {"S": "aws_lambda"}}'
+    provider_runtime="nodejs8.10"
+  else
+		service_type="api"
+    deployment_targets='{"api": {"S": "aws_apigateway"}}'
+		provider_runtime="nodejs8.10"
+  fi
 
 # shellcheck disable=SC2086
 #Updating to service catalog
