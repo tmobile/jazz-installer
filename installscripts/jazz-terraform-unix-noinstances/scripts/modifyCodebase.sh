@@ -3,7 +3,6 @@
 securityGroupIds=$1
 subnetIds=$2
 iamRoleARN=$3
-region=$4
 stackprefix=$5
 jazz_admin=$6
 
@@ -30,7 +29,7 @@ lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_serv
 nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets")
 
 platform_services=()
-cd ./jazz-core
+"cd ./jazz-core"
 for d in core/* ; do
   reponame="${d##*/}"
   if [[ $reponame != "jazz_ui"  && $reponame != "jazz-web" ]] ; then
@@ -41,15 +40,15 @@ cd ..
 
 servicename="_services_prod"
 tablename=$stackprefix$servicename
-timestamp=`date --utc +%FT%T`
+timestamp=$(date --utc +%FT%T)
 service_type="
 provider_runtime="
 
 for element in "${platform_services[@]}"
 do
-  uuid=`uuidgen -t`
-  echo -n > ./jazz-core/core/$element/deployment-env.yml
-  echo "service_id: "$uuid >> ./jazz-core/core/$element/deployment-env.yml
+  uuid=$(uuidgen -t)
+  echo -n > "./jazz-core/core/$element/deployment-env.yml"
+  echo "service_id: $uuid" >> "./jazz-core/core/$element/deployment-env.yml"
 
   if [[ $element =~ ^jazz ]] ; then
     service_name="${element:5}"
