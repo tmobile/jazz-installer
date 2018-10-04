@@ -41,8 +41,9 @@ cd ..
 servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=$(date --utc +%FT%T)
-service_type="
-provider_runtime="
+service_type=""
+provider_runtime=""
+deployment_targets=""
 
 for element in "${platform_services[@]}"
 do
@@ -58,6 +59,7 @@ do
 
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
+      deployment_targets='{"function": {"S": "aws_lambda"}}'
 			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs8.10"
 			else
@@ -65,6 +67,7 @@ do
 			fi
  else
 			service_type="api"
+      deployment_targets='{"api": {"S": "aws_apigateway"}}'
 			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
 				provider_runtime="nodejs8.10"
 			else
@@ -72,25 +75,27 @@ do
 			fi
  fi
 
+# shellcheck disable=SC2086
 #Updating to service catalog
-	aws dynamodb put-item --table-name $tablename --item '{
-	  "SERVICE_ID":{"S":"'$uuid'"},
-	  "SERVICE_CREATED_BY":{"S":"'$jazz_admin'"},
-	  "SERVICE_DOMAIN":{"S":"jazz"},
-	  "SERVICE_NAME":{"S":"'$service_name'"},
-	  "SERVICE_RUNTIME":{"S":"nodejs"},
-	  "SERVICE_STATUS":{"S":"active"},
-	  "TIMESTAMP":{"S":"'$timestamp'"},
-	  "SERVICE_TYPE":{"S":"'$service_type'"},
-	  "SERVICE_METADATA":{"M":{
-				  "securityGroupIds":{"S":"'$securityGroupIds'"},
-				  "subnetIds":{"S":"'$subnetIds'"},
-				  "iamRoleARN":{"S":"'$iamRoleARN'"},
-				  "providerMemorySize":{"S":"256"},
-				  "providerRuntime":{"S":"'$provider_runtime'"},
-				  "providerTimeout":{"S":"160"}
-			    }
+	aws dynamodb put-item --table-name "$tablename" --item "{
+	  \"SERVICE_ID\":{\"S\":\"$uuid\"},
+	  \"SERVICE_CREATED_BY\":{\"S\":\"$jazz_admin\"},
+	  \"SERVICE_DOMAIN\":{\"S\":\"jazz\"},
+	  \"SERVICE_NAME\":{\"S\":\"$service_name\"},
+	  \"SERVICE_RUNTIME\":{\"S\":\"nodejs\"},
+	  \"SERVICE_STATUS\":{\"S\":\"active\"},
+	  \"TIMESTAMP\":{\"S\":\"$timestamp\"},
+    \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
+    \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
+	  \"SERVICE_METADATA\":{\"M\":{
+				  \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
+				  \"subnetIds\":{\"S\":\"$subnetIds\"},
+				  \"iamRoleARN\":{\"S\":\"$iamRoleARN\"},
+				  \"providerMemorySize\":{\"S\":\"256\"},
+				  \"providerRuntime\":{\"S\":\"$provider_runtime\"},
+				  \"providerTimeout\":{\"S\":\"160\"}
+			  }
 			}
-	  }'
+	  }"
 
 done
