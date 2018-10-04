@@ -148,6 +148,19 @@ def test_deploy_api():
     print 'Passed'
 
 
+def test_get_content():
+    testFile = 'Common-Jazz.zip'
+    url = 'https://github.com/michmerr/jazz-content'
+    branch = 'apigee-extension'
+
+    if (os.path.exists(testFile)):
+        os.unlink(testFile)
+
+    init_apigee_install.get_content(testFile, url, branch)
+    assert(os.path.exists(testFile))
+    print ('test_get_content Passed')
+
+
 # test_get_basic_auth()
 # test_get_current_deployed_version()
 # test_is_api_deployed()
@@ -158,3 +171,4 @@ def test_deploy_api():
 # test_undeploy()
 # test_deploy()
 # test_deploy_api()
+# test_get_content()

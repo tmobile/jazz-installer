@@ -3,7 +3,7 @@ import json
 import mimetools
 import os
 import re
-import urllib2
+from urllib2 import Request, HTTPError, URLError, urlopen
 from zipfile import ZipFile
 
 
@@ -45,8 +45,8 @@ def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
     }
     url = "%s/v1/o/%s/e/%s/keyvaluemaps" % (host, org, env)
 
-    req = urllib2.Request(url, data, headers)
-    res = urllib2.urlopen(req)
+    req = Request(url, data, headers)
+    res = urlopen(req)
     if res.getcode() == 201:
         print_banner("KVM created successfully for the Common-Jazz API Proxy")
     else:
@@ -56,10 +56,10 @@ def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
 def get_current_deployed_version(host, org, env, flow, username, password):
     print("Getting the current deployed version of %s in %s/%s on %s" % (flow, org, env, host))
     url = "%s/v1/o/%s/sharedflows/%s/deployments" % (host, org, flow)
-    req = urllib2.Request(url)
+    req = Request(url)
     req.add_header('Authorization', get_basic_auth(username, password))
     req.add_header('Accept', 'application/json')
-    res = urllib2.urlopen(req)
+    res = urlopen(req)
     apis = json.load(res)
     deployedVersion = ''
     for e in apis['environment']:
@@ -72,10 +72,10 @@ def get_current_deployed_version(host, org, env, flow, username, password):
 
 def is_api_deployed(host, org, env, name, revision, username, password):
     url = "%s/v1/o/%s/e/%s/apis/%s/revisions/%s/deployments" % (host, org, env, name, revision)
-    req = urllib2.Request(url)
+    req = Request(url)
     req.add_header('Authorization', get_basic_auth(username, password))
     req.add_header('Accept', 'application/json')
-    res = urllib2.urlopen(req)
+    res = urlopen(req)
     return res.getcode() == 200
 
 
@@ -93,8 +93,8 @@ def import_item(zFile, host, org, name, importType, username, password):
         ("--%s\r\nContent-Disposition: form-data; name=\"file\"; filename=\"%s\"\r\n" +
             "Content-Type: application/x-zip-compressed\r\n\r\n%s\r\n--%s--")
         % (boundary, zFile, fileContent, boundary))
-    req = urllib2.Request(url, data, headers)
-    res = urllib2.urlopen(req)
+    req = Request(url, data, headers)
+    res = urlopen(req)
     result = json.load(res)
     return result['revision']
 
@@ -116,18 +116,18 @@ def import_bundle(zFile, host, org, flow, username, password):
 def undeploy(host, org, env, flow, revision, username, password):
     print("Undeploying the current deployed version of %s in %s/%s on %s" % (flow, org, env, host))
     url = "%s/v1/o/%s/e/%s/sharedflows/%s/revisions/%s/deployments" % (host, org, env, flow, revision)
-    req = urllib2.Request(url, headers={'Authorization': get_basic_auth(username, password)})
+    req = Request(url, headers={'Authorization': get_basic_auth(username, password)})
     req.get_method = lambda: 'DELETE'
-    res = urllib2.urlopen(req)
+    res = urlopen(req)
     print(res.read())
 
 
 def deploy(host, org, env, flow, revision, username, password):
     print("Deploying the revision %s of %s in %s/%s on %s" % (revision, flow, org, env, host))
     url = "%s/v1/o/%s/e/%s/sharedflows/%s/revisions/%s/deployments?override=true" % (host, org, env, flow, revision)
-    req = urllib2.Request(url, headers={'Authorization': get_basic_auth(username, password)})
+    req = Request(url, headers={'Authorization': get_basic_auth(username, password)})
     req.get_method = lambda: 'POST'
-    res = urllib2.urlopen(req)
+    res = urlopen(req)
     print(res.read())
 
 
@@ -136,9 +136,9 @@ def deploy_api(host, org, env, apiName, revision, username, password):
     url = (
         "%s/v1/o/%s/apis/%s/revisions/%s/deployments?action=deploy&env=%s&override=true"
         % (host, org, apiName, revision, env))
-    req = urllib2.Request(url, headers={'Authorization': get_basic_auth(username, password)})
+    req = Request(url, headers={'Authorization': get_basic_auth(username, password)})
     req.get_method = lambda: 'POST'
-    res = urllib2.urlopen(req)
+    res = urlopen(req)
     print(res.read())
     return is_api_deployed(host, org, env, apiName, revision, username, password)
 
@@ -184,8 +184,22 @@ def deploy_shared_flows(host, org, env, build, username, password):
     print_banner("Sharedflows deployment Complete")
 
 
-def deploy_common(host, org, env, username, password):
+def get_content(fileName, baseUrl, branch):
+    fullUrl = "%s/raw/%s/apigee/%s" % (baseUrl, branch, fileName)
+    try:
+        print("Downloading %s...." % fullUrl)
+        req = urlopen(fullUrl)
+        with open(os.path.basename(fileName), "wb") as local_file:
+                local_file.write(req.read())
+    except HTTPError, e:
+        print "HTTP Error:", e.code, fullUrl
+    except URLError, e:
+        print "URL Error:", e.reason, fullUrl
+
+
+def deploy_common(host, org, env, username, password, contentUrl, contentBranch):
     print_banner("Importing the Common-Jazz API Proxy ......")
+    get_content('Common-Jazz.zip', contentUrl, contentBranch)
     commonRevision = import_api('Common-Jazz.zip', host, org, 'Common-Jazz', username, password)
     success = deploy_api(host, org, env, 'Common-Jazz', commonRevision, username, password)
     if success:
@@ -195,7 +209,8 @@ def deploy_common(host, org, env, username, password):
     return success
 
 
-def install(secretKey, reg, lambdaARN, host, org, env, build, username, password):
+def install(secretKey, reg, lambdaARN, host, org, env, build, username, password,
+            contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password)
     deploy_shared_flows(host, org, env, build, username, password)
-    return deploy_common(host, org, env, username, password)
+    return deploy_common(host, org, env, username, password, contentUrl, contentBranch)
