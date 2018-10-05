@@ -28,7 +28,7 @@ function inArray() {
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler")
 
 platform_services=()
-"cd ./jazz-core"
+cd ./jazz-core || exit
 for d in core/* ; do
   reponame="${d##*/}"
   if [[ $reponame != "jazz_ui"  && $reponame != "jazz-web" ]] ; then
@@ -47,8 +47,8 @@ deployment_targets=""
 for element in "${platform_services[@]}"
 do
   uuid=$(uuidgen -t)
-  echo -n > "./jazz-core/core/$element/deployment-env.yml"
-  echo "service_id: $uuid" >> "./jazz-core/core/$element/deployment-env.yml"
+  echo -n > ./jazz-core/core/"$element"/deployment-env.yml
+  echo "service_id: $uuid" >> ./jazz-core/core/"$element"/deployment-env.yml
 
   if [[ $element =~ ^jazz ]] ; then
     service_name="${element:5}"
