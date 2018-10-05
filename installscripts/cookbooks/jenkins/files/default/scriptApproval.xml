@@ -18,6 +18,8 @@
     <string>staticMethod hudson.model.User get java.lang.String</string>
     <string>method hudson.model.User getProperty java.lang.Class</string>
     <string>method jenkins.security.ApiTokenProperty getApiToken</string>
+    <string>method java.util.Map remove java.lang.Object</string>
+    <string>field java.lang.String value</string>
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
