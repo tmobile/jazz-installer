@@ -13,11 +13,11 @@ resource "null_resource" "preJenkinsConfiguration" {
 
   # Update AWS credentials in Jenkins Chef cookbook attributes
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${var.aws_access_key}'\\''|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${aws_iam_access_key.operational_key.id}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${var.aws_secret_key}'\\''|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${aws_iam_access_key.operational_key.secret}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   # Update cognito attribs in Jenkins Chef cookbook attributes
