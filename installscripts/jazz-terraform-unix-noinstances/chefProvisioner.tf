@@ -94,6 +94,8 @@ resource "null_resource" "configureJenkinsInstance" {
   #TODO consider doing the export locally, so we only need to install `chef-client on the remote box`.
   provisioner "remote-exec" {
     inline = [
+      "git clone ${var.contentRepo} --depth 1 ${var.chefDestDir}/jazz-content",
+      "cp -r ${var.chefDestDir}/jazz-content/jenkins/files/. ${var.chefDestDir}/cookbooks/jenkins/files/default/",
       "sudo sh ${var.chefDestDir}/cookbooks/installChef.sh",
       "chef install ${var.chefDestDir}/cookbooks/Policyfile.rb",
       "chef export ${var.chefDestDir}/cookbooks/Policyfile.rb ${var.chefDestDir}/chef-export",
@@ -106,12 +108,15 @@ resource "null_resource" "configureJenkinsInstance" {
 resource "null_resource" "configureJenkinsDocker" {
   count = "${var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
-  // Chef Process inside docker
-  provisioner "local-exec" {
-    command = "bash ${var.launchJenkinsCE_cmd}"
-  }
 }
 
+resource "null_resource" "configureCliJenkins" {
+  depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
+  #Jenkins Cli process
+  provisioner "local-exec" {
+    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+  }
+}
 resource "null_resource" "postJenkinsConfiguration" {
   depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
   provisioner "local-exec" {

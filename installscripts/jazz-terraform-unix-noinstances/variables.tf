@@ -31,6 +31,10 @@ variable "chefDestDir" {
   type = "string"
   default = "/tmp/jazz-chef"
 }
+variable "contentRepo" {
+  type = "string"
+  default = "https://github.com/tmobile/jazz-content.git"
+}
 #
 # Jenkins related variables
 #
