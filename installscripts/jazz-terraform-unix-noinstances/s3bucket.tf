@@ -110,6 +110,52 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_dev" {
+  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-dev.id}/dev"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_stg" {
+  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-stg.id}/stg"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_prod" {
+  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-prod.id}/prod"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "logfilter-dev" {
+  name            = "logfilter-dev"
+  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_dev.name}"
+  filter_pattern  = ""
+  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
+  distribution    = "Random"
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "logfilter-stg" {
+  name            = "logfilter-stg"
+  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_stg.name}"
+  filter_pattern  = ""
+  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
+  distribution    = "Random"
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "logfilter-prod" {
+  name            = "logfilter-prod"
+  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_prod.name}"
+  filter_pattern  = ""
+  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
+  distribution    = "Random"
+}
+
+resource "aws_api_gateway_account" "cloudwatchlogroleupdate" {
+  cloudwatch_role_arn = "${aws_iam_role.lambda_role.arn}"
+}
+
 resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
@@ -167,6 +213,13 @@ resource "aws_iam_role" "lambda_role" {
             "Service": "lambda.amazonaws.com"
         },
         "Action": "sts:AssumeRole"
+    },
+    {
+        "Effect": "Allow",
+        "Principal": {
+            "Service": "logs.${var.region}.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
     }
   ]
 }
@@ -205,6 +258,26 @@ EOF
   }
 }
 
+resource "aws_iam_role_policy" "basic_execution_policy" {
+  name = "${var.envPrefix}_basic_execution_policy"
+  role = "${aws_iam_role.lambda_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
   role       = "${aws_iam_role.lambda_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
@@ -228,6 +301,10 @@ resource "aws_iam_role_policy_attachment" "s3fullaccess" {
 resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
   role       = "${aws_iam_role.lambda_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+}
+resource "aws_iam_role_policy_attachment" "pushtocloudwatchlogs" {
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
