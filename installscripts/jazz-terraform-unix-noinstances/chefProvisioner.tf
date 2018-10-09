@@ -114,11 +114,15 @@ resource "null_resource" "configureCliJenkins" {
   depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
   #Jenkins Cli process
   provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+  }
+  provisioner "local-exec" {
+      command = "sleep 45"
   }
 }
+
 resource "null_resource" "postJenkinsConfiguration" {
-  depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
+  depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain", "null_resource.configureCliJenkins"]
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }

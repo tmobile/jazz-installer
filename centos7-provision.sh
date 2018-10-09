@@ -210,6 +210,10 @@ function install_packages () {
     # Installing lxml
     sudo pip install lxml &> /dev/null &
     spin_wheel $! "Installing lxml"
+
+    # Installing ec2-metadata
+    sudo pip install ec2-metadata &> /dev/null &
+    spin_wheel $! "Installing ec2-metadata"
     
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
