@@ -2,6 +2,9 @@
 import os
 import sys
 import subprocess
+import hashlib
+import datetime
+from ec2_metadata import ec2_metadata
 from jazz_common import get_tfvars_file, replace_tfvars
 
 
@@ -27,6 +30,9 @@ def add_jenkins_config_to_files(parameter_list):
     replace_tfvars('jenkins_security_group', parameter_list[6],
                    get_tfvars_file())
     replace_tfvars('jenkins_subnet', parameter_list[7], get_tfvars_file())
+    if len(parameter_list) > 8:
+        replace_tfvars('jenkins_subnet2', parameter_list[8], get_tfvars_file())
+        replace_tfvars('jenkins_vpc_id', parameter_list[9], get_tfvars_file())
 
 
 def check_jenkins_user(url, username, passwd):
@@ -124,18 +130,20 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
         Launch a dockerized Jenkins server.
     """
-    os.chdir(jenkins_docker_path)
-    print("Running docker launch script")
-    subprocess.call([
-        'sg', 'docker', './launchscript.sh', '|', 'tee', '-a',
-        '../../docker_creation.out'
-    ])
-    # Get values to create the array
-    parameter_list = []
-    with open("docker_jenkins_vars") as f:
-        for line in f:
-            parameter_list.append(line.rstrip())
+    print "\nPlease provide Subnets details, since ECS Fargate will be configured with ALB"
+    jenkins_subnet = raw_input("Please enter the subnetid 1 :")
+    jenkins_subnet2 = raw_input("Please enter the subnetid 2 :")
+    encrypt_passwd = hashlib.md5()
+    encrypt_passwd.update(str(datetime.datetime.now()))
+    jenkins_passwd = encrypt_passwd.hexdigest()
+    jenkins_elb = str(ec2_metadata.public_ipv4)
+    jenkins_security_group = str(ec2_metadata.network_interfaces[ec2_metadata.mac].security_group_ids[0])
+    jenkins_vpc_id = str(ec2_metadata.network_interfaces[ec2_metadata.mac].vpc_id)
 
+    # Get values to create the array
+    parameter_list = [jenkins_elb, "admin", jenkins_passwd, jenkins_elb,
+                      "root", "2200", jenkins_security_group, jenkins_subnet,
+                      jenkins_subnet2, jenkins_vpc_id]
     print(parameter_list[0:])
 
     add_jenkins_config_to_files(parameter_list)

@@ -9,7 +9,7 @@ resource "null_resource" "outputVariables" {
   provisioner "local-exec" {
        command = <<EOF
                  echo { > stack_details.json
-                 echo \""Jenkins ELB\"" : \""http://${lookup(var.jenkinsservermap, "jenkins_elb")}\"", >> stack_details.json
+                 echo \""Jenkins ELB\"" : \""http://${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")}\"", >> stack_details.json
                  echo \""Jenkins Username\"" : \""${lookup(var.jenkinsservermap, "jenkinsuser")}\"",  >> stack_details.json
                  echo \""Jenkins Password\"" : \""${lookup(var.jenkinsservermap, "jenkinspasswd")}\"",  >> stack_details.json
                  echo \""Jazz Home\"" : \""http://${aws_cloudfront_distribution.jazz.domain_name}\"",  >> stack_details.json

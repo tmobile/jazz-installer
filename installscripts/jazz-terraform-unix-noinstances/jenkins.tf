@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
@@ -63,7 +63,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #TODO SORT!
   provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
+    command = "${var.configureJenkinselb_cmd} ${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
     command = "${var.configureJenkinscontainer_cmd} ${var.dockerizedJenkins} ${var.jenkinsattribsfile}"

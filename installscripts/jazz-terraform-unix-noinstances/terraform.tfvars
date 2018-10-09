@@ -22,6 +22,8 @@ jenkinsservermap = {
   jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   jenkins_security_group = "REPLACEME"
   jenkins_subnet = "REPLACEME"
+  jenkins_subnet2 = "REPLACEME"
+  jenkins_vpc_id = "REPLACEME"
 }
 
 #SCM server map (set programmatically by wizard, not directly by user or terraform)
@@ -52,3 +54,4 @@ atlassian_jar_path = "~/jazz_tmp/atlassian-cli-6.7.1/lib/bitbucket-cli-6.7.0.jar
 dockerizedJenkins = true
 additional_tags = {}
 aws_tags = "[]"
+jenkins_docker_image = "jazzserverless/jazzoss-jenkins:1.0.0"

@@ -58,6 +58,8 @@ variable "jenkinsservermap" {
     jenkins_ssh_login = "replace"
     jenkins_ssh_port = "22"
     jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
+    jenkins_subnet2 = "replace"
+    jenkins_vpc_id = "replace"
   }
 }
 
@@ -117,3 +119,4 @@ variable "additional_tags" {
   default = {}
 }
 variable "aws_tags" { type = "string" }
+variable "jenkins_docker_image" { type = "string" }
