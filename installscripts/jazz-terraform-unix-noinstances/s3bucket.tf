@@ -105,9 +105,6 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
     command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
 
   }
-  provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stg.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
-  }
 }
 
 resource "aws_s3_bucket" "jazz-web" {
