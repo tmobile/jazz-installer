@@ -23,6 +23,11 @@ resource "aws_iam_role_policy_attachment" "s3fullaccess" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "sqsfullaccess" {
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
+}
+
 resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
   role       = "${aws_iam_role.lambda_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
