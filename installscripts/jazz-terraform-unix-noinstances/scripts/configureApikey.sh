@@ -3,8 +3,7 @@ DEV_ID=$1
 STG_ID=$2
 PROD_ID=$3
 jenkinsjsonpropsfile=$4
-jenkinsattribsfile=$5
-env_name_prefix=$6
+env_name_prefix=$5
 
 sed -i "s/{AWS_DEV_API_ID_DEFAULT}/$DEV_ID/g" $jenkinsjsonpropsfile
 sed -i "s/{AWS_STG_API_ID_DEFAULT}/$STG_ID/g" $jenkinsjsonpropsfile
