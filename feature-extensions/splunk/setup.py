@@ -117,7 +117,7 @@ def replace_config(args):
             "1"])
 
     configFile = "jazz-installer-vars.json"
-    buildFolder = './jazz-build-module'
+    buildFolder = './jazz-build-module/'
     # Read in the file
     with open(buildFolder+configFile, 'r') as file:
         filedata = file.read()
