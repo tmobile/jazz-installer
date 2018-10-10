@@ -11,12 +11,4 @@ resource "aws_api_gateway_rest_api" "jazz-stg" {
 resource "aws_api_gateway_rest_api" "jazz-prod" {
   name        = "${var.envPrefix}-prod"
   description = "PROD API Gateway"
-
-  provisioner "local-exec" {
-    command = "rm -rf jazz-core"
-  }
-  provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
-
-  }
 }

@@ -97,6 +97,15 @@ EOF
   }
 
   provisioner "local-exec" {
+    command = "rm -rf jazz-core"
+  }
+
+  provisioner "local-exec" {
+    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
+
+  }
+
+  provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
   }
 }
