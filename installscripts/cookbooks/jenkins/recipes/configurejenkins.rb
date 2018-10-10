@@ -33,7 +33,7 @@ end
 
 bash 'createJobExecUser' do
   code <<-EOH
-  echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"jenkinsadmin\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy =
+  echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount(\"jobexec\", \"#{node["cognitopassword"]}\")' | java -jar #{node['jenkins']['clientjar']} -auth @#{node['authfile']} -s http://#{node['jenkinselb']}/ groovy =
   EOH
 end
 
