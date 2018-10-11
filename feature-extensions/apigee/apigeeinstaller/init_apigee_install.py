@@ -209,7 +209,7 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
     return success
 
 
-def install(secretKey, reg, lambdaARN, host, org, env, build, username, password,
+def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, password,
             contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password)
     deploy_shared_flows(host, org, env, build, username, password)

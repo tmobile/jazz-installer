@@ -3,6 +3,7 @@ import subprocess
 import argparse
 import os.path
 import terraformBugWorkaround
+from apigeeinstaller.init_apigee_install import install_proxy
 
 
 class colors:
@@ -63,6 +64,9 @@ def install(args):
     print(
         colors.OKBLUE + 'Linking new role to existing gateway function' + colors.ENDC)
     terraformBugWorkaround.linkNewRoleToExistingFunctionWithCLI(gatewayFunctionName)
+
+# def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, password, contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
+    install_proxy()
 
 
 def uninstall(args):
