@@ -3,7 +3,7 @@ data "aws_canonical_user_id" "current" {}
 resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-dev-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -11,16 +11,16 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
 }
+
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-stg-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -28,16 +28,16 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
 }
+
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-prod-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -45,7 +45,6 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
@@ -55,9 +54,8 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
-  #TODO Verify this is a spurious depend.
-  # depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
   acl = "public-read"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET", "PUT", "POST"]
@@ -65,18 +63,17 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 
   website {
     index_document = "index.html"
   }
 }
 
+
 resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
-  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ]
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -84,11 +81,9 @@ resource "aws_s3_bucket" "jazz-web" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 
   website {
     index_document = "index.html"
-
     routing_rules = <<EOF
 [{
     "Condition": {
@@ -101,13 +96,13 @@ resource "aws_s3_bucket" "jazz-web" {
 EOF
   }
 
-  #Clone jazz-core repo
   provisioner "local-exec" {
     command = "rm -rf jazz-core"
   }
 
   provisioner "local-exec" {
     command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
+
   }
 
   provisioner "local-exec" {
@@ -115,31 +110,10 @@ EOF
   }
 }
 
-resource "aws_iam_policy" "basic_execution_policy" {
-  name        = "${var.envPrefix}_execution_aws_logs"
-  path        = "/"
-  description = "aws_logs access policy"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:*"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-}
-EOF
-}
-
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -147,13 +121,12 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
   bucket_prefix = "${var.envPrefix}-stg-web-"
   request_payer = "BucketOwner"
-  //region = "${var.region}"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -161,12 +134,12 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
   bucket_prefix = "${var.envPrefix}-prod-web-"
   request_payer = "BucketOwner"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -174,7 +147,6 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-  force_destroy = true
 }
 
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
@@ -260,7 +232,6 @@ data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
     resources = [
       "${aws_s3_bucket.prod-serverless-static.arn}/*"
     ]
-
   }
   statement {
     sid = "ListBucket"
@@ -275,7 +246,6 @@ data "aws_iam_policy_document" "prod-serverless-static-policy-data-contents" {
       "${aws_s3_bucket.prod-serverless-static.arn}"
     ]
   }
-
 }
 resource "aws_s3_bucket_policy" "prod-serverless-static-bucket-contents-policy" {
   bucket = "${aws_s3_bucket.prod-serverless-static.id}"
@@ -329,7 +299,6 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
 
 }
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
-  depends_on = ["aws_cloudfront_distribution.jazz" ]
   bucket = "${aws_s3_bucket.jazz-web.id}"
   policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
 }
