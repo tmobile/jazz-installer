@@ -35,7 +35,7 @@ c = JenkinsLocationConfiguration.get()
 c.url = 'http://$jenkinsurl'
 c.adminAddress = '$email'
 c.save()
-jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "jenkinsadmin")
+jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "$jpassword")
 EOF
 
 if [ "$scm_type" == "gitlab" ]; then
