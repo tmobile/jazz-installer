@@ -13,6 +13,7 @@ def print_banner(message):
     print ("**************************************************")
 
 
+# TODO do we really want to rely only on basic auth for admin access to external Apigee?
 def get_basic_auth(username, password):
     up = '%s:%s' % (username, password)
     return "Basic %s" % base64.b64encode(up).decode()
@@ -66,7 +67,7 @@ def get_current_deployed_version(host, org, env, flow, username, password):
         if (e['name'] == env):
             deployedVersion = e['revision'][0]['name']
             break
-    print("  Deployed version: %s" % deployedVersion)
+    print("Deployed version: %s" % deployedVersion)
     return deployedVersion
 
 
@@ -211,6 +212,19 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
 
 def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, password,
             contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
+    """Configure the external Apigee proxy and upload shared flows.
+
+    Keyword arguments:
+    secretKey -- AWS user secret key
+    reg -- AWS userID
+    lambdaARN -- ARN of the gateway function Apigee will invoke
+    host -- Apigee host
+    org -- Apigee org to apply this took
+    env -- Apigee env to userName
+    build -- build number to stamp sharedflow/proxy with?
+    username -- Apigee instance basic auth username
+    password -- apigee instance basic auth password
+    """
     create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password)
     deploy_shared_flows(host, org, env, build, username, password)
     return deploy_common(host, org, env, username, password, contentUrl, contentBranch)

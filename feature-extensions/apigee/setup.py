@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import sys
 import subprocess
 import argparse
 import os.path
@@ -23,6 +24,7 @@ terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
 
 
 def main():
+    # TODO replace argparse stuff and manual input checking with Click once installer rewrite is done
     mainParser = argparse.ArgumentParser()
     mainParser.description = ('Installs the Apigee extension for the Jazz Serverless Development Platform '
                               '(https://github.com/tmobile/jazz)')
@@ -37,8 +39,16 @@ def main():
     )
     mainParser.add_argument(
         '--jazz-stackprefix',
-        help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz)'
+        help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), your existing config will be imported'
     )
+
+    mainParser.add_argument("apigee-host", help="Url of the Apigee host (e.g. https://my-apigee-host)")
+    mainParser.add_argument("apigee-org", help="Name of the Apigee org you wish to use")
+    mainParser.add_argument("apigee-env", help="Name of the Apigee env you wish to use")
+    mainParser.add_argument("apigee-build", help="Version to stamp Apigee proxy with (TODO why does the user need to provide this?)")
+    mainParser.add_argument("apigee-username", help="Username to use when accessing Apigee")
+    mainParser.add_argument("apigee-password", help="Password to use when accessing Apigee")
+
     args = mainParser.parse_args()
     args.func(args)
 
@@ -65,8 +75,17 @@ def install(args):
         colors.OKBLUE + 'Linking new role to existing gateway function' + colors.ENDC)
     terraformBugWorkaround.linkNewRoleToExistingFunctionWithCLI(gatewayFunctionName)
 
-# def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, password, contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
-    install_proxy()
+    install_proxy(
+        getTerraformOutputVar("apigee-lambda-user-secret-key"),
+        getTerraformOutputVar("apigee-lambda-user-id"),
+        getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
+        args.apigee_host,
+        args.apigee_org,
+        args.apigee_env,
+        args.apigee_build,
+        args.apigee_username,
+        args.apigee_password
+    )
 
 
 def uninstall(args):
@@ -118,6 +137,16 @@ def terraformStateSanityCheck():
         print(colors.FAIL +
               'Cannot find the Terraform .tfstate file! No uninstall possible'
               + colors.ENDC)
+
+
+def getTerraformOutputVar(varname):
+    try:
+        return subprocess.check_output(
+            ['terraform', 'output', varname],
+            cwd='./terraform')
+    except subprocess.CalledProcessError:
+            print("Failed getting output variable {0} from terraform!".format(varname))
+            sys.exit()
 
 
 def getRegion(args):
