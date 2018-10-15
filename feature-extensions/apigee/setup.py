@@ -5,6 +5,7 @@ import argparse
 import os.path
 import terraformBugWorkaround
 from apigeeinstaller.init_apigee_install import install_proxy
+from git_config import replace_config
 
 
 class colors:
@@ -24,7 +25,7 @@ terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
 
 
 def main():
-    # TODO replace argparse stuff and manual input checking with Click once installer rewrite is done
+    # TODO replace argparse stuff and manual arg validation checking with Click once main installer rewrite is done
     mainParser = argparse.ArgumentParser()
     mainParser.description = ('Installs the Apigee extension for the Jazz Serverless Development Platform '
                               '(https://github.com/tmobile/jazz)')
@@ -40,6 +41,26 @@ def main():
     mainParser.add_argument(
         '--jazz-stackprefix',
         help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), your existing config will be imported'
+    )
+
+    mainParser.add_argument(
+        '--scm-repo',
+        help='Specify the scm repo url'
+    )
+
+    mainParser.add_argument(
+        '--scm-username',
+        help='Specify the scm username'
+    )
+
+    mainParser.add_argument(
+        '--scm-password',
+        help='Specify the scm password'
+    )
+
+    mainParser.add_argument(
+        '--scm-pathext',
+        help='Specify the scm repo path ext (Use "scm" for bitbucket)'
     )
 
     mainParser.add_argument("apigee-host", help="Url of the Apigee host (e.g. https://my-apigee-host)")
@@ -85,6 +106,17 @@ def install(args):
         args.apigee_build,
         args.apigee_username,
         args.apigee_password
+    )
+
+    replace_config(
+        args.apigee_host,
+        "TODO what is credID? Where does it come from?",
+        args.apigee_env,
+        args.apigee_org,
+        args.scm_repo,
+        args.scm_username,
+        args.scm_password,
+        args.scm_pathext
     )
 
 
