@@ -105,6 +105,18 @@ resource "null_resource" "configureJenkinsInstance" {
   }
 }
 
+data "external" "gitlabcontainer" {
+  count = "${var.scmgitlab}"
+  program = ["bash", "${var.configureGitlab_cmd}"]
+
+  query = {
+    passwd = "${var.cognito_pool_password}"
+    ip = "${aws_lb.alb_ecs_gitlab.dns_name}"
+    gitlab_admin = "${lookup(var.scmmap, "scm_username")}"
+  }
+  depends_on = ["aws_ecs_service.ecs_service_gitlab"]
+}
+
 resource "null_resource" "configureJenkinsDocker" {
   count = "${var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
@@ -114,10 +126,10 @@ resource "null_resource" "configureCliJenkins" {
   depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
   #Jenkins Cli process
   provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${data.external.gitlabcontainer.result.token} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
   }
   provisioner "local-exec" {
-      command = "sleep 45"
+      command = "sleep 1m"
   }
 }
 
@@ -129,6 +141,6 @@ resource "null_resource" "postJenkinsConfiguration" {
 
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
-    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_type")}"
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_type")}"
   }
 }

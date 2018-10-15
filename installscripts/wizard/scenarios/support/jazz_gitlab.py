@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import os
 import subprocess
-
+import re
+from ec2_metadata import ec2_metadata
 from jazz_common import get_tfvars_file, replace_tfvars
 
 
@@ -25,21 +25,20 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path, parameter_cred_list=[])
     """
         Launch a Dockerized Gitlab server.
     """
-    os.chdir(gitlab_docker_path)
-    print("Running docker launch script  for gitlab")
-
-    subprocess.call([
-        'sg', 'docker',  './launch_gitlab_docker.sh %s %s' %( str(parameter_cred_list[1]) , str(parameter_cred_list[0])), '|', 'tee', '-a',
-        '../../gitlab_creation.out'
-    ])
-
-    print("Gitlab container launched")
+    scm_username = re.sub('[^a-zA-Z0-9_-]', '-', str(parameter_cred_list[0]))
+    scm_passwd = str(parameter_cred_list[1])
+    scm_publicip = str(ec2_metadata.public_ipv4)
 
     # Get values to create the array
-    parameter_list = []
-    with open("docker_gitlab_vars") as f:
-        for line in f:
-            parameter_list.append(line.rstrip())
+    parameter_list = [scm_publicip, scm_username, scm_passwd]
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(scmbb = \)\(.*\)|\1false|g', get_tfvars_file()
+    ])
+    subprocess.call([
+        'sed', "-i\'.bak\'",
+        r's|\(scmgitlab = \)\(.*\)|\1true|g', get_tfvars_file()
+    ])
 
     print(parameter_list[0:])
 

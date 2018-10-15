@@ -54,7 +54,7 @@ resource "null_resource" "outputVariablesGitlab" {
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Gitlab Home\"" : \""http://${lookup(var.scmmap, "scm_publicip")}\"",  >> stack_details.json
+              echo \""Gitlab Home\"" : \""http://${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_publicip")}\"",  >> stack_details.json
               echo \""Gitlab Username\"" : \""${lookup(var.scmmap, "scm_username")}\"",   >> stack_details.json
               echo \""Gitlab Password\"" : \""${lookup(var.scmmap, "scm_passwd")}\""  >> stack_details.json
               echo } >> stack_details.json

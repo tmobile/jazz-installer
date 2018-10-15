@@ -2,7 +2,7 @@
 
 jenkinsurl=$1
 email=$2
-if [ $3 == 1 ]; then
+if [ "$3" == "1" ]; then
   jenkinshome='/var/jenkins_home'
 else
   jenkinshome='/var/lib/jenkins'
@@ -23,7 +23,7 @@ cognitouser=${2}
 cognitopassword=${14}
 scmpath=$4
 jenkinsuser=${15}
-curl -sL http://$jenkinsurl/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
+curl -sL http://"$jenkinsurl"/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
 
 if [ "$scm_type" == "bitbucket" ]; then
   scmpath=$scmpath/scm
@@ -43,26 +43,26 @@ if [ "$scm_type" == "gitlab" ]; then
   def cmd = ['/bin/sh',  '-c',  'sed -i "s/ip/$scm_elb/g" $jenkinshome/com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig.xml']
   cmd.execute()
 EOF
-  ../jenkinscli/credentials/gitlab-user.sh "$jenkins_cli_command" $gitlabuser $gitlabpassword
-  ../jenkinscli/credentials/gitlab-token.sh "$jenkins_cli_command" $gitlabtoken
+  ../jenkinscli/credentials/gitlab-user.sh "$jenkins_cli_command" "$gitlabuser" "$gitlabpassword"
+  ../jenkinscli/credentials/gitlab-token.sh "$jenkins_cli_command" "$gitlabtoken"
 else
-  ../jenkinscli/credentials/bitbucket-creds.sh "$jenkins_cli_command" $bbuser $bbpassword
+  ../jenkinscli/credentials/bitbucket-creds.sh "$jenkins_cli_command" "$bbuser" "$bbpassword"
 fi
 
 #credentials
 ../jenkinscli/credentials/jobexec.sh "$jenkins_cli_command"
-../jenkinscli/credentials/sonar.sh "$jenkins_cli_command" $sonaruser $sonarpassword
-../jenkinscli/credentials/aws.sh "$jenkins_cli_command" $aws_access_key $aws_secret_key
-../jenkinscli/credentials/cognitouser.sh "$jenkins_cli_command" $cognitouser $cognitopassword
+../jenkinscli/credentials/sonar.sh "$jenkins_cli_command" "$sonaruser" "$sonarpassword"
+../jenkinscli/credentials/aws.sh "$jenkins_cli_command" "$aws_access_key" "$aws_secret_key"
+../jenkinscli/credentials/cognitouser.sh "$jenkins_cli_command" "$cognitouser" "$cognitopassword"
 
 #Jobs
-../jenkinscli/jobs/job_create-service.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_delete-service.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_build_pack_api.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_cleanup_cloudfront_distributions.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_build_pack_lambda.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_build_pack_website.sh "$jenkins_cli_command" $scmpath
-../jenkinscli/jobs/job_jazz_ui.sh "$jenkins_cli_command" $scmpath
+../jenkinscli/jobs/job_create-service.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_delete-service.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_build_pack_api.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_cleanup_cloudfront_distributions.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_build_pack_lambda.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_build_pack_website.sh "$jenkins_cli_command" "$scmpath"
+../jenkinscli/jobs/job_jazz_ui.sh "$jenkins_cli_command" "$scmpath"
 
 #restart
 $jenkins_cli_command restart

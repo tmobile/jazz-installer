@@ -55,3 +55,4 @@ dockerizedJenkins = true
 additional_tags = {}
 aws_tags = "[]"
 jenkins_docker_image = "jazzserverless/jazzoss-jenkins:1.0.0"
+gitlab_docker_image = "gitlab/gitlab-ce:11.3.0-ce.0"
