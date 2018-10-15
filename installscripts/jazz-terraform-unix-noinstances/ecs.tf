@@ -56,6 +56,11 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.envPrefix}_ecs_cluster"
 }
 
+resource "aws_ecs_cluster" "ecs_cluster_gitlab" {
+  count = "${var.scmgitlab}"
+  name = "${var.envPrefix}_ecs_cluster_gitlab"
+}
+
 data "template_file" "ecs_task" {
   template = "${file("${path.module}/ecs_jenkins_task_definition.json")}"
 
@@ -71,10 +76,36 @@ data "template_file" "ecs_task" {
   depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
 }
 
+data "template_file" "ecs_task_gitlab" {
+  template = "${file("${path.module}/ecs_gitlab_task_definition.json")}"
+
+  vars {
+    image           = "${var.gitlab_docker_image}"
+    ecs_container_name = "${var.envPrefix}_ecs_container_gitlab"
+    log_group       = "${aws_cloudwatch_log_group.ecs_fargates_cwlogs.name}"
+    prefix_name     = "${var.envPrefix}_ecs_task_definition_gitlab"
+    region          = "${var.region}"
+    gitlab_passwd    = "${var.cognito_pool_password}"
+  }
+  depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
+}
+
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   count = "${var.dockerizedJenkins}"
   family                   = "${var.envPrefix}_ecs_task_definition"
   container_definitions    = "${data.template_file.ecs_task.rendered}"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "2048"
+  memory                   = "4096"
+  execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
+  task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+}
+
+resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
+  count = "${var.scmgitlab}"
+  family                   = "${var.envPrefix}_ecs_task_definition_gitlab"
+  container_definitions    = "${data.template_file.ecs_task_gitlab.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "2048"
@@ -103,6 +134,26 @@ resource "aws_alb_target_group" "alb_target_group" {
   }
 }
 
+resource "aws_alb_target_group" "alb_target_group_gitlab" {
+  count = "${var.scmgitlab}"
+  name     = "${var.envPrefix}-ecs-gitlab-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
+  target_type = "ip"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  health_check {
+    path             = "/users/sign_in"
+    matcher          = "200"
+    interval         = "60"
+    timeout          = "59"
+  }
+}
+
 resource "aws_lb" "alb_ecs" {
   count = "${var.dockerizedJenkins}"
   name            = "${var.envPrefix}-alb"
@@ -113,6 +164,19 @@ resource "aws_lb" "alb_ecs" {
 
   tags {
     Name        = "${var.envPrefix}_alb"
+  }
+}
+
+resource "aws_lb" "alb_ecs_gitlab" {
+  count = "${var.scmgitlab}"
+  name            = "${var.envPrefix}-gitlab-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
+  subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+
+  tags {
+    Name        = "${var.envPrefix}_gitlab_alb"
   }
 }
 
@@ -128,9 +192,26 @@ resource "aws_alb_listener" "ecs_alb_listener" {
   }
 }
 
+resource "aws_alb_listener" "ecs_alb_listener_gitlab" {
+  count = "${var.scmgitlab}"
+  load_balancer_arn = "${aws_lb.alb_ecs_gitlab.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.alb_target_group_gitlab.arn}"
+    type             = "forward"
+  }
+}
+
 data "aws_ecs_task_definition" "ecs_task_definition" {
   count = "${var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}"
+}
+
+data "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
+  count = "${var.scmgitlab}"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}"
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -153,5 +234,34 @@ resource "aws_ecs_service" "ecs_service" {
     container_name   = "${var.envPrefix}_ecs_container"
     container_port   = "8080"
   }
+  provisioner "local-exec" {
+      command = "sleep 1m"
+  }
   depends_on = ["aws_alb_target_group.alb_target_group", "aws_lb.alb_ecs"]
+}
+
+resource "aws_ecs_service" "ecs_service_gitlab" {
+  count = "${var.scmgitlab}"
+  name            = "${var.envPrefix}_ecs_service_gitlab"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}:${max("${aws_ecs_task_definition.ecs_task_definition_gitlab.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_gitlab.revision}")}"
+  desired_count   = 1
+  launch_type     = "FARGATE"
+  health_check_grace_period_seconds  = 3000
+  cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
+
+  network_configuration {
+    security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
+    subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = "${aws_alb_target_group.alb_target_group_gitlab.arn}"
+    container_name   = "${var.envPrefix}_ecs_container_gitlab"
+    container_port   = "80"
+  }
+  provisioner "local-exec" {
+      command = "sleep 4m"
+  }
+  depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
 }

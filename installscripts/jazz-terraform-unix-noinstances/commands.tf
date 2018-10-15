@@ -66,6 +66,10 @@ variable "configureJenkinsCE_cmd" {
   type = "string"
   default = "./scripts/configure-cli.sh"
 }
+variable "configureGitlab_cmd" {
+  type = "string"
+  default = "./scripts/configure-gitlab.sh"
+}
 variable "pushInstallervars_cmd" {
   type= "string"
   default = "./scripts/pushInstallervars.sh"

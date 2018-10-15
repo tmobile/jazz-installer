@@ -69,7 +69,7 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configureJenkinscontainer_cmd} ${var.dockerizedJenkins} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configurescmelb_cmd} ${var.scmbb} ${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"

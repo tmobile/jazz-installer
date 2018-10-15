@@ -120,3 +120,4 @@ variable "additional_tags" {
 }
 variable "aws_tags" { type = "string" }
 variable "jenkins_docker_image" { type = "string" }
+variable "gitlab_docker_image" { type = "string" }
