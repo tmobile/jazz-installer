@@ -8,6 +8,8 @@ env:
   - PATH="${HOME}/bin
   - TMPDIR="${TMPDIR:-/tmp}"
   - VERSION="0.11.7"
+  #this needs to be set for `terraform init` to work, and we need that to work for the Terraform CI checks
+  - AWS_DEFAULT_REGION="us-east-1"
 before_install:
   - if ! terraform version ; then
       mkdir -p "${HOME}/bin"

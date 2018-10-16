@@ -1,5 +1,5 @@
 remote_file "#{Chef::Config['file_cache_path']}/sonar-scanner-cli-3.0.3.778-linux.zip" do
-  source 'https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip'
+  source 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip'
   mode '0755'
   action :create
 end
