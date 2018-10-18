@@ -29,7 +29,8 @@ resource "aws_iam_user_policy" "operational_policy" {
         "s3:*",
         "cloudformation:*",
         "sns:*",
-        "cloudwatch:*"
+        "cloudwatch:*",
+        "events:*"
       ],
       "Effect": "Allow",
       "Resource": "*"

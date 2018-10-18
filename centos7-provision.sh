@@ -199,6 +199,18 @@ function install_packages () {
         spin_wheel $! "Downloading & installing awscli bundle"
     fi
 
+    # Installing epel
+    sudo yum install epel-release -y &> /dev/null &
+    spin_wheel $! "Installing epel"
+
+    # Installing beautifulsoup4
+    sudo yum install python-beautifulsoup4 -y &> /dev/null &
+    spin_wheel $! "Installing beautifulsoup4"
+
+    # Installing lxml
+    sudo pip install lxml &> /dev/null &
+    spin_wheel $! "Installing lxml"
+    
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
     exec 2>&4 4>&-
