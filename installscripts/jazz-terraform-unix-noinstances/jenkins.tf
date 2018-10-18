@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service", "aws_ecs_service.ecs_service_codeq"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
@@ -22,7 +22,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #SONAR
   provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configureSonar_cmd} ${var.codeq == 1 ? aws_lb.alb_ecs_codeq.dns_name : lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
   }
   #Elasticsearch
   provisioner "local-exec" {

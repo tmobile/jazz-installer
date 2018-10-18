@@ -51,6 +51,21 @@ resource "aws_cloudwatch_log_group" "ecs_fargates_cwlogs" {
   retention_in_days = 7
 }
 
+resource "null_resource" "ecs_securitygroups" {
+   provisioner "local-exec" {
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 80 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"
+    on_failure = "continue"
+  }
+  provisioner "local-exec" {
+   command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 8080 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"
+   on_failure = "continue"
+  }
+ provisioner "local-exec" {
+  command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 9000 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"
+  on_failure = "continue"
+  }
+}
+
 resource "aws_ecs_cluster" "ecs_cluster" {
   count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_cluster"
@@ -59,6 +74,11 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 resource "aws_ecs_cluster" "ecs_cluster_gitlab" {
   count = "${var.scmgitlab}"
   name = "${var.envPrefix}_ecs_cluster_gitlab"
+}
+
+resource "aws_ecs_cluster" "ecs_cluster_codeq" {
+  count = "${var.codeq}"
+  name = "${var.envPrefix}_ecs_cluster_codeq"
 }
 
 data "template_file" "ecs_task" {
@@ -90,6 +110,20 @@ data "template_file" "ecs_task_gitlab" {
   depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
 }
 
+data "template_file" "ecs_task_codeq" {
+  template = "${file("${path.module}/ecs_codeq_task_definition.json")}"
+
+  vars {
+    image           = "${var.codeq_docker_image}"
+    ecs_container_name = "${var.envPrefix}_ecs_container_codeq"
+    log_group       = "${aws_cloudwatch_log_group.ecs_fargates_cwlogs.name}"
+    prefix_name     = "${var.envPrefix}_ecs_task_definition_codeq"
+    region          = "${var.region}"
+    gitlab_passwd    = "${var.cognito_pool_password}"
+  }
+  depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
+}
+
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   count = "${var.dockerizedJenkins}"
   family                   = "${var.envPrefix}_ecs_task_definition"
@@ -110,6 +144,18 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   network_mode             = "awsvpc"
   cpu                      = "2048"
   memory                   = "4096"
+  execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
+  task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+}
+
+resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
+  count = "${var.codeq}"
+  family                   = "${var.envPrefix}_ecs_task_definition_codeq"
+  container_definitions    = "${data.template_file.ecs_task_codeq.rendered}"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "1024"
+  memory                   = "1024"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 }
@@ -154,6 +200,26 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
   }
 }
 
+resource "aws_alb_target_group" "alb_target_group_codeq" {
+  count = "${var.codeq}"
+  name     = "${var.envPrefix}-ecs-codeq-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
+  target_type = "ip"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  health_check {
+    path             = "/sessions/new"
+    matcher          = "200"
+    interval         = "60"
+    timeout          = "59"
+  }
+}
+
 resource "aws_lb" "alb_ecs" {
   count = "${var.dockerizedJenkins}"
   name            = "${var.envPrefix}-alb"
@@ -177,6 +243,19 @@ resource "aws_lb" "alb_ecs_gitlab" {
 
   tags {
     Name        = "${var.envPrefix}_gitlab_alb"
+  }
+}
+
+resource "aws_lb" "alb_ecs_codeq" {
+  count = "${var.codeq}"
+  name            = "${var.envPrefix}-codeq-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
+  subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+
+  tags {
+    Name        = "${var.envPrefix}_codeq_alb"
   }
 }
 
@@ -204,6 +283,18 @@ resource "aws_alb_listener" "ecs_alb_listener_gitlab" {
   }
 }
 
+resource "aws_alb_listener" "ecs_alb_listener_codeq" {
+  count = "${var.codeq}"
+  load_balancer_arn = "${aws_lb.alb_ecs_codeq.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.alb_target_group_codeq.arn}"
+    type             = "forward"
+  }
+}
+
 data "aws_ecs_task_definition" "ecs_task_definition" {
   count = "${var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}"
@@ -212,6 +303,11 @@ data "aws_ecs_task_definition" "ecs_task_definition" {
 data "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   count = "${var.scmgitlab}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}"
+}
+
+data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
+  count = "${var.codeq}"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}"
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -264,4 +360,30 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
       command = "sleep 4m"
   }
   depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
+}
+
+resource "aws_ecs_service" "ecs_service_codeq" {
+  count = "${var.codeq}"
+  name            = "${var.envPrefix}_ecs_service_codeq"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
+  desired_count   = 1
+  launch_type     = "FARGATE"
+  health_check_grace_period_seconds  = 3000
+  cluster =       "${aws_ecs_cluster.ecs_cluster_codeq.id}"
+
+  network_configuration {
+    security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
+    subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = "${aws_alb_target_group.alb_target_group_codeq.arn}"
+    container_name   = "${var.envPrefix}_ecs_container_codeq"
+    container_port   = "80"
+  }
+  provisioner "local-exec" {
+      command = "sleep 2m"
+  }
+  depends_on = ["aws_alb_target_group.alb_target_group_codeq", "aws_lb.alb_ecs_codeq"]
 }

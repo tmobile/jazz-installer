@@ -27,7 +27,7 @@ resource "null_resource" "outputVariablesSonar" {
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
+              echo \""Sonar Home\"" : \""http://${var.codeq == 1 ? aws_lb.alb_ecs_codeq.dns_name : lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
               echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
               echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
               EOF

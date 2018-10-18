@@ -117,6 +117,14 @@ data "external" "gitlabcontainer" {
   depends_on = ["aws_ecs_service.ecs_service_gitlab"]
 }
 
+resource "null_resource" "configureCodeqDocker" {
+  count = "${var.codeq}"
+  provisioner "local-exec" {
+    command = "bash ${var.configureCodeq_cmd} ${aws_lb.alb_ecs_codeq.dns_name} ${lookup(var.codeqmap, "sonar_passwd")}"
+  }
+  depends_on = ["aws_ecs_service.ecs_service_codeq"]
+}
+
 resource "null_resource" "configureJenkinsDocker" {
   count = "${var.dockerizedJenkins}"
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]

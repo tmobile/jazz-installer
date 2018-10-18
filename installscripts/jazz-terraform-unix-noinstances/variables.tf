@@ -86,11 +86,9 @@ variable "scmmap" {
 variable "codeqmap" {
   type = "map"
   default = {
-    codequality_type = "replacecodeqtype"
     sonar_server_elb = "replaceelb"
     sonar_username = "replaceusername"
     sonar_passwd = "replacepasswd"
-    sonar_server_public_ip = "replacepubip"
   }
 }
 
@@ -121,3 +119,4 @@ variable "additional_tags" {
 variable "aws_tags" { type = "string" }
 variable "jenkins_docker_image" { type = "string" }
 variable "gitlab_docker_image" { type = "string" }
+variable "codeq_docker_image" { type = "string" }

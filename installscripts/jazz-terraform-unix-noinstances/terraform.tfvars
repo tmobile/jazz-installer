@@ -40,11 +40,9 @@ scmmap = {
 
 #CodeQuality server map (set programmatically by wizard, not directly by user or terraform)
 codeqmap = {
-  codequality_type = "REPLACEME"
   sonar_server_elb = "REPLACEME"
   sonar_username = "REPLACEME"
   sonar_passwd = "REPLACEME"
-  sonar_server_public_ip = "REPLACEME"
 }
 
 scmbb = true
@@ -56,3 +54,4 @@ additional_tags = {}
 aws_tags = "[]"
 jenkins_docker_image = "jazzserverless/jazzoss-jenkins:1.0.0"
 gitlab_docker_image = "gitlab/gitlab-ce:11.3.0-ce.0"
+codeq_docker_image = "jazzserverless/jazzoss-sonarqube:1.0.0"
