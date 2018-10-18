@@ -70,6 +70,10 @@ variable "configureGitlab_cmd" {
   type = "string"
   default = "./scripts/configure-gitlab.sh"
 }
+variable "configureCodeq_cmd" {
+  type = "string"
+  default = "./scripts/configure-codeq.sh"
+}
 variable "pushInstallervars_cmd" {
   type= "string"
   default = "./scripts/pushInstallervars.sh"
