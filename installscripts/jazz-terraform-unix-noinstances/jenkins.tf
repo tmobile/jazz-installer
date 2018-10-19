@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service", "aws_ecs_service.ecs_service_codeq"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.jenkins_dockerized", "null_resource.codeq_dockerized", "null_resource.gitlab_dockerized"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
@@ -22,7 +22,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #SONAR
   provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${var.codeq == 1 ? aws_lb.alb_ecs_codeq.dns_name : lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
   }
   #Elasticsearch
   provisioner "local-exec" {
@@ -63,13 +63,13 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #TODO SORT!
   provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
+    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
     command = "${var.configureJenkinscontainer_cmd} ${var.dockerizedJenkins} ${var.jenkinsattribsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configurescmelb_cmd} ${var.scmbb} ${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
@@ -89,5 +89,33 @@ resource "null_resource" "update_jenkins_configs" {
   // Modifying subnet replacement before copying cookbooks to Jenkins server.
   provisioner "local-exec" {
     command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+  }
+}
+
+# Dockerized Jenkins
+resource "null_resource" "jenkins_dockerized" {
+  count = "${var.dockerizedJenkins}"
+  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service"]
+  provisioner "local-exec" {
+    command = "${var.configureJenkinselb_cmd} ${aws_lb.alb_ecs.dns_name} ${var.jenkinsattribsfile}"
+  }
+}
+
+# Dockerized CODE_QUALITY
+resource "null_resource" "codeq_dockerized" {
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service_codeq"]
+  #SONAR
+  provisioner "local-exec" {
+    command = "${var.configureSonar_cmd} ${aws_lb.alb_ecs_codeq.dns_name} ${var.codeq} ${var.jenkinsjsonpropsfile}"
+  }
+}
+
+# Dockerized Jenkins
+resource "null_resource" "gitlab_dockerized" {
+  count = "${var.scmgitlab}"
+  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service_gitlab"]
+  provisioner "local-exec" {
+    command = "${var.configurescmelb_cmd} ${var.scmbb} ${aws_lb.alb_ecs_gitlab.dns_name} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
   }
 }

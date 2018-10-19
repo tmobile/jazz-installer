@@ -77,7 +77,7 @@ resource "aws_ecs_cluster" "ecs_cluster_gitlab" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_cluster_codeq"
 }
 
@@ -149,13 +149,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   family                   = "${var.envPrefix}_ecs_task_definition_codeq"
   container_definitions    = "${data.template_file.ecs_task_codeq.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "1024"
-  memory                   = "1024"
+  memory                   = "2048"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 }
@@ -201,7 +201,7 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
 }
 
 resource "aws_alb_target_group" "alb_target_group_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   name     = "${var.envPrefix}-ecs-codeq-tg"
   port     = 80
   protocol = "HTTP"
@@ -247,7 +247,7 @@ resource "aws_lb" "alb_ecs_gitlab" {
 }
 
 resource "aws_lb" "alb_ecs_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   name            = "${var.envPrefix}-codeq-alb"
   internal           = false
   load_balancer_type = "application"
@@ -284,7 +284,7 @@ resource "aws_alb_listener" "ecs_alb_listener_gitlab" {
 }
 
 resource "aws_alb_listener" "ecs_alb_listener_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   load_balancer_arn = "${aws_lb.alb_ecs_codeq.arn}"
   port              = "80"
   protocol          = "HTTP"
@@ -306,7 +306,7 @@ data "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
 }
 
 data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}"
 }
 
@@ -363,7 +363,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
 }
 
 resource "aws_ecs_service" "ecs_service_codeq" {
-  count = "${var.codeq}"
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   name            = "${var.envPrefix}_ecs_service_codeq"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
   desired_count   = 1
@@ -380,7 +380,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   load_balancer {
     target_group_arn = "${aws_alb_target_group.alb_target_group_codeq.arn}"
     container_name   = "${var.envPrefix}_ecs_container_codeq"
-    container_port   = "80"
+    container_port   = "9000"
   }
   provisioner "local-exec" {
       command = "sleep 2m"
