@@ -3,13 +3,34 @@
 #
 
 resource "null_resource" "outputVariables" {
+  count = "${1 - var.dockerizedJenkins}"
   provisioner "local-exec" {
     command = "touch stack_details.json"
   }
   provisioner "local-exec" {
        command = <<EOF
                  echo { > stack_details.json
-                 echo \""Jenkins ELB\"" : \""http://${var.dockerizedJenkins == 1 ? aws_lb.alb_ecs.dns_name : lookup(var.jenkinsservermap, "jenkins_elb")}\"", >> stack_details.json
+                 echo \""Jenkins ELB\"" : \""http://${lookup(var.jenkinsservermap, "jenkins_elb")}\"", >> stack_details.json
+                 echo \""Jenkins Username\"" : \""${lookup(var.jenkinsservermap, "jenkinsuser")}\"",  >> stack_details.json
+                 echo \""Jenkins Password\"" : \""${lookup(var.jenkinsservermap, "jenkinspasswd")}\"",  >> stack_details.json
+                 echo \""Jazz Home\"" : \""http://${aws_cloudfront_distribution.jazz.domain_name}\"",  >> stack_details.json
+                 echo \""Jazz Admin Username\"" : \""${var.cognito_pool_username}\"",  >> stack_details.json
+                 echo \""Jazz Admin Password\"" : \""${var.cognito_pool_password}\"",  >> stack_details.json
+                 echo \""Region\"" : \""${var.region}\"",  >> stack_details.json
+                 echo \""Jazz API Endpoint\"" : \""https://${aws_api_gateway_rest_api.jazz-prod.id}.execute-api.${var.region}.amazonaws.com/prod\"",  >> stack_details.json
+                 EOF
+   }
+}
+
+resource "null_resource" "outputVariables_dockerized" {
+  count = "${var.dockerizedJenkins}"
+  provisioner "local-exec" {
+    command = "touch stack_details.json"
+  }
+  provisioner "local-exec" {
+       command = <<EOF
+                 echo { > stack_details.json
+                 echo \""Jenkins ELB\"" : \""http://${aws_lb.alb_ecs.dns_name}\"", >> stack_details.json
                  echo \""Jenkins Username\"" : \""${lookup(var.jenkinsservermap, "jenkinsuser")}\"",  >> stack_details.json
                  echo \""Jenkins Password\"" : \""${lookup(var.jenkinsservermap, "jenkinspasswd")}\"",  >> stack_details.json
                  echo \""Jazz Home\"" : \""http://${aws_cloudfront_distribution.jazz.domain_name}\"",  >> stack_details.json
@@ -22,12 +43,25 @@ resource "null_resource" "outputVariables" {
 }
 
 resource "null_resource" "outputVariablesSonar" {
+  count = "${1 - var.codeq * var.scmgitlab * var.dockerizedJenkins}"
   depends_on = ["null_resource.outputVariables"]
-  count = "${var.codeq}"
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Sonar Home\"" : \""http://${var.codeq == 1 ? aws_lb.alb_ecs_codeq.dns_name : lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
+              echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
+              echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
+              echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
+              EOF
+  }
+}
+
+resource "null_resource" "outputVariablesSonar_dockerized" {
+  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  depends_on = ["null_resource.outputVariables_dockerized"]
+
+  provisioner "local-exec" {
+    command = <<EOF
+              echo \""Sonar Home\"" : \""http://${aws_lb.alb_ecs_codeq.dns_name}\"",  >> stack_details.json
               echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
               echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
               EOF
@@ -49,12 +83,12 @@ resource "null_resource" "outputVariablesBB" {
 }
 
 resource "null_resource" "outputVariablesGitlab" {
-  depends_on = ["null_resource.outputVariables", "null_resource.outputVariablesSonar"]
+  depends_on = ["null_resource.outputVariables_dockerized", "null_resource.outputVariablesSonar_dockerized"]
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Gitlab Home\"" : \""http://${var.scmgitlab == 1 ? aws_lb.alb_ecs_gitlab.dns_name : lookup(var.scmmap, "scm_publicip")}\"",  >> stack_details.json
+              echo \""Gitlab Home\"" : \""http://${aws_lb.alb_ecs_gitlab.dns_name}\"",  >> stack_details.json
               echo \""Gitlab Username\"" : \""${lookup(var.scmmap, "scm_username")}\"",   >> stack_details.json
               echo \""Gitlab Password\"" : \""${lookup(var.scmmap, "scm_passwd")}\""  >> stack_details.json
               echo } >> stack_details.json
