@@ -3,6 +3,7 @@ data "aws_canonical_user_id" "current" {}
 resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-dev-"
   request_payer = "BucketOwner"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -14,16 +15,12 @@ resource "aws_s3_bucket" "oab-apis-deployment-dev" {
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-dev.bucket} --recursive"
-  }
 }
+
 resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-stg-"
   request_payer = "BucketOwner"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -35,15 +32,12 @@ resource "aws_s3_bucket" "oab-apis-deployment-stg" {
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-stg.bucket} --recursive"
-  }
 }
+
 resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   bucket_prefix = "${var.envPrefix}-apis-deployment-prod-"
   request_payer = "BucketOwner"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -55,18 +49,13 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
   provisioner "local-exec" {
     command = "${var.sets3acl_cmd} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${data.aws_canonical_user_id.current.id}"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.oab-apis-deployment-prod.bucket} --recursive"
-  }
 }
 
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
-  depends_on = ["aws_api_gateway_rest_api.jazz-prod" ]
   acl = "public-read"
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET", "PUT", "POST"]
@@ -78,88 +67,13 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   website {
     index_document = "index.html"
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.jazz_s3_api_doc.bucket} --recursive"
-  }
 }
 
-resource "aws_api_gateway_rest_api" "jazz-dev" {
-  name        = "${var.envPrefix}-dev"
-  description = "DEV API Gateway"
-}
-resource "aws_api_gateway_rest_api" "jazz-stg" {
-  name        = "${var.envPrefix}-stg"
-  description = "STG API Gateway"
-}
-
-resource "aws_api_gateway_rest_api" "jazz-prod" {
-  name        = "${var.envPrefix}-prod"
-  description = "PROD API Gateway"
-
-  provisioner "local-exec" {
-    command = "rm -rf jazz-core"
-  }
-  provisioner "local-exec" {
-    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
-
-  }
-  provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stg.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.jenkinsattribsfile} ${var.envPrefix}"
-  }
-}
-
-resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_dev" {
-  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-dev.id}/dev"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
-}
-
-resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_stg" {
-  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-stg.id}/stg"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
-}
-
-resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_prod" {
-  name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-prod.id}/prod"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
-}
-
-resource "aws_cloudwatch_log_subscription_filter" "logfilter-dev" {
-  name            = "logfilter-dev"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
-  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_dev.name}"
-  filter_pattern  = ""
-  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
-  distribution    = "Random"
-}
-
-resource "aws_cloudwatch_log_subscription_filter" "logfilter-stg" {
-  name            = "logfilter-stg"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
-  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_stg.name}"
-  filter_pattern  = ""
-  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
-  distribution    = "Random"
-}
-
-resource "aws_cloudwatch_log_subscription_filter" "logfilter-prod" {
-  name            = "logfilter-prod"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
-  log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_prod.name}"
-  filter_pattern  = ""
-  destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
-  distribution    = "Random"
-}
-
-resource "aws_api_gateway_account" "cloudwatchlogroleupdate" {
-  cloudwatch_role_arn = "${aws_iam_role.lambda_role.arn}"
-}
 
 resource "aws_s3_bucket" "jazz-web" {
   bucket_prefix = "${var.envPrefix}-web-"
   request_payer = "BucketOwner"
-  depends_on = ["aws_s3_bucket.jazz_s3_api_doc" ]
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -183,133 +97,23 @@ EOF
   }
 
   provisioner "local-exec" {
+    command = "rm -rf jazz-core"
+  }
+
+  provisioner "local-exec" {
+    command = "git clone -b ${var.github_branch} ${var.github_repo} jazz-core --depth 1"
+
+  }
+
+  provisioner "local-exec" {
     command = "${var.deployS3Webapp_cmd} ${aws_s3_bucket.jazz-web.bucket} ${var.region} ${data.aws_canonical_user_id.current.id}"
   }
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.jazz-web.bucket}/ --recursive"
-  }
 }
 
-resource "aws_iam_role" "lambda_role" {
-  name = "${var.envPrefix}_basic_execution"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-        "Sid": "",
-        "Effect": "Allow",
-        "Principal": {
-            "Service": "apigateway.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-    },
-    {
-        "Effect": "Allow",
-        "Principal": {
-            "Service": "lambda.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-    },
-    {
-        "Effect": "Allow",
-        "Principal": {
-            "Service": "logs.${var.region}.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AWSLambdaFullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
-  }
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws iam detach-role-policy --role-name ${aws_iam_role.lambda_role.name} --policy-arn arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
-  }
-}
-
-resource "aws_iam_role_policy" "basic_execution_policy" {
-  name = "${var.envPrefix}_basic_execution_policy"
-  role = "${aws_iam_role.lambda_role.id}"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "iam:PassRole"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "lambdafullaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "apigatewayinvokefullAccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "cloudwatchlogaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
-resource "aws_iam_role_policy_attachment" "kinesisaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonKinesisFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "s3fullaccess" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
-resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
-}
-resource "aws_iam_role_policy_attachment" "pushtocloudwatchlogs" {
-  role       = "${aws_iam_role.lambda_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-}
 resource "aws_s3_bucket" "dev-serverless-static" {
   bucket_prefix = "${var.envPrefix}-dev-web-"
   request_payer = "BucketOwner"
-
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -317,18 +121,12 @@ resource "aws_s3_bucket" "dev-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.dev-serverless-static.bucket} --recursive"
-  }
 }
 
 resource "aws_s3_bucket" "stg-serverless-static" {
   bucket_prefix = "${var.envPrefix}-stg-web-"
   request_payer = "BucketOwner"
-
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -336,19 +134,12 @@ resource "aws_s3_bucket" "stg-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.stg-serverless-static.bucket} --recursive"
-  }
-
 }
 
 resource "aws_s3_bucket" "prod-serverless-static" {
   bucket_prefix = "${var.envPrefix}-prod-web-"
   request_payer = "BucketOwner"
-
+  force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
     allowed_methods = ["GET"]
@@ -356,14 +147,6 @@ resource "aws_s3_bucket" "prod-serverless-static" {
     max_age_seconds = 3000
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
-
-  # TODO do we need this, or does `force_destroy` suffice?
-  provisioner "local-exec" {
-    when = "destroy"
-    on_failure = "continue"
-    command = "aws s3 rm s3://${aws_s3_bucket.prod-serverless-static.bucket} --recursive"
-  }
-
 }
 
 data "aws_iam_policy_document" "dev-serverless-static-policy-data-contents" {
@@ -516,7 +299,6 @@ data "aws_iam_policy_document" "jazz-web-policy-data-contents" {
 
 }
 resource "aws_s3_bucket_policy" "jazz-web-bucket-contents-policy" {
-  depends_on = ["aws_cloudfront_distribution.jazz" ]
   bucket = "${aws_s3_bucket.jazz-web.id}"
   policy = "${data.aws_iam_policy_document.jazz-web-policy-data-contents.json}"
 }
