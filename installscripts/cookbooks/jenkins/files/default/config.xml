@@ -37,6 +37,8 @@
   <disabledAgentProtocols>
     <string>CLI-connect</string>
     <string>CLI2-connect</string>
+    <string>JNLP-connect</string>
+    <string>JNLP2-connect</string>
   </disabledAgentProtocols>
   <label></label>
   <globalNodeProperties>
