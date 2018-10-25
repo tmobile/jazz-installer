@@ -87,7 +87,7 @@ spin_wheel $! "Installing lxml"
 
 # Generating private tokens
 echo "Generating private tokens:"
-python privatetoken.py mytoken 2018-12-31 $passwd
+python privatetoken.py mytoken $passwd
 echo "Private tokens generated"
 
 # Grabbing the admin credentials

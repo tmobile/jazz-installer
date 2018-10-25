@@ -1,6 +1,9 @@
 ![Jazz Logo](logo.png)
 
 [![Build Status](https://travis-ci.org/tmobile/jazz-installer.svg?branch=master)](https://travis-ci.org/tmobile/jazz-installer)
+[![Gitter](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/TMO-OSS/Jazz)
+[![Slack Chat](https://img.shields.io/badge/Chat-Slack-ff69b4.svg)](https://tmo-oss-getinvite.herokuapp.com/)
+
 # Jazz Serverless Platform
 
 **Seamlessly build, deploy & manage cloud-native applications.**
