@@ -165,9 +165,9 @@ resource "aws_alb_target_group" "alb_target_group" {
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 
   health_check {
     path             = "/login"
@@ -185,9 +185,9 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 
   health_check {
     path             = "/users/sign_in"
@@ -205,9 +205,9 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 
   health_check {
     path             = "/sessions/new"
