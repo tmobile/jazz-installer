@@ -66,4 +66,4 @@ fi
 
 #restart
 $jenkins_cli_command restart
-sleep 20 &
+sleep 45 &

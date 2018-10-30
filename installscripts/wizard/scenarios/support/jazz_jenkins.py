@@ -5,7 +5,7 @@ import subprocess
 import hashlib
 import datetime
 from ec2_metadata import ec2_metadata
-from jazz_common import get_tfvars_file, replace_tfvars
+from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -118,10 +118,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         jenkins_server_subnet
     ]
 
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(dockerizedJenkins = \)\(.*\)|\1false|g', get_tfvars_file()
-    ])
+    replace_tfvars_map("dockerizedJenkins", "false", get_tfvars_file())
 
     add_jenkins_config_to_files(parameter_list)
 

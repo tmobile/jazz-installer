@@ -77,7 +77,7 @@ resource "aws_ecs_cluster" "ecs_cluster_gitlab" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   name = "${var.envPrefix}_ecs_cluster_codeq"
 }
 
@@ -93,7 +93,6 @@ data "template_file" "ecs_task" {
     jenkins_user    = "${lookup(var.jenkinsservermap, "jenkinsuser")}"
     jenkins_passwd    = "${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
-  depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
 }
 
 data "template_file" "ecs_task_gitlab" {
@@ -107,7 +106,6 @@ data "template_file" "ecs_task_gitlab" {
     region          = "${var.region}"
     gitlab_passwd    = "${var.cognito_pool_password}"
   }
-  depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
 }
 
 data "template_file" "ecs_task_codeq" {
@@ -121,7 +119,6 @@ data "template_file" "ecs_task_codeq" {
     region          = "${var.region}"
     gitlab_passwd    = "${var.cognito_pool_password}"
   }
-  depends_on = ["aws_cloudwatch_log_group.ecs_fargates_cwlogs"]
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition" {
@@ -130,8 +127,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   container_definitions    = "${data.template_file.ecs_task.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "2048"
-  memory                   = "4096"
+  cpu                      = "${var.ecsJenkinscpu}"
+  memory                   = "${var.ecsJenkinsmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 }
@@ -142,20 +139,20 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   container_definitions    = "${data.template_file.ecs_task_gitlab.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "2048"
-  memory                   = "4096"
+  cpu                      = "${var.ecsGitlabcpu}"
+  memory                   = "${var.ecsGitlabmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   family                   = "${var.envPrefix}_ecs_task_definition_codeq"
   container_definitions    = "${data.template_file.ecs_task_codeq.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "1024"
-  memory                   = "2048"
+  cpu                      =  "${var.ecsSonarqubecpu}"
+  memory                   =  "${var.ecsSonarqubememory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 }
@@ -168,9 +165,9 @@ resource "aws_alb_target_group" "alb_target_group" {
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  #lifecycle {
+  #  create_before_destroy = true
+  #}
 
   health_check {
     path             = "/login"
@@ -188,9 +185,9 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  #lifecycle {
+  #  create_before_destroy = true
+  #}
 
   health_check {
     path             = "/users/sign_in"
@@ -201,16 +198,16 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
 }
 
 resource "aws_alb_target_group" "alb_target_group_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   name     = "${var.envPrefix}-ecs-codeq-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
   target_type = "ip"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  #lifecycle {
+  #  create_before_destroy = true
+  #}
 
   health_check {
     path             = "/sessions/new"
@@ -247,7 +244,7 @@ resource "aws_lb" "alb_ecs_gitlab" {
 }
 
 resource "aws_lb" "alb_ecs_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   name            = "${var.envPrefix}-codeq-alb"
   internal           = false
   load_balancer_type = "application"
@@ -284,7 +281,7 @@ resource "aws_alb_listener" "ecs_alb_listener_gitlab" {
 }
 
 resource "aws_alb_listener" "ecs_alb_listener_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   load_balancer_arn = "${aws_lb.alb_ecs_codeq.arn}"
   port              = "80"
   protocol          = "HTTP"
@@ -306,7 +303,7 @@ data "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
 }
 
 data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}"
 }
 
@@ -333,7 +330,6 @@ resource "aws_ecs_service" "ecs_service" {
   provisioner "local-exec" {
       command = "sleep 1m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group", "aws_lb.alb_ecs"]
 }
 
 resource "aws_ecs_service" "ecs_service_gitlab" {
@@ -359,11 +355,10 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   provisioner "local-exec" {
       command = "sleep 4m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
 }
 
 resource "aws_ecs_service" "ecs_service_codeq" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   name            = "${var.envPrefix}_ecs_service_codeq"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
   desired_count   = 1
@@ -383,7 +378,6 @@ resource "aws_ecs_service" "ecs_service_codeq" {
     container_port   = "9000"
   }
   provisioner "local-exec" {
-      command = "sleep 2m"
+      command = "sleep 4m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group_codeq", "aws_lb.alb_ecs_codeq"]
 }

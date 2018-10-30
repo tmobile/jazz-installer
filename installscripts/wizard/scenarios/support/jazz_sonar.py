@@ -5,20 +5,17 @@ import subprocess
 import hashlib
 import datetime
 from ec2_metadata import ec2_metadata
-from jazz_common import get_tfvars_file, replace_tfvars
+from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
-def add_sonar_config_to_files(parameter_list):
+def add_sonar_config_to_files(sonar_server_elb, sonar_username, sonar_passwd):
     """
         Add Sonar configuration to terraform.tfvars
-        parameter_list = [  sonar_server_elb ,
-                            sonar_username,
-                            sonar_passwd]
      """
 
-    replace_tfvars('sonar_server_elb', parameter_list[0], get_tfvars_file())
-    replace_tfvars('sonar_username', parameter_list[1], get_tfvars_file())
-    replace_tfvars('sonar_passwd', parameter_list[2], get_tfvars_file())
+    replace_tfvars('sonar_server_elb', sonar_server_elb, get_tfvars_file())
+    replace_tfvars('sonar_username', sonar_username, get_tfvars_file())
+    replace_tfvars('sonar_passwd', sonar_passwd, get_tfvars_file())
     replace_tfvars('codeq', 1, get_tfvars_file())
 
 
@@ -67,13 +64,7 @@ def get_add_existing_sonar_config(terraform_folder):
         sys.exit(
             "Kindly provide an 'Admin' Sonar user with correct password and run the installer again!"
         )
-
-    # Create paramter list
-    parameter_list = [
-        sonar_server_elb, sonar_username, sonar_passwd
-    ]
-
-    add_sonar_config_to_files(parameter_list)
+    add_sonar_config_to_files(sonar_server_elb, sonar_username, sonar_passwd)
 
 
 def get_and_add_docker_sonar_config(sonar_docker_path):
@@ -84,12 +75,5 @@ def get_and_add_docker_sonar_config(sonar_docker_path):
     encrypt_passwd.update(str(datetime.datetime.now()))
     sonar_passwd = encrypt_passwd.hexdigest()
     sonar_server_elb = str(ec2_metadata.public_ipv4)
-
-    # Get values to create the array
-    parameter_list = [
-        sonar_server_elb, "admin", sonar_passwd
-    ]
-
-    print(parameter_list[0:])
-
-    add_sonar_config_to_files(parameter_list)
+    replace_tfvars_map("dockerizedSonarqube", "true", get_tfvars_file())
+    add_sonar_config_to_files(sonar_server_elb, "admin", sonar_passwd)

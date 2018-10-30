@@ -120,3 +120,10 @@ variable "aws_tags" { type = "string" }
 variable "jenkins_docker_image" { type = "string" }
 variable "gitlab_docker_image" { type = "string" }
 variable "codeq_docker_image" { type = "string" }
+variable "dockerizedSonarqube" { default = false }
+variable "ecsJenkinscpu" { type = "string" default = "2048" }
+variable "ecsJenkinsmemory" { type = "string" default = "4096" }
+variable "ecsGitlabcpu" { type = "string" default = "2048" }
+variable "ecsGitlabmemory" { type = "string" default = "4096" }
+variable "ecsSonarqubecpu" { type = "string" default = "1024" }
+variable "ecsSonarqubememory" { type = "string" default = "2048" }

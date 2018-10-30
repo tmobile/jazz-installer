@@ -72,7 +72,7 @@ variable "configureGitlab_cmd" {
 }
 variable "configureCodeq_cmd" {
   type = "string"
-  default = "./scripts/configure-codeq.sh"
+  default = "./scripts/configure-codeq.py"
 }
 variable "pushInstallervars_cmd" {
   type= "string"
