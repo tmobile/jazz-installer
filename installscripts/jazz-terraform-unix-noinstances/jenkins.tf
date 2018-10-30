@@ -103,7 +103,7 @@ resource "null_resource" "jenkins_dockerized" {
 
 # Dockerized CODE_QUALITY
 resource "null_resource" "codeq_dockerized" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service_codeq"]
   #SONAR
   provisioner "local-exec" {

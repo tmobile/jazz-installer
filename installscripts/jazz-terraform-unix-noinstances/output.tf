@@ -43,7 +43,7 @@ resource "null_resource" "outputVariables_dockerized" {
 }
 
 resource "null_resource" "outputVariablesSonar" {
-  count = "${1 - var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${1 - var.dockerizedSonarqube}"
   depends_on = ["null_resource.outputVariables"]
 
   provisioner "local-exec" {
@@ -56,7 +56,7 @@ resource "null_resource" "outputVariablesSonar" {
 }
 
 resource "null_resource" "outputVariablesSonar_dockerized" {
-  count = "${var.codeq * var.scmgitlab * var.dockerizedJenkins}"
+  count = "${var.dockerizedSonarqube}"
   depends_on = ["null_resource.outputVariables_dockerized"]
 
   provisioner "local-exec" {

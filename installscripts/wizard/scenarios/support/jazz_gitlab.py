@@ -1,8 +1,7 @@
 #!/usr/bin/python
-import subprocess
 import re
 from ec2_metadata import ec2_metadata
-from jazz_common import get_tfvars_file, replace_tfvars
+from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
 def add_gitlab_config_to_files(parameter_list):
@@ -31,14 +30,9 @@ def get_and_add_docker_gitlab_config(gitlab_docker_path, parameter_cred_list=[])
 
     # Get values to create the array
     parameter_list = [scm_publicip, scm_username, scm_passwd]
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(scmbb = \)\(.*\)|\1false|g', get_tfvars_file()
-    ])
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(scmgitlab = \)\(.*\)|\1true|g', get_tfvars_file()
-    ])
+
+    replace_tfvars_map("scmbb", "false", get_tfvars_file())
+    replace_tfvars_map("scmgitlab", "true", get_tfvars_file())
 
     print(parameter_list[0:])
 
