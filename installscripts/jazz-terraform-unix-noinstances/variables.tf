@@ -127,3 +127,8 @@ variable "ecsGitlabcpu" { type = "string" default = "2048" }
 variable "ecsGitlabmemory" { type = "string" default = "4096" }
 variable "ecsSonarqubecpu" { type = "string" default = "1024" }
 variable "ecsSonarqubememory" { type = "string" default = "2048" }
+variable "autovpc" { default = false }
+variable "cidr_block" {
+  type        = "string"
+  default     = "10.0.0.0/16"
+}

@@ -62,3 +62,5 @@ ecsGitlabcpu = "2048"
 ecsGitlabmemory = "4096"
 ecsSonarqubecpu = "1024"
 ecsSonarqubememory = "2048"
+autovpc = false
+cidr_block = "10.0.0.0/16"
