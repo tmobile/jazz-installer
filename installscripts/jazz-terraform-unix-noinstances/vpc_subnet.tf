@@ -27,9 +27,8 @@ resource "aws_route_table" "route_table_for_ecs" {
   }
 }
 
-resource "aws_route_table_association" "route_tableassoc_for_ecs" {
-  count = 1
-  subnet_id      = "${element(aws_subnet.subnet_for_ecs.*.id, count.index)}"
+resource "aws_main_route_table_association" "a" {
+  vpc_id         = "${aws_vpc.vpc_for_ecs.id}"
   route_table_id = "${aws_route_table.route_table_for_ecs.id}"
 }
 
