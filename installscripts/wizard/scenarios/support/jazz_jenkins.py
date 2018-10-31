@@ -128,8 +128,10 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
         Launch a dockerized Jenkins server.
     """
     print "\nPlease provide Subnets details, since ECS Fargate will be configured with ALB"
-    jenkins_subnet = raw_input("Please enter the subnetid 1 :")
-    jenkins_subnet2 = raw_input("Please enter the subnetid 2 :")
+    # jenkins_subnet = raw_input("Please enter the subnetid 1 :")
+    # jenkins_subnet2 = raw_input("Please enter the subnetid 2 :")
+    jenkins_subnet = "replaceme"
+    jenkins_subnet2 = "replaceme"
     encrypt_passwd = hashlib.md5()
     encrypt_passwd.update(str(datetime.datetime.now()))
     jenkins_passwd = encrypt_passwd.hexdigest()

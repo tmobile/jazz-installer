@@ -162,7 +162,7 @@ resource "aws_alb_target_group" "alb_target_group" {
   name     = "${var.envPrefix}-ecs-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
+  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
   target_type = "ip"
 
   lifecycle {
@@ -182,7 +182,7 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
   name     = "${var.envPrefix}-ecs-gitlab-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
+  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
   target_type = "ip"
 
   lifecycle {
@@ -202,7 +202,7 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
   name     = "${var.envPrefix}-ecs-codeq-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${lookup(var.jenkinsservermap, "jenkins_vpc_id")}"
+  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
   target_type = "ip"
 
   lifecycle {
@@ -222,8 +222,8 @@ resource "aws_lb" "alb_ecs" {
   name            = "${var.envPrefix}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-  subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
     Name        = "${var.envPrefix}_alb"
@@ -235,8 +235,8 @@ resource "aws_lb" "alb_ecs_gitlab" {
   name            = "${var.envPrefix}-gitlab-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-  subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
     Name        = "${var.envPrefix}_gitlab_alb"
@@ -248,8 +248,8 @@ resource "aws_lb" "alb_ecs_codeq" {
   name            = "${var.envPrefix}-codeq-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-  subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
     Name        = "${var.envPrefix}_codeq_alb"
@@ -317,8 +317,8 @@ resource "aws_ecs_service" "ecs_service" {
   cluster =       "${aws_ecs_cluster.ecs_cluster.id}"
 
   network_configuration {
-    security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-    subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
 
@@ -342,8 +342,8 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
 
   network_configuration {
-    security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-    subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
 
@@ -367,8 +367,8 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_codeq.id}"
 
   network_configuration {
-    security_groups    = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"]
-    subnets            = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}", "${lookup(var.jenkinsservermap, "jenkins_subnet2")}"]
+    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
 
