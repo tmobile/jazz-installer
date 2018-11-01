@@ -22,8 +22,6 @@ jenkinsservermap = {
   jenkins_ssh_key = "../sshkeys/jenkinskey.pem"
   jenkins_security_group = "REPLACEME"
   jenkins_subnet = "REPLACEME"
-  jenkins_subnet2 = "REPLACEME"
-  jenkins_vpc_id = "REPLACEME"
 }
 
 #SCM server map (set programmatically by wizard, not directly by user or terraform)
@@ -62,5 +60,6 @@ ecsGitlabcpu = "2048"
 ecsGitlabmemory = "4096"
 ecsSonarqubecpu = "1024"
 ecsSonarqubememory = "2048"
-autovpc = true
-cidr_block = "10.0.0.0/16"
+autovpc = false
+vpc_cidr_block = "10.0.0.0/16"
+existing_vpc_ecs = "replaceme"
