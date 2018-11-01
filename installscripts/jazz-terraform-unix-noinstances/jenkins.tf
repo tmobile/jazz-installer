@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.jenkins_dockerized", "null_resource.codeq_dockerized", "null_resource.gitlab_dockerized"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.codeq_dockerized"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
@@ -92,30 +92,12 @@ resource "null_resource" "update_jenkins_configs" {
   }
 }
 
-# Dockerized Jenkins
-resource "null_resource" "jenkins_dockerized" {
-  count = "${var.dockerizedJenkins}"
-  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service"]
-  provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${aws_lb.alb_ecs.dns_name} ${var.jenkinsattribsfile}"
-  }
-}
-
 # Dockerized CODE_QUALITY
 resource "null_resource" "codeq_dockerized" {
   count = "${var.dockerizedSonarqube}"
-  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service_codeq"]
+  depends_on = ["aws_ecs_service.ecs_service_codeq"]
   #SONAR
   provisioner "local-exec" {
     command = "${var.configureSonar_cmd} ${aws_lb.alb_ecs_codeq.dns_name} ${var.codeq} ${var.jenkinsjsonpropsfile}"
-  }
-}
-
-# Dockerized Jenkins
-resource "null_resource" "gitlab_dockerized" {
-  count = "${var.scmgitlab}"
-  depends_on = ["aws_cognito_user_pool_domain.domain", "aws_ecs_service.ecs_service_gitlab"]
-  provisioner "local-exec" {
-    command = "${var.configurescmelb_cmd} ${var.scmbb} ${aws_lb.alb_ecs_gitlab.dns_name} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
   }
 }
