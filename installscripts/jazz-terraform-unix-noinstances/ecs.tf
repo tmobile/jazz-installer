@@ -52,28 +52,29 @@ resource "aws_cloudwatch_log_group" "ecs_fargates_cwlogs" {
 }
 
 resource "null_resource" "ecs_securitygroups" {
+  count = "${var.dockerizedJenkins}"
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 80 --cidr '0.0.0.0/0' --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 80 --cidr '0.0.0.0/0' --region ${var.region}"
     on_failure = "continue"
   }
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 80 --source-group ${aws_vpc.vpc_for_ecs.default_security_group_id} --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 80 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
     on_failure = "continue"
   }
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 8080 --cidr '0.0.0.0/0' --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 8080 --cidr '0.0.0.0/0' --region ${var.region}"
     on_failure = "continue"
   }
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 8080 --source-group ${aws_vpc.vpc_for_ecs.default_security_group_id} --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 8080 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
     on_failure = "continue"
   }
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 9000 --cidr '0.0.0.0/0' --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 9000 --cidr '0.0.0.0/0' --region ${var.region}"
     on_failure = "continue"
   }
   provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${aws_vpc.vpc_for_ecs.default_security_group_id} --protocol tcp --port 9000 --source-group ${aws_vpc.vpc_for_ecs.default_security_group_id} --region ${var.region}"
+    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 9000 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
     on_failure = "continue"
   }
 }
@@ -94,6 +95,7 @@ resource "aws_ecs_cluster" "ecs_cluster_codeq" {
 }
 
 data "template_file" "ecs_task" {
+  count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_jenkins_task_definition.json")}"
 
   vars {
@@ -108,6 +110,7 @@ data "template_file" "ecs_task" {
 }
 
 data "template_file" "ecs_task_gitlab" {
+  count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_gitlab_task_definition.json")}"
 
   vars {
@@ -121,6 +124,7 @@ data "template_file" "ecs_task_gitlab" {
 }
 
 data "template_file" "ecs_task_codeq" {
+  count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_codeq_task_definition.json")}"
 
   vars {
@@ -174,12 +178,8 @@ resource "aws_alb_target_group" "alb_target_group" {
   name     = "${var.envPrefix}-ecs-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
+  vpc_id   = "${data.aws_vpc.vpc_data.id}"
   target_type = "ip"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 
   health_check {
     path             = "/login"
@@ -190,16 +190,12 @@ resource "aws_alb_target_group" "alb_target_group" {
 }
 
 resource "aws_alb_target_group" "alb_target_group_gitlab" {
- count = "${var.scmgitlab}"
+ count = "${var.dockerizedJenkins * var.scmgitlab}"
   name     = "${var.envPrefix}-ecs-gitlab-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
+  vpc_id   = "${data.aws_vpc.vpc_data.id}"
   target_type = "ip"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 
   health_check {
     path             = "/users/sign_in"
@@ -214,12 +210,8 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
   name     = "${var.envPrefix}-ecs-codeq-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${aws_vpc.vpc_for_ecs.id}"
+  vpc_id   = "${data.aws_vpc.vpc_data.id}"
   target_type = "ip"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 
   health_check {
     path             = "/sessions/new"
@@ -234,7 +226,7 @@ resource "aws_lb" "alb_ecs" {
   name            = "${var.envPrefix}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -243,11 +235,11 @@ resource "aws_lb" "alb_ecs" {
 }
 
 resource "aws_lb" "alb_ecs_gitlab" {
-  count = "${var.scmgitlab}"
+  count = "${var.dockerizedJenkins * var.scmgitlab}"
   name            = "${var.envPrefix}-gitlab-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -260,7 +252,7 @@ resource "aws_lb" "alb_ecs_codeq" {
   name            = "${var.envPrefix}-codeq-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -332,7 +324,7 @@ resource "aws_ecs_service" "ecs_service" {
   cluster =       "${aws_ecs_cluster.ecs_cluster.id}"
 
   network_configuration {
-    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
@@ -361,7 +353,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
 
   network_configuration {
-    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
@@ -390,7 +382,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_codeq.id}"
 
   network_configuration {
-    security_groups    = ["${aws_vpc.vpc_for_ecs.default_security_group_id}"]
+    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }

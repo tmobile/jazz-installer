@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.codeq_dockerized"]
+  depends_on = ["aws_cognito_user_pool_domain.domain"]
   #Cloudfront
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLOUDFRONT_ORIGIN_ID ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path} ${var.jenkinsjsonpropsfile}"
@@ -22,7 +22,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   #SONAR
   provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${lookup(var.codeqmap, "sonar_server_elb")} ${var.codeq} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configureSonar_cmd} ${var.dockerizedSonarqube == 1 ? join(" ", aws_lb.alb_ecs_codeq.*.dns_name) : lookup(var.codeqmap, "sonar_server_elb") } ${var.codeq} ${var.jenkinsjsonpropsfile}"
   }
   #Elasticsearch
   provisioner "local-exec" {
@@ -89,15 +89,5 @@ resource "null_resource" "update_jenkins_configs" {
   // Modifying subnet replacement before copying cookbooks to Jenkins server.
   provisioner "local-exec" {
     command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
-  }
-}
-
-# Dockerized CODE_QUALITY
-resource "null_resource" "codeq_dockerized" {
-  count = "${var.dockerizedSonarqube}"
-  depends_on = ["aws_ecs_service.ecs_service_codeq"]
-  #SONAR
-  provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${aws_lb.alb_ecs_codeq.dns_name} ${var.codeq} ${var.jenkinsjsonpropsfile}"
   }
 }
