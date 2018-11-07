@@ -115,9 +115,18 @@ variable "additional_tags" {
   default = {}
 }
 variable "aws_tags" { type = "string" }
-variable "jenkins_docker_image" { type = "string" }
-variable "gitlab_docker_image" { type = "string" }
-variable "codeq_docker_image" { type = "string" }
+variable "jenkins_docker_image" {
+  type = "string"
+  default = "jazzserverless/jazzoss-jenkins:1.0.0"
+}
+variable "gitlab_docker_image" {
+  type = "string"
+  default = "gitlab/gitlab-ce:11.3.0-ce.0"
+}
+variable "codeq_docker_image" {
+  type = "string"
+  default = "jazzserverless/jazzoss-sonarqube:1.0.0"
+}
 variable "dockerizedSonarqube" { default = false }
 variable "ecsJenkinscpu" { type = "string" default = "2048" }
 variable "ecsJenkinsmemory" { type = "string" default = "4096" }

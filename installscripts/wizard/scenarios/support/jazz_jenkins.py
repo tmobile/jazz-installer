@@ -4,7 +4,6 @@ import sys
 import subprocess
 import hashlib
 import datetime
-from ec2_metadata import ec2_metadata
 from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
@@ -127,8 +126,6 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     encrypt_passwd = hashlib.md5()
     encrypt_passwd.update(str(datetime.datetime.now()))
     jenkins_passwd = encrypt_passwd.hexdigest()
-    jenkins_elb = str(ec2_metadata.public_ipv4)
-    jenkins_security_group = str(ec2_metadata.network_interfaces[ec2_metadata.mac].security_group_ids[0])
 
     use_existing_vpc = raw_input(
         """\nWould you like to use existing VPC for ECS? [y/n] :""")
@@ -141,8 +138,8 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
         replace_tfvars("vpc_cidr_block", desired_vpc_cidr, get_tfvars_file())
 
     # Get values to create the array
-    parameter_list = [jenkins_elb, "admin", jenkins_passwd, jenkins_elb,
-                      "root", "2200", jenkins_security_group, "replaceme"]
+    parameter_list = ["replaceme", "admin", jenkins_passwd, "replaceme",
+                      "root", "2200", "replaceme", "replaceme"]
     print(parameter_list[0:])
 
     add_jenkins_config_to_files(parameter_list)

@@ -4,7 +4,6 @@ import sys
 import subprocess
 import hashlib
 import datetime
-from ec2_metadata import ec2_metadata
 from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
@@ -74,6 +73,5 @@ def get_and_add_docker_sonar_config(sonar_docker_path):
     encrypt_passwd = hashlib.md5()
     encrypt_passwd.update(str(datetime.datetime.now()))
     sonar_passwd = encrypt_passwd.hexdigest()
-    sonar_server_elb = str(ec2_metadata.public_ipv4)
     replace_tfvars_map("dockerizedSonarqube", "true", get_tfvars_file())
-    add_sonar_config_to_files(sonar_server_elb, "admin", sonar_passwd)
+    add_sonar_config_to_files("replaceme", "admin", sonar_passwd)
