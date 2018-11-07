@@ -51,34 +51,6 @@ resource "aws_cloudwatch_log_group" "ecs_fargates_cwlogs" {
   retention_in_days = 7
 }
 
-resource "null_resource" "ecs_securitygroups" {
-  count = "${var.dockerizedJenkins}"
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 80 --cidr '0.0.0.0/0' --region ${var.region}"
-    on_failure = "continue"
-  }
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 80 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
-    on_failure = "continue"
-  }
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 8080 --cidr '0.0.0.0/0' --region ${var.region}"
-    on_failure = "continue"
-  }
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 8080 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
-    on_failure = "continue"
-  }
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 9000 --cidr '0.0.0.0/0' --region ${var.region}"
-    on_failure = "continue"
-  }
-  provisioner "local-exec" {
-    command    = "aws ec2 authorize-security-group-ingress --group-id ${data.aws_security_group.vpc_sg.id} --protocol tcp --port 9000 --source-group ${data.aws_security_group.vpc_sg.id} --region ${var.region}"
-    on_failure = "continue"
-  }
-}
-
 resource "aws_ecs_cluster" "ecs_cluster" {
   count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_cluster"
@@ -226,7 +198,7 @@ resource "aws_lb" "alb_ecs" {
   name            = "${var.envPrefix}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+  security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -239,7 +211,7 @@ resource "aws_lb" "alb_ecs_gitlab" {
   name            = "${var.envPrefix}-gitlab-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+  security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -252,7 +224,7 @@ resource "aws_lb" "alb_ecs_codeq" {
   name            = "${var.envPrefix}-codeq-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+  security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
   tags {
@@ -324,7 +296,7 @@ resource "aws_ecs_service" "ecs_service" {
   cluster =       "${aws_ecs_cluster.ecs_cluster.id}"
 
   network_configuration {
-    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+    security_groups    = ["${aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
@@ -353,7 +325,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
 
   network_configuration {
-    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+    security_groups    = ["${aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }
@@ -382,7 +354,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_codeq.id}"
 
   network_configuration {
-    security_groups    = ["${data.aws_security_group.vpc_sg.id}"]
+    security_groups    = ["${aws_security_group.vpc_sg.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
     assign_public_ip = true
   }

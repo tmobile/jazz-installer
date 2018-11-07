@@ -100,39 +100,6 @@ function install_packages () {
         spin_wheel $! "Installing git"
     fi
 
-    #Install Docker
-    if command -v docker > /dev/null; then
-        print_info "Docker already installed, using it"
-    else
-        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >> "$LOG_FILE" &
-        spin_wheel $! "Installing prerequisites for docker-ce"
-        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >> "$LOG_FILE" &
-        spin_wheel $! "Adding yum repo for docker-ce"
-        sudo yum install docker-ce -y >> "$LOG_FILE" &
-        spin_wheel $! "Installing docker-ce"
-
-    fi
-    sudo systemctl start docker >> "$LOG_FILE" &
-    spin_wheel $! "Starting docker-ce"
-    sudo systemctl status docker >> "$LOG_FILE" &
-    spin_wheel $! "Checking docker-ce service"
-    sudo systemctl enable docker >> "$LOG_FILE" &
-    spin_wheel $! "Enabling docker-ce service"
-    sudo gpasswd -a "$(whoami)" docker >> "$LOG_FILE" &
-    spin_wheel $! "Adding the present user to docker group"
-
-    # Installing epel
-    sudo yum install epel-release -y &> /dev/null &
-    spin_wheel $! "Installing epel"
-
-    # Installing beautifulsoup4
-    sudo yum install python-beautifulsoup4 -y &> /dev/null &
-    spin_wheel $! "Installing beautifulsoup4"
-
-    # Installing lxml
-    sudo pip install lxml &> /dev/null &
-    spin_wheel $! "Installing lxml"
-
     # Download and Install java
     if command -v java > /dev/null; then
         print_info "Java already installed, using it"
@@ -206,10 +173,6 @@ function install_packages () {
     # Installing lxml
     sudo pip install lxml &> /dev/null &
     spin_wheel $! "Installing lxml"
-
-    # Installing ec2-metadata
-    sudo pip install ec2-metadata &> /dev/null &
-    spin_wheel $! "Installing ec2-metadata"
 
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-

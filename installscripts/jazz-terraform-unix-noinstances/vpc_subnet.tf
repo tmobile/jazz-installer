@@ -13,10 +13,55 @@ data "aws_vpc" "vpc_data" {
   id = "${var.autovpc == 1 ? join(" ", aws_vpc.vpc_for_ecs.*.id) : var.existing_vpc_ecs }"
 }
 # VPC SG
-data "aws_security_group" "vpc_sg" {
-  count = "${var.dockerizedJenkins}"
-  vpc_id = "${data.aws_vpc.vpc_data.id}"
-  name = "default"
+resource "aws_security_group" "vpc_sg" {
+    count = "${var.dockerizedJenkins}"
+    name = "dockerized_sg"
+    description = "ECS ALB access"
+    vpc_id = "${data.aws_vpc.vpc_data.id}"
+
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = [ "0.0.0.0/0" ]
+    }
+    ingress {
+        from_port = 9000
+        to_port = 9000
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = 9000
+        to_port = 9000
+        protocol = "tcp"
+        cidr_blocks = [ "0.0.0.0/0" ]
+    }
+    ingress {
+        from_port = 8080
+        to_port = 8080
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = 8080
+        to_port = 8080
+        protocol = "tcp"
+        cidr_blocks = [ "0.0.0.0/0" ]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 }
 
 resource "aws_internet_gateway" "igw_for_ecs" {
