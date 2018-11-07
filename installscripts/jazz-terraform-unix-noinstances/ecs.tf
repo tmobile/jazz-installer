@@ -285,9 +285,9 @@ data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
 
 resource "aws_ecs_service" "ecs_service" {
   count = "${var.dockerizedJenkins}"
-  provisioner "local-exec" {
-      command = "sleep 1m"
-  }
+  #provisioner "local-exec" {
+  #    command = "sleep 1m"
+  #}
   name            = "${var.envPrefix}_ecs_service"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}:${max("${aws_ecs_task_definition.ecs_task_definition.revision}", "${data.aws_ecs_task_definition.ecs_task_definition.revision}")}"
   desired_count   = 1
@@ -309,14 +309,16 @@ resource "aws_ecs_service" "ecs_service" {
   provisioner "local-exec" {
       command = "sleep 1m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group", "aws_lb.alb_ecs"]
+  # Needed the below dependency since there is a bug in AWS provider
+  #depends_on = ["aws_alb_target_group.alb_target_group", "aws_lb.alb_ecs"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener"]
 }
 
 resource "aws_ecs_service" "ecs_service_gitlab" {
   count = "${var.scmgitlab}"
-  provisioner "local-exec" {
-      command = "sleep 1m"
-  }
+  #provisioner "local-exec" {
+  #    command = "sleep 1m"
+  #}
   name            = "${var.envPrefix}_ecs_service_gitlab"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}:${max("${aws_ecs_task_definition.ecs_task_definition_gitlab.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_gitlab.revision}")}"
   desired_count   = 1
@@ -338,14 +340,16 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   provisioner "local-exec" {
       command = "sleep 4m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
+  # Needed the below dependency since there is a bug in AWS provider
+  #depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener_gitlab"]
 }
 
 resource "aws_ecs_service" "ecs_service_codeq" {
   count = "${var.dockerizedSonarqube}"
-  provisioner "local-exec" {
-      command = "sleep 1m"
-  }
+  #provisioner "local-exec" {
+  #    command = "sleep 1m"
+  #}
   name            = "${var.envPrefix}_ecs_service_codeq"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
   desired_count   = 1
@@ -367,5 +371,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   provisioner "local-exec" {
       command = "sleep 4m"
   }
-  depends_on = ["aws_alb_target_group.alb_target_group_codeq", "aws_lb.alb_ecs_codeq"]
+  # Needed the below dependency since there is a bug in AWS provider
+  #depends_on = ["aws_alb_target_group.alb_target_group_codeq", "aws_lb.alb_ecs_codeq"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener_codeq"]
 }
