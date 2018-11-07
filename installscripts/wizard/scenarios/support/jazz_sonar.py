@@ -1,7 +1,8 @@
 #!/usr/bin/python
 import os
 import sys
-import subprocess
+import requests
+from requests.auth import HTTPBasicAuth
 import hashlib
 import datetime
 from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
@@ -18,26 +19,18 @@ def add_sonar_config_to_files(sonar_server_elb, sonar_username, sonar_passwd):
     replace_tfvars('codeq', 1, get_tfvars_file())
 
 
-def check_sonar_user(url, username, passwd, token):
+def check_sonar_user(url, username, passwd, token=''):
     """
         Check if the sonar user is present in Sonar server
     """
     sonar_url = 'http://' + url + '/api/user_tokens/search'
+
     if token:
-        cmd = 'curl -u ' + token + ': ' + sonar_url
+        response = requests.get(sonar_url, auth=HTTPBasicAuth(token, ''))
     else:
-        cmd = 'curl -u ' + username + ':' + passwd + ' ' + sonar_url
+        response = requests.get(sonar_url, auth=HTTPBasicAuth(username, passwd))
 
-    try:
-        output = subprocess.check_output(cmd, shell=True)
-
-        if not output:
-            print output
-            return 0
-        else:
-            return 1
-    except Exception:
-        return 0
+    return response.ok
 
 
 def get_add_existing_sonar_config(terraform_folder):

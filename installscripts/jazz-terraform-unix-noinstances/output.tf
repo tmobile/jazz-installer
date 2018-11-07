@@ -44,7 +44,7 @@ resource "null_resource" "outputVariablesBB" {
               EOF
   }
 }
-# For new vpc
+
 resource "null_resource" "outputVariablesGitlab" {
   depends_on = ["null_resource.outputVariables", "null_resource.outputVariablesSonar"]
   count = "${var.scmgitlab}"
