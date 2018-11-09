@@ -74,6 +74,10 @@ variable "configureCodeq_cmd" {
   type = "string"
   default = "./scripts/configure-codeq.py"
 }
+variable "healthCheck_cmd" {
+  type = "string"
+  default = "./scripts/health_check.py"
+}
 variable "pushInstallervars_cmd" {
   type= "string"
   default = "./scripts/pushInstallervars.sh"

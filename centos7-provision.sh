@@ -174,6 +174,10 @@ function install_packages () {
     sudo pip install lxml &> /dev/null &
     spin_wheel $! "Installing lxml"
 
+    # Installing boto3
+    sudo pip install boto3 &> /dev/null &
+    spin_wheel $! "Installing boto3"
+
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
     exec 2>&4 4>&-
