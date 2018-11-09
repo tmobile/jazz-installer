@@ -159,6 +159,7 @@ resource "aws_alb_target_group" "alb_target_group" {
     interval         = "60"
     timeout          = "59"
   }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_alb_target_group" "alb_target_group_gitlab" {
@@ -175,6 +176,7 @@ resource "aws_alb_target_group" "alb_target_group_gitlab" {
     interval         = "60"
     timeout          = "59"
   }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_alb_target_group" "alb_target_group_codeq" {
@@ -186,11 +188,12 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
   target_type = "ip"
 
   health_check {
-    path             = "/sessions/new"
+    path             = "/api/webservices/list"
     matcher          = "200"
     interval         = "60"
     timeout          = "59"
   }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_lb" "alb_ecs" {
@@ -200,10 +203,7 @@ resource "aws_lb" "alb_ecs" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-
-  tags {
-    Name        = "${var.envPrefix}_alb"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_lb" "alb_ecs_gitlab" {
@@ -213,10 +213,7 @@ resource "aws_lb" "alb_ecs_gitlab" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-
-  tags {
-    Name        = "${var.envPrefix}_gitlab_alb"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_lb" "alb_ecs_codeq" {
@@ -226,10 +223,7 @@ resource "aws_lb" "alb_ecs_codeq" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-
-  tags {
-    Name        = "${var.envPrefix}_codeq_alb"
-  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_alb_listener" "ecs_alb_listener" {
@@ -285,9 +279,6 @@ data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
 
 resource "aws_ecs_service" "ecs_service" {
   count = "${var.dockerizedJenkins}"
-  #provisioner "local-exec" {
-  #    command = "sleep 1m"
-  #}
   name            = "${var.envPrefix}_ecs_service"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}:${max("${aws_ecs_task_definition.ecs_task_definition.revision}", "${data.aws_ecs_task_definition.ecs_task_definition.revision}")}"
   desired_count   = 1
@@ -306,19 +297,12 @@ resource "aws_ecs_service" "ecs_service" {
     container_name   = "${var.envPrefix}_ecs_container"
     container_port   = "8080"
   }
-  provisioner "local-exec" {
-      command = "sleep 1m"
-  }
   # Needed the below dependency since there is a bug in AWS provider
-  #depends_on = ["aws_alb_target_group.alb_target_group", "aws_lb.alb_ecs"]
   depends_on = ["aws_alb_listener.ecs_alb_listener"]
 }
 
 resource "aws_ecs_service" "ecs_service_gitlab" {
   count = "${var.scmgitlab}"
-  #provisioner "local-exec" {
-  #    command = "sleep 1m"
-  #}
   name            = "${var.envPrefix}_ecs_service_gitlab"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}:${max("${aws_ecs_task_definition.ecs_task_definition_gitlab.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_gitlab.revision}")}"
   desired_count   = 1
@@ -337,19 +321,12 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
     container_name   = "${var.envPrefix}_ecs_container_gitlab"
     container_port   = "80"
   }
-  provisioner "local-exec" {
-      command = "sleep 4m"
-  }
   # Needed the below dependency since there is a bug in AWS provider
-  #depends_on = ["aws_alb_target_group.alb_target_group_gitlab", "aws_lb.alb_ecs_gitlab"]
   depends_on = ["aws_alb_listener.ecs_alb_listener_gitlab"]
 }
 
 resource "aws_ecs_service" "ecs_service_codeq" {
   count = "${var.dockerizedSonarqube}"
-  #provisioner "local-exec" {
-  #    command = "sleep 1m"
-  #}
   name            = "${var.envPrefix}_ecs_service_codeq"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
   desired_count   = 1
@@ -368,10 +345,27 @@ resource "aws_ecs_service" "ecs_service_codeq" {
     container_name   = "${var.envPrefix}_ecs_container_codeq"
     container_port   = "9000"
   }
-  provisioner "local-exec" {
-      command = "sleep 4m"
-  }
   # Needed the below dependency since there is a bug in AWS provider
-  #depends_on = ["aws_alb_target_group.alb_target_group_codeq", "aws_lb.alb_ecs_codeq"]
   depends_on = ["aws_alb_listener.ecs_alb_listener_codeq"]
+}
+
+resource "null_resource" "health_check_jenkins" {
+  depends_on = ["aws_ecs_service.ecs_service"]
+  provisioner "local-exec" {
+    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group.arn}"
+  }
+}
+
+resource "null_resource" "health_check_gitlab" {
+  depends_on = ["aws_ecs_service.ecs_service_gitlab"]
+  provisioner "local-exec" {
+    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_gitlab.arn}"
+  }
+}
+
+resource "null_resource" "health_check_codeq" {
+  depends_on = ["aws_ecs_service.ecs_service_codeq"]
+  provisioner "local-exec" {
+    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_codeq.arn}"
+  }
 }
