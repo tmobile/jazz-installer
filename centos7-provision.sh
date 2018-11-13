@@ -7,7 +7,6 @@
 # Variables section
 
 # URLS
-JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 TERRAFORM_URL="https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip"
 ATLASSIAN_CLI_URL="https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.7.1-distribution.zip"
 INSTALLER_GITHUB_URL="https://github.com/tmobile/jazz-installer.git"
@@ -101,47 +100,11 @@ function install_packages () {
         spin_wheel $! "Installing git"
     fi
 
-    #Install Docker
-    if command -v docker > /dev/null; then
-        print_info "Docker already installed, using it"
-    else
-        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >> "$LOG_FILE" &
-        spin_wheel $! "Installing prerequisites for docker-ce"
-        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >> "$LOG_FILE" &
-        spin_wheel $! "Adding yum repo for docker-ce"
-        sudo yum install docker-ce -y >> "$LOG_FILE" &
-        spin_wheel $! "Installing docker-ce"
-
-    fi
-    sudo systemctl start docker >> "$LOG_FILE" &
-    spin_wheel $! "Starting docker-ce"
-    sudo systemctl status docker >> "$LOG_FILE" &
-    spin_wheel $! "Checking docker-ce service"
-    sudo systemctl enable docker >> "$LOG_FILE" &
-    spin_wheel $! "Enabling docker-ce service"
-    sudo gpasswd -a "$(whoami)" docker >> "$LOG_FILE" &
-    spin_wheel $! "Adding the present user to docker group"
-
-    # Installing epel
-    sudo yum install epel-release -y &> /dev/null &
-    spin_wheel $! "Installing epel"
-
-    # Installing beautifulsoup4
-    sudo yum install python-beautifulsoup4 -y &> /dev/null &
-    spin_wheel $! "Installing beautifulsoup4"
-
-    # Installing lxml
-    sudo pip install lxml &> /dev/null &
-    spin_wheel $! "Installing lxml"
-
     # Download and Install java
     if command -v java > /dev/null; then
         print_info "Java already installed, using it"
     else
-        curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" "$JAVA_URL" -o jdk-8u112-linux-x64.rpm >> "$LOG_FILE" &
-        spin_wheel $! "Downloading java"
-
-        sudo rpm -ivh --force ./jdk-8u112-linux-x64.rpm >> "$LOG_FILE" &
+        sudo yum install -y java-1.8.0-openjdk >> "$LOG_FILE" &
         spin_wheel $! "Installing java"
 
         rm -rf jdk-8u112-linux-x64.rpm
@@ -210,7 +173,11 @@ function install_packages () {
     # Installing lxml
     sudo pip install lxml &> /dev/null &
     spin_wheel $! "Installing lxml"
-    
+
+    # Installing boto3
+    sudo pip install boto3 &> /dev/null &
+    spin_wheel $! "Installing boto3"
+
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
     exec 2>&4 4>&-

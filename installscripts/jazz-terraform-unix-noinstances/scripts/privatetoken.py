@@ -5,7 +5,7 @@ from datetime import date
 from urlparse import urljoin
 from bs4 import BeautifulSoup
 
-endpoint = u"http://localhost"
+endpoint = u"%s" % (sys.argv[3])
 root_route = urljoin(endpoint, u"/")
 sign_in_route = urljoin(endpoint, u"/users/sign_in")
 pat_route = urljoin(endpoint, u"/profile/personal_access_tokens")
@@ -63,9 +63,7 @@ def main():
 
     name = sys.argv[1]
     token = obtain_personal_access_token(name, csrf2, cookies2)
-    f = open("credentials.txt", "a")
-    f.write("Private Token: %s" % token)
-    f.close()
+    print token
 
 
 if __name__ == u"__main__":

@@ -105,26 +105,41 @@ resource "null_resource" "configureJenkinsInstance" {
   }
 }
 
-resource "null_resource" "configureJenkinsDocker" {
-  count = "${var.dockerizedJenkins}"
-  depends_on = ["null_resource.preJenkinsConfiguration", "aws_elasticsearch_domain.elasticsearch_domain"]
+data "external" "gitlabcontainer" {
+  count = "${var.scmgitlab}"
+  program = ["bash", "${var.configureGitlab_cmd}"]
+
+  query = {
+    passwd = "${var.cognito_pool_password}"
+    ip = "${aws_lb.alb_ecs_gitlab.dns_name}"
+    gitlab_admin = "${lookup(var.scmmap, "scm_username")}"
+  }
+  depends_on = ["null_resource.health_check_gitlab"]
+}
+
+resource "null_resource" "configureCodeqDocker" {
+  count = "${var.dockerizedSonarqube}"
+  provisioner "local-exec" {
+    command = "python ${var.configureCodeq_cmd} ${aws_lb.alb_ecs_codeq.dns_name} ${lookup(var.codeqmap, "sonar_passwd")}"
+  }
+  depends_on = ["null_resource.health_check_codeq"]
 }
 
 resource "null_resource" "configureCliJenkins" {
-  depends_on = ["null_resource.configureJenkinsDocker", "null_resource.configureJenkinsInstance"]
+  depends_on = ["null_resource.health_check_jenkins", "null_resource.preJenkinsConfiguration", "null_resource.configureJenkinsInstance"]
   #Jenkins Cli process
   provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.cognito_pool_username} ${var.dockerizedJenkins} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${lookup(var.scmmap, "scm_privatetoken")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
+    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${var.cognito_pool_username} ${var.dockerizedJenkins} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabcontainer.*.result.token) : lookup(var.scmmap, "scm_privatetoken") } ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
   }
 }
+
 resource "null_resource" "postJenkinsConfiguration" {
-  depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
+  depends_on = ["null_resource.configureCliJenkins"]
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
-
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
-    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${lookup(var.scmmap, "scm_elb")} ${lookup(var.scmmap, "scm_type")}"
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_type")}"
   }
 }

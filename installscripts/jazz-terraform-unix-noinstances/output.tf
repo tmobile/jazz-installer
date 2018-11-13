@@ -4,12 +4,9 @@
 
 resource "null_resource" "outputVariables" {
   provisioner "local-exec" {
-    command = "touch stack_details.json"
-  }
-  provisioner "local-exec" {
        command = <<EOF
                  echo { > stack_details.json
-                 echo \""Jenkins ELB\"" : \""http://${lookup(var.jenkinsservermap, "jenkins_elb")}\"", >> stack_details.json
+                 echo \""Jenkins ELB\"" : \""http://${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") }\"", >> stack_details.json
                  echo \""Jenkins Username\"" : \""${lookup(var.jenkinsservermap, "jenkinsuser")}\"",  >> stack_details.json
                  echo \""Jenkins Password\"" : \""${lookup(var.jenkinsservermap, "jenkinspasswd")}\"",  >> stack_details.json
                  echo \""Jazz Home\"" : \""http://${aws_cloudfront_distribution.jazz.domain_name}\"",  >> stack_details.json
@@ -22,12 +19,12 @@ resource "null_resource" "outputVariables" {
 }
 
 resource "null_resource" "outputVariablesSonar" {
-  depends_on = ["null_resource.outputVariables"]
   count = "${var.codeq}"
+  depends_on = ["null_resource.outputVariables"]
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Sonar Home\"" : \""http://${lookup(var.codeqmap, "sonar_server_elb")}\"",  >> stack_details.json
+              echo \""Sonar Home\"" : \""http://${var.dockerizedSonarqube == 1 ? join(" ", aws_lb.alb_ecs_codeq.*.dns_name) : lookup(var.codeqmap, "sonar_server_elb") }\"",  >> stack_details.json
               echo \""Sonar Username\"" : \""${lookup(var.codeqmap, "sonar_username")}\"",   >> stack_details.json
               echo \""Sonar Password\"" : \""${lookup(var.codeqmap, "sonar_passwd")}\"",  >> stack_details.json
               EOF
@@ -35,7 +32,7 @@ resource "null_resource" "outputVariablesSonar" {
 }
 
 resource "null_resource" "outputVariablesBB" {
-  depends_on = ["null_resource.outputVariables"]
+  depends_on = ["null_resource.outputVariables", "null_resource.outputVariablesSonar"]
   count = "${var.scmbb}"
 
   provisioner "local-exec" {
@@ -54,7 +51,7 @@ resource "null_resource" "outputVariablesGitlab" {
 
   provisioner "local-exec" {
     command = <<EOF
-              echo \""Gitlab Home\"" : \""http://${lookup(var.scmmap, "scm_publicip")}\"",  >> stack_details.json
+              echo \""Gitlab Home\"" : \""http://${aws_lb.alb_ecs_gitlab.dns_name}\"",  >> stack_details.json
               echo \""Gitlab Username\"" : \""${lookup(var.scmmap, "scm_username")}\"",   >> stack_details.json
               echo \""Gitlab Password\"" : \""${lookup(var.scmmap, "scm_passwd")}\""  >> stack_details.json
               echo } >> stack_details.json
