@@ -20,6 +20,7 @@
     <string>method jenkins.security.ApiTokenProperty getApiToken</string>
     <string>method java.util.Map remove java.lang.Object</string>
     <string>field java.lang.String value</string>
+    <string>staticMethod groovy.json.JsonOutput toJson groovy.lang.Closure</string>
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>
