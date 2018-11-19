@@ -7,31 +7,31 @@ from collections import OrderedDict
 def main():
     output = OrderedDict()
     key_common_list = OrderedDict([
-                        ("op-jenkinselb", "Jenkins ELB"), ("op-jenkinsuser", "Jenkins Username"),
-                        ("op-jenkinspasswd", "Jenkins Password"), ("op-jazzhome", "Jazz Home"),
-                        ("op-jazzusername", "Jazz Admin Username"), ("op-jazzpassword", "Jazz Admin Password"),
-                        ("op-region", "Region"), ("op-apiendpoint", "Jazz API Endpoint")
+                        ("jenkinselb", "Jenkins ELB"), ("jenkinsuser", "Jenkins Username"),
+                        ("jenkinspasswd", "Jenkins Password"), ("jazzhome", "Jazz Home"),
+                        ("jazzusername", "Jazz Admin Username"), ("jazzpassword", "Jazz Admin Password"),
+                        ("region", "Region"), ("apiendpoint", "Jazz API Endpoint")
                         ])
     output = generateDict(key_common_list, output)
 
-    if getTerraformOutputVar("op-codeq") == "1":
+    if getTerraformOutputVar("codeq") == "1":
         key_codeq_list = OrderedDict([
-                           ("op-sonarhome", "Sonar Home"), ("op-sonarusername", "Sonar Username"),
-                           ("op-sonarpasswd", "Sonar Password")
+                           ("sonarhome", "Sonar Home"), ("sonarusername", "Sonar Username"),
+                           ("sonarpasswd", "Sonar Password")
                            ])
         output = generateDict(key_codeq_list, output)
 
-    if getTerraformOutputVar("op-scmbb") == "1":
+    if getTerraformOutputVar("scmbb") == "1":
         key_bb_list = OrderedDict([
-                        ("op-scmelb", "Bitbucket ELB"), ("op-scmusername", "Bitbucket Username"),
-                        ("op-scmpasswd", "Bitbucket Password")
+                        ("scmelb", "Bitbucket ELB"), ("scmusername", "Bitbucket Username"),
+                        ("scmpasswd", "Bitbucket Password")
                         ])
         output = generateDict(key_bb_list, output)
 
-    if getTerraformOutputVar("op-scmgitlab") == "1":
+    if getTerraformOutputVar("scmgitlab") == "1":
         key_gitlab_list = OrderedDict([
-                            ("op-scmelb", "Gitlab Home"), ("op-scmusername", "Gitlab Username"),
-                            ("op-scmpasswd", "Gitlab Password")
+                            ("scmelb", "Gitlab Home"), ("scmusername", "Gitlab Username"),
+                            ("scmpasswd", "Gitlab Password")
                             ])
         output = generateDict(key_gitlab_list, output)
 
@@ -41,13 +41,8 @@ def main():
 
 def generateDict(outputkeys, output):
     for opkey, key in outputkeys.items():
-        output = setDict(output, key, opkey)
+        output.update({key: getTerraformOutputVar(opkey)})
     return output
-
-
-def setDict(dict_toappend, key, opkey):
-    dict_toappend[key] = getTerraformOutputVar(opkey)
-    return dict_toappend
 
 
 def getTerraformOutputVar(varname):
