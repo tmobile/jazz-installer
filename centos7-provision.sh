@@ -55,7 +55,9 @@ function spin_wheel () {
         sleep .05
     done
 
-    wait "$pid"
+    while s=$(ps -p "$pid" -o s=) && [[ "$s" && "$s" != 'Z' ]]; do
+        sleep 1
+    done
     exitcode=$?
     if [ $exitcode -gt 0 ]
     then
