@@ -34,9 +34,9 @@ For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki)
 
 If you're interested in submitting a PR, it would be a good idea to set up your editor/IDE to use the following checkers:
 editorconfig
-flake8 for Python linting
-tflint for Terraform script linting
-foodcritic for Chef script linting
+* [flake8](http://flake8.pycqa.org/en/latest/) for Python linting
+* [tflint](https://github.com/wata727/tflint) for Terraform script linting
+* [foodcritic](http://www.foodcritic.io/) for Chef script linting
 
 ## License
 
