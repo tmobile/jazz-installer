@@ -33,7 +33,7 @@ For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki)
 ## Development
 
 If you're interested in submitting a PR, it would be a good idea to set up your editor/IDE to use the following checkers:
-* [editorconfig](https://editorconfig.org/) to ensure your editor follows the same whitespace/line-ending/indent rules as everyone else working on the repo.
+* [editorconfig](https://editorconfig.org/) so your editor follows the same whitespace/line-ending/indent rules as everyone else.
 * [flake8](http://flake8.pycqa.org/en/latest/) for Python linting
 * [tflint](https://github.com/wata727/tflint) for Terraform script linting
 * [foodcritic](http://www.foodcritic.io/) for Chef script linting
