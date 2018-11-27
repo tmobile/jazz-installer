@@ -1,6 +1,9 @@
 import json
 import subprocess
 
+# Exists because of:
+# https://github.com/terraform-providers/terraform-provider-aws/issues/5742
+# and can be nuked if that is ever fixed.
 
 terraformNewGatewayRoleOutput = "apigee-lambda-gateway-role-arn"
 terraformPreviousRoleOutput = "previous-role-arn"
