@@ -92,6 +92,7 @@ def install(args):
     runTerraform(getRegion(args), getAWSAccountID(), getEnvPrefix(args), True)
 
     # TODO remove this entire module when the terraform bug is fixed
+    # https://github.com/terraform-providers/terraform-provider-aws/issues/5742
     print(
         colors.OKBLUE + 'Linking new role to existing gateway function' + colors.ENDC)
     terraformBugWorkaround.linkNewRoleToExistingFunctionWithCLI(gatewayFunctionName)
@@ -129,6 +130,7 @@ def uninstall(args):
     terraformStateSanityCheck()
 
     # TODO remove this entire module when the terraform bug is fixed
+    # https://github.com/terraform-providers/terraform-provider-aws/issues/5742
     print(
         colors.OKBLUE + 'Restoring old role to gateway function' + colors.ENDC)
 
