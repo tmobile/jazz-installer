@@ -31,6 +31,10 @@ variable "chefDestDir" {
   type = "string"
   default = "/tmp/jazz-chef"
 }
+variable "contentRepo" {
+  type = "string"
+  default = "https://github.com/tmobile/jazz-content.git"
+}
 #
 # Jenkins related variables
 #
@@ -113,3 +117,8 @@ variable "additional_tags" {
   default = {}
 }
 variable "aws_tags" { type = "string" }
+
+#AWS tag vars
+variable "envPrefix" { type = "string" default = "replace here" }
+variable "tagsEnvironment" { type = "string" default = "Development" }
+variable "tagsExempt" { type = "string" default = "09/01/2017" }

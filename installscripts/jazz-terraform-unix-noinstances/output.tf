@@ -1,3 +1,5 @@
+# TODO we should not stuff this into a file, these should be pure output vars
+
 #
 # This resource will add necessary setting needed for the user into stack_details.json
 #

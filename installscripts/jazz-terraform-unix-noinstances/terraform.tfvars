@@ -7,9 +7,7 @@ jazz_accountid = "REPLACEME"
 cognito_pool_username = "REPLACEME"
 cognito_pool_password = "REPLACEME"
 envPrefix = "replaceme"
-tagsEnvironment = "REPLACEME"
 tagsExempt = "REPLACEME"
-tagsOwner = "REPLACEME"
 
 #Jenkins server map (set programmatically by wizard, not directly by user or terraform)
 jenkinsservermap = {

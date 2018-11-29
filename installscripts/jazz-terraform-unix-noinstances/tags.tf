@@ -5,6 +5,6 @@ locals {
   "JazzInstance", "${var.envPrefix}",
   "Environment", "${var.tagsEnvironment}",
   "Exempt", "${var.tagsExempt}",
-  "Owner", "${var.tagsOwner}"
+  "Owner", "${local.tagsOwner}"
   )}"
 }

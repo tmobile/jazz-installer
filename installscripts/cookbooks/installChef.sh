@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ -f /etc/lsb-release ]; then
     curl -o chefdk.deb https://packages.chef.io/files/stable/chefdk/3.0.36/ubuntu/16.04/chefdk_3.0.36-1_amd64.deb
     dpkg -i chefdk.deb
