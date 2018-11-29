@@ -31,7 +31,7 @@ do
     fi
 done
 
-# Delete the identity policy
+# Delete the identity policy  - Created in installscripts/jazz-terraform-unix-noinstances/scripts/ses.sh
 aws ses delete-identity-policy --identity $identity --policy-name Policy-$stack_name
 
 echo " ======================================================="
