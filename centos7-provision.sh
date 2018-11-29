@@ -140,6 +140,10 @@ function install_packages () {
         spin_wheel $! "Installing unzip"
     fi
 
+    # Installing epel
+    sudo yum install epel-release -y &> /dev/null &
+    spin_wheel $! "Installing epel"
+
     # Create a temporary folder .
     # Here we will have all the temporary files needed and delete it at the end
     sudo rm -rf $INSTALL_DIR/jazz_tmp
@@ -169,20 +173,32 @@ function install_packages () {
 
     #Download and install pip
     if command -v pip > /dev/null; then
-        print_info "pip already installed, using it"
+      print_info "pip already installed, using it"
     else
-        curl -sL $PIP_URL -o get-pip.py
-        sudo python get-pip.py >>$LOG_FILE &
-        spin_wheel $! "Downloading and installing pip"
+      curl -sL "$PIP_URL" -o get-pip.py
+      sudo python get-pip.py >> "$LOG_FILE" &
+      spin_wheel $! "Downloading and installing pip"
     fi
 
     if command -v aws > /dev/null; then
-        print_info "awscli already installed, using it"
+      print_info "awscli already installed, using it"
     else
-        # Download and Install awscli
-        sudo pip install awscli >> $LOG_FILE &
-        spin_wheel $! "Downloading & installing awscli bundle"
+      # Download and Install awscli
+      sudo pip install awscli >> "$LOG_FILE" &
+      spin_wheel $! "Downloading & installing awscli bundle"
     fi
+
+    # Installing epel
+    sudo yum install epel-release -y &> /dev/null &
+    spin_wheel $! "Installing epel"
+
+    # Installing beautifulsoup4
+    sudo yum install python-beautifulsoup4 -y &> /dev/null &
+    spin_wheel $! "Installing beautifulsoup4"
+
+    # Installing lxml
+    sudo pip install lxml &> /dev/null &
+    spin_wheel $! "Installing lxml"
 
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
