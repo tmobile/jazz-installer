@@ -1,8 +1,6 @@
 import sys
 import subprocess
-# TODO see if we really need to split these files this way
-from installer.configurators.sonarqube_docker import launch_dockerized_sonarqube
-from .common import get_tfvars_file, replace_tfvars
+from .common import get_tfvars_file, replace_tfvars, passwd_generator
 
 
 def update_sonarqube_terraform(sonarelb, sonaruserpass, sonarip):
@@ -51,7 +49,7 @@ def configure_sonarqube(sonarelb, sonaruserpass, sonarip):
 
 def configure_sonarqube_docker():
     """
-        Launch a dockerized Sonar server.
+        Configure a containerized Sonar server.
     """
-    res = launch_dockerized_sonarqube()
-    update_sonarqube_terraform(res['sonar_server_elb'], res['sonar_userpass'], res['sonar_publicip'])
+    replace_tfvars("dockerizedSonarqube", "true", get_tfvars_file(), False)
+    update_sonarqube_terraform("replaceme", "admin", passwd_generator())

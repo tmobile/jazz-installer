@@ -20,10 +20,27 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
-  #SONAR
+
+  #Configure sonarqube
   provisioner "local-exec" {
-    command = "${var.configureSonar_cmd} ${var.dockerizedSonarqube == 1 ? join(" ", aws_lb.alb_ecs_codeq.*.dns_name) : lookup(var.codeqmap, "sonar_server_elb") } ${var.codeq} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} SONAR_HOST_NAME ${var.dockerizedSonarqube == 1 ? join(" ", aws_lb.alb_ecs_codeq.*.dns_name) : lookup(var.codeqmap, "sonar_server_elb") } ${var.jenkinsjsonpropsfile}"
   }
+
+  provisioner "local-exec" {
+    count = "${var.codeq}"
+    command = "${var.modifyPropertyFile_cmd} ENABLE_SONAR true ${var.jenkinsjsonpropsfile}"
+  }
+
+  provisioner "local-exec" {
+    count = "${var.codeq}"
+    command = "${var.modifyPropertyFile_cmd} ENABLE_VULNERABILITY_SCAN true ${var.jenkinsjsonpropsfile}"
+  }
+
+  provisioner "local-exec" {
+    count = "${var.codeq}"
+    command = "${var.modifyPropertyFile_cmd} ENABLE_CODEQUALITY_TAB true ${var.jenkinsjsonpropsfile}"
+  }
+
   #Elasticsearch
   provisioner "local-exec" {
     command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.region}"
