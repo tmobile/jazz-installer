@@ -61,7 +61,9 @@ function spin_wheel () {
         sleep .05
     done
 
-    wait "$pid"
+    while s=$(ps -p "$pid" -o s=) && [[ "$s" && "$s" != 'Z' ]]; do
+        sleep 1
+    done
     exitcode=$?
     if [ $exitcode -gt 0 ]
     then
@@ -109,30 +111,6 @@ function install_packages () {
     else
         sudo yum install -y git >> "$LOG_FILE" &
         spin_wheel $! "Installing git"
-    fi
-
-    #Install+Configure Docker
-    if command -v docker > /dev/null; then
-        print_info "Docker already installed, using it"
-    else
-        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 >> "$LOG_FILE" &
-        spin_wheel $! "Installing prerequisites for docker-ce"
-        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo >> "$LOG_FILE" &
-        spin_wheel $! "Adding yum repo for docker-ce"
-        sudo yum install docker-ce -y >> "$LOG_FILE" &
-        spin_wheel $! "Installing docker-ce"
-        sudo systemctl enable docker >> "$LOG_FILE" &
-        spin_wheel $! "Enabling docker-ce service"
-        sudo gpasswd -a "$(whoami)" docker >> "$LOG_FILE" &
-        spin_wheel $! "Adding the present user to docker group"
-    fi
-
-    #Make sure Docker is running
-    if sudo systemctl status docker > /dev/null; then
-      print_info "Docker already running, continuing"
-    else
-      sudo systemctl start docker >> "$LOG_FILE" &
-      spin_wheel $! "Starting docker-ce"
     fi
 
     # Download and Install java

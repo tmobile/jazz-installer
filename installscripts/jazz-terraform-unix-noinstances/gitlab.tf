@@ -1,5 +1,4 @@
-resource "null_resource" "updateGitlabJenkinsConfig" {
-  # TODO drop depends_on = ["null_resource.postJenkinsConfiguration"]
+resource "null_resource" "updategitlabjenkinsconfig" {
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
@@ -7,7 +6,7 @@ resource "null_resource" "updateGitlabJenkinsConfig" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PRIVATE_TOKEN ${lookup(var.scmmap, "scm_privatetoken")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PRIVATE_TOKEN ${data.external.gitlabcontainer.*.result.gitlab_token} ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "local-exec" {

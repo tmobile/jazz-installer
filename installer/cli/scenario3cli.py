@@ -1,7 +1,7 @@
 import click
 import click_spinner
 from installer.configurators.jenkins import configure_jenkins_docker
-from installer.configurators.gitlab import configure_gitlab_docker
+from installer.configurators.gitlab import configure_gitlab
 from installer.configurators.sonarqube import configure_sonarqube_docker
 from installer.helpers.terraform import exec_terraform_apply
 
@@ -22,9 +22,7 @@ def scenario3(sonarqube):
 
     click.secho('\n\nConfiguring Gitlab server', fg='blue')
     # Get Bitbucket configuration details
-    with click_spinner.spinner():
-        configure_gitlab_docker()
-    click.secho('\nGitlab server configured!', fg='green')
+    configure_gitlab()
 
     if sonarqube:
         click.secho('\n\nConfiguring Sonarqube server', fg='blue')
