@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 # TODO see if we really need to split these files this way
 from installer.configurators.jenkins_docker import launch_dockerized_jenkins
-from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars
+from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars, passwd_generator
 
 
 def check_jenkins_pem():
@@ -83,17 +83,16 @@ def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):
     update_jenkins_terraform(elb, userpw, ip, sshuser, ssh_port, secgrp, subnet)
 
 
-def configure_jenkins_docker():
+def configure_jenkins_docker(existing_vpc_id, vpc_cidr):
     """
-        Launch a dockerized Jenkins server.
+        Launch a containerized Jenkins server.
     """
-    res = launch_dockerized_jenkins()
-    update_jenkins_terraform(
-        res['jenkins_elb'],
-        res['jenkins_userpass'],
-        res['jenkins_publicip'],
-        res['jenkins_sshuser'],
-        res['jenkins_sshport'],
-        res['jenkins_secgroup'],
-        res['jenkins_subnet']
-    )
+    if existing_vpc_id:
+        replace_tfvars('existing_vpc_ecs', existing_vpc_id, get_tfvars_file())
+    else:
+        replace_tfvars("autovpc", "true", get_tfvars_file(), False)
+        replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
+
+    # res = launch_dockerized_jenkins()
+    update_jenkins_terraform("replaceme", ("admin", passwd_generator()), "replaceme",
+                             "root", "2200", "replaceme", "replaceme")
