@@ -83,7 +83,7 @@
                   "active": true,
                   "options": [
                       {"label": "AWS API Gateway", "value": "aws_apigateway"},
-                      {"label": "GCP_APIGEE", "value": "gcp_apigee"}
+                      {"label": "GCP APIGEE", "value": "gcp_apigee"}
                   ]
               },
               "WEBSITE": {
