@@ -15,7 +15,7 @@ class RequiredIf(click.Option):
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument is only required if %s is not specified' %
                               self.required_if_not).strip()
-            super(RequiredIf, self).__init__(*args, **kwargs)
+        super(RequiredIf, self).__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
         if hasattr(self, 'required_if'):
