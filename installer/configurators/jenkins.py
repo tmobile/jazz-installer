@@ -2,8 +2,6 @@ import subprocess
 import os
 import sys
 from pathlib import Path
-# TODO see if we really need to split these files this way
-from installer.configurators.jenkins import configure_jenkins_docker
 from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars, passwd_generator
 
 
