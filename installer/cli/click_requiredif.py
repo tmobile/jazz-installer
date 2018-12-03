@@ -6,12 +6,12 @@ class RequiredIf(click.Option):
     def __init__(self, *args, **kwargs):
         self.required_if = kwargs.pop('required_if', '')
         self.required_if_not = kwargs.pop('required_if_not', '')
-        assert (self.required_if or self.required_not_if), "'required_if/not_if' parameter required"
-        if self.required_if:
+        assert (hasattr(self, 'required_if') or hasattr(self, 'required_not_if')), "'required_if/not_if' parameter required"
+        if hasattr(self, 'required_if'):
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument must be provided if %s is specified' %
                               self.required_if).strip()
-        elif self.required_if_not:
+        elif hasattr(self, 'required_if_not'):
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument is only required if %s is not specified' %
                               self.required_if_not).strip()
