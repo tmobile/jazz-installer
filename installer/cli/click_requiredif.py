@@ -18,7 +18,7 @@ class RequiredIf(click.Option):
             super(RequiredIf, self).__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
-        if self.required_if:
+        if hasattr(self, 'required_if'):
             we_are_not_present = self.name not in opts
             other_present = self.required_if in opts
 
@@ -29,7 +29,7 @@ class RequiredIf(click.Option):
                             self.name, self.required_if))
                 else:
                     self.prompt = None
-        elif self.required_if_not:
+        elif hasattr(self, 'required_if_not'):
             we_are_present = self.name in opts
             other_present = self.required_if_not in opts
 
