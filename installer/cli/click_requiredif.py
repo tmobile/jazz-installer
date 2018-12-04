@@ -4,14 +4,16 @@ import click
 # https://stackoverflow.com/questions/44247099/click-command-line-interfaces-make-options-required-if-other-optional-option-is
 class RequiredIf(click.Option):
     def __init__(self, *args, **kwargs):
-        self.required_if = kwargs.pop('required_if', '')
-        self.required_if_not = kwargs.pop('required_if_not', '')
-        assert (hasattr(self, 'required_if') or hasattr(self, 'required_not_if')), "'required_if/not_if' parameter required"
-        if hasattr(self, 'required_if'):
+        required_if = kwargs.pop('required_if', None)
+        required_if_not = kwargs.pop('required_if_not', None)
+        assert (required_if or required_if_not), "'required_if/if_not' parameter required"
+        if required_if:
+            self.required_if = required_if
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument must be provided if %s is specified' %
                               self.required_if).strip()
-        elif hasattr(self, 'required_if_not'):
+        elif required_if_not:
+            self.required_if_not = required_if_not
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument is only required if %s is not specified' %
                               self.required_if_not).strip()
