@@ -14,7 +14,7 @@ from installer.helpers.terraform import exec_terraform_apply
     default=False
 )
 @click.option(
-    '--existing-vpc/--no-existing-vpc',
+    '--existing_vpc/--no_existing_vpc',
     default=False
 )
 @click.option(
