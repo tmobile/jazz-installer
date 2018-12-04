@@ -21,7 +21,7 @@ from installer.helpers.terraform import exec_terraform_apply
     "--vpcid",
     help='Specify the ID of an existing VPC to use for ECS configuration',
     cls=RequiredIf,
-    required_if='existing-vpc',
+    required_if='existing_vpc',
     prompt=True
 )
 @click.option(
@@ -29,7 +29,7 @@ from installer.helpers.terraform import exec_terraform_apply
     help='Specify the desired CIDR block to use for VPC ECS configuration (default - 10.0.0.0/16)',
     default='10.0.0.0/16',
     cls=RequiredIf,
-    required_if_not='existing-vpc',
+    required_if_not='existing_vpc',
     prompt=True
 )
 def scenario3(sonarqube):
