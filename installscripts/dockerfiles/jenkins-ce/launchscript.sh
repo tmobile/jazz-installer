@@ -31,24 +31,6 @@ spin_wheel()
     fi
 }
 
-#Installing Docker-ce on centos7
-sudo yum check-update &> /dev/null
-sudo yum install -y yum-utils device-mapper-persistent-data lvm2 &> /dev/null &
-spin_wheel $! "Installing prerequisites for docker-ce"
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo &> /dev/null &
-spin_wheel $! "Adding yum repo for docker-ce"
-sudo yum install docker-ce -y &> /dev/null &
-spin_wheel $! "Installing docker-ce"
-
-sudo systemctl start docker &> /dev/null &
-spin_wheel $! "Starting docker-ce"
-sudo systemctl status docker &> /dev/null &
-spin_wheel $! "Checking docker-ce service"
-sudo systemctl enable docker &> /dev/null &
-spin_wheel $! "Enabling docker-ce service"
-sudo usermod -aG docker $(whoami) &> /dev/null &
-spin_wheel $! "Adding the present user to docker group"
-
 # Check if docker with same name exists. If yes, stop and remove the docker container.
 sudo docker ps -a | grep -i jenkins-server &> /dev/null
 if [ $? == 0 ] ; then
