@@ -136,7 +136,7 @@ def replace_config(args):
     subprocess.check_call(["git", "add", configFile], cwd=buildFolder)
     subprocess.check_call(["git", "commit", "-m", "'Adding Splunk feature'"], cwd=buildFolder)
     subprocess.check_call(["git", "push", "-u", "origin", "master"], cwd=buildFolder)
-    subprocess.check_call(["sudo", "rm", "-rf", buildFolder])
+    subprocess.check_call(["rm", "-rf", buildFolder])
 
 
 main()
