@@ -22,8 +22,7 @@ from installer.helpers.terraform import exec_terraform_apply
     "--vpcid",
     help='Specify the ID of an existing VPC to use for ECS configuration',
     cls=RequiredIf,
-    required_if='existing_vpc',
-    prompt=True
+    required_if='existing_vpc'
 )
 @click.option(
     "--vpc_cidr",

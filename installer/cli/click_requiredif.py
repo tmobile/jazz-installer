@@ -21,7 +21,7 @@ class RequiredIf(click.Option):
                     "Illegal usage: `%s` must be provided if `%s` is specified" % (
                         self.name, self.required_if))
             else:
-                self.prompt = None
+                self.prompt = True
 
         return super(RequiredIf, self).handle_parse_result(
             ctx, opts, args)
