@@ -33,7 +33,7 @@ from installer.helpers.terraform import exec_terraform_apply
     required_not_if='existing_vpc',
     prompt=True
 )
-def scenario3(sonarqube, existing_vpc, pvcid, vpc_cidr):
+def scenario3(sonarqube, existing_vpc, vpcid, vpc_cidr):
     """Installs stack with containerized Jenkins and containerized Gitlab"""
 
     click.secho('\n\nConfiguring Jenkins server', fg='blue')
