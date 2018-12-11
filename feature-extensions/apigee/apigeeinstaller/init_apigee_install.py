@@ -47,27 +47,36 @@ def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
     url = "%s/v1/o/%s/e/%s/keyvaluemaps" % (host, org, env)
 
     req = Request(url, data, headers)
-    res = urlopen(req)
-    if res.getcode() == 201:
-        print_banner("KVM created successfully for the Common-Jazz API Proxy")
-    else:
-        print_banner("KVM creation FAILED for the Common-Jazz API Proxy")
+    try:
+        res = urlopen(req)
+        if res.getcode() == 201:
+            print_banner("KVM created successfully for the Common-Jazz API Proxy")
+        else:
+            print_banner("KVM creation FAILED for the Common-Jazz API Proxy")
+    except HTTPError, e:
+        print "HTTP Error:", e.code
+        print_banner("KVM already present for the Common-Jazz API Proxy")
+        pass
 
 
 def get_current_deployed_version(host, org, env, flow, username, password):
     print("Getting the current deployed version of %s in %s/%s on %s" % (flow, org, env, host))
-    url = "%s/v1/o/%s/sharedflows/%s/deployments" % (host, org, flow)
-    req = Request(url)
-    req.add_header('Authorization', get_basic_auth(username, password))
-    req.add_header('Accept', 'application/json')
-    res = urlopen(req)
-    apis = json.load(res)
     deployedVersion = ''
-    for e in apis['environment']:
-        if (e['name'] == env):
-            deployedVersion = e['revision'][0]['name']
-            break
-    print("Deployed version: %s" % deployedVersion)
+    try:
+        url = "%s/v1/o/%s/sharedflows/%s/deployments" % (host, org, flow)
+        req = Request(url)
+        req.add_header('Authorization', get_basic_auth(username, password))
+        req.add_header('Accept', 'application/json')
+        res = urlopen(req)
+        apis = json.load(res)
+        for e in apis['environment']:
+            if (e['name'] == env):
+                deployedVersion = e['revision'][0]['name']
+                break
+        print("Deployed version: %s" % deployedVersion)
+    except HTTPError, e:
+        # To handle very first deployment
+        print "HTTP Error:", e.code
     return deployedVersion
 
 
@@ -148,7 +157,7 @@ def stamp_build(path, item, build):
     flowFile = os.path.join(path, 'sharedflowbundle', "%s.xml" % item)
     with open(flowFile, 'r') as inFile:
         content = inFile.read()
-
+    # flake8: noqa
     content = re.sub('(?<=\<Description\>).+(?=\</Description\>)', build, content)
 
     with open(flowFile, 'w') as outFile:
@@ -171,17 +180,17 @@ def zip_bundle(path, name, build):
 
 def deploy_shared_flows(host, org, env, build, username, password):
     print_banner("Deploying Sharedflows now ............")
-    flowDir = "sharedflows"
+    flowDir = "apigeeinstaller/sharedflows"
     for item in os.listdir(flowDir):
         itemPath = os.path.join(flowDir, item)
         if os.path.isdir(itemPath):
             stamp_build(itemPath, item, build)
             zfPath = zip_bundle(itemPath, item, build)
             deployedVersion = get_current_deployed_version(host, org, env, item, username, password)
+            if deployedVersion:
+                undeploy(host, org, env, item, deployedVersion, username, password)
             revision = import_bundle(zfPath, host, org, item, username, password)
-            undeploy(host, org, env, item, deployedVersion, username, password)
             deploy(host, org, env, item, revision, username, password)
-            zfPath.unlink()
     print_banner("Sharedflows deployment Complete")
 
 
@@ -210,8 +219,9 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
     return success
 
 
-def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, password,
-            contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
+def install_proxy(secretKey, reg, lambdaARN, host, org, env,
+                  build, username, password,
+                  contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     """Configure the external Apigee proxy and upload shared flows.
 
     Keyword arguments:
@@ -221,7 +231,6 @@ def install_proxy(secretKey, reg, lambdaARN, host, org, env, build, username, pa
     host -- Apigee host
     org -- Apigee org to apply this took
     env -- Apigee env to userName
-    build -- build number to stamp sharedflow/proxy with?
     username -- Apigee instance basic auth username
     password -- apigee instance basic auth password
     """
