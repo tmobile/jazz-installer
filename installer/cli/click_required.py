@@ -2,7 +2,7 @@ import click
 
 
 # https://stackoverflow.com/questions/44247099/click-command-line-interfaces-make-options-required-if-other-optional-option-is
-class RequiredIf(click.Option):
+class Required(click.Option):
     def __init__(self, *args, **kwargs):
         required_if = kwargs.pop('required_if', None)
         required_if_not = kwargs.pop('required_if_not', None)
@@ -17,7 +17,7 @@ class RequiredIf(click.Option):
             kwargs['help'] = (kwargs.get('help', '') +
                               ' NOTE: This argument is only required if %s is not specified' %
                               self.required_if_not).strip()
-        super(RequiredIf, self).__init__(*args, **kwargs)
+        super(Required, self).__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
         if hasattr(self, 'required_if'):
@@ -30,8 +30,7 @@ class RequiredIf(click.Option):
                         "Illegal usage: `%s` must be provided if `%s` is specified" % (
                             self.name, self.required_if))
                 else:
-                    print("REQUIREDIF" + self.name)
-                    self.prompt = None
+                    self.prompt = True
         elif hasattr(self, 'required_if_not'):
             we_are_present = self.name in opts
             other_present = self.required_if_not in opts
@@ -42,8 +41,7 @@ class RequiredIf(click.Option):
                         "Illegal usage: `%s` is only required if `%s` is not specified" % (
                             self.name, self.required_if_not))
                 else:
-                    print("REQUIREDIFNOT" + self.name)
-                    self.prompt = None
+                    self.prompt = True
 
-        return super(RequiredIf, self).handle_parse_result(
+        return super(Required, self).handle_parse_result(
             ctx, opts, args)
