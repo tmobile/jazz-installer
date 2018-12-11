@@ -38,6 +38,15 @@ If you're interested in submitting a PR, it would be a good idea to set up your 
 * [tflint](https://github.com/wata727/tflint) for Terraform script linting
 * [foodcritic](http://www.foodcritic.io/) for Chef script linting
 
+### Branching/release flow
+1. Breaking/nontrivial features first go into named feature branches cut from `develop`
+2. When/if a feature branch is chosen to be included in the next release, it is merged into `develop`
+3. Release testing happens in `develop`
+4. When confirmed/vetted, `develop` is merged into `master`, and `master` becomes the current release.
+5. Small fixes explicitly intended for the next release can be PRed directly into `develop` without first needing a feature branch.
+
+tl;dr `master` is always the current release, `develop` is always the current state of the next release.
+
 ## License
 
 Jazz is released under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
