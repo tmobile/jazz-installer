@@ -30,6 +30,7 @@ class RequiredIf(click.Option):
                         "Illegal usage: `%s` must be provided if `%s` is specified" % (
                             self.name, self.required_if))
                 else:
+                    print("REQUIREDIF" + self.name)
                     self.prompt = None
         elif hasattr(self, 'required_if_not'):
             we_are_present = self.name in opts
@@ -41,6 +42,7 @@ class RequiredIf(click.Option):
                         "Illegal usage: `%s` is only required if `%s` is not specified" % (
                             self.name, self.required_if_not))
                 else:
+                    print("REQUIREDIFNOT" + self.name)
                     self.prompt = None
 
         return super(RequiredIf, self).handle_parse_result(
