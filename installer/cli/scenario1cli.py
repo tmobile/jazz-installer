@@ -1,5 +1,5 @@
 import click
-from installer.cli.click_requiredif import RequiredIf
+from installer.cli.click_required import Required
 from installer.configurators.jenkins import configure_jenkins
 from installer.configurators.bitbucket import configure_bitbucket
 from installer.configurators.sonarqube import configure_sonarqube
@@ -77,20 +77,20 @@ from installer.helpers.terraform import exec_terraform_apply
     '--sonarqube_endpoint',
     help='Provide the endpoint (without the protocol or port) of the Sonarqube server to be configured',
     prompt=True,
-    cls=RequiredIf,
+    cls=Required,
     required_if='sonarqube'
 )
 @click.option(
     '--sonarqube_userpass',
     nargs=2,
-    cls=RequiredIf,
+    cls=Required,
     required_if='sonarqube',
     prompt=True,
     help='Provide the username and password of the existing Sonarqube user separated by a space'
 )
 @click.option(
     '--sonarqube_publicip',
-    cls=RequiredIf,
+    cls=Required,
     required_if='sonarqube',
     prompt=True,
     help='Provide the public IP of the Sonarqube server to be configured.'
