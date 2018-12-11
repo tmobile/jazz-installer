@@ -29,7 +29,7 @@ lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_serv
 nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer")
 
 platform_services=()
-cd ./jazz-core
+cd ./jazz-core || exit
 for d in core/* ; do
   reponame="${d##*/}"
   if [[ $reponame != "jazz_ui"  && $reponame != "jazz-web" ]] ; then
