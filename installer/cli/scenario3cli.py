@@ -1,6 +1,7 @@
 import click
 import click_spinner
 from installer.cli.click_requiredif import RequiredIf
+from installer.cli.click_requirednotif import RequiredNotIf
 from installer.configurators.jenkins import configure_jenkins_docker
 from installer.configurators.gitlab import configure_gitlab
 from installer.configurators.sonarqube import configure_sonarqube_docker
@@ -28,8 +29,8 @@ from installer.helpers.terraform import exec_terraform_apply
     "--vpc_cidr",
     help='Specify the desired CIDR block to use for VPC ECS configuration (default - 10.0.0.0/16)',
     default='10.0.0.0/16',
-    cls=RequiredIf,
-    required_if_not='existing_vpc',
+    cls=RequiredNotIf,
+    required_not_if='existing_vpc',
     prompt=True
 )
 def scenario3(sonarqube, existing_vpc, pvcid, vpc_cidr):
