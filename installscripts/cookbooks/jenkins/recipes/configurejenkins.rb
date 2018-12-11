@@ -42,10 +42,11 @@ cookbook_file "#{node['chef_root']}/encrypt.groovy" do
   action :create
 end
 
-cookbook_file "#{node['chef_root']}/xmls.tar" do
-  source 'xmls.tar'
-  action :create
+# Fetch the xmls.tar from our content repo
+execute 'copyXmlsTar' do
+  command "curl -sL #{node['git_content_repo']}/#{node['git_branch']}/#{node['git_content_xmls']} -o #{node['chef_root']}/xmls.tar; chmod 755 #{node['chef_root']}/xmls.tar"
 end
+
 #ToDo ChefRemoval
 execute 'extractXmls' do
   command "tar -xvf #{node['chef_root']}/xmls.tar"
