@@ -3,7 +3,6 @@
 securityGroupIds=$1
 subnetIds=$2
 iamRoleARN=$3
-region=$4
 stackprefix=$5
 jazz_admin=$6
 
