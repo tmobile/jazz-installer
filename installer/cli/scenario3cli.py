@@ -25,14 +25,14 @@ from installer.helpers.terraform import exec_terraform_apply
     prompt=True
 )
 @click.option(
-    "--vpc-cidr",
+    "--vpc_cidr",
     help='Specify the desired CIDR block to use for VPC ECS configuration (default - 10.0.0.0/16)',
     default='10.0.0.0/16',
     cls=RequiredIf,
     required_if_not='existing_vpc',
     prompt=True
 )
-def scenario3(sonarqube):
+def scenario3(sonarqube, existing_vpc, pvcid, vpc_cidr):
     """Installs stack with containerized Jenkins and containerized Gitlab"""
 
     click.secho('\n\nConfiguring Jenkins server', fg='blue')
