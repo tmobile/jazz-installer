@@ -40,6 +40,7 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
 
 resource "aws_iam_role" "lambda_role" {
   name = "${var.envPrefix}_basic_execution"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -62,12 +63,11 @@ resource "aws_iam_role" "lambda_role" {
   ]
 }
 EOF
-
-tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_iam_role" "platform_role" {
   name = "${var.envPrefix}_platform_services"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -90,6 +90,4 @@ resource "aws_iam_role" "platform_role" {
   ]
 }
 EOF
-
-tags = "${merge(var.additional_tags, local.common_tags)}"
 }
