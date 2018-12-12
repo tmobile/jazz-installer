@@ -2,10 +2,6 @@
 FROM jenkins/jenkins:2.121.3
 MAINTAINER JazzOSS Team
 
-# Define the variables available.
-ARG jenkins_uid
-ARG jenkins_gid
-
 # Switching to root to configure the image with system packages
 USER root
 RUN apt-get update && apt-get install -y vim curl sudo libtool autoconf make unzip rsync gcc autogen shtool pkg-config lsb-release python python-dev python-pip python-setuptools groff less && \
@@ -28,9 +24,15 @@ RUN mkdir /var/jenkins_home/node
 RUN chmod 777 /tmp/jazz-chef/chefInstaller.sh
 RUN bash /tmp/jazz-chef/chefInstaller.sh
 
-# Copy and run socket mapping script 
-COPY dockerfiles/jenkins-ce/socketsetup.sh /
-RUN bash /socketsetup.sh "${jenkins_uid}" "${jenkins_gid}" jenkins
+# Install docker
+RUN apt-get update && apt-get -y install apt-transport-https ca-certificates  curl gnupg2  software-properties-common && \
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+   $(lsb_release -cs) \
+   stable" && \
+apt-get update && \
+apt-get -y install docker-ce
 
 # Switching back to Jenkins user for safety
 USER jenkins
