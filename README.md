@@ -38,7 +38,7 @@ If you're interested in submitting a PR, it would be a good idea to set up your 
 * [foodcritic](http://www.foodcritic.io/) for Chef script linting
 
 ### Tooling
-New contributions should consist entirely of Python(2, soon to be 3) code or Terraform scripts. No new shell script code will be accepted. If you want to add a new optional feature (rather than simply bugfix) please chat with the maintainers in #jazz-oss before starting, and take a look at the `feature-extensions` subdirectory for an example of how we currently structure such things.
+New contributions should consist entirely of Python(2, soon to be 3) code or Terraform scripts. No new shell script code will be accepted. If you want to add a new optional feature (rather than simply bugfix) please chat with the maintainers in Slack before starting, and take a look at the `feature-extensions` subdirectory for an example of how we currently structure such things.
 
 ### Branching/release flow
 1. Breaking/nontrivial features first go into named feature branches cut from `develop`
