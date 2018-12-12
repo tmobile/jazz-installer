@@ -33,6 +33,11 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
 
+resource "aws_iam_role_policy_attachment" "pushtocloudwatchlogs" {
+  role       = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "${var.envPrefix}_basic_execution"
   assume_role_policy = <<EOF
@@ -53,6 +58,33 @@ resource "aws_iam_role" "lambda_role" {
             "Service": "lambda.amazonaws.com"
         },
         "Action": "sts:AssumeRole"
+    },
+    {
+        "Effect": "Allow",
+        "Principal": {
+            "Service": "logs.${var.region}.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "basic_execution_policy" {
+  name = "${var.envPrefix}_basic_execution_policy"
+  role = "${aws_iam_role.lambda_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     }
   ]
 }
