@@ -2,6 +2,10 @@
 FROM jenkins/jenkins:2.121.3
 MAINTAINER JazzOSS Team
 
+# Define the variables available.
+ARG jenkins_uid
+ARG jenkins_gid
+
 # Switching to root to configure the image with system packages
 USER root
 RUN apt-get update && apt-get install -y vim curl sudo libtool autoconf make unzip rsync gcc autogen shtool pkg-config lsb-release python python-dev python-pip python-setuptools groff less && \
@@ -23,6 +27,10 @@ RUN mkdir /var/jenkins_home/node
 # Setting execute bit and executing the bootstrap script
 RUN chmod 777 /tmp/jazz-chef/chefInstaller.sh
 RUN bash /tmp/jazz-chef/chefInstaller.sh
+
+# Copy and run socket mapping script 
+COPY dockerfiles/jenkins-ce/socketsetup.sh /
+RUN bash /socketsetup.sh "${jenkins_uid}" "${jenkins_gid}" jenkins
 
 # Switching back to Jenkins user for safety
 USER jenkins
