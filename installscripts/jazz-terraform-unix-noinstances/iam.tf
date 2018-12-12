@@ -130,23 +130,3 @@ resource "aws_iam_role" "platform_role" {
 }
 EOF
 }
-
-resource "aws_iam_role_policy" "basic_execution_policy" {
-  name = "${var.envPrefix}_basic_execution_policy"
-  role = "${aws_iam_role.lambda_role.id}"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "iam:PassRole"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
