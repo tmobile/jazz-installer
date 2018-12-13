@@ -45,7 +45,7 @@ If you're interested in submitting a PR, it would be a good idea to set up your 
 4. When confirmed/vetted, `develop` is merged into `master`, and `master` becomes the current release.
 5. Small fixes explicitly intended for the next release can be PRed directly into `develop` without first needing a feature branch.
 
-tl;dr `master` is always the current release, `develop` is always the current state of the next release.
+tl;dr `master` is always the current release, `develop` is always the current state of the next release. If you want to contribute a PR, recommend you fork and work in a branch off of `develop`, then PR against `develop`. Project owners will move you into a feature branch if they deem it necessary.
 
 ## License
 
