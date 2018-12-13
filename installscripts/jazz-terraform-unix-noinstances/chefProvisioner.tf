@@ -80,11 +80,7 @@ resource "null_resource" "configureJenkinsInstance" {
     inline = "mkdir -p ${var.chefDestDir}"
   }
 
-  #Copy the chef playbooks and jenkins binary plugin blobs over to the remote Jenkins server
-  provisioner "file" {
-    source      = "${var.jenkinsPluginsSourceDir}"
-    destination = "${var.chefDestDir}/"
-  }
+  #Copy the chef playbooks over to the remote Jenkins server
 
   provisioner "file" {
     source      = "${var.cookbooksSourceDir}"
