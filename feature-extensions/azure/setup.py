@@ -83,7 +83,7 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
 
     # Run terraform first, as we need it's output
     # todo run terraform for install
-    # runTerraform(getRegion(args), getAWSAccountID(), getEnvPrefix(args), True)
+    runTerraform(jazz_stackprefix, True)
 
     updateConfig(azure_subscription_id)
 
@@ -91,12 +91,14 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
 
 
 @main.command()
+@click.option('--jazz-stackprefix',
+              help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), your existing config will be imported',
+              prompt=True)
 @click.option('--scm-repo', help='Specify the scm repo url', prompt=True)
 @click.option('--scm-username', help='Specify the scm username', prompt=True)
 @click.option('--scm-password', help='Specify the scm password', prompt=True)
 @click.option('--scm-pathext', help='Specify the scm repo path ext (Use "scm" for bitbucket)', default='')
-def uninstall(scm_repo, scm_username, scm_password, scm_pathext):
-
+def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext):
     retrievConfig(scm_repo, scm_username, scm_password, scm_pathext)
 
     if not azureInstalled():
@@ -108,8 +110,8 @@ def uninstall(scm_repo, scm_username, scm_password, scm_pathext):
         + colors.ENDC)
 
     # todo: run terraform for removal
-    # terraformStateSanityCheck()
-    # runTerraform(getRegion(args), getAWSAccountID(), getEnvPrefix(args), False)
+    terraformStateSanityCheck()
+    runTerraform(jazz_stackprefix, False)
 
     removeConfig()
 
@@ -157,44 +159,37 @@ def azureInstalled():
         installData = json.load(f)
     return 'AZURE' in installData
 
-# def runTerraform(region, accountId, envPrefix, install):
-#     print(
-#         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
-#     subprocess.check_call(['terraform', 'init'], cwd='./terraform')
-#
-#     # NOTE the correct way to deal with the preexisting gateway lambda function
-#     # is to `terraform import` it and reconfigure its role alongside everything else.
-#     # Lambda import is currently broken in Terraform 0.11.8.
-#     # I have raised a bug (https://github.com/terraform-providers/terraform-provider-aws/issues/5742)
-#     # on this, once/if that is fixed we should do this part with terraform and not python/awscli.
-#
-#     subprocess.check_call(
-#         [
-#             'terraform', 'apply' if install else 'destroy', '-auto-approve',
-#             '-var', 'region={0}'.format(region),
-#             '-var', 'jazz_aws_accountid={0}'.format(accountId),
-#             '-var', 'env_prefix={0}'.format(envPrefix),
-#         ],
-#         cwd='./terraform')
-#
-#
-# def terraformStateSanityCheck():
-#     print(colors.OKBLUE +
-#           'Making sure you have not deleted the Terraform .tfstate file...' +
-#           colors.ENDC)
-#     if not os.path.isfile('./terraform/terraform.tfstate'):
-#         print(colors.FAIL +
-#               'Cannot find the Terraform .tfstate file! No uninstall possible'
-#               + colors.ENDC)
-#
-#
-# def getTerraformOutputVar(varname):
-#     try:
-#         return subprocess.check_output(
-#             ['terraform', 'output', varname],
-#             cwd='./terraform')
-#     except subprocess.CalledProcessError:
-#         print("Failed getting output variable {0} from terraform!".format(varname))
-#         sys.exit()
+
+def terraformStateSanityCheck():
+    print(colors.OKBLUE +
+          'Making sure you have not deleted the Terraform .tfstate file...' +
+          colors.ENDC)
+    if not os.path.isfile('./terraform/terraform.tfstate'):
+        print(colors.FAIL +
+              'Cannot find the Terraform .tfstate file! No uninstall possible'
+              + colors.ENDC)
+
+
+def runTerraform(envPrefix, install):
+    print(
+        colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
+    subprocess.check_call(['terraform', 'init'], cwd='./terraform')
+
+    subprocess.check_call(
+        [
+            'terraform', 'apply' if install else 'destroy', '-auto-approve',
+            '-var', 'env_prefix={0}'.format(envPrefix),
+        ],
+        cwd='./terraform')
+
+
+def getTerraformOutputVar(varname):
+    try:
+        return subprocess.check_output(
+            ['terraform', 'output', varname],
+            cwd='./terraform')
+    except subprocess.CalledProcessError:
+        print("Failed getting output variable {0} from terraform!".format(varname))
+        sys.exit()
 
 main()
