@@ -1,3 +1,5 @@
+#!/bin/sh
+
 JENKINS_CLI_CMD=$1
 
 cat <<EOF | $JENKINS_CLI_CMD create-credentials-by-xml system::system::jenkins "(global)"
