@@ -3,6 +3,10 @@ sudo: false
 cache:
   directories:
   - "${HOME}/bin"
+branches:
+  only:
+  - master
+  - develop
 env:
   global:
   - PATH="${HOME}/bin
