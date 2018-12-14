@@ -133,16 +133,21 @@ def update_config(azure_subscription_id, azure_location):
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
+
     azureConfig = {
         "SUBSCRIPTION_ID": azure_subscription_id,
         'LOCATION': azure_location,
         "RESOURCE_GROUPS": {
-            "DEVELOPMENT": "",  # TODO
-            "STAGING": "",  # TODO
-            "PRODUCTION": ""  # TODO
+            "DEVELOPMENT": getTerraformOutputVar("dev_resource_group"),
+            "STAGING": getTerraformOutputVar("stage_resource_group"),
+            "PRODUCTION": getTerraformOutputVar("prod_resource_group")
+        },
+        "APIM": {
+            "DEVELOPMENT": getTerraformOutputVar("dev_apim"),
+            "STAGING": getTerraformOutputVar("stage_apim"),
+            "PRODUCTION": getTerraformOutputVar("prod_apim")
         }
     }
-
     data['AZURE'] = azureConfig
 
     with open("{}/{}".format(configFolder, jsonConfigFile), 'w') as f:
@@ -224,9 +229,8 @@ def destroy_terraform(jazzprefix, azure_location, azure_subscription_id, azure_c
 
 def getTerraformOutputVar(varname):
     try:
-        return subprocess.check_output(
-            ['terraform', 'output', varname],
-            cwd='./terraform')
+        output = subprocess.check_output(['terraform', 'output', varname], cwd='./terraform')
+        return output.strip(' \n\r')
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
