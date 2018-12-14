@@ -13,6 +13,7 @@ default['scmelb'] = 'jazz-bitbucketelb.us-east-1.elb.amazonaws.com'
 default['scmpath'] = "#{node['scmelb']}/scm"
 default['region'] = 'us-east-1'
 default['git_branch'] = 'master'
+default['git_plugin_branch'] = 'master'
 default['git_repo'] = 'https://github.com/tmobile/jazz.git'
 default['git_content_repo'] = 'https://github.com/tmobile/jazz-content/raw'
 default['git_content_plugins'] = 'jenkins/staticplugins/plugins.tar'

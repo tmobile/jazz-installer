@@ -44,7 +44,7 @@ end
 
 # Fetch the xmls.tar from our content repo
 execute 'copyXmlsTar' do
-  command "curl -sL #{node['git_content_repo']}/#{node['git_branch']}/#{node['git_content_xmls']} -o #{node['chef_root']}/xmls.tar; chmod 755 #{node['chef_root']}/xmls.tar"
+  command "curl -sL #{node['git_content_repo']}/#{node['git_plugin_branch']}/#{node['git_content_xmls']} -o #{node['chef_root']}/xmls.tar; chmod 755 #{node['chef_root']}/xmls.tar"
 end
 
 #ToDo ChefRemoval
