@@ -22,6 +22,10 @@ variable "configureSonar_cmd" {
   type = "string"
   default = "./scripts/configureSonar.sh"
 }
+variable "configureKinesis_cmd" {
+  type = "string"
+  default = "./scripts/configureKinesis.sh"
+}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"

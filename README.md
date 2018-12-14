@@ -44,12 +44,23 @@ python Installer.py install scenario3
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
 
 ## Development
-
 If you're interested in submitting a PR, it would be a good idea to set up your editor/IDE to use the following checkers:
 editorconfig
 flake8 for Python linting
 tflint for Terraform script linting
 foodcritic for Chef script linting
+
+### Tooling
+New contributions should consist entirely of Python(2, soon to be 3) code or Terraform scripts. No new shell script code will be accepted, we have too much of it and it's not particularly maintainable. If you want to add a new optional feature (rather than simply bugfix) please chat with the maintainers in Slack before starting, and take a look at the `feature-extensions` subdirectory for an example of how we currently structure such things.
+
+### Branching/release flow
+1. Breaking/nontrivial features first go into named feature branches cut from `develop`
+2. When/if a feature branch is chosen to be included in the next release, it is merged into `develop`
+3. Release testing happens in `develop`
+4. When confirmed/vetted, `develop` is merged into `master`, and `master` becomes the current release.
+5. Small fixes explicitly intended for the next release can be PRed directly into `develop` without first needing a feature branch.
+
+tl;dr `master` is always the current release, `develop` is always the current state of the next release. If you want to contribute a PR, recommend you fork and work in a branch off of `develop`, then PR against `develop`. Project owners will move you into a feature branch if they deem it necessary.
 
 ## License
 

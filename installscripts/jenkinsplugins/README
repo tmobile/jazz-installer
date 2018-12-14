@@ -1,1 +1,0 @@
-These are Jenkins plugins used by the Chef cookbook. They should not be part of this repo, as they are large binary files. Remove this folder and update the Chef cookbook accordingly when that is corrected.
