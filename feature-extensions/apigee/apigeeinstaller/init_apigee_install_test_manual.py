@@ -44,22 +44,6 @@ def test_is_api_deployed():
     print 'Passed'
 
 
-def test_stamp_build():
-    flow = 'DataEncryption'
-    path = "./test/%s" % flow
-    targetFile = "%s/sharedflowbundle/DataEncryption.xml" % path
-    expected = 'Build.1.2.3'
-    print(os.getcwd())
-    copy("%s.orig" % targetFile, targetFile)
-    init_apigee_install.stamp_build(path, flow, expected)
-    with open(targetFile, 'r') as inFile:
-        content = inFile.read()
-
-    actual = re.search('(?<=\<Description\>).+(?=\</Description\>)', content).group(0)
-    assert(actual == expected)
-    print 'Passed'
-
-
 def test_zip_bundle():
     name = 'DataEncryption'
     path = "./test/%s" % name
