@@ -19,6 +19,6 @@ for file in $(git diff --diff-filter=d --name-only "$custom_commit_range" | grep
   echo "Checking ${bold}$file${normal}..."
   # Globally ignore lint error SC2024: https://github.com/koalaman/shellcheck/wiki/SC2024
   # as I don't think it's an important check for our use case
-  shellcheck -e sc2024 "$file" || exitcode=1 && true
+  shellcheck -e SC2024 "$file" || exitcode=1 && true
 done
 exit $exitcode
