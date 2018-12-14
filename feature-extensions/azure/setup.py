@@ -61,9 +61,9 @@ def main(**kwargs):
 def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
             azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id,
             azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku, azure_apim_prod_sku):
-    retrievConfig(scm_repo, scm_username, scm_password, scm_pathext)
+    retrieve_config(scm_repo, scm_username, scm_password, scm_pathext)
 
-    if azureInstalled():
+    if azure_installed():
         print("You are attempting to install Azure into a Jazz system that already has Azure installed.\n"
               "If this is an error, please run 'setup.py uninstall' to remove the existing installation")
         sys.exit(1)
@@ -82,12 +82,12 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
         + colors.ENDC)
 
     # Run terraform first, as we need it's output
-    # todo run terraform for install
-    runTerraform(jazz_stackprefix, True)
+    apply_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
+                    azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
+                    azure_apim_prod_sku)
 
-    updateConfig(azure_subscription_id)
-
-    commitConfig("Adding Azure deployment feature")
+    update_config(azure_subscription_id, azure_location)
+    commit_config("Adding Azure deployment feature")
 
 
 @main.command()
@@ -98,10 +98,18 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
 @click.option('--scm-username', help='Specify the scm username', prompt=True)
 @click.option('--scm-password', help='Specify the scm password', prompt=True)
 @click.option('--scm-pathext', help='Specify the scm repo path ext (Use "scm" for bitbucket)', default='')
-def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext):
-    retrievConfig(scm_repo, scm_username, scm_password, scm_pathext)
+@click.option('--azure-subscription-id', help='Specify the ID for the azure subscription to deploy functions into',
+              prompt=True)
+@click.option('--azure-location', help='Specify the location to install functions', prompt=True)
+@click.option('--azure-client-id', help='Specify the client id for the Service Principal used to build infrastructure',
+              prompt=True)
+@click.option('--azure-client-secret', help='Specify the password for Service Principal', prompt=True)
+@click.option('--azure-tenant-id', help='Specify the Azure AD tenant id for the Service Principal', prompt=True)
+def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext, azure_subscription_id,
+              azure_location, azure_client_id, azure_client_secret, azure_tenant_id):
+    retrieve_config(scm_repo, scm_username, scm_password, scm_pathext)
 
-    if not azureInstalled():
+    if not azure_installed():
         print("Azure is not added to this Jazz installation. Uninstall impossible.")
 
     print(
@@ -109,25 +117,25 @@ def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathex
         "\nThis will remove {0} functionality from your Jazz deployment.\n".format(featureName)
         + colors.ENDC)
 
-    # todo: run terraform for removal
-    terraformStateSanityCheck()
-    runTerraform(jazz_stackprefix, False)
+    terraform_state_sanity_check()
+    destroy_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
+                      azure_tenant_id)
 
-    removeConfig()
+    remove_config()
+    commit_config("Removing Azure deployment feature")
 
-    commitConfig("Removing Azure deployment feature")
 
-
-def commitConfig(message):
+def commit_config(message):
     git_config.commit_git_config(configFolder, jsonConfigFile, message)
 
 
-def updateConfig(azure_subscription_id):
+def update_config(azure_subscription_id, azure_location):
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
     azureConfig = {
         "SUBSCRIPTION_ID": azure_subscription_id,
+        'LOCATION': azure_location,
         "RESOURCE_GROUPS": {
             "DEVELOPMENT": "",  # TODO
             "STAGING": "",  # TODO
@@ -141,7 +149,7 @@ def updateConfig(azure_subscription_id):
         json.dump(data, f, indent=4)
 
 
-def removeConfig():
+def remove_config():
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
     data.pop('AZURE', None)
@@ -149,18 +157,18 @@ def removeConfig():
         json.dump(data, f, indent=4)
 
 
-def retrievConfig(scm_repo, scm_username, scm_password, scm_pathext):
+def retrieve_config(scm_repo, scm_username, scm_password, scm_pathext):
     subprocess.check_call(["rm", "-rf", configFolder])
     git_config.clone_git_config_repo(scm_repo, scm_username, scm_password, scm_pathext, configFolder)
 
 
-def azureInstalled():
+def azure_installed():
     with open(configFolder + '/' + jsonConfigFile, 'r') as f:
         installData = json.load(f)
     return 'AZURE' in installData
 
 
-def terraformStateSanityCheck():
+def terraform_state_sanity_check():
     print(colors.OKBLUE +
           'Making sure you have not deleted the Terraform .tfstate file...' +
           colors.ENDC)
@@ -170,15 +178,46 @@ def terraformStateSanityCheck():
               + colors.ENDC)
 
 
-def runTerraform(envPrefix, install):
+def apply_terraform(jazzprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
+                    azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
+                    azure_apim_prod_sku):
     print(
         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
     subprocess.check_call(['terraform', 'init'], cwd='./terraform')
 
     subprocess.check_call(
         [
-            'terraform', 'apply' if install else 'destroy', '-auto-approve',
-            '-var', 'env_prefix={0}'.format(envPrefix),
+            'terraform', 'apply', '-auto-approve',
+            '-var', 'jazzprefix={0}'.format(jazzprefix),
+            '-var', 'location={0}'.format(azure_location),
+            '-var', 'subscription_id={0}'.format(azure_subscription_id),
+            '-var', 'client_id={0}'.format(azure_client_id),
+            '-var', 'client_secret={0}'.format(azure_client_secret),
+            '-var', 'tenant_id={0}'.format(azure_tenant_id),
+            '-var', 'company_name={0}'.format(azure_company_name),
+            '-var', 'company_email={0}'.format(azure_company_email),
+            '-var', 'apim_dev_sku={0}'.format(azure_apim_dev_sku),
+            '-var', 'apim_stage_sku={0}'.format(azure_apim_stage_sku),
+            '-var', 'apim_prod_sku={0}'.format(azure_apim_prod_sku),
+        ],
+        cwd='./terraform')
+
+
+def destroy_terraform(jazzprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
+                      azure_tenant_id):
+    print(
+        colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
+    subprocess.check_call(['terraform', 'init'], cwd='./terraform')
+
+    subprocess.check_call(
+        [
+            'terraform', 'destroy', '-auto-approve',
+            '-var', 'jazzprefix={0}'.format(jazzprefix),
+            '-var', 'location={0}'.format(azure_location),
+            '-var', 'subscription_id={0}'.format(azure_subscription_id),
+            '-var', 'client_id={0}'.format(azure_client_id),
+            '-var', 'client_secret={0}'.format(azure_client_secret),
+            '-var', 'tenant_id={0}'.format(azure_tenant_id),
         ],
         cwd='./terraform')
 
@@ -191,5 +230,6 @@ def getTerraformOutputVar(varname):
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
+
 
 main()
