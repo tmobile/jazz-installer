@@ -1,7 +1,5 @@
 import init_apigee_install
 import os
-import re
-from shutil import copy
 from zipfile import ZipFile
 
 apigeeUser = 'xxxx'

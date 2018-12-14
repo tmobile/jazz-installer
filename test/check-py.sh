@@ -14,8 +14,10 @@ custom_commit_range="${TRAVIS_COMMIT_RANGE/.../..}"
 
 echo "Diffing commit range" "$custom_commit_range"
 
+exitcode=0
 # Get changed file names, excluding deleted files
 for file in $(git diff --diff-filter=d --name-only "$custom_commit_range" | grep .py\$); do
   echo "Checking ${bold}$file${normal}..."
-  flake8 "$file"
+  flake8 "$file" || exitcode=1 && true
 done
+exit $exitcode
