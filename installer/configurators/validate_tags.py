@@ -29,7 +29,7 @@ def validate_replication_tags(replication_tags):
 
     # helper method to validate spedical characters in Keys or Values
     def validate_special_characters(item):
-        if not re.match("^[a-zA-Z0-9\s\+\-\=\.\_\:\/\@\.]*$", item):
+        if not re.match(r"^[a-zA-Z0-9\s\+\-\=\.\_\:\/\@\.]*$", item):
             raise ValueError("tag encountered with special character: " + item)
 
     if type(replication_tags) != list:
