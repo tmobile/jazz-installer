@@ -91,6 +91,7 @@ def configure_jenkins_docker(existing_vpc_id, vpc_cidr):
         replace_tfvars("autovpc", "true", get_tfvars_file(), False)
         replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
 
+    # TODO Uh do we ever set security group and subnet?
     # res = launch_dockerized_jenkins()
     update_jenkins_terraform(None, ("admin", passwd_generator()),
                              "root", "2200", None, None)
