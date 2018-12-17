@@ -54,3 +54,7 @@ resource "aws_cloudwatch_log_subscription_filter" "logfilter-prod" {
   destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
   distribution    = "Random"
 }
+
+resource "aws_api_gateway_account" "cloudwatchlogroleupdate" {
+  cloudwatch_role_arn = "${aws_iam_role.platform_role.arn}"
+}
