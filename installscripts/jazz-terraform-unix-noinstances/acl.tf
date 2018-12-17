@@ -1,0 +1,43 @@
+resource "aws_rds_cluster" "casbin" {
+  cluster_identifier      = "casbin-cluster"
+  availability_zones      = ["us-east-1a", "us-east-1b"]
+  database_name           = "casbin"
+  master_username         = "root"
+  master_password         = "casbin2715"
+  backup_retention_period = 5
+  preferred_backup_window = "07:00-09:00"
+  skip_final_snapshot = true
+  engine                  = "aurora-mysql"
+  vpc_security_group_ids  = ["${aws_security_group.acl_sg.id}"]
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_rds_cluster_instance" "casbin-instance" {
+  apply_immediately       = true
+  cluster_identifier      = "${aws_rds_cluster.casbin.id}"
+  identifier              = "casbin"
+  instance_class          = "db.t2.small"
+  engine                  = "aurora-mysql"
+  publicly_accessible     = true
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_security_group" "acl_sg" {
+    name = "acl_sg"
+    description = "Aurora MySQL access"
+    ingress {
+        from_port = 3306
+        to_port = 3306
+        protocol = "tcp"
+        self = true
+    }    
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = "${merge(var.additional_tags, local.common_tags)}"
+}
