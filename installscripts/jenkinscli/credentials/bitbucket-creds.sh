@@ -1,3 +1,5 @@
+#!/bin/sh
+
 JENKINS_CLI_CMD=$1
 BBUSER=$2
 BBPASSWORD=$3

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 JENKINS_CLI_CMD=$1
 GITLAB_TOKEN=$2
 
