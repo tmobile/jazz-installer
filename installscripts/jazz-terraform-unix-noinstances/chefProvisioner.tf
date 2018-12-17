@@ -72,7 +72,7 @@ resource "null_resource" "configureJenkinsInstance" {
   depends_on = ["null_resource.preJenkinsConfiguration", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
 
   connection {
-    host = "${lookup(var.jenkinsservermap, "jenkins_public_ip")}"
+    host = "${lookup(var.jenkinsservermap, "jenkins_elb")}"
     user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
     port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
     type = "ssh"

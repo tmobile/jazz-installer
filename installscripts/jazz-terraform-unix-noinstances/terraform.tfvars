@@ -14,7 +14,6 @@ jenkinsservermap = {
   jenkins_elb = "REPLACEME"
   jenkinsuser = "REPLACEME"
   jenkinspasswd = "REPLACEME"
-  jenkins_public_ip = "REPLACEME"
   jenkins_ssh_login = "REPLACEME"
   jenkins_ssh_port = "22"
   jenkins_ssh_key = "../sshkeys/jenkinskey.pem"

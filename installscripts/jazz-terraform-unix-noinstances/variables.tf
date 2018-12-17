@@ -47,7 +47,6 @@ variable "jenkinsservermap" {
   type = "map"
   default = {
     jenkins_elb = "replace"
-    jenkins_public_ip = "replaceIP"
     jenkins_subnet = "replace"
     jenkins_security_group = "replace"
     jenkinsuser = "replace"
