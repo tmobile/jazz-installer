@@ -35,19 +35,15 @@ def scenario3(sonarqube, existing_vpc, vpcid, vpc_cidr):
     """Installs stack with containerized Jenkins and containerized Gitlab"""
 
     click.secho('\n\nConfiguring Jenkins server', fg='blue')
-    with click_spinner.spinner():
-        configure_jenkins_docker()
+    configure_jenkins_docker()
     click.secho('\nJenkins server configured!', fg='green')
 
     click.secho('\n\nConfiguring Gitlab server', fg='blue')
-    # Get Bitbucket configuration details
     configure_gitlab()
 
     if sonarqube:
         click.secho('\n\nConfiguring Sonarqube server', fg='blue')
-        with click_spinner.spinner():
-            configure_sonarqube_docker()
-        click.secho('\nSonarqube server configured!', fg='green')
+        configure_sonarqube_docker()
 
     click.secho('\n\nStarting Terraform', fg='green')
     click.secho('\n\nTerraform output will be echoed here and captured to stack_creation.out', fg='green')

@@ -53,16 +53,15 @@ def check_jenkins_user(url, usernamepw):
         return 0
 
 
-# TODO do we need SSHuser and crap for dockerized scenarios?
+# TODO these are only used for scenario 1
 def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
-    if ip:
-        replace_tfvars('jenkins_elb', ip, get_tfvars_file())
+    replace_tfvars('jenkins_elb', ip, get_tfvars_file())
+    replace_tfvars('jenkins_security_group', secgrp, get_tfvars_file())
+    replace_tfvars('jenkins_subnet', subnet, get_tfvars_file())
     replace_tfvars('jenkinsuser', userpw[0], get_tfvars_file())
     replace_tfvars('jenkinspasswd', userpw[1], get_tfvars_file())
     replace_tfvars('jenkins_ssh_login', sshuser, get_tfvars_file())
     replace_tfvars('jenkins_ssh_port', ssh_port, get_tfvars_file())
-    replace_tfvars('jenkins_security_group', secgrp, get_tfvars_file())
-    replace_tfvars('jenkins_subnet', subnet, get_tfvars_file())
 
 
 def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):
@@ -91,7 +90,5 @@ def configure_jenkins_docker(existing_vpc_id, vpc_cidr):
         replace_tfvars("autovpc", "true", get_tfvars_file(), False)
         replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
 
-    # TODO Uh do we ever set security group and subnet?
-    # res = launch_dockerized_jenkins()
-    update_jenkins_terraform(None, ("admin", passwd_generator()),
-                             "root", "2200", None, None)
+    replace_tfvars('jenkinsuser', "admin", get_tfvars_file())
+    replace_tfvars('jenkinspasswd', passwd_generator(), get_tfvars_file())
