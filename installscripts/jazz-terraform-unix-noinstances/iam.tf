@@ -39,7 +39,7 @@ resource "aws_iam_role_policy_attachment" "cognitopoweruser" {
 }
 
 resource "aws_iam_role_policy_attachment" "pushtocloudwatchlogs" {
-  role       = "${aws_iam_role.lambda_role.name}"
+  role       = "${aws_iam_role.platform_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
 
@@ -77,9 +77,9 @@ resource "aws_iam_role" "lambda_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "basic_execution_policy" {
-  name = "${var.envPrefix}_basic_execution_policy"
-  role = "${aws_iam_role.lambda_role.id}"
+resource "aws_iam_role_policy" "platform_service_policy" {
+  name = "${var.envPrefix}_platform_service_policy"
+  role = "${aws_iam_role.platform_role.id}"
 
   policy = <<EOF
 {
