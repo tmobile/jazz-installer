@@ -18,10 +18,6 @@ variable "configureApikey_cmd" {
   type = "string"
   default = "./scripts/configureApikey.sh"
 }
-variable "configureSonar_cmd" {
-  type = "string"
-  default = "./scripts/configureSonar.sh"
-}
 variable "configureKinesis_cmd" {
   type = "string"
   default = "./scripts/configureKinesis.sh"
