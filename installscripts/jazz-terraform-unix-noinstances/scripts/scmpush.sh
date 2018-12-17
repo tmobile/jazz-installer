@@ -25,44 +25,44 @@ git config --global user.name "$scmuser"
 
 
 #Encoded username/password for git clone
-scmuser_encoded=`python -c "import urllib; print(urllib.quote_plus('$scmuser'))"`
-scmpasswd_encoded=`python -c "import urllib; print(urllib.quote_plus('$scmpasswd'))"`
+scmuser_encoded=$(python -c "import urllib; print(urllib.quote_plus('$scmuser'))")
+scmpasswd_encoded=$(python -c "import urllib; print(urllib.quote_plus('$scmpasswd'))")
 
 if [ ! -d ./jazz-core-scm ] ; then
     mkdir ./jazz-core-scm
 fi
 
-cd ./jazz-core
+cd ./jazz-core || exit
 
 # Remove only the "git" related nested files like .gitignore from all the directories in jazz-core
 find . -name ".git*" -exec rm -rf '{}' \;  -print
 
 # Function to push code to individual repos in SLF projects to SCM
 function individual_repopush() {
-    cd ../jazz-core-scm
+    cd ../jazz-core-scm || exit
     reponame="${1##*/}"
     parentfolder="${1%/*}"
 
-    if [ $scm == "bitbucket" ]; then
+    if [ "$scm" == "bitbucket" ]; then
         # Creating the repo in SLF folder in SCM
         curl -X POST -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$reponame\", \"scmId\": \"git\", \"forkable\": \"true\"}"
         # Adding webhook to the jazz core services
         curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations"  -d "{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/scm/SLF/$reponame.git
+        git clone http://"$scmuser_encoded":"$scmpasswd_encoded"@"$scmelb"/scm/SLF/"$reponame".git
 
-    elif [ $scm == "gitlab" ]; then
+    elif [ "$scm" == "gitlab" ]; then
         # Creating the repo in SLF folder in SCM
         repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$reponame&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
         # Adding webhook to the jazz core services
         curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$reponame.git
+        git clone http://"$scmuser_encoded":"$scmpasswd_encoded"@"$scmelb"/slf/"$reponame".git
     fi
 
     # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
-    cp -rf ../jazz-core/$1/. $reponame
-    cd $reponame
+    cp -rf ../jazz-core/"$1"/. "$reponame"
+    cd "$reponame" || exit
     pwd
     git add --all
     git commit -m 'Code from the standard template'
@@ -79,14 +79,14 @@ function individual_repopush() {
         if [[ $reponame == "jazz_ui" ]]; then
             curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
         elif [[ $reponame != "jazz-web" ]]; then
-            file=`find . -type f -name "build.*"`
+            file=$(find . -type f -name "build.*")
             file_name=${file#*/}
             service_type="${file_name:6}"
             service_name="${reponame:5}"
             curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
         fi
     fi
-    cd ../../jazz-core/
+    cd ../../jazz-core/ || exit
 }
 
 function push_to_scm() {
@@ -98,7 +98,7 @@ function push_to_scm() {
         # Push builds to SLF by traversing the array
         for dirname in "${repos[@]}"
         do
-          individual_repopush $dirname
+          individual_repopush "$dirname"
         done
     else
         # Initializing an array to store the order of directories to be pushed into SLF folder in SCM. This is common for all repos.
@@ -127,10 +127,10 @@ function push_to_scm() {
         for dirname in "${repos[@]}"
         do
          if [[ "${dirname%/*}" != "builds" ]] ; then
-           individual_repopush $dirname
+           individual_repopush "$dirname"
          fi
         done
     fi
 }
 
-push_to_scm $jazzbuildmodule
+push_to_scm "$jazzbuildmodule"

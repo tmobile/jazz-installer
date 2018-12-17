@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This script injects installer-based values into all the Jenkinsfiles* from the core repo.
 repo_credential_id="jazz_repocreds"
 repo_base=$1
@@ -6,15 +8,15 @@ scm_type=$2
 
 inject_bootstrap_variables()
 {
-  cd ./jazz-core
-  file_name=Jenkinsfile*
+  cd ./jazz-core || exit
+  file_name="Jenkinsfile*"
 
   # Record the files in an array: jenkinsfile_arr.
   jenkinsfile_arr=()
   for d in **/*/ ; do
-      file=`find "$d" -type f -name "$file_name"`
+      file=$(find "$d" -type f -name "$file_name")
       if [[ "$file" =~ Jenkinsfile* ]] ; then
-        jenkinsfile_arr=(${jenkinsfile_arr[@]} "$file")
+        jenkinsfile_arr=("${jenkinsfile_arr[@]}" "$file")
      fi
   done
 
@@ -29,4 +31,4 @@ inject_bootstrap_variables()
   cd ..
 }
 
-inject_bootstrap_variables $repo_credential_id $repo_base $repo_core
+inject_bootstrap_variables "$repo_credential_id" "$repo_base" "$repo_core"

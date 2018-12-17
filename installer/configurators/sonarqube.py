@@ -1,6 +1,6 @@
 import sys
 import subprocess
-from .common import get_tfvars_file, replace_tfvars, passwd_generator
+from .common import get_tfvars_file, replace_tfvars
 
 
 def update_sonarqube_terraform(sonarelb, sonaruserpass, sonarip):
