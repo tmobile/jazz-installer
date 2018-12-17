@@ -14,14 +14,6 @@ variable "configurescmelb_cmd" {
   type = "string"
   default = "./scripts/configurescmelb.sh"
 }
-variable "configureApikey_cmd" {
-  type = "string"
-  default = "./scripts/configureApikey.sh"
-}
-variable "configureKinesis_cmd" {
-  type = "string"
-  default = "./scripts/configureKinesis.sh"
-}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"

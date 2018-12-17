@@ -23,7 +23,13 @@ resource "null_resource" "update_jenkins_configs" {
 
   #KINESIS
   provisioner "local-exec" {
-    command = "${var.configureKinesis_cmd} ${aws_kinesis_stream.logs_stream_dev.arn} ${aws_kinesis_stream.logs_stream_stg.arn} ${aws_kinesis_stream.logs_stream_prod.arn} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_DEV ${aws_kinesis_stream.logs_stream_dev.arn} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_STG ${aws_kinesis_stream.logs_stream_stg.arn} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_PROD ${aws_kinesis_stream.logs_stream_prod.arn} ${var.jenkinsjsonpropsfile}"
   }
 
   #Elasticsearch
@@ -33,12 +39,32 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
   }
-  #S3
+
+  # API key
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} AWS_DEV_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-dev.id} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configureApikey_cmd} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-stg.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} ${var.envPrefix}"
+    command = "${var.modifyPropertyFile_cmd} AWS_STG_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} AWS_PROD_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile}"
+  }
+  #TODO why do we need these following to values in addition to the previous ones?
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} AWS_STG_API_ID_JAZZ ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} AWS_PROD_API_ID_JAZZ ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} INSTANCE_PREFIX ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+  }
+
+  #S3
+  # TODO Bug
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"

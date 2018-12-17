@@ -168,6 +168,7 @@ function install_packages () {
     $PYEXE -m virtualenv jazzenv >> "$LOG_FILE" &
     spin_wheel $! "Creating virtualenv"
 
+    # shellcheck disable=SC1091
     source jazzenv/bin/activate
 
     #Get Jazz installer code base
@@ -186,7 +187,6 @@ function install_packages () {
       pip install -r jazz-installer/requirements.txt >> "$LOG_FILE" &
       spin_wheel $! "Installing pip dependencies"
     else
-      echo $(which pip)
       pip install -r requirements.txt >> "$LOG_FILE" &
       spin_wheel $! "Installing pip dependencies"
     fi
