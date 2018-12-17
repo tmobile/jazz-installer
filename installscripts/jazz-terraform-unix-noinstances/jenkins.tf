@@ -78,8 +78,18 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} DEV_BUCKET ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${var.jenkinsjsonpropsfile}"
   }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} STG_BUCKET ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} PROD_BUCKET ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} S3_BUCKET_WEB ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
+  }
+
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} PLATFORMSERVICES_ROLEID ${aws_iam_role.platform_role.arn}  ${var.jenkinsjsonpropsfile}"
   }
