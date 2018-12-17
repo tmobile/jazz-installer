@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 from pathlib import Path
-from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars, passwd_generator
+from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars
 
 
 def check_jenkins_pem():
@@ -53,7 +53,6 @@ def check_jenkins_user(url, usernamepw):
         return 0
 
 
-# TODO these are only used for scenario 1
 def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
     replace_tfvars('jenkins_elb', ip, get_tfvars_file())
     replace_tfvars('jenkins_security_group', secgrp, get_tfvars_file())
@@ -78,17 +77,3 @@ def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):
 
     replace_tfvars('dockerizedJenkins', 'false', get_tfvars_file(), quoteVal=False)
     update_jenkins_terraform(elb, userpw, ip, sshuser, ssh_port, secgrp, subnet)
-
-
-def configure_jenkins_docker(existing_vpc_id, vpc_cidr):
-    """
-        Launch a containerized Jenkins server.
-    """
-    if existing_vpc_id:
-        replace_tfvars('existing_vpc_ecs', existing_vpc_id, get_tfvars_file())
-    else:
-        replace_tfvars("autovpc", "true", get_tfvars_file(), False)
-        replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
-
-    replace_tfvars('jenkinsuser', "admin", get_tfvars_file())
-    replace_tfvars('jenkinspasswd', passwd_generator(), get_tfvars_file())

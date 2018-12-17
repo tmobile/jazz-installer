@@ -45,11 +45,3 @@ def configure_sonarqube(sonarelb, sonaruserpass, sonarip):
             "Kindly provide an 'Admin' Sonar user with correct password and run the installer again!"
         )
     update_sonarqube_terraform(sonarelb, sonaruserpass, sonarip)
-
-
-def configure_sonarqube_docker():
-    """
-        Configure a containerized Sonar server.
-    """
-    replace_tfvars("dockerizedSonarqube", "true", get_tfvars_file(), False)
-    update_sonarqube_terraform("replaceme", "admin", passwd_generator())
