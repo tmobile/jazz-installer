@@ -54,8 +54,9 @@ def check_jenkins_user(url, usernamepw):
 
 
 # TODO do we need SSHuser and crap for dockerized scenarios?
-def update_jenkins_terraform(elb, userpw, ip, sshuser, ssh_port, secgrp, subnet):
-    replace_tfvars('jenkins_elb', elb, get_tfvars_file())
+def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
+    if ip:
+        replace_tfvars('jenkins_elb', ip, get_tfvars_file())
     replace_tfvars('jenkinsuser', userpw[0], get_tfvars_file())
     replace_tfvars('jenkinspasswd', userpw[1], get_tfvars_file())
     replace_tfvars('jenkins_ssh_login', sshuser, get_tfvars_file())
@@ -91,5 +92,5 @@ def configure_jenkins_docker(existing_vpc_id, vpc_cidr):
         replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
 
     # res = launch_dockerized_jenkins()
-    update_jenkins_terraform("replaceme", ("admin", passwd_generator()), "replaceme",
-                             "root", "2200", "replaceme", "replaceme")
+    update_jenkins_terraform(None, ("admin", passwd_generator()),
+                             "root", "2200", None, None)
