@@ -132,7 +132,7 @@ def validate_email_id(email_id):
     """
         Parse the parameters send from run.py and validate Cognito details
     """
-    if re.search('[^@]+@[^@]+\.[^@]+', email_id) is None:
+    if re.search(r'[^@]+@[^@]+.[^@]+', email_id) is None:
         return False
     else:
         return True
