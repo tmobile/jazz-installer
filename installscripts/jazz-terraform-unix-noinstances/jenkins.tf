@@ -61,6 +61,17 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} INSTANCE_PREFIX ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
 
+  # Subnet config
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} SECURITY_GROUP_IDS ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} SUBNET_IDS ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} LAMBDA_EXECUTION_ROLE ${var.envPrefix}_basic_execution ${var.jenkinsjsonpropsfile}"
+  }
+
   #S3
   # TODO Bug
   provisioner "local-exec" {
@@ -116,9 +127,5 @@ resource "null_resource" "update_jenkins_configs" {
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} 'nostring'"
-  }
-  // Modifying subnet replacement before copying cookbooks to Jenkins server.
-  provisioner "local-exec" {
-    command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
 }
