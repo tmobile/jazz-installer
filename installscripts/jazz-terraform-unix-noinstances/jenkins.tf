@@ -17,9 +17,6 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLIENT_ID ${aws_cognito_user_pool_client.client.id} ${var.jenkinsjsonpropsfile}"
   }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
-  }
 
   #KINESIS
   provisioner "local-exec" {
