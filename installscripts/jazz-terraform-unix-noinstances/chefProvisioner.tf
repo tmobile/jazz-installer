@@ -56,6 +56,14 @@ resource "null_resource" "preJenkinsConfiguration" {
   }
 
   provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''acluser'\\''\\].*.|default\\['\\''acluser'\\''\\]='\\''${var.acl_db_username}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''aclpassword'\\''\\].*.|default\\['\\''aclpassword'\\''\\]='\\''${var.acl_password}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  provisioner "local-exec" {
     command = "sed -i 's|jenkinsuser:jenkinspasswd|${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")}|g' ${var.cookbooksSourceDir}/jenkins/files/default/authfile"
   }
 

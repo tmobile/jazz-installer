@@ -25,6 +25,8 @@ default['bbuser'] = 'REPLACEME'
 default['bbpassword'] = 'REPLACEME'
 default['sonaruser'] = 'REPLACEME'
 default['sonarpassword'] = 'REPLACEME'
+default['acluser'] = 'REPLACEME'
+default['aclpassword'] = 'REPLACEME'
 default['dockerizedJenkins'] = false
 
 #Maven cookbook property

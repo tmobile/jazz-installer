@@ -2,6 +2,7 @@
 import os
 import re
 import subprocess
+import uuid
 
 # Global variables
 HOME_FOLDER = "~"
@@ -64,6 +65,9 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     replace_tfvars('cognito_pool_password', cognito_details[1],
                    get_tfvars_file())
 
+    replace_tfvars('acl_password', uuid.uuid4().hex,
+                   get_tfvars_file())
+
     # Populating Jazz Tag env
     replace_tfvars('envPrefix', jazz_tag_details[0], get_tfvars_file())
     replace_tfvars('tagsEnvironment', jazz_tag_details[1], get_tfvars_file())
@@ -97,17 +101,20 @@ def replace_tfvars(key, value, fileName):
         r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value), fileName
     ])
 
-#replace it without double quotes
+
+# replace it without double quotes
 def replace_tfvars_map(key, value, fileName):
     subprocess.call([
         'sed', "-i\'.bak\'",
         r's|\(%s = \)\(.*\)|\1%s|g' % (key, value), fileName
     ])
 
+
 def validate_email_id(email_id):
     """
         Parse the parameters send from run.py and validate Cognito details
     """
+    # flake8: noqa
     if re.search('[^@]+@[^@]+\.[^@]+', email_id) is None:
         return False
     else:

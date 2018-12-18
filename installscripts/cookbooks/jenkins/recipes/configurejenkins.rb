@@ -155,6 +155,16 @@ execute 'createcredentials-sonar' do
   command "#{node['script_root']}/sonar.sh #{node['jenkins']['clicommand']} #{node['sonaruser']} #{node['sonarpassword']}"
 end
 
+# Set up acl
+cookbook_file "#{node['script_root']}/acl.sh" do
+  source 'credentials/acl.sh'
+  mode 0755
+end
+
+execute 'createcredentials-acl' do
+  command "#{node['script_root']}/acl.sh #{node['jenkins']['clicommand']} #{node['acluser']} #{node['aclpassword']}"
+end
+
 #Set up AWS creds
 cookbook_file "#{node['script_root']}/aws.sh" do
   source 'credentials/aws.sh'

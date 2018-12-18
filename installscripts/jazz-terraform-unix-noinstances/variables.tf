@@ -113,3 +113,7 @@ variable "additional_tags" {
   default = {}
 }
 variable "aws_tags" { type = "string" }
+variable "acl_password" {type = "string"}
+variable "acl_db_name" {type = "string" default = "casbin"}
+variable "acl_db_username" {type = "string" default = "root"}
+variable "acl_db_port" {type = "string" default = "3306"}

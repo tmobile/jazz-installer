@@ -112,5 +112,13 @@
         "SLACK_TOKEN": "{slack_token}",
         "SLACK_WORKSPACE": "{slack_workspace}",
         "SLACK_SVC_ID": "{slack_svc_acc_id}"
+    },
+    "ACL": {
+        "CLUSTER_READER_ENDPOINT": "",
+        "CLUSTER_WRITER_ENDPOINT": "",
+        "DB_ENDPOINT": "",
+        "DB_PORT": "",
+        "DB_NAME": "",
+        "DB_CREDENTIAL_ID": "ACL_CRDENTIAL"
     }
 }
