@@ -4,20 +4,20 @@
 EMAIL_ADDRESS=$1
 REGION=$2
 JENKINSATTRIBSFILE=$3
-AWS_ACCESS_KEY=$4
 AWS_SECRET_KEY=$5
 ENV_PREFIX=$6
 POLICY_NAME="Policy-$ENV_PREFIX"
-ACCOUNT=`aws sts get-caller-identity --output text --query 'Account'`
+ACCOUNT=$(aws sts get-caller-identity --output text --query 'Account')
 # Python Script create SMTP AUTH PASSWORD of the access key using the secret key
 # the write to default.db in the cook book
-python scripts/GetSESsmtpPassword.py $AWS_SECRET_KEY
+python scripts/GetSESsmtpPassword.py "$AWS_SECRET_KEY"
 
 # SES Validate and register email address
-aws ses verify-email-identity --email-address $EMAIL_ADDRESS
+aws ses verify-email-identity --email-address "$EMAIL_ADDRESS"
 
 # Attaching identity policy
-aws ses put-identity-policy --identity $EMAIL_ADDRESS --policy-name $POLICY_NAME --policy '{
+# shellcheck disable=SC2086
+aws ses put-identity-policy --identity "$EMAIL_ADDRESS" --policy-name "$POLICY_NAME" --policy '{
     "Version": "2008-10-17",
     "Statement": [
         {
@@ -25,7 +25,7 @@ aws ses put-identity-policy --identity $EMAIL_ADDRESS --policy-name $POLICY_NAME
             "Effect": "Allow",
             "Principal": {
                 "AWS": [
-                    "arn:aws:iam::'$ACCOUNT':role/'$ENV_PREFIX'_basic_execution",
+                    "arn:aws:iam::'$ACCOUNT':role/'$ENV_PREFIX'_platform_services",
                     "arn:aws:iam::'$ACCOUNT':root"
                 ]
             },
@@ -39,4 +39,4 @@ aws ses put-identity-policy --identity $EMAIL_ADDRESS --policy-name $POLICY_NAME
 }'
 
 #Change the config values in JENKINSATTRIBSFILE
-sed -i "s/default\['jenkins'\]\['SES-defaultSuffix'\].*.$/default['jenkins']['SES-defaultSuffix']='$EMAIL_ADDRESS'/g"  $JENKINSATTRIBSFILE
+sed -i "s/default\['jenkins'\]\['SES-defaultSuffix'\].*.$/default['jenkins']['SES-defaultSuffix']='$EMAIL_ADDRESS'/g"  "$JENKINSATTRIBSFILE"

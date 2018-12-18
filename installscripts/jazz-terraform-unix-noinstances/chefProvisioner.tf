@@ -111,7 +111,7 @@ resource "null_resource" "configureJenkinsDocker" {
 resource "null_resource" "postJenkinsConfiguration" {
   depends_on = ["null_resource.configureJenkinsInstance", "null_resource.configureJenkinsDocker", "aws_elasticsearch_domain.elasticsearch_domain"]
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.lambda_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
+    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.platform_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
 
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
