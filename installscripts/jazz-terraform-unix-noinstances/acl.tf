@@ -3,7 +3,7 @@ resource "aws_rds_cluster" "casbin" {
   availability_zones      = ["us-east-1a", "us-east-1b"]
   database_name           = "${var.acl_db_name}"
   master_username         = "${var.acl_db_username}"
-  master_password         = "${var.acl_password}"
+  master_password         = "${var.acl_db_password}"
   port                    = "${var.acl_db_port}"
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
@@ -27,7 +27,7 @@ resource "aws_rds_cluster_instance" "casbin-instance" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
-# TO DO  - to remove in next version
+#TODO: CIDR block will be refined/more restricted in the next version
 resource "aws_security_group" "acl_sg" {
     name = "acl_sg"
     description = "Aurora MySQL access"

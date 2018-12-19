@@ -162,7 +162,7 @@ cookbook_file "#{node['script_root']}/acl.sh" do
 end
 
 execute 'createcredentials-acl' do
-  command "#{node['script_root']}/acl.sh #{node['jenkins']['clicommand']} #{node['acluser']} #{node['aclpassword']}"
+  command "#{node['script_root']}/acl.sh #{node['jenkins']['clicommand']} #{node['acl_db_user']} #{node['acl_db_password']}"
 end
 
 #Set up AWS creds

@@ -65,7 +65,7 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     replace_tfvars('cognito_pool_password', cognito_details[1],
                    get_tfvars_file())
 
-    replace_tfvars('acl_password', uuid.uuid4().hex,
+    replace_tfvars('acl_db_password', uuid.uuid4().hex,
                    get_tfvars_file())
 
     # Populating Jazz Tag env

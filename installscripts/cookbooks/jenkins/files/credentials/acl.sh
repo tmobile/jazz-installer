@@ -1,15 +1,15 @@
 #!/bin/sh
 
 JENKINS_CLI_CMD=$1
-ACLUSER=$2
-ACLPASSWORD=$3
+ACL_DB_USER=$2
+ACL_DB_PASSWORD=$3
 
 cat <<EOF | $JENKINS_CLI_CMD create-credentials-by-xml system::system::jenkins "(global)"
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
   <scope>GLOBAL</scope>
-  <id>ACL_CRDENTIAL</id>
+  <id>ACL_DB_CRDENTIAL</id>
   <description>ACL CREDENTIALS</description>
-  <username>$ACLUSER</username>
-  <password>$ACLPASSWORD</password>
+  <username>$ACL_DB_USER</username>
+  <password>$ACL_DB_PASSWORD</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
 EOF

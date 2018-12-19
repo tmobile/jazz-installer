@@ -98,12 +98,12 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} CLUSTER_WRITER_ENDPOINT ${aws_rds_cluster.casbin.endpoint} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} DB_ENDPOINT ${aws_rds_cluster_instance.casbin-instance.endpoint} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ENDPOINT ${aws_rds_cluster_instance.casbin-instance.endpoint} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} DB_PORT ${var.acl_db_port} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PORT ${var.acl_db_port} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} DB_NAME ${var.acl_db_name} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} NAME ${var.acl_db_name} ${var.jenkinsjsonpropsfile}"
   }
 }
