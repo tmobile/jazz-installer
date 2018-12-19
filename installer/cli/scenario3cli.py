@@ -13,35 +13,32 @@ from installer.helpers.terraform import exec_terraform_apply
     default=False
 )
 @click.option(
-    '--existing_vpc/--no_existing_vpc',
-    default=False
-)
-@click.option(
     "--vpcid",
     help='Specify the ID of an existing VPC to use for ECS configuration',
     cls=Required,
-    required_if='existing_vpc'
+    required_if_not='vpc_cidr',
+    prompt=True
 )
 @click.option(
     "--vpc_cidr",
     help='Specify the desired CIDR block to use for VPC ECS configuration (default - 10.0.0.0/16)',
     default='10.0.0.0/16',
     cls=Required,
-    required_if_not='existing_vpc',
+    required_if_not='vpcid',
     prompt=True
 )
-def scenario3(sonarqube, existing_vpc, vpcid, vpc_cidr):
+def scenario3(sonarqube, vpcid, vpc_cidr):
     """Installs stack with containerized Jenkins and containerized Gitlab"""
 
-    click.secho('\n\nConfiguring Jenkins server', fg='blue')
-    configure_jenkins_container()
+    click.secho('\n\nConfiguring Jenkins container', fg='blue')
+    configure_jenkins_container(vpcid, vpc_cidr)
     click.secho('\nJenkins server configured!', fg='green')
 
-    click.secho('\n\nConfiguring Gitlab server', fg='blue')
+    click.secho('\n\nConfiguring Gitlab container', fg='blue')
     configure_gitlab_container()
 
     if sonarqube:
-        click.secho('\n\nConfiguring Sonarqube server', fg='blue')
+        click.secho('\n\nConfiguring Sonarqube container', fg='blue')
         configure_sonarqube_container()
 
     click.secho('\n\nStarting Terraform', fg='green')
