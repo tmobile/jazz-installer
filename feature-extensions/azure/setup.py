@@ -105,8 +105,13 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
               prompt=True)
 @click.option('--azure-client-secret', help='Specify the password for Service Principal', prompt=True)
 @click.option('--azure-tenant-id', help='Specify the Azure AD tenant id for the Service Principal', prompt=True)
+@click.option('--azure-company-name', help='Specify the company name used in the Azure API Management service',
+              prompt=True)
+@click.option('--azure-company-email',
+              help='Specify the company contact email used in the Azure API Management service', prompt=True)
 def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext, azure_subscription_id,
-              azure_location, azure_client_id, azure_client_secret, azure_tenant_id):
+              azure_location, azure_client_id, azure_client_secret, azure_tenant_id, azure_company_name,
+              azure_company_email):
     retrieve_config(scm_repo, scm_username, scm_password, scm_pathext)
 
     if not azure_installed():
@@ -119,7 +124,7 @@ def uninstall(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathex
 
     terraform_state_sanity_check()
     destroy_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
-                      azure_tenant_id)
+                      azure_tenant_id, azure_company_name, azure_company_email)
 
     remove_config()
     commit_config("Removing Azure deployment feature")
@@ -133,21 +138,18 @@ def update_config(azure_subscription_id, azure_location):
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
+    azureConfig = OrderedDict()
+    azureConfig['SUBSCRIPTION_ID'] = azure_subscription_id
+    azureConfig['LOCATION'] = azure_location
+    azureConfig['RESOURCE_GROUPS'] = OrderedDict()
+    azureConfig['RESOURCE_GROUPS']['DEVELOPMENT'] = getTerraformOutputVar("dev_resource_group")
+    azureConfig['RESOURCE_GROUPS']['STAGING'] = getTerraformOutputVar("stage_resource_group")
+    azureConfig['RESOURCE_GROUPS']['PRODUCTION'] = getTerraformOutputVar("prod_resource_group")
+    azureConfig['APIM'] = OrderedDict()
+    azureConfig['APIM']['DEVELOPMENT'] = getTerraformOutputVar("dev_apim")
+    azureConfig['APIM']['STAGING'] = getTerraformOutputVar("stage_apim")
+    azureConfig['APIM']['PRODUCTION'] = getTerraformOutputVar("prod_apim")
 
-    azureConfig = {
-        "SUBSCRIPTION_ID": azure_subscription_id,
-        'LOCATION': azure_location,
-        "RESOURCE_GROUPS": {
-            "DEVELOPMENT": getTerraformOutputVar("dev_resource_group"),
-            "STAGING": getTerraformOutputVar("stage_resource_group"),
-            "PRODUCTION": getTerraformOutputVar("prod_resource_group")
-        },
-        "APIM": {
-            "DEVELOPMENT": getTerraformOutputVar("dev_apim"),
-            "STAGING": getTerraformOutputVar("stage_apim"),
-            "PRODUCTION": getTerraformOutputVar("prod_apim")
-        }
-    }
     data['AZURE'] = azureConfig
 
     with open("{}/{}".format(configFolder, jsonConfigFile), 'w') as f:
@@ -209,7 +211,7 @@ def apply_terraform(jazzprefix, azure_location, azure_subscription_id, azure_cli
 
 
 def destroy_terraform(jazzprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
-                      azure_tenant_id):
+                      azure_tenant_id, azure_company_name, azure_company_email):
     print(
         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
     subprocess.check_call(['terraform', 'init'], cwd='./terraform')
@@ -223,6 +225,8 @@ def destroy_terraform(jazzprefix, azure_location, azure_subscription_id, azure_c
             '-var', 'client_id={0}'.format(azure_client_id),
             '-var', 'client_secret={0}'.format(azure_client_secret),
             '-var', 'tenant_id={0}'.format(azure_tenant_id),
+            '-var', 'company_name={0}'.format(azure_company_name),
+            '-var', 'company_email={0}'.format(azure_company_email),
         ],
         cwd='./terraform')
 
