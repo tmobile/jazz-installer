@@ -12,7 +12,7 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash && apt-get install -y n
 # Install scripts for golang 
 RUN curl -O https://storage.googleapis.com/golang/go${goVersion}.linux-amd64.tar.gz && tar -xvf go${goVersion}.linux-amd64.tar.gz && mv go /usr/local && \
 echo 'export GOROOT=/usr/local/go' | sudo tee -a /etc/profile  && echo 'export GOBIN=$GOROOT/bin' | sudo tee -a /etc/profile &&  echo 'export GOPATH=$GOROOT/src' | sudo tee -a /etc/profile && \
-echo 'export PATH=$PATH:$GOPATH:$GOBIN' | sudo tee -a /etc/profile && source /etc/profile && RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+echo 'export PATH=$PATH:$GOPATH:$GOBIN' | sudo tee -a /etc/profile && source /etc/profile && curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Copying plugins list. Downlading and installing plugins from Jenkins PluginsManager
 COPY dockerfiles/jenkins-ce/plugins.txt /usr/share/jenkins/ref/plugins.txt
