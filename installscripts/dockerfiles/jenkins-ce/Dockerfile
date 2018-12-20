@@ -10,9 +10,12 @@ curl https://bootstrap.pypa.io/get-pip.py | python && pip install --upgrade awsc
 RUN wget -O /opt/apache-maven-3.5.2-bin.tar.gz https://archive.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz && tar xzvf /opt/apache-maven-3.5.2-bin.tar.gz -C  /opt && export PATH=$PATH:/opt/apache-maven-3.5.2/bin >> /etc/profile.d/maven.sh && ln -sf /opt/apache-maven-3.5.2/bin/mvn /usr/bin/mvn
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash && apt-get install -y nodejs && npm install  -global serverless@1.30.0 @angular/cli@1.7.3 jshint
 # Install scripts for golang 
-RUN curl -O https://storage.googleapis.com/golang/go${goVersion}.linux-amd64.tar.gz && tar -xvf go${goVersion}.linux-amd64.tar.gz && mv go /usr/local && \
-echo 'export GOROOT=/usr/local/go' | sudo tee -a /etc/profile  && echo 'export GOBIN=$GOROOT/bin' | sudo tee -a /etc/profile &&  echo 'export GOPATH=$GOROOT/src' | sudo tee -a /etc/profile && \
-echo 'export PATH=$PATH:$GOPATH:$GOBIN' | sudo tee -a /etc/profile && source /etc/profile && RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+RUN curl -O https://storage.googleapis.com/golang/go${goVersion}.linux-amd64.tar.gz && tar -xvf go${goVersion}.linux-amd64.tar.gz && mv go /usr/local
+ENV GOROOT /usr/local/go 
+ENV GOBIN  /usr/local/go/bin 
+ENV GOPATH /usr/local/go/src 
+ENV PATH $GOROOT:$GOBIN:$GOPATH:$PATH 
+RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Copying plugins list. Downlading and installing plugins from Jenkins PluginsManager
 COPY dockerfiles/jenkins-ce/plugins.txt /usr/share/jenkins/ref/plugins.txt
