@@ -30,11 +30,11 @@ if node['dockerizedJenkins'] == false
     end
     # link go
     link '/bin/go' do
-    to '/usr/local/go/bin/go'
+        to '/usr/local/go/bin/go'
     end
     # link dep
     link '/bin/dep' do
-    to '/opt/go/bin/dep'
+        to '/opt/go/bin/dep'
     end
 end
 
