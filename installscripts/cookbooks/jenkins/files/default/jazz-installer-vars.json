@@ -121,7 +121,9 @@
           "ENDPOINT": "",
           "PORT": "",
           "NAME": "",
-          "CREDENTIAL_ID": "ACL_DB_CRDENTIAL"
+          "CREDENTIAL_ID": "ACL_DB_CRDENTIAL",
+          "TYPE": "mysql",
+          "TIMEOUT": 100000
         }
     }
 }
