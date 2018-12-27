@@ -46,7 +46,10 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configureS3Names_cmd} ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ROLEID ${aws_iam_role.lambda_role.arn}  ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PLATFORMSERVICES_ROLEID ${aws_iam_role.platform_role.arn}  ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} USERSERVICES_ROLEID ${aws_iam_role.lambda_role.arn}  ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} WEBSITE_DEV_BUCKET ${aws_s3_bucket.dev-serverless-static.bucket} ${var.jenkinsjsonpropsfile}"

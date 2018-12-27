@@ -19,7 +19,7 @@ if node['dockerizedJenkins'] == false
   # plugin management
   # Fetch the plugins.tar from our content repo TODO replace this with a dynamic plugin install like the dockerized version
   execute 'copyPluginsTar' do
-    command "curl -sL #{node['git_content_repo']}/#{node['git_branch']}/#{node['git_content_repo']} -o #{node['chef_root']}/plugins.tar; chmod 755 #{node['chef_root']}/plugins.tar"
+    command "curl -sL #{node['git_content_repo']}/#{node['git_plugin_branch']}/#{node['git_content_plugins']} -o #{node['chef_root']}/plugins.tar; chmod 755 #{node['chef_root']}/plugins.tar"
   end
 
   execute 'extractJenkinsPlugins' do

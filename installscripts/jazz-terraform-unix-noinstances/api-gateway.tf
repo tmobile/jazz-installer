@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_prod" {
 
 resource "aws_cloudwatch_log_subscription_filter" "logfilter-dev" {
   name            = "logfilter-dev"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  role_arn        = "${aws_iam_role.platform_role.arn}"
   log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_dev.name}"
   filter_pattern  = ""
   destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_log_subscription_filter" "logfilter-dev" {
 
 resource "aws_cloudwatch_log_subscription_filter" "logfilter-stg" {
   name            = "logfilter-stg"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  role_arn        = "${aws_iam_role.platform_role.arn}"
   log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_stg.name}"
   filter_pattern  = ""
   destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_log_subscription_filter" "logfilter-stg" {
 
 resource "aws_cloudwatch_log_subscription_filter" "logfilter-prod" {
   name            = "logfilter-prod"
-  role_arn        = "${aws_iam_role.lambda_role.arn}"
+  role_arn        = "${aws_iam_role.platform_role.arn}"
   log_group_name  = "${aws_cloudwatch_log_group.API-Gateway-Execution-Logs_prod.name}"
   filter_pattern  = ""
   destination_arn = "${aws_kinesis_stream.logs_stream_prod.arn}"
@@ -56,5 +56,5 @@ resource "aws_cloudwatch_log_subscription_filter" "logfilter-prod" {
 }
 
 resource "aws_api_gateway_account" "cloudwatchlogroleupdate" {
-  cloudwatch_role_arn = "${aws_iam_role.lambda_role.arn}"
+  cloudwatch_role_arn = "${aws_iam_role.platform_role.arn}"
 }
