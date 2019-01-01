@@ -60,7 +60,7 @@ docker run --detach \
     --volume /srv/gitlab/config:/etc/gitlab \
     --volume /srv/gitlab/logs:/var/log/gitlab \
     --volume /srv/gitlab/data:/var/opt/gitlab \
-    gitlab/gitlab-ce:latest &> /dev/null &
+    gitlab/gitlab-ce:11.3.0-ce.0 &> /dev/null &
 spin_wheel $! "Initializing the Gitlab Docker"
 
 sleep 180 &
