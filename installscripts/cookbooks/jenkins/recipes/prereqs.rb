@@ -13,3 +13,7 @@ npm_package '@angular/cli' do
 end
 
 npm_package 'jshint'
+
+npm_package 'protractor'
+
+npm_package 'jasmine-reporters'

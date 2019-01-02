@@ -15,6 +15,10 @@ if node['dockerizedJenkins'] == false
   end
 
   npm_package 'jshint'
+  
+  npm_package 'protractor'
+  
+  npm_package 'jasmine-reporters'
 
   # plugin management
   # Fetch the plugins.tar from our content repo TODO replace this with a dynamic plugin install like the dockerized version
