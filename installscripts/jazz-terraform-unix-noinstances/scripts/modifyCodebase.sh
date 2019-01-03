@@ -26,7 +26,7 @@ function inArray() {
 }
 
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer" "jazz_cognito-admin-authorizer")
-nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer")
+nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer" "jazz_acl")
 
 platform_services=()
 cd ./jazz-core || exit
