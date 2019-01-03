@@ -35,7 +35,7 @@ resource "aws_security_group" "acl_sg" {
         from_port = "${var.acl_db_port}"
         to_port = "${var.acl_db_port}"
         protocol = "tcp"
-        self = true
+        cidr_blocks = ["0.0.0.0/0"]
     }
     egress {
         from_port = 0
