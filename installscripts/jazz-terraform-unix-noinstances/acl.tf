@@ -29,8 +29,12 @@ resource "aws_rds_cluster_instance" "casbin-instance" {
 
 #TODO: CIDR block will be refined/more restricted in the next version
 resource "aws_security_group" "acl_sg" {
-    name = "acl_sg"
+    name_prefix = "${var.envPrefix}"
     description = "Aurora MySQL access"
+    revoke_rules_on_delete = true
+    lifecycle {
+     create_before_destroy = true
+    }
     ingress {
         from_port = "${var.acl_db_port}"
         to_port = "${var.acl_db_port}"
