@@ -128,7 +128,7 @@
           "PORT": "",
           "NAME": "",
           "CREDENTIAL_ID": "ACL_DB_CRDENTIAL",
-          "DB_TYPE": "mysql",
+          "TYPE_DB": "mysql",
           "TIMEOUT": 100000
         }
     },

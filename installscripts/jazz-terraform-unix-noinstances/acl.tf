@@ -1,5 +1,5 @@
 resource "aws_rds_cluster" "casbin" {
-  cluster_identifier      = "casbin-cluster"
+  cluster_identifier      = "${var.envPrefix}-casbin-cluster"
   availability_zones      = ["us-east-1a", "us-east-1b"]
   database_name           = "${var.acl_db_name}"
   master_username         = "${var.acl_db_username}"
@@ -18,7 +18,7 @@ resource "aws_rds_cluster" "casbin" {
 resource "aws_rds_cluster_instance" "casbin-instance" {
   apply_immediately       = true
   cluster_identifier      = "${aws_rds_cluster.casbin.id}"
-  identifier              = "casbin"
+  identifier              = "${var.envPrefix}-casbin"
   instance_class          = "db.t2.small"
   engine                  = "aurora-mysql"
   engine_version          = "5.7.12"
