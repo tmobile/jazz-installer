@@ -18,7 +18,7 @@ resource "aws_rds_cluster" "casbin" {
 resource "aws_rds_cluster_instance" "casbin-instance" {
   apply_immediately       = true
   cluster_identifier      = "${aws_rds_cluster.casbin.id}"
-  identifier              = "${var.envPrefix}-casbin"
+  identifier              = "${var.acl_db_name}"
   instance_class          = "db.t2.small"
   engine                  = "aurora-mysql"
   engine_version          = "5.7.12"
