@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "casbin" {
   cluster_identifier      = "${var.envPrefix}-${var.acl_db_name}-cluster"
   availability_zones      = ["us-east-1a", "us-east-1b"]
-  database_name           = "${var.envPrefix}-${var.acl_db_name}"
+  database_name           = "${var.acl_db_name}"
   master_username         = "${var.acl_db_username}"
   master_password         = "${var.acl_db_password}"
   port                    = "${var.acl_db_port}"
