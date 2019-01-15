@@ -69,7 +69,7 @@ function spin_wheel () {
     fi
 }
 trap 'printf "${RED}\nCancelled....\n${NC}" 1>&3 2>&4; exit' 2
-trap '' CHLD
+trap '' 20
 
 function install_packages () {
     # Download and Installing Softwares required for Jazz centos7-provision
