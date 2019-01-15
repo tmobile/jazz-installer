@@ -1,6 +1,9 @@
-resource "null_resource" "preJenkinsConfiguration" {
+resource "null_resource" "updateJenkinsChefCookbook" {
+  # Only existing Jenkins servers need a cookbook
+  count = "${1-var.dockerizedJenkins}"
+
   #TODO verify s3 dependency is valid
-  depends_on = ["aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
+  depends_on = ["aws_s3_bucket.jazz-web"]
 
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {
@@ -67,9 +70,9 @@ resource "null_resource" "preJenkinsConfiguration" {
   #END chef cookbook edits
 }
 
-resource "null_resource" "configureJenkinsInstance" {
+resource "null_resource" "configureExistingJenkinsServer" {
   count = "${1-var.dockerizedJenkins}"
-  depends_on = ["null_resource.preJenkinsConfiguration", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
+  depends_on = ["null_resource.updateJenkinsChefCookbook", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
 
   connection {
     host = "${lookup(var.jenkinsservermap, "jenkins_elb")}"
@@ -125,8 +128,8 @@ resource "null_resource" "configureCodeqDocker" {
   depends_on = ["null_resource.health_check_codeq"]
 }
 
-resource "null_resource" "configureCliJenkins" {
-  depends_on = ["null_resource.health_check_jenkins", "null_resource.preJenkinsConfiguration", "null_resource.configureJenkinsInstance"]
+resource "null_resource" "configureJenkins" {
+  depends_on = ["null_resource.health_check_jenkins", "null_resource.configureExistingJenkinsServer", "null_resource.update_jenkins_configs"]
   #Jenkins Cli process
   provisioner "local-exec" {
     command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${var.cognito_pool_username} ${var.dockerizedJenkins} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabconfig.*.result.gitlab_token) : lookup(var.scmmap, "scm_privatetoken") } ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")}"
@@ -134,7 +137,7 @@ resource "null_resource" "configureCliJenkins" {
 }
 
 resource "null_resource" "postJenkinsConfiguration" {
-  depends_on = ["null_resource.configureCliJenkins"]
+  depends_on = ["null_resource.configureJenkins"]
   provisioner "local-exec" {
     command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.platform_role.arn} ${var.region} ${var.envPrefix} ${var.cognito_pool_username}"
   }
