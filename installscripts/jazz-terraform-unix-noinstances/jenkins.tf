@@ -111,6 +111,6 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} PORT ${var.acl_db_port} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} NAME ${aws_rds_cluster_instance.casbin-instance.identifier} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} NAME ${var.acl_db_name} ${var.jenkinsjsonpropsfile}"
   }
 }
