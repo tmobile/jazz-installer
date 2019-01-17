@@ -153,7 +153,7 @@
         "ENDPOINT": "{SPLUNK_ENDPOINT}",
         "HEC_TOKEN": "{SPLUNK_TOKEN}",
         "INDEX": "{SPLUNK_INDEX}"
-    }
+    },
     "APIGEE": {
         "ENABLE_APIGEE": "{ENABLE_APIGEE}",
         "APIGEE_CRED_ID": "{APIGEE_CREDS}",
