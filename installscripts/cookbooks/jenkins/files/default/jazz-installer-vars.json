@@ -83,7 +83,7 @@
         },
         "service_tabs": {
             "overview": true,
-            "access_control": false,
+            "access_control": true,
             "metrics": true,
             "logs": true,
             "cost": false
