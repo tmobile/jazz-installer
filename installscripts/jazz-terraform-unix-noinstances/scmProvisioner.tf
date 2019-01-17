@@ -20,7 +20,7 @@ resource "null_resource" "copyJazzBuildModule" {
 resource "null_resource" "pushconfig" {
   depends_on = ["null_resource.postJenkinsConfiguration"]
   provisioner "local-exec" {
-    command = "python ${var.config_cmd} ${aws_dynamodb_table.installer_config_db.name} ${aws_dynamodb_table.installer_config_db.hash_key} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+    command = "python ${var.config_cmd} ${aws_dynamodb_table.installer_config_db.name} ${aws_dynamodb_table.installer_config_db.hash_key} ${var.envPrefix} ${var.jenkinsjsonpropsfile} ${var.region}"
   }
 }
 

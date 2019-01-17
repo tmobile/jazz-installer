@@ -4,7 +4,7 @@ import sys
 import decimal
 import boto3
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1', endpoint_url='http://dynamodb.us-east-1.amazonaws.com')
+dynamodb = boto3.resource('dynamodb', region_name=sys.argv[5])
 
 table = dynamodb.Table(sys.argv[1])
 
