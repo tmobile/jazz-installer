@@ -168,6 +168,10 @@ function install_packages () {
     sudo yum install epel-release -y &> /dev/null &
     spin_wheel $! "Installing epel"
 
+    # Installing jq
+    sudo yum install jq -y &> /dev/null &
+    spin_wheel $! "Installing jq"
+    
     # Installing beautifulsoup4
     sudo yum install python-beautifulsoup4 -y &> /dev/null &
     spin_wheel $! "Installing beautifulsoup4"
