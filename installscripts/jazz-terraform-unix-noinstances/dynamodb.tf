@@ -501,3 +501,17 @@ resource "aws_dynamodb_table" "dynamodb-Assets_Prod" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 
 }
+
+resource "aws_dynamodb_table" "installer_config_db" {
+  name           = "${var.envPrefix}_JazzConfig"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "INSTANCE_PREFIX"
+
+  attribute {
+    name = "INSTANCE_PREFIX"
+    type = "S"
+  }
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
