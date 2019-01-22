@@ -134,7 +134,7 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
         replace_tfvars('existing_vpc_ecs', existing_vpc_id, get_tfvars_file())
     else:
         replace_tfvars_map("autovpc", "true", get_tfvars_file())
-        desired_vpc_cidr = raw_input("Enter the desired CIDR for VPC (default - 10.0.0.0/16) :")
+        desired_vpc_cidr = raw_input("Enter the desired CIDR for VPC (default - 10.0.0.0/16) :") or "10.0.0.0/16"
         replace_tfvars("vpc_cidr_block", desired_vpc_cidr, get_tfvars_file())
 
     # Get values to create the array
