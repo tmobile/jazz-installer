@@ -2,7 +2,7 @@
 import boto3
 import argparse
 import subprocess
-from git_config import replace_config
+from api_config import update_config
 
 
 class colors:
@@ -35,25 +35,6 @@ def main():
     )
     mainParser.add_argument("--aws-accesskey", help="AWS accesskey of the new account")
     mainParser.add_argument("--aws-secretkey", help="AWS secretkey of the new account")
-    mainParser.add_argument(
-        '--scm-repo',
-        help='Specify the scm repo url'
-    )
-
-    mainParser.add_argument(
-        '--scm-username',
-        help='Specify the scm username'
-    )
-
-    mainParser.add_argument(
-        '--scm-password',
-        help='Specify the scm password'
-    )
-
-    mainParser.add_argument(
-        '--scm-pathext',
-        help='Specify the scm repo path ext (Use "scm" for bitbucket)'
-    )
 
     mainParser.add_argument(
         '--jenkins-url',
@@ -68,6 +49,21 @@ def main():
     mainParser.add_argument(
         '--jenkins-password',
         help='Specify the Jenkins password'
+    )
+
+    mainParser.add_argument(
+        '--jazz-username',
+        help='Specify the Jazz username'
+    )
+
+    mainParser.add_argument(
+        '--jazz-password',
+        help='Specify the Jazz password'
+    )
+
+    mainParser.add_argument(
+        '--jazz-apiendpoint',
+        help='Specify the Jazz password'
     )
 
     args = mainParser.parse_args()
@@ -94,12 +90,12 @@ def install(args):
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
 
-    replace_config(
+    update_config(
+        "AWS.ACCOUNTS",
         account_json,
-        args.scm_repo,
-        args.scm_username,
-        args.scm_password,
-        args.scm_pathext
+        args.jazz_username,
+        args.jazz_password,
+        args.jazz_apiendpoint
     )
 
 
@@ -114,26 +110,23 @@ def collect_userinputs(args):
     if not args.aws_region:
         args.aws_region = raw_input("Enter AWS regions with space delimiter:").split()
 
-    if not args.scm_repo:
-        args.scm_repo = raw_input("Please enter the SCM Repo: ")
-
-    if not args.scm_username:
-        args.scm_username = raw_input("Please enter the SCM Username: ")
-
-    if not args.scm_password:
-        args.scm_password = raw_input("Please enter the SCM Password: ")
-
-    if not args.scm_pathext:
-        args.scm_pathext = raw_input("Please enter the SCM Pathext (Use \"/scm\" for bitbucket): ") or "/"
-
     if not args.jenkins_url:
-        args.jenkins_url = raw_input("Please enter the Jenkins URL: ")
+        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ")
 
     if not args.jenkins_username:
         args.jenkins_username = raw_input("Please enter the Jenkins Username: ")
 
     if not args.jenkins_password:
         args.jenkins_password = raw_input("Please enter the Jenkins Password: ")
+
+    if not args.jazz_username:
+        args.jazz_username = raw_input("Please enter the Jazz Admin Username: ")
+
+    if not args.jazz_password:
+        args.jazz_password = raw_input("Please enter the Jazz Admin Password: ")
+
+    if not args.jazz_apiendpoint:
+        args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
 
     return args
 
