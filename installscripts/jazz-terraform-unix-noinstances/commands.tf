@@ -22,6 +22,10 @@ variable "configureSonar_cmd" {
   type = "string"
   default = "./scripts/configureSonar.sh"
 }
+variable "configureKinesis_cmd" {
+  type = "string"
+  default = "./scripts/configureKinesis.sh"
+}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"
@@ -62,9 +66,21 @@ variable "injectingBootstrapToJenkinsfiles_cmd" {
   type = "string"
   default = "./scripts/injectingToJenkinsfile.sh"
 }
-variable "launchJenkinsCE_cmd" {
+variable "configureJenkinsCE_cmd" {
   type = "string"
-  default = "../dockerfiles/jenkins-ce/chefclient.sh"
+  default = "./scripts/configure-cli.sh"
+}
+variable "configureGitlab_cmd" {
+  type = "string"
+  default = "./scripts/configure-gitlab.sh"
+}
+variable "configureCodeq_cmd" {
+  type = "string"
+  default = "./scripts/configure-codeq.py"
+}
+variable "healthCheck_cmd" {
+  type = "string"
+  default = "./scripts/health_check.py"
 }
 variable "pushInstallervars_cmd" {
   type= "string"
