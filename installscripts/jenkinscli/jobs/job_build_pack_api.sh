@@ -31,7 +31,7 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-api"
         <hudson.model.StringParameterDefinition>
           <name>request_id</name>
           <description></description>
-          <defaultValue>null</defaultValue>
+          <defaultValue>none</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
