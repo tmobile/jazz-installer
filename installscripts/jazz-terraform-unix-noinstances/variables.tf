@@ -125,11 +125,11 @@ variable "codeq_docker_image" {
   default = "jazzserverless/jazzoss-sonarqube:1.0.0"
 }
 variable "dockerizedSonarqube" { default = false }
-variable "ecsJenkinscpu" { type = "string" default = "2048" }
-variable "ecsJenkinsmemory" { type = "string" default = "4096" }
-variable "ecsGitlabcpu" { type = "string" default = "2048" }
-variable "ecsGitlabmemory" { type = "string" default = "4096" }
-variable "ecsSonarqubecpu" { type = "string" default = "1024" }
+variable "ecsJenkinscpu" { type = "string" default = "1024" }
+variable "ecsJenkinsmemory" { type = "string" default = "3072" }
+variable "ecsGitlabcpu" { type = "string" default = "512" }
+variable "ecsGitlabmemory" { type = "string" default = "3072" }
+variable "ecsSonarqubecpu" { type = "string" default = "256" }
 variable "ecsSonarqubememory" { type = "string" default = "2048" }
 variable "autovpc" { default = false }
 variable "vpc_cidr_block" {

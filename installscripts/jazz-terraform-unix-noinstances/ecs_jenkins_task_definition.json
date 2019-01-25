@@ -19,9 +19,9 @@
           "value": "${jenkins_user}"
         }
       ],
-    "memoryReservation": 2048,
+    "memoryReservation": ${memory},
     "networkMode": "awsvpc",
-    "cpu": 2048,
+    "cpu": ${cpu},
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
