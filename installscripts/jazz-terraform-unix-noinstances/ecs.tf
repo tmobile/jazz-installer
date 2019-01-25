@@ -51,31 +51,39 @@ resource "aws_cloudwatch_log_group" "ecs_fargates_cwlogs" {
   retention_in_days = 7
 }
 
-resource "aws_ecs_cluster" "ecs_cluster" {
+resource "aws_ecs_cluster" "ecs_cluster_jenkins" {
   count = "${var.dockerizedJenkins}"
-  name = "${var.envPrefix}_ecs_cluster"
+  name = "${var.envPrefix}_ecs_cluster_jenkins"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_gitlab" {
   count = "${var.scmgitlab}"
   name = "${var.envPrefix}_ecs_cluster_gitlab"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_codeq" {
   count = "${var.dockerizedSonarqube}"
   name = "${var.envPrefix}_ecs_cluster_codeq"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
-data "template_file" "ecs_task" {
+data "template_file" "ecs_task_jenkins" {
   count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_jenkins_task_definition.json")}"
 
   vars {
     image           = "${var.jenkins_docker_image}"
-    ecs_container_name = "${var.envPrefix}_ecs_container"
+    ecs_container_name = "${var.envPrefix}_ecs_container_jenkins"
     log_group       = "${aws_cloudwatch_log_group.ecs_fargates_cwlogs.name}"
-    prefix_name     = "${var.envPrefix}_ecs_task_definition"
+    prefix_name     = "${var.envPrefix}_ecs_task_definition_jenkins"
     region          = "${var.region}"
+    memory          = "${var.ecsJenkinsmemory}"
+    cpu             = "${var.ecsJenkinscpu}"
     jenkins_user    = "${lookup(var.jenkinsservermap, "jenkinsuser")}"
     jenkins_passwd    = "${lookup(var.jenkinsservermap, "jenkinspasswd")}"
   }
@@ -91,6 +99,8 @@ data "template_file" "ecs_task_gitlab" {
     log_group       = "${aws_cloudwatch_log_group.ecs_fargates_cwlogs.name}"
     prefix_name     = "${var.envPrefix}_ecs_task_definition_gitlab"
     region          = "${var.region}"
+    memory          = "${var.ecsGitlabmemory}"
+    cpu             = "${var.ecsGitlabcpu}"
     gitlab_passwd    = "${var.cognito_pool_password}"
   }
 }
@@ -105,20 +115,24 @@ data "template_file" "ecs_task_codeq" {
     log_group       = "${aws_cloudwatch_log_group.ecs_fargates_cwlogs.name}"
     prefix_name     = "${var.envPrefix}_ecs_task_definition_codeq"
     region          = "${var.region}"
+    memory          = "${var.ecsSonarqubememory}"
+    cpu             = "${var.ecsSonarqubecpu}"
     gitlab_passwd    = "${var.cognito_pool_password}"
   }
 }
 
-resource "aws_ecs_task_definition" "ecs_task_definition" {
+resource "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
   count = "${var.dockerizedJenkins}"
-  family                   = "${var.envPrefix}_ecs_task_definition"
-  container_definitions    = "${data.template_file.ecs_task.rendered}"
+  family                   = "${var.envPrefix}_ecs_task_definition_jenkins"
+  container_definitions    = "${data.template_file.ecs_task_jenkins.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "${var.ecsJenkinscpu}"
   memory                   = "${var.ecsJenkinsmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
@@ -131,6 +145,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   memory                   = "${var.ecsGitlabmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
@@ -143,11 +159,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
   memory                   =  "${var.ecsSonarqubememory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+
+  tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
-resource "aws_alb_target_group" "alb_target_group" {
+resource "aws_alb_target_group" "alb_target_group_jenkins" {
   count = "${var.dockerizedJenkins}"
-  name     = "${var.envPrefix}-ecs-tg"
+  name     = "${var.envPrefix}-ecs-jenkins-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${data.aws_vpc.vpc_data.id}"
@@ -196,9 +214,9 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
-resource "aws_lb" "alb_ecs" {
+resource "aws_lb" "alb_ecs_jenkins" {
   count = "${var.dockerizedJenkins}"
-  name            = "${var.envPrefix}-alb"
+  name            = "${var.envPrefix}-jenkins-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
@@ -226,14 +244,14 @@ resource "aws_lb" "alb_ecs_codeq" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
-resource "aws_alb_listener" "ecs_alb_listener" {
+resource "aws_alb_listener" "ecs_alb_listener_jenkins" {
   count = "${var.dockerizedJenkins}"
-  load_balancer_arn = "${aws_lb.alb_ecs.arn}"
+  load_balancer_arn = "${aws_lb.alb_ecs_jenkins.arn}"
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.alb_target_group.arn}"
+    target_group_arn = "${aws_alb_target_group.alb_target_group_jenkins.arn}"
     type             = "forward"
   }
 }
@@ -262,9 +280,9 @@ resource "aws_alb_listener" "ecs_alb_listener_codeq" {
   }
 }
 
-data "aws_ecs_task_definition" "ecs_task_definition" {
+data "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
   count = "${var.dockerizedJenkins}"
-  task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_jenkins.family}"
 }
 
 data "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
@@ -277,14 +295,14 @@ data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}"
 }
 
-resource "aws_ecs_service" "ecs_service" {
+resource "aws_ecs_service" "ecs_service_jenkins" {
   count = "${var.dockerizedJenkins}"
-  name            = "${var.envPrefix}_ecs_service"
-  task_definition = "${aws_ecs_task_definition.ecs_task_definition.family}:${max("${aws_ecs_task_definition.ecs_task_definition.revision}", "${data.aws_ecs_task_definition.ecs_task_definition.revision}")}"
+  name            = "${var.envPrefix}_ecs_service_jenkins"
+  task_definition = "${aws_ecs_task_definition.ecs_task_definition_jenkins.family}:${max("${aws_ecs_task_definition.ecs_task_definition_jenkins.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_jenkins.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
   health_check_grace_period_seconds  = 3000
-  cluster =       "${aws_ecs_cluster.ecs_cluster.id}"
+  cluster =       "${aws_ecs_cluster.ecs_cluster_jenkins.id}"
 
   network_configuration {
     security_groups    = ["${aws_security_group.vpc_sg.id}"]
@@ -293,12 +311,12 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = "${aws_alb_target_group.alb_target_group.arn}"
-    container_name   = "${var.envPrefix}_ecs_container"
+    target_group_arn = "${aws_alb_target_group.alb_target_group_jenkins.arn}"
+    container_name   = "${var.envPrefix}_ecs_container_jenkins"
     container_port   = "8080"
   }
   # Needed the below dependency since there is a bug in AWS provider
-  depends_on = ["aws_alb_listener.ecs_alb_listener"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener_jenkins"]
 }
 
 resource "aws_ecs_service" "ecs_service_gitlab" {
@@ -351,9 +369,9 @@ resource "aws_ecs_service" "ecs_service_codeq" {
 
 resource "null_resource" "health_check_jenkins" {
   count = "${var.dockerizedJenkins}"
-  depends_on = ["aws_ecs_service.ecs_service"]
+  depends_on = ["aws_ecs_service.ecs_service_jenkins"]
   provisioner "local-exec" {
-    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group.arn}"
+    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_jenkins.arn}"
   }
 }
 

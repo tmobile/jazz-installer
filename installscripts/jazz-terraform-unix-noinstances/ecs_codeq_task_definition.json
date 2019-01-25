@@ -9,9 +9,9 @@
         "hostPort": 9000
       }
     ],
-    "memoryReservation": 1024,
+    "memoryReservation": ${memory},
     "networkMode": "awsvpc",
-    "cpu": 1024,
+    "cpu": ${cpu},
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
