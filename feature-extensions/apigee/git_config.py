@@ -16,7 +16,7 @@ def replace_config(apigeeHost, apigeeCredId, apigeeEnv, apigeeSvcHost,
     filedata = filedata.replace('"{ENABLE_APIGEE}"', 'true')
     # To Do Store the crendential in Jenkins as apigeeCredId with apigee username and password
     filedata = filedata.replace('{APIGEE_CREDS}', apigeeCredId)
-    filedata = filedata.replace('{PROD_ORG_NAME}', apigeeOrg)
+    filedata = filedata.replace('{MGMT_ORG}', apigeeOrg)
     filedata = filedata.replace('{MGMT_HOST}', apigeeHost)
     filedata = filedata.replace('{SVC_HOST}', apigeeSvcHost)
     # TODO add more
