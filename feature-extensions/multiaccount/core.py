@@ -212,8 +212,8 @@ def createplatformrole(iamclient, name, role_document):
 def createoai(oai_client, name):
     response = oai_client.create_cloud_front_origin_access_identity(
                 CloudFrontOriginAccessIdentityConfig={
-                    'CallerReference': name,
-                    'Comment': name
+                    'CallerReference': "%s%s" % (name,  str(uuid.uuid4().hex)),
+                    'Comment': "%s%s" % (name,  str(uuid.uuid4().hex))
                 }
                 )
-    return "origin-access-identity/cloudfront/%" % (response['CloudFrontOriginAccessIdentity']['Id'])
+    return "origin-access-identity/cloudfront/%s" % (response['CloudFrontOriginAccessIdentity']['Id'])
