@@ -26,6 +26,10 @@ def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
         "entry": [
             {
                 "name": "accessKey",
+                "value": reg
+            },
+            {
+                "name": "secretKey",
                 "value": secretKey
             },
             {
