@@ -10,7 +10,7 @@ table = dynamodb.Table(sys.argv[1])
 
 with open(sys.argv[4]) as json_file:
     config = json.load(json_file, parse_float=decimal.Decimal)
-    print("Adding Jazz config:")
+    config['SCM'] = {key: value for key, value in config['SCM'].items() if value}
     table.put_item(
         Item={
             sys.argv[2]: sys.argv[3],
