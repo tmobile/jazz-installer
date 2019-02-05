@@ -65,6 +65,21 @@ def main():
         help='Specify the scm repo path ext (Use "scm" for bitbucket)'
     )
 
+    mainParser.add_argument(
+        '--jenkins-url',
+        help='Specify the Jenkins url'
+    )
+
+    mainParser.add_argument(
+        '--jenkins-username',
+        help='Specify the Jenkins username'
+    )
+
+    mainParser.add_argument(
+        '--jenkins-password',
+        help='Specify the Jenkins password'
+    )
+
     mainParser.add_argument("apigee_host", help="Url of the Apigee host (e.g. https://my-apigee-host)")
     mainParser.add_argument("apigee_org", help="Name of the Apigee org you wish to use")
     mainParser.add_argument("apigee_env", help="Name of the Apigee env you wish to use")
@@ -122,11 +137,10 @@ def install(args):
         args.scm_password,
         args.scm_pathext
     )
-    print(
-        colors.OKBLUE +
-        "Please make sure to add the credential ID as 'ApigeeforJazz' \
-         with the apigee username and password in the Jenkins\n\n"
-        + colors.ENDC)
+
+    credential_id = "ApigeeforJazz"
+     # Store the CREDENTIAL_ID in jenkins
+    setCredential(args, credential_id)
 
 
 def uninstall(args):
@@ -247,7 +261,40 @@ def collect_userinputs(args):
     if not args.scm_pathext:
         args.scm_pathext = raw_input("Please enter the SCM Pathext (Use \"/scm\" for bitbucket): ") or "/"
 
+    if not args.jenkins_url:
+        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ")
+
+    if not args.jenkins_username:
+        args.jenkins_username = raw_input("Please enter the Jenkins Username: ")
+
+    if not args.jenkins_password:
+        args.jenkins_password = raw_input("Please enter the Jenkins Password: ")
+
     return args
+
+
+def setCredential(args, credential_id):
+    subprocess.check_call(
+        [
+            "curl",
+            "-sL",
+            ("http://%s/jnlpJars/jenkins-cli.jar") %
+            (args.jenkins_url),
+            "-o",
+            "jenkins-cli.jar"])
+    jenkins_cli_command = "java -jar jenkins-cli.jar -auth %s:%s -s  http://%s" % (
+                          args.jenkins_username,
+                          args.jenkins_password,
+                          args.jenkins_url)
+    subprocess.check_call(
+        [
+            "bash",
+            "apigee_cred.sh",
+            "%s" % (jenkins_cli_command),
+            credential_id,
+            args.apigee_username,
+            args.apigee_password
+            ])
 
 
 main()
