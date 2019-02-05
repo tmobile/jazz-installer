@@ -2,7 +2,9 @@
 import os
 import sys
 import subprocess
-from jazz_common import get_tfvars_file, replace_tfvars
+import hashlib
+import datetime
+from jazz_common import get_tfvars_file, replace_tfvars, replace_tfvars_map
 
 
 def add_jenkins_config_to_files(parameter_list):
@@ -112,10 +114,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         jenkins_server_subnet
     ]
 
-    subprocess.call([
-        'sed', "-i\'.bak\'",
-        r's|\(dockerizedJenkins = \)\(.*\)|\1false|g', get_tfvars_file()
-    ])
+    replace_tfvars_map("dockerizedJenkins", "false", get_tfvars_file())
 
     add_jenkins_config_to_files(parameter_list)
 
@@ -124,18 +123,23 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
     """
         Launch a dockerized Jenkins server.
     """
-    os.chdir(jenkins_docker_path)
-    print("Running docker launch script")
-    subprocess.call([
-        'sg', 'docker', './launchscript.sh', '|', 'tee', '-a',
-        '../../docker_creation.out'
-    ])
-    # Get values to create the array
-    parameter_list = []
-    with open("docker_jenkins_vars") as f:
-        for line in f:
-            parameter_list.append(line.rstrip())
+    encrypt_passwd = hashlib.md5()
+    encrypt_passwd.update(str(datetime.datetime.now()))
+    jenkins_passwd = encrypt_passwd.hexdigest()
 
+    use_existing_vpc = raw_input(
+        """\nWould you like to use existing VPC for ECS? [y/n] :""")
+    if use_existing_vpc == 'y':
+        existing_vpc_id = raw_input("Enter the VPC ID :")
+        replace_tfvars('existing_vpc_ecs', existing_vpc_id, get_tfvars_file())
+    else:
+        replace_tfvars_map("autovpc", "true", get_tfvars_file())
+        desired_vpc_cidr = raw_input("Enter the desired CIDR for VPC (default - 10.0.0.0/16) :") or "10.0.0.0/16"
+        replace_tfvars("vpc_cidr_block", desired_vpc_cidr, get_tfvars_file())
+
+    # Get values to create the array
+    parameter_list = ["replaceme", "admin", jenkins_passwd, "replaceme",
+                      "root", "2200", "replaceme", "replaceme"]
     print(parameter_list[0:])
 
     add_jenkins_config_to_files(parameter_list)
