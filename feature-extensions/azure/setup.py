@@ -8,6 +8,7 @@ from collections import OrderedDict
 import click
 
 import git_config
+import jenkins_config
 
 
 class colors:
@@ -39,6 +40,10 @@ def main(**kwargs):
 @click.option('--scm-username', help='Specify the scm username', prompt=True)
 @click.option('--scm-password', help='Specify the scm password', prompt=True)
 @click.option('--scm-pathext', help='Specify the scm repo path ext (Use "scm" for bitbucket)', default="")
+@click.option('--jenkins-host', help='Specify the host of the Jenkins install', prompt=True)
+@click.option('--jenkins-port', help='Specify the port of the Jenkins install', prompt=True)
+@click.option('--jenkins-user', help='Admin username for configuration changes', prompt=True)
+@click.option('--jenkins-api-token', help='Admin API token for configuration changes', prompt=True)
 @click.option('--azure-subscription-id', help='Specify the ID for the azure subscription to deploy functions into',
               prompt=True)
 @click.option('--azure-location', help='Specify the location to install functions', prompt=True)
@@ -58,9 +63,11 @@ def main(**kwargs):
 @click.option('--azure-apim-prod-sku',
               help='The SKU for the Azure API Management service for the production environment', default='Developer',
               show_default='Developer')
-def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
-            azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id,
-            azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku, azure_apim_prod_sku):
+def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext, jenkins_host, jenkins_port,
+            jenkins_user,
+            jenkins_api_token, azure_subscription_id, azure_location, azure_client_id, azure_client_secret,
+            azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
+            azure_apim_prod_sku):
     retrieve_config(scm_repo, scm_username, scm_password, scm_pathext)
 
     if azure_installed():
@@ -87,6 +94,9 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
                     azure_apim_prod_sku)
 
     update_config(azure_subscription_id, azure_location)
+    jenkins_config.update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id,
+                                  azure_client_secret,
+                                  azure_tenant_id, azure_subscription_id)
     commit_config("Adding Azure deployment feature")
 
 
