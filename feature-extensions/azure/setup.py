@@ -89,15 +89,15 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
         + colors.ENDC)
 
     # Run terraform first, as we need it's output
-    apply_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
-                    azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
-                    azure_apim_prod_sku)
-
-    update_config(azure_subscription_id, azure_location)
+    # apply_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
+    #                 azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
+    #                 azure_apim_prod_sku)
+    #
+    # update_config(azure_subscription_id, azure_location)
     jenkins_config.update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id,
                                   azure_client_secret,
                                   azure_tenant_id, azure_subscription_id)
-    commit_config("Adding Azure deployment feature")
+    # commit_config("Adding Azure deployment feature")
 
 
 @main.command()

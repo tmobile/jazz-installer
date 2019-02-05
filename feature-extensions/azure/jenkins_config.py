@@ -1,5 +1,8 @@
-import requests
 import sys
+
+import requests
+from requests.auth import HTTPBasicAuth
+
 
 class colors:
     HEADER = '\033[95m'
@@ -11,19 +14,20 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 def update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id, azure_client_secret,
                    azure_tenant_id, azure_subscription_id):
-    credential_url = "http://{}:{}@{}:{}/credentials/store/system/domain/_/createCredentials".format(jenkins_user,
-                                                                                                     jenkins_api_token,
-                                                                                                     jenkins_host,
-                                                                                                     jenkins_port)
-    add_jenkins_credential(credential_url, 'AZ_CLIENTID', azure_client_id)
-    add_jenkins_credential(credential_url, 'AZ_PASSWORD', azure_client_secret)
-    add_jenkins_credential(credential_url, 'AZ_SUBSCRIPTIONID', azure_subscription_id)
-    add_jenkins_credential(credential_url, 'AZ_TENANTID', azure_tenant_id)
+    credential_url = "http://{}:{}/credentials/store/system/domain/_/createCredentials".format(jenkins_host,
+                                                                                               jenkins_port)
+
+    basic_auth = HTTPBasicAuth(jenkins_user, jenkins_api_token)
+    add_jenkins_credential(credential_url, basic_auth, 'AZ_CLIENTID', azure_client_id)
+    add_jenkins_credential(credential_url, basic_auth, 'AZ_PASSWORD', azure_client_secret)
+    add_jenkins_credential(credential_url, basic_auth, 'AZ_SUBSCRIPTIONID', azure_subscription_id)
+    add_jenkins_credential(credential_url, basic_auth, 'AZ_TENANTID', azure_tenant_id)
 
 
-def add_jenkins_credential(credential_url, key, value):
+def add_jenkins_credential(credential_url, basic_auth, key, value):
     content = """{{
   "": "0",
   "credentials": {{
@@ -35,8 +39,8 @@ def add_jenkins_credential(credential_url, key, value):
     "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
   }}
 }}""".format(key, value)
-    data = {'json': content }
-    resp = requests.post(credential_url, data)
+    data = {'json': content}
+    resp = requests.post(credential_url, data=data, auth=basic_auth)
     if resp.status_code != 200:
         print(colors.FAIL +
               "Failed to add {0} credential to jenkins. Response code: {1}".format(key, resp.status_code)
