@@ -1,6 +1,6 @@
 
 output "jenkinselb" {
-  value = "http://${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") }"
+  value = "http://${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_jenkins.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") }"
 }
 output "jenkinsuser" {
   value = "${lookup(var.jenkinsservermap, "jenkinsuser")}"
