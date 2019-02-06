@@ -8,7 +8,7 @@ cat <<EOF | $JENKINS_CLI_CMD create-credentials-by-xml system::system::jenkins "
 <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
   <scope>GLOBAL</scope>
   <id>$CREDENTIAL_ID</id>
-  <description>user created on bitbucket</description>
+  <description>APIGEE Credentials</description>
   <username>$USERNAME</username>
   <password>$PASSWORD</password>
 </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
