@@ -15,19 +15,22 @@ class colors:
     UNDERLINE = '\033[4m'
 
 
+
 def update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id, azure_client_secret,
                    azure_tenant_id, azure_subscription_id):
-    credential_url = "http://{}:{}/credentials/store/system/domain/_/createCredentials".format(jenkins_host,
-                                                                                               jenkins_port)
-
     basic_auth = HTTPBasicAuth(jenkins_user, jenkins_api_token)
-    add_jenkins_credential(credential_url, basic_auth, 'AZ_CLIENTID', azure_client_id)
-    add_jenkins_credential(credential_url, basic_auth, 'AZ_PASSWORD', azure_client_secret)
-    add_jenkins_credential(credential_url, basic_auth, 'AZ_SUBSCRIPTIONID', azure_subscription_id)
-    add_jenkins_credential(credential_url, basic_auth, 'AZ_TENANTID', azure_tenant_id)
+
+    add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_CLIENTID', azure_client_id)
+    add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_PASSWORD', azure_client_secret)
+    add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_SUBSCRIPTIONID', azure_subscription_id)
+    add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_TENANTID', azure_tenant_id)
+
+    install_jenkins_plugin(jenkins_host, jenkins_port, basic_auth)
 
 
-def add_jenkins_credential(credential_url, basic_auth, key, value):
+def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
+    url = "http://{}:{}/credentials/store/system/domain/_/createCredentials".format(jenkins_host,
+                                                                                    jenkins_port)
     content = """{{
   "": "0",
   "credentials": {{
@@ -40,9 +43,17 @@ def add_jenkins_credential(credential_url, basic_auth, key, value):
   }}
 }}""".format(key, value)
     data = {'json': content}
-    resp = requests.post(credential_url, data=data, auth=basic_auth)
+    resp = requests.post(url, data=data, auth=basic_auth)
     if resp.status_code != 200:
         print(colors.FAIL +
               "Failed to add {0} credential to jenkins. Response code: {1}".format(key, resp.status_code)
               + colors.ENDC)
         sys.exit(1)
+
+
+def install_jenkins_plugin(jenkins_host, jenkins_port, basic_auth):
+    url = "http://{}:{}/pluginManager/installNecessaryPlugins".format(jenkins_host, jenkins_port)
+
+    headers = {'content-type': 'text/xml'}
+    content = "<jenkins><install plugin='{}' /></jenkins>".format('aws-lambda@0.5.10')
+    requests.post(url, data=content, auth=basic_auth, headers=headers)
