@@ -85,10 +85,9 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
               "If this is an error, please run 'setup.py uninstall' to remove the existing installation")
         sys.exit(1)
 
-    print(
-        colors.OKGREEN +
+    print(colors.OKGREEN +
         "\nThis will install {0} functionality into your Jazz deployment.\n".format(featureName)
-        + colors.ENDC)
+          + colors.ENDC)
     print(
         colors.OKGREEN +
         "This installer will use whatever AWS credentials you have configured by running 'aws configure'.\n"
@@ -103,7 +102,7 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
                     azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
                     azure_apim_prod_sku)
 
-    update_config(azure_subscription_id, azure_location)
+    update_config(azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id)
     jenkins_config.update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id,
                                   azure_client_secret,
                                   azure_tenant_id, azure_subscription_id)
@@ -154,12 +153,15 @@ def commit_config(message):
     git_config.commit_git_config(configFolder, jsonConfigFile, message)
 
 
-def update_config(azure_subscription_id, azure_location):
+def update_config(azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id):
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
     azureConfig = OrderedDict()
     azureConfig['SUBSCRIPTION_ID'] = azure_subscription_id
+    azureConfig['CLIENT_ID'] = azure_client_id
+    azureConfig["PASSWORD"] = azure_client_secret
+    azureConfig["TENANT_ID"] = azure_tenant_id
     azureConfig['LOCATION'] = azure_location
     azureConfig['RESOURCE_GROUPS'] = OrderedDict()
     azureConfig['RESOURCE_GROUPS']['DEVELOPMENT'] = getTerraformOutputVar("dev_resource_group")
