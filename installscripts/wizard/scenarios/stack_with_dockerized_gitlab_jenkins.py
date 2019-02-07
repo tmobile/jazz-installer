@@ -50,6 +50,7 @@ def start(parameter_list):
         shell=True)
     print("Copying Terraform destroy script================>")
     subprocess.call('cp ./scripts/destroy.sh ../../'.split(' '))
+    subprocess.call('cp ./scripts/triggerJenkinsDeleteResources.py ../../'.split(' '))
 
     print(
         "\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory \
