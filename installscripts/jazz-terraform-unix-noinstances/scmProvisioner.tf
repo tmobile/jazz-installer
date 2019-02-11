@@ -10,10 +10,17 @@ resource "null_resource" "createProjectsInBB" {
 
 // Copy the jazz-build-module to SLF in SCM
 resource "null_resource" "copyJazzBuildModule" {
-  depends_on = ["null_resource.postJenkinsConfiguration", "null_resource.createProjectsInBB"]
+  depends_on = ["null_resource.pushconfig", "null_resource.createProjectsInBB"]
 
   provisioner "local-exec" {
     command = "${var.scmpush_cmd} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabcontainer.*.result.token) : lookup(var.scmmap, "scm_privatetoken") } ${var.scmgitlab == 1 ? join(" ", data.external.gitlabcontainer.*.result.scm_slfid) : lookup(var.scmmap, "scm_slfid") } ${lookup(var.scmmap, "scm_type")}  ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_jenkins.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region} builds"
+  }
+}
+
+resource "null_resource" "pushconfig" {
+  depends_on = ["null_resource.postJenkinsConfiguration"]
+  provisioner "local-exec" {
+    command = "python ${var.config_cmd} ${aws_dynamodb_table.installer_config_db.name} ${aws_dynamodb_table.installer_config_db.hash_key} ${var.envPrefix} ${var.jenkinsjsonpropsfile} ${var.region}"
   }
 }
 

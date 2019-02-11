@@ -90,3 +90,7 @@ variable "configureJenkinscontainer_cmd" {
   type = "string"
   default = "./scripts/configureJenkinscontainer.sh"
 }
+variable "config_cmd" {
+  type = "string"
+  default = "./scripts/config.py"
+}
