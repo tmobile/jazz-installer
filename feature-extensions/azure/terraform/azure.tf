@@ -78,3 +78,25 @@ resource "azurerm_api_management" "production" {
 output "prod_apim" {
   value = "${azurerm_api_management.production.name}"
 }
+
+
+resource "azurerm_eventhub_namespace" "production" {
+  name = "${var.jazzprefix}-eventhub-ns"
+  location = "${azurerm_resource_group.production.location}"
+  resource_group_name = "${azurerm_resource_group.production.name}"
+  sku = "Basic"
+  capacity = 1
+  kafka_enabled = false
+
+  tags {
+    environment = "Production"
+  }
+}
+
+resource "azurerm_eventhub" "production" {
+  name = "${var.jazzprefix}-eventhub"
+  namespace_name = "${azurerm_eventhub_namespace.production.name}"
+  resource_group_name = "${azurerm_resource_group.production.name}"
+  partition_count = 2
+  message_retention = 1
+}
