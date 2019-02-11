@@ -10,6 +10,14 @@ def update_config(key, value, username, password, endpoint):
                   headers={"Content-Type": "application/json", "Authorization": "%s" % (token)})
 
 
+def get_config(username, password, endpoint):
+    token = obtain_token(username, password, endpoint)
+    response = requests.get(endpoint+'/jazz/admin/config',
+                            headers={"Content-Type": "application/json", "Authorization": "%s" % (token)})
+
+    return json.loads(response.content)
+
+
 def obtain_token(username, password, endpoint):
     data = '{"username":"%s","password":"%s"}' % (username, password)
     response = requests.post(endpoint+'/jazz/login', data=data, headers={"Content-Type": "application/json"})

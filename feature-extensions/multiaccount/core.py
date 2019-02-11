@@ -2,6 +2,7 @@ import boto3
 import json
 import uuid
 import retrying
+from api_config import get_config
 
 
 role_document = {
@@ -62,10 +63,15 @@ def deploy_core_service(args):
                                   aws_secret_access_key=args.aws_secretkey,
                                   region_name=item)
         oai_id = createoai(oai_client, "%soai" % (args.jazz_stackprefix))
+
+        #Prepare destination arn for regions
+        destarn_dict = preparelogdestion(item, args)
+
         account_json["REGIONS"].append({"REGION": item,
                                         "API_GATEWAY": {"PROD": api_prod, "STG": api_stg, "DEV": api_dev},
                                         "S3": {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev},
-                                        "CLOUDFRONT": {"CLOUDFRONT_ORIGIN_ID": oai_id}})
+                                        "CLOUDFRONT": {"CLOUDFRONT_ORIGIN_ID": oai_id},
+                                        "LOGS": destarn_dict})
         # Prepare assume role for each regions
         # Add a trust policy to the "logs destination"
         role_document['Statement'].append({
@@ -217,3 +223,21 @@ def createoai(oai_client, name):
                 }
                 )
     return "origin-access-identity/cloudfront/%s" % (response['CloudFrontOriginAccessIdentity']['Id'])
+
+
+def preparelogdestion(region, args):
+    get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
+    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
+    destarn_prod = preparedestarn(region, primary_account, args.jazz_stackprefix, "prod")
+    destarn_dev = preparedestarn(region, primary_account, args.jazz_stackprefix, "dev")
+    destarn_stg = preparedestarn(region, primary_account, args.jazz_stackprefix, "stg")
+
+    return {"PROD": destarn_prod, "DEV": destarn_dev, "STG": destarn_stg}
+
+
+def preparedestarn(region, account, stackprefix, stage):
+
+    return "arn:aws:logs:%s:%s:destination:%s-%s-%s-kinesis" % (region,
+                                                                account,
+                                                                stackprefix,
+                                                                stage, region)
