@@ -12,6 +12,8 @@ def main():
                         help='Specify the Jenkins username')
     parser.add_argument('--jenkins-password',
                         help='Specify the Jenkins password')
+    parser.add_argument('--account-details',
+                        help='Specify the Accounts to delete')
     args = parser.parse_args()
     startJob(args)
 
@@ -28,9 +30,9 @@ def startJob(args):
             "jenkins-cli.jar"])
     jenkins_build_command = \
         ' java -jar jenkins-cli.jar -s http://%s '\
-        '-auth %s:%s build jenkins-delete-resources  -p input=all' \
+        '-auth %s:%s build jenkins-delete-resources  -p input=%s' \
         % (args.jenkins_url, args.jenkins_username,
-            args.jenkins_password)
+            args.jenkins_password, args.account_details)
 
     subprocess.call(jenkins_build_command, shell=True)
 
@@ -47,6 +49,11 @@ def collectUserInput(args):
     if not args.jenkins_password:
         args.jenkins_password = \
             raw_input('Please enter the Jenkins Password: ')
+
+    if not args.account_details:
+        args.account_details = \
+            raw_input('Please enter the Accounts to delete '
+                      '(Empty will delete all): ') or "all"
 
 
 main()
