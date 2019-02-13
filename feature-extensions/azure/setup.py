@@ -166,10 +166,10 @@ def update_config(azure_subscription_id, azure_location, azure_client_id, azure_
         data = json.load(f, object_pairs_hook=OrderedDict)
 
     azureConfig = OrderedDict()
-    azureConfig['SUBSCRIPTION_ID'] = azure_subscription_id
-    azureConfig['CLIENT_ID'] = azure_client_id
-    azureConfig["PASSWORD"] = azure_client_secret
-    azureConfig["TENANT_ID"] = azure_tenant_id
+    azureConfig['SUBSCRIPTION_ID'] = 'AZ_SUBSCRIPTIONID'
+    azureConfig['CLIENT_ID'] = 'AZ_CLIENTID'
+    azureConfig["PASSWORD"] = 'AZ_PASSWORD'
+    azureConfig["TENANT_ID"] = 'AZ_TENANTID'
     azureConfig['LOCATION'] = azure_location
     azureConfig['RESOURCE_GROUPS'] = OrderedDict()
     azureConfig['RESOURCE_GROUPS']['DEVELOPMENT'] = getTerraformOutputVar("dev_resource_group")
