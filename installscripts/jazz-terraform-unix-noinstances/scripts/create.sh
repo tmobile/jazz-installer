@@ -2,6 +2,7 @@
 
 print_error()
 {
+    # shellcheck disable=SC2059
     printf "\r${RED}$1${NC}\n"
 }
 
@@ -12,10 +13,11 @@ terraform init && terraform apply \
                             -var "aws_access_key=${AWS_ACCESS_KEY_ID}" \
                             -var "aws_secret_key=${AWS_SECRET_ACCESS_KEY}" \
                             -var "region=${AWS_DEFAULT_REGION}"
-if [ $? -gt 0 ]
+exitcode=$?
+if [ $exitcode -gt 0 ]
 then
     date
-    print_error "$message....Failed"
+    print_error "Failed"
     print_error "Destroying created AWS resources because of failure"
     terraform destroy --auto-approve
     echo " ======================================================="
@@ -32,6 +34,7 @@ else
     echo " ======================================================="
     echo " Please use the following values for checking out Jazz"
     echo " ________________________________________________"
+    python ./scripts/generatestackdetails.py
     cat ./stack_details.json
     echo " ======================================================="
     echo " Installation complete! To cleanup Jazz stack and its resources execute ./destroy.sh in this directory."

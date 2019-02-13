@@ -74,6 +74,9 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     replace_tfvars('tagsExempt', jazz_tag_details[2], get_tfvars_file())
     replace_tfvars('tagsOwner', jazz_tag_details[3], get_tfvars_file())
 
+    # Populating Region (Terraform destroy is not picking the region set from CLI)
+    replace_tfvars('region', os.environ['AWS_DEFAULT_REGION'], get_tfvars_file())
+    
     # Terraform provisioning script needs the jar file path
     replace_tfvars('atlassian_jar_path',
                    get_atlassian_tools_path() + "lib/bitbucket-cli-6.7.0.jar",

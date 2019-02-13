@@ -1,0 +1,24 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 9000,
+        "hostPort": 9000
+      }
+    ],
+    "memoryReservation": ${memory},
+    "networkMode": "awsvpc",
+    "cpu": ${cpu},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    }
+  }
+]

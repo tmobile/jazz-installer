@@ -1,0 +1,30 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ],
+    "environment": [
+        {
+          "name": "GITLAB_OMNIBUS_CONFIG",
+          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';"
+        }
+      ],
+    "memoryReservation": ${memory},
+    "networkMode": "awsvpc",
+    "cpu": ${cpu},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    }
+  }
+]
