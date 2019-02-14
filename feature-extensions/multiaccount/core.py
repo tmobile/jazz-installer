@@ -38,6 +38,7 @@ def deploy_core_service(args):
                     "IAM": {},
                     "REGIONS": []
                     }
+    get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
     # loop multiple regions and each region-account, create
     for item in args.aws_region:
         api_client = boto3.client('apigateway',
@@ -65,7 +66,7 @@ def deploy_core_service(args):
         oai_id = createoai(oai_client, "%soai" % (args.jazz_stackprefix))
 
         #Prepare destination arn for regions
-        destarn_dict = preparelogdestion(item, args)
+        destarn_dict = preparelogdestion(item, args, get_configjson)
 
         account_json["REGIONS"].append({"REGION": item,
                                         "API_GATEWAY": {"PROD": api_prod, "STG": api_stg, "DEV": api_dev},
@@ -225,8 +226,7 @@ def createoai(oai_client, name):
     return "origin-access-identity/cloudfront/%s" % (response['CloudFrontOriginAccessIdentity']['Id'])
 
 
-def preparelogdestion(region, args):
-    get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
+def preparelogdestion(region, args, get_configjson):
     primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
     destarn_prod = preparedestarn(region, primary_account, args.jazz_stackprefix, "prod")
     destarn_dev = preparedestarn(region, primary_account, args.jazz_stackprefix, "dev")

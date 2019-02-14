@@ -20,7 +20,7 @@ resource "null_resource" "copyJazzBuildModule" {
 resource "null_resource" "pushconfig" {
   depends_on = ["null_resource.postJenkinsConfiguration"]
   provisioner "local-exec" {
-    command = "python ${var.config_cmd} ${aws_dynamodb_table.installer_config_db.name} ${aws_dynamodb_table.installer_config_db.hash_key} ${var.envPrefix} ${var.jenkinsjsonpropsfile} ${var.region}"
+    command = "python ${var.config_cmd} ${aws_dynamodb_table.installer_config_db.name} ${aws_dynamodb_table.installer_config_db.hash_key} ${var.envPrefix} ${var.jenkinsjsonpropsfile} ${var.region} ${var.jazz_accountid} ${aws_iam_role.platform_role.arn} ${aws_iam_role.lambda_role.arn} ${aws_api_gateway_rest_api.jazz-dev.id} ${aws_api_gateway_rest_api.jazz-prod.id} ${aws_api_gateway_rest_api.jazz-stg.id} ${aws_s3_bucket.oab-apis-deployment-dev.arn} ${aws_s3_bucket.oab-apis-deployment-prod.arn} ${aws_s3_bucket.oab-apis-deployment-stg.arn} ${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"
   }
 }
 
