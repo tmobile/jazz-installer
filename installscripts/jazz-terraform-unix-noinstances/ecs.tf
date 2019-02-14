@@ -102,6 +102,7 @@ data "template_file" "ecs_task_gitlab" {
     memory          = "${var.ecsGitlabmemory}"
     cpu             = "${var.ecsGitlabcpu}"
     gitlab_passwd    = "${var.cognito_pool_password}"
+    external_url     = "http://${aws_lb.alb_ecs_gitlab.dns_name}"
   }
 }
 
@@ -117,7 +118,6 @@ data "template_file" "ecs_task_codeq" {
     region          = "${var.region}"
     memory          = "${var.ecsSonarqubememory}"
     cpu             = "${var.ecsSonarqubecpu}"
-    gitlab_passwd    = "${var.cognito_pool_password}"
   }
 }
 
