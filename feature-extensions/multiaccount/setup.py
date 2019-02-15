@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
-import boto3
 import argparse
 import subprocess
 from api_config import update_config
+from core import deploy_core_service
 
 
 class colors:
@@ -27,6 +27,12 @@ def main():
     subparsers = mainParser.add_subparsers(help='Installation scenarios', dest='command')
 
     subparsers.add_parser('install', help='Install feature extension').set_defaults(func=install)
+
+    mainParser.add_argument(
+        '--jazz-stackprefix',
+        help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), \
+              your existing config will be imported'
+    )
 
     mainParser.add_argument(
         '--aws-region',
@@ -77,19 +83,11 @@ def install(args):
         + colors.ENDC)
 
     collect_userinputs(args)
-    account_user = getAccountUser(args.aws_accesskey, args.aws_secretkey)
-    account_user_arn = getAccountUserArn(args.aws_accesskey, args.aws_secretkey)
-    account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
-    credential_id = "MultiAccount"+account_id
-    # prepare account json with account and regions
-    account_json = {"ACCOUNTID": account_id,
-                    "CREDENTIAL_ID": credential_id,
-                    "IAM": {"USER": account_user, "USER_ARN": account_user_arn},
-                    "REGIONS": args.aws_region
-                    }
+    account_json, credential_id = deploy_core_service(args)
+
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
-
+    print account_json
     update_config(
         "AWS.ACCOUNTS",
         account_json,
@@ -100,6 +98,9 @@ def install(args):
 
 
 def collect_userinputs(args):
+
+    if not args.jazz_stackprefix:
+        args.jazz_stackprefix = raw_input("Please enter the environment prefix you used for your Jazz install: ")
 
     if not args.aws_accesskey:
         args.aws_accesskey = raw_input("Enter AWS accesskey of the new account:")
@@ -129,22 +130,6 @@ def collect_userinputs(args):
         args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
 
     return args
-
-
-def getAccountUser(accessKey, secretKey):
-    obj_iam = boto3.resource('iam', aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    return obj_iam.CurrentUser().user_name
-
-
-def getAccountUserArn(accessKey, secretKey):
-    obj_iam = boto3.resource('iam', aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    return obj_iam.CurrentUser().arn
-
-
-def getAccountId(accessKey, secretKey):
-    return boto3.client('sts',
-                        aws_access_key_id=accessKey,
-                        aws_secret_access_key=secretKey).get_caller_identity().get('Account')
 
 
 def setCredential(args, credential_id):

@@ -68,7 +68,7 @@ resource "aws_iam_role" "lambda_role" {
     {
         "Effect": "Allow",
         "Principal": {
-            "Service": "logs.${var.region}.amazonaws.com"
+            "Service": "logs.amazonaws.com"
         },
         "Action": "sts:AssumeRole"
     }
@@ -122,7 +122,7 @@ resource "aws_iam_role" "platform_role" {
     {
         "Effect": "Allow",
         "Principal": {
-            "Service": "logs.${var.region}.amazonaws.com"
+            "Service": "logs.amazonaws.com"
         },
         "Action": "sts:AssumeRole"
     }

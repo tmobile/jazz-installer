@@ -171,7 +171,7 @@ function install_packages () {
     # Installing jq
     sudo yum install jq -y &> /dev/null &
     spin_wheel $! "Installing jq"
-    
+
     # Installing beautifulsoup4
     sudo yum install python-beautifulsoup4 -y &> /dev/null &
     spin_wheel $! "Installing beautifulsoup4"
@@ -183,6 +183,10 @@ function install_packages () {
     # Installing boto3
     sudo pip install boto3 &> /dev/null &
     spin_wheel $! "Installing boto3"
+
+    # Installing retrying
+    sudo pip install retrying &> /dev/null &
+    spin_wheel $! "Installing retrying"
 
     #Undo output redirection and close unused file descriptors.
     exec 1>&3 3>&-
