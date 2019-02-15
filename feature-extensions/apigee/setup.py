@@ -117,6 +117,7 @@ def install(args):
     install_proxy(
         getTerraformOutputVar("apigee-lambda-user-secret-key"),
         getTerraformOutputVar("apigee-lambda-user-id"),
+        args.aws_region,
         getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
         args.apigee_host,
         args.apigee_org,

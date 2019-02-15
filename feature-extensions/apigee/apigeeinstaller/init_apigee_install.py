@@ -19,14 +19,14 @@ def get_basic_auth(username, password):
     return "Basic %s" % base64.b64encode(up).decode()
 
 
-def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
+def create_kvm(secretKey, accessKey, reg, lambdaARN, host, org, env, username, password):
     print_banner("Creating the KVM for Common-Jazz API Proxy .......")
     payload = {
         "encrypted": "true",
         "entry": [
             {
                 "name": "accessKey",
-                "value": reg
+                "value": accessKey
             },
             {
                 "name": "secretKey",
@@ -223,7 +223,7 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
     return success
 
 
-def install_proxy(secretKey, reg, lambdaARN, host, org, env,
+def install_proxy(secretKey, accessKey, reg, lambdaARN, host, org, env,
                   build, username, password,
                   contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     """Configure the external Apigee proxy and upload shared flows.
@@ -238,6 +238,6 @@ def install_proxy(secretKey, reg, lambdaARN, host, org, env,
     username -- Apigee instance basic auth username
     password -- apigee instance basic auth password
     """
-    create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password)
+    create_kvm(secretKey, accessKey, reg, lambdaARN, host, org, env, username, password)
     deploy_shared_flows(host, org, env, build, username, password)
     return deploy_common(host, org, env, username, password, contentUrl, contentBranch)
