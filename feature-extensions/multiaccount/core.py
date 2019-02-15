@@ -65,7 +65,7 @@ def deploy_core_service(args):
                                   region_name=item)
         oai_id = createoai(oai_client, "%soai" % (args.jazz_stackprefix))
 
-        #Prepare destination arn for regions
+        # Prepare destination arn for regions
         destarn_dict = preparelogdestion(item, args, get_configjson)
 
         account_json["REGIONS"].append({"REGION": item,
