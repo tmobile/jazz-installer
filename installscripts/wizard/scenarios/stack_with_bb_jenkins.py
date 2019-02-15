@@ -66,6 +66,7 @@ def start(parameter_list):
     subprocess.call(
         'nohup ./scripts/create.sh >>../../stack_creation.out&', shell=True)
     subprocess.call('cp ./scripts/destroy.sh ../../'.split(' '))
+    subprocess.call('cp ./scripts/triggerJenkinsDeleteResources.py ../../'.split(' '))
 
     print(
         "\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress "
