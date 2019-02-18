@@ -19,14 +19,14 @@ def get_basic_auth(username, password):
     return "Basic %s" % base64.b64encode(up).decode()
 
 
-def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
+def create_kvm(secretKey, accessKey, region, lambdaARN, host, org, env, username, password):
     print_banner("Creating the KVM for Common-Jazz API Proxy .......")
     payload = {
         "encrypted": "true",
         "entry": [
             {
                 "name": "accessKey",
-                "value": reg
+                "value": accessKey
             },
             {
                 "name": "secretKey",
@@ -34,7 +34,7 @@ def create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password):
             },
             {
                 "name": "reg",
-                "value": reg
+                "value": region
             },
             {
                 "name": "lambdaARN",
@@ -223,14 +223,15 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
     return success
 
 
-def install_proxy(secretKey, reg, lambdaARN, host, org, env,
+def install_proxy(secretKey, accessKey, region, lambdaARN, host, org, env,
                   build, username, password,
                   contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     """Configure the external Apigee proxy and upload shared flows.
 
     Keyword arguments:
     secretKey -- AWS user secret key
-    reg -- AWS userID
+    accessKey -- AWS user access key
+    region -- AWS Region
     lambdaARN -- ARN of the gateway function Apigee will invoke
     host -- Apigee host
     org -- Apigee org to apply this took
@@ -238,6 +239,6 @@ def install_proxy(secretKey, reg, lambdaARN, host, org, env,
     username -- Apigee instance basic auth username
     password -- apigee instance basic auth password
     """
-    create_kvm(secretKey, reg, lambdaARN, host, org, env, username, password)
+    create_kvm(secretKey, accessKey, region, lambdaARN, host, org, env, username, password)
     deploy_shared_flows(host, org, env, build, username, password)
     return deploy_common(host, org, env, username, password, contentUrl, contentBranch)
