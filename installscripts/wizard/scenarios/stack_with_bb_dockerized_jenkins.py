@@ -2,13 +2,14 @@
 import os
 import sys
 import subprocess
-from support.jazz_common import get_script_folder, get_docker_path, get_jenkins_pem, get_terraform_folder, parse_and_replace_parameter_list
+from support.jazz_common import get_script_folder, get_docker_path, get_jenkins_pem, get_terraform_folder, \
+                                parse_and_replace_parameter_list
 from support.jazz_jenkins import get_and_add_docker_jenkins_config
 from support.jazz_bitbucket import get_and_add_existing_bitbucket_config
 
 
 def pause():
-    programPause = raw_input("Press the <ENTER> key to continue...")
+    raw_input("Press the <ENTER> key to continue...")
 
 
 def check_dockerised_jenkins_pem():
@@ -50,7 +51,8 @@ def start(parameter_list):
     subprocess.call('cp ./scripts/triggerJenkinsDeleteResources.py ../../'.split(' '))
 
     print(
-        "\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory to see the stack creation progress "
+        "\n\nPlease execute  tail -f stack_creation.out | grep 'Creation complete' in the below directory \
+        to see the stack creation progress "
     )
     print(os.path.realpath('../../'))
     print("\n\n")
