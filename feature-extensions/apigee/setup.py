@@ -139,7 +139,7 @@ def install(args):
     )
 
     credential_id = "ApigeeforJazz"
-     # Store the CREDENTIAL_ID in jenkins
+    # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
 
 
@@ -208,8 +208,8 @@ def getTerraformOutputVar(varname):
             ['terraform', 'output', varname],
             cwd='./terraform')
     except subprocess.CalledProcessError:
-            print("Failed getting output variable {0} from terraform!".format(varname))
-            sys.exit()
+        print("Failed getting output variable {0} from terraform!".format(varname))
+        sys.exit()
 
 
 def getRegion(args):
@@ -217,7 +217,7 @@ def getRegion(args):
         region = raw_input(
             "Please enter the region where your Jazz installation lives: ")
 
-        if region is "":
+        if region == "":
             print("No region entered, defaulting to 'us-east-1'")
             region = "us-east-1"
         return region
