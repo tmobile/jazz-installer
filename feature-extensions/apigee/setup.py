@@ -207,7 +207,7 @@ def getTerraformOutputVar(varname):
     try:
         return subprocess.check_output(
             ['terraform', 'output', varname],
-            cwd='./terraform')
+            cwd='./terraform').rstrip()
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
