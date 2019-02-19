@@ -27,7 +27,7 @@ role_document = {
 }
 
 
-def deploy_core_service(args):
+def deploy_core_service(args, tags):
     account_user = getAccountUser(args.aws_accesskey, args.aws_secretkey)
     account_user_arn = getAccountUserArn(args.aws_accesskey, args.aws_secretkey)
     account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
@@ -54,9 +54,9 @@ def deploy_core_service(args):
                                      aws_access_key_id=args.aws_accesskey,
                                      aws_secret_access_key=args.aws_secretkey,
                                      region_name=item)
-        bucket_prod = createbucket(args.jazz_stackprefix, 'prod', item, bucket_client)
-        bucket_stg = createbucket(args.jazz_stackprefix, 'stg', item, bucket_client)
-        bucket_dev = createbucket(args.jazz_stackprefix, 'dev', item, bucket_client)
+        bucket_prod = createbucket(args.jazz_stackprefix, 'prod', item, bucket_client, tags)
+        bucket_stg = createbucket(args.jazz_stackprefix, 'stg', item, bucket_client, tags)
+        bucket_dev = createbucket(args.jazz_stackprefix, 'dev', item, bucket_client, tags)
 
         # New OAI (origin access identity)
         oai_client = boto3.client('cloudfront',
@@ -86,9 +86,10 @@ def deploy_core_service(args):
                               aws_access_key_id=args.aws_accesskey,
                               aws_secret_access_key=args.aws_secretkey)
     # Basic IAM role with minimum permissions (cloudwatch:*)
-    basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document)
+    basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document, tags)
     # One platform IAM role for the new account to use for integrations within the new account
-    platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix), role_document)
+    platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix),
+                                           role_document, tags)
     account_json['IAM'] = {"USER": account_user,
                            "USER_ARN": account_user_arn,
                            "PLATFORMSERVICES_ROLEID": platform_role_arn,
@@ -124,7 +125,7 @@ def createapi(name, description, api_client):
 
 
 @retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def createbucket(prefix, stage, region, bucket_client):
+def createbucket(prefix, stage, region, bucket_client, tags):
     bucket_name = prepare_bucket_name(prefix, stage)
     canonical_id = bucket_client.list_buckets()['Owner']['ID']
     if region != 'us-east-1':
@@ -138,6 +139,13 @@ def createbucket(prefix, stage, region, bucket_client):
                     Bucket=bucket_name,
                     GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
         )
+    put_bucket_core(bucket_client, bucket_name)
+    put_tagging(bucket_client, bucket_name, tags)
+    return bucket_name
+
+
+@retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
+def put_bucket_core(bucket_client, bucket_name):
     bucket_client.put_bucket_cors(
         Bucket=bucket_name,
         CORSConfiguration={
@@ -156,17 +164,27 @@ def createbucket(prefix, stage, region, bucket_client):
                 },
             ]
             })
-    return bucket_name
+
+
+@retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
+def put_tagging(bucket_client, bucket_name, tags):
+    bucket_client.put_bucket_tagging(
+        Bucket=bucket_name,
+        Tagging={
+            'TagSet': tags
+        }
+    )
 
 
 def prepare_bucket_name(prefix, stage):
     return ''.join(["%s-%s-" % (prefix, stage), str(uuid.uuid4().hex)])
 
 
-def createrole(iamclient, name, role_document):
+def createrole(iamclient, name, role_document, tags):
     response = iamclient.create_role(
                 RoleName=name,
-                AssumeRolePolicyDocument=json.dumps(role_document)
+                AssumeRolePolicyDocument=json.dumps(role_document),
+                Tags=tags
     )
     return response['Role']['Arn']
 
@@ -178,15 +196,15 @@ def attach_role(iamclient, name, policyarn):
             )
 
 
-def createbasicrole(iamclient, name, role_document):
-    role_arn = createrole(iamclient, name, role_document)
+def createbasicrole(iamclient, name, role_document, tags):
+    role_arn = createrole(iamclient, name, role_document, tags)
     attach_role(iamclient, name, 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole')
 
     return role_arn
 
 
-def createplatformrole(iamclient, name, role_document):
-    role_arn = createrole(iamclient, name, role_document)
+def createplatformrole(iamclient, name, role_document, tags):
+    role_arn = createrole(iamclient, name, role_document, tags)
     role_inline = {
             "Version": "2012-10-17",
             "Statement": [

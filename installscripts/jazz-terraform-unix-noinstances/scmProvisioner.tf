@@ -24,17 +24,9 @@ resource "null_resource" "pushconfig" {
   }
 }
 
-// Configure jazz-installer-vars.json and push it to SLF/jazz-build-module
-resource "null_resource" "configureJazzBuildModule" {
-  depends_on = ["null_resource.copyJazzBuildModule"]
-  provisioner "local-exec" {
-    command = "${var.pushInstallervars_cmd} ${lookup(var.scmmap, "scm_username")} ${urlencode(lookup(var.scmmap, "scm_passwd"))} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_pathext")} ${var.cognito_pool_username}"
-  }
-}
-
 // Push all other repos to SLF
 resource "null_resource" "configureSCMRepos" {
-  depends_on = ["null_resource.configureJazzBuildModule"]
+  depends_on = ["null_resource.copyJazzBuildModule"]
 
   provisioner "local-exec" {
     command = "${var.scmpush_cmd} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.cognito_pool_username} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabcontainer.*.result.token) : lookup(var.scmmap, "scm_privatetoken") } ${var.scmgitlab == 1 ? join(" ", data.external.gitlabcontainer.*.result.scm_slfid) : lookup(var.scmmap, "scm_slfid") } ${lookup(var.scmmap, "scm_type")} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_jenkins.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${lookup(var.jenkinsservermap, "jenkinsuser")} ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.region}"

@@ -83,7 +83,19 @@ def install(args):
         + colors.ENDC)
 
     collect_userinputs(args)
-    account_json, credential_id = deploy_core_service(args)
+    tags = [{
+                'Key': 'Name',
+                'Value': args.jazz_stackprefix
+            },
+            {
+                'Key': 'Application',
+                'Value': 'Jazz'
+            },
+            {
+                'Key': 'JazzInstance',
+                'Value': args.jazz_stackprefix
+            }]
+    account_json, credential_id = deploy_core_service(args, tags)
 
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)

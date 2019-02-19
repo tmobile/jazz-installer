@@ -52,6 +52,7 @@ with open(installervarsparth) as json_file:
                   "STG": "arn:aws:logs:%s:%s:destination:%s-stg-%s-kinesis" % (region, account_id, envprefix, region)
                 },
                 "REGION": region,
+                "PRIMARY": "true",
                 "S3": {
                   "DEV": bucket_dev,
                   "PROD": bucket_prod,
