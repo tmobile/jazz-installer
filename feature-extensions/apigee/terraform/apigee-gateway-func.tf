@@ -34,9 +34,6 @@ resource "aws_iam_role_policy" "apigee-lambda-policy" {
     {
       "Action": [
         "lambda:InvokeFunction",
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:lambda:${var.region}:${var.jazz_aws_accountid}:*"
@@ -44,6 +41,11 @@ resource "aws_iam_role_policy" "apigee-lambda-policy" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatchlogaccessapigee" {
+  role       = "${aws_iam_role.apigee-lambda-role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 #Create a new IAM service user for Apigee to use
