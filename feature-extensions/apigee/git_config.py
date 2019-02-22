@@ -4,7 +4,7 @@ import re
 # TODO drop this whole script once we have API-based config implemented
 
 
-def replace_config(apigeeHost, apigeeCredId, apigeeEnv, apigeeSvcHost,
+def replace_config(apigeeHost, apigeeCredId, apigeeSvcHost,
                    apigeeOrg, repo, username, password, pathext='/'):
 
     configFile = "jazz-installer-vars.json"
