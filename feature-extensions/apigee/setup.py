@@ -82,7 +82,6 @@ def main():
 
     mainParser.add_argument("apigee_host", help="Url of the Apigee host (e.g. https://my-apigee-host)")
     mainParser.add_argument("apigee_org", help="Name of the Apigee org you wish to use")
-    mainParser.add_argument("apigee_env", help="Name of the Apigee env you wish to use")
     mainParser.add_argument("apigee_svc_host", help="Url of the service API host (e.g. jazz.api.t-mobile.com)")
     mainParser.add_argument("apigee_username", help="Username to use when accessing Apigee")
     mainParser.add_argument("apigee_password", help="Password to use when accessing Apigee")
@@ -121,7 +120,6 @@ def install(args):
         getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
         args.apigee_host,
         args.apigee_org,
-        args.apigee_env,
         "1.0",
         args.apigee_username,
         args.apigee_password
@@ -130,7 +128,6 @@ def install(args):
     replace_config(
         args.apigee_host,
         "ApigeeforJazz",
-        args.apigee_env,
         args.apigee_svc_host,
         args.apigee_org,
         args.scm_repo,

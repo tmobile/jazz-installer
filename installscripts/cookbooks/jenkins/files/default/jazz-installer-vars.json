@@ -166,14 +166,8 @@
             "MGMT_HOST": "{MGMT_HOST}",
             "SERVICE_HOSTNAME": "{SVC_HOST}"
           },
-          "STG": {
-            "MGMT_ENV": "prod",
-            "MGMT_ORG": "{MGMT_ORG}",
-            "MGMT_HOST": "{MGMT_HOST}",
-            "SERVICE_HOSTNAME": "{SVC_HOST}"
-          },
           "DEV": {
-            "MGMT_ENV": "prod",
+            "MGMT_ENV": "dev",
             "MGMT_ORG": "{MGMT_ORG}",
             "MGMT_HOST": "{MGMT_HOST}",
             "SERVICE_HOSTNAME": "{SVC_HOST}"
