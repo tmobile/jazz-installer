@@ -30,7 +30,7 @@ def startJob(args):
             "jenkins-cli.jar"])
     jenkins_build_command = \
         ' java -jar jenkins-cli.jar -s http://%s '\
-        '-auth %s:%s build jenkins-delete-resources  -p input=%s' \
+        '-auth %s:%s build delete-resources  -p input=%s' \
         % (args.jenkins_url, args.jenkins_username,
             args.jenkins_password, args.account_details)
 
