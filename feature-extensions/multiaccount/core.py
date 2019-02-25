@@ -287,7 +287,7 @@ def updatePrimaryRole(roleArn, stackprefix,get_configjson):
         policyJson = permission_policy
 
     iamclient.put_role_policy(
-        RoleName='%sjazz20190220_platform_services' %(stackprefix,
+        RoleName='%s_platform_services' %(stackprefix,
         PolicyName='%s_NonPrimaryAssumePolicy' % (stackprefix),
         PolicyDocument=json.dumps(policyJson)
     )
