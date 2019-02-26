@@ -82,7 +82,10 @@ def main():
 
     mainParser.add_argument("apigee_host", help="Url of the Apigee host (e.g. https://my-apigee-host)")
     mainParser.add_argument("apigee_org", help="Name of the Apigee org you wish to use")
-    mainParser.add_argument("apigee_svc_host", help="Url of the service API host (e.g. jazz.api.t-mobile.com)")
+    mainParser.add_argument('apigee_prod_env', help='Name of the Apigee env you wish to use (e.g. prod)')
+    mainParser.add_argument('apigee_dev_env', help='Name of the Apigee env you wish to use (e.g. dev)')
+    mainParser.add_argument("apigee_svc_prod_host", help="Url of the service API host (e.g. jazz.api.prod.com)")
+    mainParser.add_argument("apigee_svc_dev_host", help="Url of the service API host (e.g. jazz.api.dev.com)")
     mainParser.add_argument("apigee_username", help="Username to use when accessing Apigee")
     mainParser.add_argument("apigee_password", help="Password to use when accessing Apigee")
 
@@ -120,6 +123,8 @@ def install(args):
         getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
         args.apigee_host,
         args.apigee_org,
+        args.apigee_prod_env,
+        args.apigee_dev_env,
         "1.0",
         args.apigee_username,
         args.apigee_password
@@ -128,7 +133,10 @@ def install(args):
     replace_config(
         args.apigee_host,
         "ApigeeforJazz",
-        args.apigee_svc_host,
+        args.apigee_prod_env,
+        args.apigee_dev_env,
+        args.apigee_svc_prod_host,
+        args.apigee_svc_dev_host,
         args.apigee_org,
         args.scm_repo,
         args.scm_username,
@@ -139,6 +147,8 @@ def install(args):
     credential_id = "ApigeeforJazz"
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
+    # Trigger metrics api
+    startJob(args)
 
 
 def uninstall(args):
@@ -268,6 +278,18 @@ def collect_userinputs(args):
     if not args.jenkins_password:
         args.jenkins_password = raw_input("Please enter the Jenkins Password: ")
 
+    if not args.apigee_prod_env:
+        args.apigee_prod_env = raw_input("Enter apigee env for production you wish to use: ")
+
+    if not args.apigee_dev_env:
+        args.apigee_dev_env = raw_input("Enter apigee env for development you wish to use: ")
+
+    if not args.apigee_svc_prod_host:
+        args.apigee_svc_prod_host = raw_input("Enter Url of the service API host for production: ")
+
+    if not args.apigee_svc_dev_host:
+        args.apigee_svc_dev_host = raw_input("Enter Url of the service API host for development: ")
+
     return args
 
 
@@ -293,6 +315,17 @@ def setCredential(args, credential_id):
             args.apigee_username,
             args.apigee_password
             ])
+
+
+def startJob(args):
+    subprocess.check_call(
+        [
+            "curl",
+            "-X",
+            "POST",
+            ("http://%s:%s@%s/job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain=jazz&scm_branch=master") %
+            (args.jenkins_username, args.jenkins_password, args.jenkins_url),
+        ])
 
 
 main()

@@ -4,8 +4,9 @@ import re
 # TODO drop this whole script once we have API-based config implemented
 
 
-def replace_config(apigeeHost, apigeeCredId, apigeeSvcHost,
-                   apigeeOrg, repo, username, password, pathext='/'):
+def replace_config(apigeeHost, apigeeCredId, apigeeProdEnv, apigeeDevEnv,
+                   apigeeSvcProdHost, apigeeSvcDevHost, apigeeOrg, repo,
+                   username, password, pathext='/'):
 
     configFile = "jazz-installer-vars.json"
     buildFolder = './jazz-build-module/'
@@ -17,8 +18,11 @@ def replace_config(apigeeHost, apigeeCredId, apigeeSvcHost,
     # To Do Store the crendential in Jenkins as apigeeCredId with apigee username and password
     filedata = filedata.replace('{APIGEE_CREDS}', apigeeCredId)
     filedata = filedata.replace('{MGMT_ORG}', apigeeOrg)
+    filedata = filedata.replace('{MGMT_ENV_PROD}', apigeeProdEnv)
+    filedata = filedata.replace('{MGMT_ENV_DEV}', apigeeDevEnv)
     filedata = filedata.replace('{MGMT_HOST}', apigeeHost)
-    filedata = filedata.replace('{SVC_HOST}', apigeeSvcHost)
+    filedata = filedata.replace('{SVC_PROD_HOST}', apigeeSvcProdHost)
+    filedata = filedata.replace('{SVC_DEV_HOST}', apigeeSvcDevHost)
     # TODO add more
 
     push_configjson(filedata, buildFolder, configFile, "'Adding Apigee feature'")
@@ -62,5 +66,5 @@ def revert_config(repo, username, password, pathext='/'):
     configFile = "jazz-installer-vars.json"
     buildFolder = './jazz-build-module/'
     filedata = fetch_configjson(repo, username, password, pathext, configFile, buildFolder)
-    filedata = re.sub(r'("%s": )(.*)|g' % ("ENABLE_APIGEE"), '"ENABLE_APIGEE": false,', filedata)
+    filedata = re.sub('("ENABLE_APIGEE":)(.*)', '"ENABLE_APIGEE": false,', filedata)
     push_configjson(filedata, buildFolder, configFile, "'Removing Apigee feature'")
