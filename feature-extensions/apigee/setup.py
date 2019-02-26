@@ -318,13 +318,15 @@ def setCredential(args, credential_id):
 
 
 def startJob(args):
+    jobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
+             "=jazz&scm_branch=master"
     subprocess.check_call(
         [
             "curl",
             "-X",
             "POST",
-            ("http://%s:%s@%s/job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain=jazz&scm_branch=master") %
-            (args.jenkins_username, args.jenkins_password, args.jenkins_url),
+            ("http://%s:%s@%s/%s") %
+            (args.jenkins_username, args.jenkins_password, args.jenkins_url, jobUrl),
         ])
 
 
