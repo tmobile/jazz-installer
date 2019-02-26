@@ -223,7 +223,7 @@ def getTerraformOutputVar(varname):
 def getRegion(args):
     if not args.aws_region:
         region = raw_input(
-            "Please enter the region where your Jazz installation lives: ")
+            "Please enter the region where your Jazz installation lives: ").strip()
 
         if region == "":
             print("No region entered, defaulting to 'us-east-1'")
@@ -241,7 +241,7 @@ def getRegion(args):
 def getEnvPrefix(args):
     if not args.jazz_stackprefix:
         return raw_input(
-            "Please enter the environment prefix you used for your Jazz install: ")
+            "Please enter the environment prefix you used for your Jazz install: ").strip()
     else:
         return args.jazz_stackprefix
 
@@ -258,37 +258,37 @@ def getAWSAccountID():
 
 def collect_userinputs(args):
     if not args.scm_repo:
-        args.scm_repo = raw_input("Please enter the SCM Repo: ")
+        args.scm_repo = raw_input("Please enter the SCM Repo: ").strip()
 
     if not args.scm_username:
-        args.scm_username = raw_input("Please enter the SCM Username: ")
+        args.scm_username = raw_input("Please enter the SCM Username: ").strip()
 
     if not args.scm_password:
-        args.scm_password = raw_input("Please enter the SCM Password: ")
+        args.scm_password = raw_input("Please enter the SCM Password: ").strip()
 
     if not args.scm_pathext:
-        args.scm_pathext = raw_input("Please enter the SCM Pathext (Use \"/scm\" for bitbucket): ") or "/"
+        args.scm_pathext = raw_input("Please enter the SCM Pathext (Use \"/scm\" for bitbucket): ").strip() or "/"
 
     if not args.jenkins_url:
-        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ")
+        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ").strip()
 
     if not args.jenkins_username:
-        args.jenkins_username = raw_input("Please enter the Jenkins Username: ")
+        args.jenkins_username = raw_input("Please enter the Jenkins Username: ").strip()
 
     if not args.jenkins_password:
-        args.jenkins_password = raw_input("Please enter the Jenkins Password: ")
+        args.jenkins_password = raw_input("Please enter the Jenkins Password: ").strip()
 
     if not args.apigee_prod_env:
-        args.apigee_prod_env = raw_input("Enter apigee env for production you wish to use: ")
+        args.apigee_prod_env = raw_input("Enter apigee env for production you wish to use: ").strip()
 
     if not args.apigee_dev_env:
-        args.apigee_dev_env = raw_input("Enter apigee env for development you wish to use: ")
+        args.apigee_dev_env = raw_input("Enter apigee env for development you wish to use: ").strip()
 
     if not args.apigee_svc_prod_host:
-        args.apigee_svc_prod_host = raw_input("Enter Url of the service API host for production: ")
+        args.apigee_svc_prod_host = raw_input("Enter Url of the service API host for production: ").strip()
 
     if not args.apigee_svc_dev_host:
-        args.apigee_svc_dev_host = raw_input("Enter Url of the service API host for development: ")
+        args.apigee_svc_dev_host = raw_input("Enter Url of the service API host for development: ").strip()
 
     return args
 
