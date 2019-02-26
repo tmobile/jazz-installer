@@ -224,7 +224,7 @@ def deploy_common(host, org, env, username, password, contentUrl, contentBranch)
 
 
 def install_proxy(secretKey, accessKey, region, lambdaARN, host, org,
-                  build, username, password,
+                  envProd, envDev, build, username, password,
                   contentUrl='https://github.com/tmobile/jazz-content', contentBranch='master'):
     """Configure the external Apigee proxy and upload shared flows.
 
@@ -238,7 +238,7 @@ def install_proxy(secretKey, accessKey, region, lambdaARN, host, org,
     username -- Apigee instance basic auth username
     password -- apigee instance basic auth password
     """
-    for env in ['prod', 'dev']:
+    for env in [envProd, envDev]:
         create_kvm(secretKey, accessKey, region, lambdaARN, host, org, env, username, password)
         deploy_shared_flows(host, org, env, build, username, password)
         deploy_common(host, org, env, username, password, contentUrl, contentBranch)

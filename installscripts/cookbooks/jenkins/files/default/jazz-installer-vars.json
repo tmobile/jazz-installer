@@ -161,16 +161,16 @@
         "USE_SECURE": false,
         "API_ENDPOINTS": {
           "PROD": {
-            "MGMT_ENV": "prod",
+            "MGMT_ENV": "{MGMT_ENV_PROD}",
             "MGMT_ORG": "{MGMT_ORG}",
             "MGMT_HOST": "{MGMT_HOST}",
-            "SERVICE_HOSTNAME": "{SVC_HOST}"
+            "SERVICE_HOSTNAME": "{SVC_PROD_HOST}"
           },
           "DEV": {
-            "MGMT_ENV": "dev",
+            "MGMT_ENV": "{MGMT_ENV_DEV}",
             "MGMT_ORG": "{MGMT_ORG}",
             "MGMT_HOST": "{MGMT_HOST}",
-            "SERVICE_HOSTNAME": "{SVC_HOST}"
+            "SERVICE_HOSTNAME": "{SVC_DEV_HOST}"
           }
         }
     }
