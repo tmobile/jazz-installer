@@ -15,7 +15,6 @@ class colors:
     UNDERLINE = '\033[4m'
 
 
-
 def update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id, azure_client_secret,
                    azure_tenant_id, azure_subscription_id):
     basic_auth = HTTPBasicAuth(jenkins_user, jenkins_api_token)
@@ -24,8 +23,6 @@ def update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, 
     add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_PASSWORD', azure_client_secret)
     add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_SUBSCRIPTIONID', azure_subscription_id)
     add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, 'AZ_TENANTID', azure_tenant_id)
-
-    install_jenkins_plugin(jenkins_host, jenkins_port, basic_auth)
 
 
 def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
@@ -49,11 +46,3 @@ def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
               "Failed to add {0} credential to jenkins. Response code: {1}".format(key, resp.status_code)
               + colors.ENDC)
         sys.exit(1)
-
-
-def install_jenkins_plugin(jenkins_host, jenkins_port, basic_auth):
-    url = "http://{}:{}/pluginManager/installNecessaryPlugins".format(jenkins_host, jenkins_port)
-
-    headers = {'content-type': 'text/xml'}
-    content = "<jenkins><install plugin='{}' /></jenkins>".format('aws-lambda@0.5.10')
-    requests.post(url, data=content, auth=basic_auth, headers=headers)
