@@ -2,7 +2,7 @@
 Installing this extension will create and configure Apigee resources. Once successfully installed, Jazz will be able to expose [Apigee](https://apigee.com/api-management/#/homepage) as a deployment target for APIs.
 
 ## Benefits
-- Jazz admins will now be able to offer more than one deployment targets for deploying their API Gateway endpoints
+- Jazz admins will now be able to offer more than one deployment targets for deploying their API endpoints
 - Developers can now choose Apigee as their API deployment target without worrying about the underlying Apigee infrastructure, setup & management
 
 ## Prerequisites
