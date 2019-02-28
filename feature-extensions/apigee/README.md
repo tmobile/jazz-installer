@@ -42,8 +42,8 @@ Note:
 ### With all the parameters as arguments
 
 ```sh
-# cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
-# python setup.py --aws-region REGION 
+cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
+python setup.py --aws-region REGION 
                   --jazz-stackprefix STACKPREFIX 
                   --scm-repo SCMREPO 
                   --scm-username SCMUSERNAME 
