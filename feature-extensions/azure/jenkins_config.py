@@ -28,17 +28,18 @@ def update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, 
 def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
     url = "http://{}:{}/credentials/store/system/domain/_/createCredentials".format(jenkins_host,
                                                                                     jenkins_port)
-    content = """{{
-  "": "0",
-  "credentials": {{
-    "scope": "GLOBAL",
-    "id": "{0}",
-    "username": "{0}",
-    "password": "{1}",
-    "description": "{0}",
-    "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
-  }}
-}}""".format(key, value)
+    content = ("{{\n"
+               "  \"\": \"0\",\n"
+               "  \"credentials\": {{\n"
+               "    \"scope\": \"GLOBAL\",\n"
+               "    \"id\": \"{0}\",\n"
+               "    \"username\": \"{0}\",\n"
+               "    \"password\": \"{1}\",\n"
+               "    \"description\": \"{0}\",\n"
+               "    \"$class\": \"com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl\"\n"
+               "  }}\n"
+               "}}")
+    content.format(key, value)
     data = {'json': content}
     resp = requests.post(url, data=data, auth=basic_auth)
     if resp.status_code != 200:

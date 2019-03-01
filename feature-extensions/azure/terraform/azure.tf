@@ -1,6 +1,3 @@
-# Create a role for the Lambda function to exec under
-
-# Create Development Resource group
 resource "azurerm_resource_group" "development" {
   name     = "${var.jazzprefix}-development"
   location = "${var.location}"
