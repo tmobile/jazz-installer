@@ -152,7 +152,7 @@ def install(args):
                    "=jazz&scm_branch=master"
     startJob(args, metricJobUrl)
     # Trigger jazz ui
-    startJob(args, "job/jazz_ui/build")
+    startJob(args, "job/jazz_ui/build?token=jazz-101-job")
 
 
 def uninstall(args):
@@ -182,7 +182,7 @@ def uninstall(args):
                    "=jazz&scm_branch=master"
     startJob(args, metricJobUrl)
     # Trigger jazz ui
-    startJob(args, "job/jazz_ui/build")
+    startJob(args, "job/jazz_ui/build?token=jazz-101-job")
 
 
 def runTerraform(region, accountId, envPrefix, install):
