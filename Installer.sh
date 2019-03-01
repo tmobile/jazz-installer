@@ -18,7 +18,7 @@ INSTALL_DIR=`pwd`
 # Log file to record the installation logs
 LOG_FILE_NAME=installer_setup.out
 LOG_FILE=`realpath $INSTALL_DIR/$LOG_FILE_NAME`
-JAZZ_BRANCH="azure-master"
+JAZZ_BRANCH="master"
 CODE_QUALITY='false'
 AWS_TAGS=''
 
