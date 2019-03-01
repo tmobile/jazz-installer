@@ -93,14 +93,14 @@
                   ]
               },
               "WEBSITE": {
-                  "active": true,
+                  "active": false,
                   "options": [
                       {"label": "AWS S3", "value": "aws_s3"},
                       {"label": "AWS Cloudfront", "value": "aws_cloudfront"}
                   ]
               },
               "FUNCTION": {
-                  "active": true,
+                  "active": false,
                   "options": [
                       {"label": "AWS Lambda", "value": "aws_lambda"}
                   ]
@@ -108,7 +108,8 @@
           }
         },
         "feature": {
-            "multi_env": true
+            "multi_env": true,
+            "apigee": "{apigee_support}"
         },
         "service_tabs": {
             "overview": true,
