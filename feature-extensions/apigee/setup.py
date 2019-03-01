@@ -148,7 +148,11 @@ def install(args):
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
     # Trigger metrics api
-    startJob(args)
+    metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
+                   "=jazz&scm_branch=master"
+    startJob(args, metricJobUrl)
+    # Trigger jazz ui
+    startJob(args, "job/jazz_ui/build")
 
 
 def uninstall(args):
@@ -173,6 +177,12 @@ def uninstall(args):
         args.scm_password,
         args.scm_pathext
     )
+    # Trigger metrics api
+    metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
+                   "=jazz&scm_branch=master"
+    startJob(args, metricJobUrl)
+    # Trigger jazz ui
+    startJob(args, "job/jazz_ui/build")
 
 
 def runTerraform(region, accountId, envPrefix, install):
@@ -317,9 +327,7 @@ def setCredential(args, credential_id):
             ])
 
 
-def startJob(args):
-    jobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
-             "=jazz&scm_branch=master"
+def startJob(args, jobUrl):
     subprocess.check_call(
         [
             "curl",
