@@ -12,12 +12,12 @@
     "environment": [
         {
           "name": "GITLAB_OMNIBUS_CONFIG",
-          "value": "gitlab_rails['initial_root_password'] = '${gitlab_passwd}';"
+          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';"
         }
       ],
-    "memoryReservation": 2048,
+    "memoryReservation": ${memory},
     "networkMode": "awsvpc",
-    "cpu": 2048,
+    "cpu": ${cpu},
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
