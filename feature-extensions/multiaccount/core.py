@@ -91,7 +91,7 @@ def deploy_core_service(args, tags):
     role_document['Statement'].append({
         "Effect": "Allow",
         "Principal": {
-            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (get_configjson['data']['config']['AWS']['ACCOUNTID'],args.jazz_stackprefix)
+            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (get_configjson['data']['config']['AWS']['ACCOUNTID'], args.jazz_stackprefix)
         },
         "Action": "sts:AssumeRole"
      })
@@ -100,7 +100,7 @@ def deploy_core_service(args, tags):
     platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix), role_document)
     # update permission policy on Primary Account
     if(platform_role_arn):
-        updatePrimaryRole(platform_role_arn,args.jazz_stackprefix,get_configjson)
+        updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, get_configjson)
 
     account_json['IAM'] = {"USER": account_user,
                            "USER_ARN": account_user_arn,
@@ -273,8 +273,9 @@ def preparedestarn(region, account, stackprefix, stage):
                                                                 stage, region)
 
 
-def updatePrimaryRole(roleArn, stackprefix,get_configjson):
+def updatePrimaryRole(roleArn, stackprefix, get_configjson):
     platformRolePrimary = get_configjson['data']['config']['AWS']['PLATFORMSERVICES_ROLEID']
+    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
     permission_policy = {
         "Version": "2012-10-17",
         "Statement": [
@@ -298,13 +299,13 @@ def updatePrimaryRole(roleArn, stackprefix,get_configjson):
     if policyJson:
         policyJson['Statement'].append(permission_policy)
         iamClient.delete_policy(
-            PolicyArn='arn:aws:iam::%s:policy/%s_NonPrimaryAssumePolicy', %(primary_account,stackprefix)
-        ) 
+          PolicyArn='arn:aws:iam::%s:policy/%s_NonPrimaryAssumePolicy' % (primary_account, stackprefix)
+        )
     else:
         policyJson = permission_policy
-
-    iamclient.put_role_policy(
-        RoleName='%s_platform_services' %(stackprefix,
+    
+    iamClient.put_role_policy(
+        RoleName='%s_platform_services' % (stackprefix),
         PolicyName='%s_NonPrimaryAssumePolicy' % (stackprefix),
         PolicyDocument=json.dumps(policyJson)
     )
