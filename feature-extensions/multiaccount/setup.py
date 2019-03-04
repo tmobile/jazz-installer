@@ -96,17 +96,17 @@ def install(args):
                 'Value': args.jazz_stackprefix
             }]
     account_json, credential_id = deploy_core_service(args, tags)
-
-    # Store the CREDENTIAL_ID in jenkins
-    setCredential(args, credential_id)
-    print account_json
-    update_config(
-        "AWS.ACCOUNTS",
-        account_json,
-        args.jazz_username,
-        args.jazz_password,
-        args.jazz_apiendpoint
-    )
+    if account_json != '':
+        # Store the CREDENTIAL_ID in jenkins
+        setCredential(args, credential_id)
+        print account_json
+        update_config(
+            "AWS.ACCOUNTS",
+            account_json,
+            args.jazz_username,
+            args.jazz_password,
+            args.jazz_apiendpoint
+        )
 
 
 def collect_userinputs(args):

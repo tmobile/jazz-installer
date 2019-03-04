@@ -33,15 +33,15 @@ def deploy_core_service(args, tags):
     account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
     credential_id = "MultiAccount"+account_id
     get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
-    account_info = result['data']['config']['AWS']['ACCOUNTS']
+    account_info = get_configjson['data']['config']['AWS']['ACCOUNTS']
     # Check if the account is already present
-    if any(d['ACCOUNTID'] == account_id for d in account_info):
+    if any(accnt['ACCOUNTID'] == account_id for accnt in account_info):
         # loop through the REGIONS and call REGIONS append API and update IAM,S3 for that region
         for existing_item in args.aws_region:
             api_client_exist = boto3.client('apigateway',
-                                      aws_access_key_id=args.aws_accesskey,
-                                      aws_secret_access_key=args.aws_secretkey,
-                                      region_name=existing_item)
+                                            aws_access_key_id=args.aws_accesskey,
+                                            aws_secret_access_key=args.aws_secretkey,
+                                            region_name=existing_item)
             # 3 API Gateway endpoints (DEV/STG/PROD) per account/region
             api_prod_exist = createapi('%s-prod' % (args.jazz_stackprefix), 'PROD', api_client_exist)
             api_stg_exist = createapi('%s-stg' % (args.jazz_stackprefix), 'STG', api_client_exist)
@@ -52,10 +52,10 @@ def deploy_core_service(args, tags):
             region_json = {"REGION": existing_item,
                            "API_GATEWAY": {"PROD": api_prod_exist, "STG": api_stg_exist, "DEV": api_dev_exist},
                            "LOGS": destarn_dict_exist}
-            query_url = '?id="ACCOUNTID"&path="AWS.ACCOUNTS"&value="%s"' % (account_id)
+            query_url = '?id=ACCOUNTID&path=AWS.ACCOUNTS&value=%s' % (account_id)
             update_config_in("REGIONS", region_json, args.jazz_username,
                              args.jazz_password, args.jazz_apiendpoint, query_url)
-
+        return '', credential_id
 
     # if no, ie no account information is there, then continue
     # prepare account json with account and regions
@@ -120,7 +120,7 @@ def deploy_core_service(args, tags):
                                  aws_access_key_id=args.aws_accesskey,
                                  aws_secret_access_key=args.aws_secretkey)
     regions = args.aws_region
-    regions.remove('us-east-1') if 'us-east-1' in regions  else None
+    regions.remove('us-east-1') if 'us-east-1' in regions else None
     regionStr = "|".join(regions)
 
     bucket_prod = createbucket(args.jazz_stackprefix, 'prod', regionStr, bucket_client, tags, platform_role_arn)
@@ -159,12 +159,17 @@ def createapi(name, description, api_client):
 def createbucket(prefix, stage, regions, bucket_client, tags, role_arn):
     bucket_name = prepare_bucket_name(prefix, stage)
     canonical_id = bucket_client.list_buckets()['Owner']['ID']
-
-    bucket_client.create_bucket(
-                    Bucket=bucket_name,
-                    CreateBucketConfiguration={'LocationConstraint': regions},
-                    GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
-    )
+    if regions != '':
+        bucket_client.create_bucket(
+                        Bucket=bucket_name,
+                        CreateBucketConfiguration={'LocationConstraint': regions},
+                        GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
+        )
+    else:
+        bucket_client.create_bucket(
+                        Bucket=bucket_name,
+                        GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
+        )
     put_bucket_policy(bucket_client, bucket_name, role_arn)
     put_bucket_core(bucket_client, bucket_name)
     put_tagging(bucket_client, bucket_name, tags)
@@ -174,32 +179,32 @@ def createbucket(prefix, stage, regions, bucket_client, tags, role_arn):
 @retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
 def put_bucket_policy(bucket_client, bucket_name, role_arn):
     policy_doc = {
-    "Version": "2012-10-17",
-    "Id": "PolicyForCloudFrontPrivateContent",
-    "Statement": [
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": role_arn
+        "Version": "2012-10-17",
+        "Id": "PolicyForCloudFrontPrivateContent",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": role_arn
+                },
+                "Action": "s3:*",
+                "Resource": "arn:aws:s3:::%s/*" % (bucket_name)
             },
-            "Action": "s3:*",
-            "Resource": "arn:aws:s3:::%s/*" % (bucket_name)
-        },
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": role_arn
-            },
-            "Action": "s3:ListBucket",
-            "Resource": "arn:aws:s3:::%s" % (bucket_name)
-        }
-    ]
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": role_arn
+                },
+                "Action": "s3:ListBucket",
+                "Resource": "arn:aws:s3:::%s" % (bucket_name)
+            }
+        ]
     }
     bucket_client.put_bucket_policy(
         Bucket=bucket_name,
-        Policy=policy_doc
+        Policy=json.dumps(policy_doc)
     )
 
 
