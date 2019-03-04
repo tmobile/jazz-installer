@@ -24,3 +24,11 @@ def obtain_token(username, password, endpoint):
     auth_response = json.loads(response.content)
 
     return auth_response['data']['token']
+
+
+def update_config_in(key, value, username, password, endpoint, query_url):
+    token = obtain_token(username, password, endpoint)
+    config_data = {}
+    config_data[key] = value
+    requests.post(endpoint+'/jazz/admin/config'+query_url, data=json.dumps(config_data),
+                  headers={"Content-Type": "application/json", "Authorization": "%s" % (token)})

@@ -36,6 +36,14 @@ with open(installervarsparth) as json_file:
               "PLATFORMSERVICES_ROLEID": platform_role,
               "USERSERVICES_ROLEID": user_role
             },
+            "CLOUDFRONT": {
+              "CLOUDFRONT_ORIGIN_ID": oai
+            },
+            "S3": {
+              "DEV": bucket_dev,
+              "PROD": bucket_prod,
+              "STG": bucket_stg
+            },
             "REGIONS": [
               {
                 "API_GATEWAY": {
@@ -43,21 +51,13 @@ with open(installervarsparth) as json_file:
                   "PROD": api_prod,
                   "STG": api_stg
                 },
-                "CLOUDFRONT": {
-                  "CLOUDFRONT_ORIGIN_ID": "origin-access-identity/cloudfront/%s" % (oai)
-                },
                 "LOGS": {
                   "DEV": "arn:aws:logs:%s:%s:destination:%s-dev-%s-kinesis" % (region, account_id, envprefix, region),
                   "PROD": "arn:aws:logs:%s:%s:destination:%s-prod-%s-kinesis" % (region, account_id, envprefix, region),
                   "STG": "arn:aws:logs:%s:%s:destination:%s-stg-%s-kinesis" % (region, account_id, envprefix, region)
                 },
                 "REGION": region,
-                "PRIMARY": "true",
-                "S3": {
-                  "DEV": bucket_dev,
-                  "PROD": bucket_prod,
-                  "STG": bucket_stg
-                }
+                "PRIMARY": "true"
               }
             ]
     }]
