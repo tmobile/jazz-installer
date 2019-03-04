@@ -108,8 +108,21 @@ def deploy_core_service(args, tags):
     # Basic IAM role with minimum permissions (cloudwatch:*)
     basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document, tags)
     # One platform IAM role for the new account to use for integrations within the new account
+    role_document['Statement'].append({
+        "Effect": "Allow",
+        "Principal": {
+            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (get_configjson['data']['config']['AWS']['ACCOUNTID'], args.jazz_stackprefix)
+        },
+        "Action": "sts:AssumeRole"
+     })
+
     platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix),
                                            role_document, tags)
+    
+    # update permission policy on Primary Account
+    if(platform_role_arn):
+        updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, get_configjson)
+
     account_json['IAM'] = {"USER": account_user,
                            "USER_ARN": account_user_arn,
                            "PLATFORMSERVICES_ROLEID": platform_role_arn,
@@ -323,3 +336,41 @@ def preparedestarn(region, account, stackprefix, stage):
                                                                 account,
                                                                 stackprefix,
                                                                 stage, region)
+
+
+def updatePrimaryRole(roleArn, stackprefix, get_configjson):
+    platformRolePrimary = get_configjson['data']['config']['AWS']['PLATFORMSERVICES_ROLEID']
+    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
+    permission_policy = {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Action": "sts:AssumeRole",
+                "Resource": roleArn
+            }
+        ]
+    }
+    # Get the default profile
+    session = boto3.Session(profile_name='default')
+    # Create IAM client
+    iamClient = session.client('iam')
+    iam = iamClient.resource('iam')
+    policy = iam.Policy(platformRolePrimary)
+    version = policy.default_version
+    policyJson = version.document
+    # Check if Policy exists
+    if policyJson:
+        policyJson['Statement'].append(permission_policy)
+        iamClient.delete_policy(
+          PolicyArn='arn:aws:iam::%s:policy/%s_NonPrimaryAssumePolicy' % (primary_account, stackprefix)
+        )
+    else:
+        policyJson = permission_policy
+    
+    iamClient.put_role_policy(
+        RoleName='%s_platform_services' % (stackprefix),
+        PolicyName='%s_NonPrimaryAssumePolicy' % (stackprefix),
+        PolicyDocument=json.dumps(policyJson)
+    )
