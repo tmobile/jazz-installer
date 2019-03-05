@@ -3,6 +3,8 @@
 
 import argparse
 import subprocess
+import requests
+import time
 
 
 def main():
@@ -35,6 +37,10 @@ def startJob(args):
             args.jenkins_password, args.account_details)
 
     subprocess.call(jenkins_build_command, shell=True)
+    if jenkins_job_status("delete-resources"):
+        print "Job is Success"
+    else:
+        print "Job is Failed"
 
 
 def collectUserInput(args):
@@ -54,6 +60,23 @@ def collectUserInput(args):
         args.account_details = \
             raw_input('Please enter the Accounts to delete '
                       '(Empty will delete all): ') or "all"
+
+
+def jenkins_job_status(job_name, args):
+    try:
+        url = "http://%s:%s@%s/job/%s/lastBuild/api/json" \
+                % (args.jenkins_username, args.jenkins_password, args.jenkins_url, job_name)
+        data = requests.get(url).json()
+        if data['building']:
+            time.sleep(60)
+        else:
+            if data['result'] == "SUCCESS":
+                return True
+            else:
+                return False
+    except Exception as e:
+        print str(e)
+        return False
 
 
 main()

@@ -108,17 +108,17 @@ def deploy_core_service(args, tags):
     # Basic IAM role with minimum permissions (cloudwatch:*)
     basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document, tags)
     # One platform IAM role for the new account to use for integrations within the new account
+    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
     role_document['Statement'].append({
         "Effect": "Allow",
         "Principal": {
-            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (get_configjson['data']['config']['AWS']['ACCOUNTID'], args.jazz_stackprefix)
+            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (primary_account, args.jazz_stackprefix)
         },
         "Action": "sts:AssumeRole"
      })
 
     platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix),
                                            role_document, tags)
-    
     # update permission policy on Primary Account
     if(platform_role_arn):
         updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, get_configjson)
@@ -368,7 +368,6 @@ def updatePrimaryRole(roleArn, stackprefix, get_configjson):
         )
     else:
         policyJson = permission_policy
-    
     iamClient.put_role_policy(
         RoleName='%s_platform_services' % (stackprefix),
         PolicyName='%s_NonPrimaryAssumePolicy' % (stackprefix),
