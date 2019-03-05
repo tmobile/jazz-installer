@@ -38,9 +38,9 @@ def startJob(args):
 
     subprocess.call(jenkins_build_command, shell=True)
     if jenkins_job_status("delete-resources"):
-        print "Put your autmation here for 'job is success' condition"
+        print "Job is Success"
     else:
-        print "Put your autmation here for 'job is failed' condition"
+        print "Job is Failed"
 
 
 def collectUserInput(args):
@@ -71,10 +71,8 @@ def jenkins_job_status(job_name, args):
             time.sleep(60)
         else:
             if data['result'] == "SUCCESS":
-                print "Job is success"
                 return True
             else:
-                print "Job status failed"
                 return False
     except Exception as e:
         print str(e)
