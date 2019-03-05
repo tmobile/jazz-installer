@@ -28,30 +28,36 @@ role_document = {
 
 
 def deploy_core_service(args, tags):
-    account_user = getAccountUser(args.aws_accesskey, args.aws_secretkey)
-    account_user_arn = getAccountUserArn(args.aws_accesskey, args.aws_secretkey)
     account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
     credential_id = "MultiAccount"+account_id
     get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
     account_info = get_configjson['data']['config']['AWS']['ACCOUNTS']
     # Check if the account is already present
     if any(accnt['ACCOUNTID'] == account_id for accnt in account_info):
-        # loop through the REGIONS and call REGIONS append API and update IAM,S3 for that region
+        match = next((index for (index, accnts) in enumerate(account_info) if accnts["ACCOUNTID"] == account_id), None)
+        platform_role_arn = account_info[match]["IAM"]["PLATFORMSERVICES_ROLEID"]
+        iam_client = boto3.client('iam',
+                                  aws_access_key_id=args.aws_accesskey,
+                                  aws_secret_access_key=args.aws_secretkey)
+        # loop through the REGIONS and call REGIONS append API
         for existing_item in args.aws_region:
-            api_client_exist = boto3.client('apigateway',
-                                            aws_access_key_id=args.aws_accesskey,
-                                            aws_secret_access_key=args.aws_secretkey,
-                                            region_name=existing_item)
-            # 3 API Gateway endpoints (DEV/STG/PROD) per account/region
-            api_prod_exist = createapi('%s-prod' % (args.jazz_stackprefix), 'PROD', api_client_exist)
-            api_stg_exist = createapi('%s-stg' % (args.jazz_stackprefix), 'STG', api_client_exist)
-            api_dev_exist = createapi('%s-dev' % (args.jazz_stackprefix), 'DEV', api_client_exist)
-
-            # Prepare destination arn for regions
-            destarn_dict_exist = preparelogdestion(existing_item, args, get_configjson)
+            region_resources = create_region_resources(args, existing_item, get_configjson, tags, platform_role_arn)
+            # update IAM Assume policy for new region
+            role_document = {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "logs.%s.amazonaws.com" % (existing_item)
+                },
+                "Action": "sts:AssumeRole"
+            }
+            iam_client.update_assume_role_policy(
+                RoleName='%s_platform_services' % (args.jazz_stackprefix),
+                PolicyDocument=json.dumps(role_document)
+            )
             region_json = {"REGION": existing_item,
-                           "API_GATEWAY": {"PROD": api_prod_exist, "STG": api_stg_exist, "DEV": api_dev_exist},
-                           "LOGS": destarn_dict_exist}
+                           "API_GATEWAY": region_resources["API_GATEWAY"],
+                           "S3": region_resources["S3"],
+                           "LOGS": region_resources["LOGS"]}
             query_url = '?id=ACCOUNTID&path=AWS.ACCOUNTS&value=%s' % (account_id)
             update_config_in("REGIONS", region_json, args.jazz_username,
                              args.jazz_password, args.jazz_apiendpoint, query_url)
@@ -62,29 +68,10 @@ def deploy_core_service(args, tags):
     account_json = {"ACCOUNTID": account_id,
                     "CREDENTIAL_ID": credential_id,
                     "IAM": {},
-                    "S3": {},
                     "CLOUDFRONT": {},
                     "REGIONS": []
                     }
-
-    # loop multiple regions and each region-account, create
-
     for item in args.aws_region:
-        api_client = boto3.client('apigateway',
-                                  aws_access_key_id=args.aws_accesskey,
-                                  aws_secret_access_key=args.aws_secretkey,
-                                  region_name=item)
-        # 3 API Gateway endpoints (DEV/STG/PROD) per account/region
-        api_prod = createapi('%s-prod' % (args.jazz_stackprefix), 'PROD', api_client)
-        api_stg = createapi('%s-stg' % (args.jazz_stackprefix), 'STG', api_client)
-        api_dev = createapi('%s-dev' % (args.jazz_stackprefix), 'DEV', api_client)
-
-        # Prepare destination arn for regions
-        destarn_dict = preparelogdestion(item, args, get_configjson)
-
-        account_json["REGIONS"].append({"REGION": item,
-                                        "API_GATEWAY": {"PROD": api_prod, "STG": api_stg, "DEV": api_dev},
-                                        "LOGS": destarn_dict})
         # Prepare assume role for each regions
         # Add a trust policy to the "logs destination"
         role_document['Statement'].append({
@@ -94,7 +81,6 @@ def deploy_core_service(args, tags):
             },
             "Action": "sts:AssumeRole"
         })
-
     # New OAI (origin access identity)
     oai_client = boto3.client('cloudfront',
                               aws_access_key_id=args.aws_accesskey,
@@ -123,34 +109,45 @@ def deploy_core_service(args, tags):
     if(platform_role_arn):
         updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, get_configjson)
 
-    account_json['IAM'] = {"USER": account_user,
-                           "USER_ARN": account_user_arn,
+    account_json['IAM'] = {
                            "PLATFORMSERVICES_ROLEID": platform_role_arn,
                            "USERSERVICES_ROLEID": basic_role_arn,
                            }
-    # 3 deployment-buckets (DEV/STG/PROD)  per account for sls to store deployment artifacts
-    bucket_client = boto3.client('s3',
-                                 aws_access_key_id=args.aws_accesskey,
-                                 aws_secret_access_key=args.aws_secretkey)
-    regions = args.aws_region
-    regions.remove('us-east-1') if 'us-east-1' in regions else None
-    regionStr = "|".join(regions)
+    # loop multiple regions and each region-account, create
 
-    bucket_prod = createbucket(args.jazz_stackprefix, 'prod', regionStr, bucket_client, tags, platform_role_arn)
-    bucket_stg = createbucket(args.jazz_stackprefix, 'stg', regionStr, bucket_client, tags, platform_role_arn)
-    bucket_dev = createbucket(args.jazz_stackprefix, 'dev', regionStr, bucket_client, tags, platform_role_arn)
-    account_json["S3"] = {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev}
+    for item in args.aws_region:
+        region_resources = create_region_resources(args, item, get_configjson, tags, platform_role_arn)
+
+        account_json["REGIONS"].append({"REGION": item,
+                                        "API_GATEWAY": region_resources["API_GATEWAY"],
+                                        "S3": region_resources["S3"],
+                                        "LOGS": region_resources["LOGS"]})
+
     return account_json, credential_id
 
 
-def getAccountUser(accessKey, secretKey):
-    obj_iam = boto3.resource('iam', aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    return obj_iam.CurrentUser().user_name
+def create_region_resources(args, region, get_configjson, tags, platform_role_arn):
+    api_client = boto3.client('apigateway',
+                              aws_access_key_id=args.aws_accesskey,
+                              aws_secret_access_key=args.aws_secretkey,
+                              region_name=region)
+    # 3 API Gateway endpoints (DEV/STG/PROD) per account/region
+    api_prod = createapi('%s-prod' % (args.jazz_stackprefix), 'PROD', api_client)
+    api_stg = createapi('%s-stg' % (args.jazz_stackprefix), 'STG', api_client)
+    api_dev = createapi('%s-dev' % (args.jazz_stackprefix), 'DEV', api_client)
+    # 3 deployment-buckets (DEV/STG/PROD)  per account/region for sls to store deployment artifacts
+    bucket_client = boto3.client('s3',
+                                 aws_access_key_id=args.aws_accesskey,
+                                 aws_secret_access_key=args.aws_secretkey,
+                                 region_name=region)
+    bucket_prod = createbucket(args.jazz_stackprefix, 'prod', region, bucket_client, tags, platform_role_arn)
+    bucket_stg = createbucket(args.jazz_stackprefix, 'stg', region, bucket_client, tags, platform_role_arn)
+    bucket_dev = createbucket(args.jazz_stackprefix, 'dev', region, bucket_client, tags, platform_role_arn)
+    # Prepare destination arn for regions
+    destarn_dict = preparelogdestion(region, args, get_configjson)
 
-
-def getAccountUserArn(accessKey, secretKey):
-    obj_iam = boto3.resource('iam', aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    return obj_iam.CurrentUser().arn
+    return {"API_GATEWAY": {"PROD": api_prod, "STG": api_stg, "DEV": api_dev},
+            "S3": {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev}, "LOGS": destarn_dict}
 
 
 def getAccountId(accessKey, secretKey):
@@ -169,14 +166,14 @@ def createapi(name, description, api_client):
 
 
 @retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def createbucket(prefix, stage, regions, bucket_client, tags, role_arn):
+def createbucket(prefix, stage, region, bucket_client, tags, role_arn):
     bucket_name = prepare_bucket_name(prefix, stage)
     canonical_id = bucket_client.list_buckets()['Owner']['ID']
-    if regions != '':
+    if region != 'us-east-1':
         bucket_client.create_bucket(
-                        Bucket=bucket_name,
-                        CreateBucketConfiguration={'LocationConstraint': regions},
-                        GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
+                    Bucket=bucket_name,
+                    CreateBucketConfiguration={'LocationConstraint': region},
+                    GrantFullControl="id=%s,uri=http://acs.amazonaws.com/groups/s3/LogDelivery" % (canonical_id)
         )
     else:
         bucket_client.create_bucket(
