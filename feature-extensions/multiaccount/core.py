@@ -28,6 +28,7 @@ role_document = {
 
 
 def deploy_core_service(args, tags):
+    global role_document
     account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
     credential_id = "MultiAccount"+account_id
     get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
@@ -43,16 +44,25 @@ def deploy_core_service(args, tags):
         for existing_item in args.aws_region:
             region_resources = create_region_resources(args, existing_item, get_configjson, tags, platform_role_arn)
             # update IAM Assume policy for new region
-            role_document = {
+            role_det = iam_client.get_role(
+                RoleName='%s_platform_services' % (args.jazz_stackprefix),
+            )
+            existing_policy_document = role_det['Role']['AssumeRolePolicyDocument']["Statement"]
+            policy_document = {
+              "Version": "2012-10-17",
+              "Statement": existing_policy_document
+            }
+            policy_document["Statement"].append({
                 "Effect": "Allow",
                 "Principal": {
                     "Service": "logs.%s.amazonaws.com" % (existing_item)
                 },
                 "Action": "sts:AssumeRole"
-            }
+            })
+
             iam_client.update_assume_role_policy(
                 RoleName='%s_platform_services' % (args.jazz_stackprefix),
-                PolicyDocument=json.dumps(role_document)
+                PolicyDocument=json.dumps(policy_document)
             )
             region_json = {"REGION": existing_item,
                            "API_GATEWAY": region_resources["API_GATEWAY"],
@@ -107,7 +117,7 @@ def deploy_core_service(args, tags):
                                            role_document, tags)
     # update permission policy on Primary Account
     if(platform_role_arn):
-        updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, get_configjson)
+        updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, account_id)
 
     account_json['IAM'] = {
                            "PLATFORMSERVICES_ROLEID": platform_role_arn,
@@ -335,9 +345,7 @@ def preparedestarn(region, account, stackprefix, stage):
                                                                 stage, region)
 
 
-def updatePrimaryRole(roleArn, stackprefix, get_configjson):
-    platformRolePrimary = get_configjson['data']['config']['AWS']['PLATFORMSERVICES_ROLEID']
-    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
+def updatePrimaryRole(roleArn, stackprefix, account_id):
     permission_policy = {
         "Version": "2012-10-17",
         "Statement": [
@@ -353,20 +361,8 @@ def updatePrimaryRole(roleArn, stackprefix, get_configjson):
     session = boto3.Session(profile_name='default')
     # Create IAM client
     iamClient = session.client('iam')
-    iam = iamClient.resource('iam')
-    policy = iam.Policy(platformRolePrimary)
-    version = policy.default_version
-    policyJson = version.document
-    # Check if Policy exists
-    if policyJson:
-        policyJson['Statement'].append(permission_policy)
-        iamClient.delete_policy(
-          PolicyArn='arn:aws:iam::%s:policy/%s_NonPrimaryAssumePolicy' % (primary_account, stackprefix)
-        )
-    else:
-        policyJson = permission_policy
     iamClient.put_role_policy(
         RoleName='%s_platform_services' % (stackprefix),
-        PolicyName='%s_NonPrimaryAssumePolicy' % (stackprefix),
-        PolicyDocument=json.dumps(policyJson)
+        PolicyName='%s_%s_NonPrimaryAssumePolicy' % (stackprefix, account_id),
+        PolicyDocument=json.dumps(permission_policy)
     )
