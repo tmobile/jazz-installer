@@ -6,6 +6,11 @@ resource "null_resource" "createProjectsInBB" {
   provisioner "local-exec" {
     command = "${var.scmclient_cmd} ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${ lookup(var.scmmap, "scm_elb")} ${var.atlassian_jar_path}"
   }
+
+  #If using BB, update the base URL as well
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} BASE_URL ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsjsonpropsfile}"
+  }
 }
 
 // Copy the jazz-build-module to SLF in SCM

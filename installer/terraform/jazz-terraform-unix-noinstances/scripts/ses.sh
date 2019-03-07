@@ -3,9 +3,8 @@
 #do the appropriate AWS commands via the TF AWS module
 EMAIL_ADDRESS=$1
 REGION=$2
-JENKINSATTRIBSFILE=$3
-AWS_SECRET_KEY=$5
-ENV_PREFIX=$6
+AWS_SECRET_KEY=$3
+ENV_PREFIX=$4
 POLICY_NAME="Policy-$ENV_PREFIX"
 ACCOUNT=$(aws sts get-caller-identity --output text --query 'Account')
 # Python Script create SMTP AUTH PASSWORD of the access key using the secret key
@@ -37,6 +36,3 @@ aws ses put-identity-policy --identity "$EMAIL_ADDRESS" --policy-name "$POLICY_N
         }
     ]
 }'
-
-#Change the config values in JENKINSATTRIBSFILE
-sed -i "s/default\['jenkins'\]\['SES-defaultSuffix'\].*.$/default['jenkins']['SES-defaultSuffix']='$EMAIL_ADDRESS'/g"  "$JENKINSATTRIBSFILE"

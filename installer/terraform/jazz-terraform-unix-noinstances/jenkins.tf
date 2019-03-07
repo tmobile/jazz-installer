@@ -113,18 +113,10 @@ resource "null_resource" "update_jenkins_configs" {
 
   #SES
   provisioner "local-exec" {
-    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.jenkinsattribsfile} ${var.aws_access_key} ${var.aws_secret_key} ${var.envPrefix}"
+    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.aws_secret_key} ${var.envPrefix}"
   }
+
   #TODO SORT!
-  provisioner "local-exec" {
-    command = "${var.configureJenkinselb_cmd} ${lookup(var.jenkinsservermap, "jenkins_elb")} ${var.jenkinsattribsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.configureJenkinscontainer_cmd} ${var.dockerizedJenkins} ${var.jenkinsattribsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.configurescmelb_cmd} ${var.scmbb} ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsattribsfile} ${var.jenkinsjsonpropsfile}"
-  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
   }

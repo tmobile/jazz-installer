@@ -3,7 +3,6 @@
 # The corresponding projects creation in gitlab is handled in launch_gitlab_docker.sh script.
 sleep 60
 
-#The below variable is added from configureJenkinselb.sh and configureBitbucketelb
 bitbucketuser=$1
 bitbucketpasswd=$2
 bitbucketelb=$3

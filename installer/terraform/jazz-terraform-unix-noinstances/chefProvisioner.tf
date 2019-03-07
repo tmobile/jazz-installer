@@ -1,9 +1,22 @@
+# Any updates to jenkinsattribsfile (which is a Chef cookbook config) should happen in this file, and this file only.
+
 resource "null_resource" "updateJenkinsChefCookbook" {
   # Only existing Jenkins servers need a cookbook
   count = "${1-var.dockerizedJenkins}"
 
   #TODO verify s3 dependency is valid
   depends_on = ["aws_s3_bucket.jazz-web"]
+
+
+  # Update cookbook with jenkins elb
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''jenkinselb'\\''\\].*.|default\\['\\''jenkinselb'\\''\\]='\\''${lookup(var.jenkinsservermap, "jenkins_elb")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
+
+  # Update cookbook with bitbucket elb
+  provisioner "local-exec" {
+    command = "sed -i 's|default\\['\\''scmelb'\\''\\].*.|default\\['\\''scmelb'\\''\\]='\\''${var.scmbb} ${lookup(var.scmmap, "scm_elb")}'\\''|g' ${var.jenkinsattribsfile}"
+  }
 
   # Update git branch and repo in jenkins cookbook
   provisioner "local-exec" {

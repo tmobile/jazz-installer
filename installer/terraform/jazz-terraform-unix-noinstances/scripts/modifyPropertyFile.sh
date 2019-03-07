@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 property_key=$1
 property_value=$2

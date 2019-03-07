@@ -2,17 +2,9 @@ variable "sets3acl_cmd" {
   type = "string"
   default = "./scripts/sets3acl.sh"
 }
-variable "configurescmelb_cmd" {
-  type = "string"
-  default = "./scripts/configurescmelb.sh"
-}
 variable "modifyCodebase_cmd" {
   type = "string"
   default = "./scripts/modifyCodebase.sh"
-}
-variable "configureJenkinselb_cmd" {
-  type = "string"
-  default = "./scripts/configureJenkinselb.sh"
 }
 variable "scmclient_cmd" {
   type = "string"
@@ -65,8 +57,4 @@ variable "healthCheck_cmd" {
 variable "pushInstallervars_cmd" {
   type= "string"
   default = "./scripts/pushInstallervars.sh"
-}
-variable "configureJenkinscontainer_cmd" {
-  type = "string"
-  default = "./scripts/configureJenkinscontainer.sh"
 }
