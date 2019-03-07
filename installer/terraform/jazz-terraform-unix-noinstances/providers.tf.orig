@@ -1,0 +1,12 @@
+provider "aws" {
+<<<<<<< HEAD
+  version = "~> 1.14"
+=======
+  version = "~> 1.41"
+  region = "${var.region}"
+>>>>>>> develop
+}
+
+provider "null" {
+  version = "~> 1.0"
+}
