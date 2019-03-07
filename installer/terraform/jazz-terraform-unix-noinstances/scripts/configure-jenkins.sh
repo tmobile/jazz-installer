@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 
 jenkinsurl=$1
 email=$2

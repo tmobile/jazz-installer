@@ -48,7 +48,7 @@ variable "injectingBootstrapToJenkinsfiles_cmd" {
 }
 variable "configureJenkinsCE_cmd" {
   type = "string"
-  default = "./scripts/configure-cli.sh"
+  default = "./scripts/configure-jenkins.sh"
 }
 variable "configureGitlab_cmd" {
   type = "string"
