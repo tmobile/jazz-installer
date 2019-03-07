@@ -2,7 +2,9 @@ import subprocess
 import os
 import sys
 from pathlib import Path
-from installer.configurators.common import get_script_folder, get_installer_root, get_tfvars_file, replace_tfvars
+from installer.configurators.common import get_installer_root, get_tfvars_file, replace_tfvars
+
+jenkins_pem = get_installer_root() + "/jenkinskey.pem"
 
 
 def check_jenkins_pem():
@@ -12,18 +14,14 @@ def check_jenkins_pem():
     print(
         " Please make sure that you have the ssh login user names of jenkins and bitbucket servers."
     )
-    # Check if file is been added to home derectory
-    jenkins_pem = get_installer_root() + "/jenkinskey.pem"
+    # Check if user dropped the jenkins key into the installer root (scenario 1 only)
     if not Path.is_file(jenkins_pem):
         sys.exit(
             "File jenkinskey.pem not found in installer root directory, kindly add and run the installer again! "
         )
 
-    # Copy the pem keys and give relavant permisions
-    subprocess.call('cp -f {0} {1}sshkeys'.format(
-        jenkins_pem, get_script_folder()).split(' '))
-    subprocess.call('sudo chmod 400 {0}sshkeys/jenkinskey.pem'.format(
-        get_script_folder()).split(' '))
+    # Make sure the PEM the user dropped in has the right perms
+    subprocess.call('sudo chmod 400 {0}'.format(jenkins_pem))
 
 
 def check_jenkins_user(url, usernamepw):
@@ -61,6 +59,7 @@ def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
     replace_tfvars('jenkinspasswd', userpw[1], get_tfvars_file())
     replace_tfvars('jenkins_ssh_login', sshuser, get_tfvars_file())
     replace_tfvars('jenkins_ssh_port', ssh_port, get_tfvars_file())
+    replace_tfvars('jenkins_ssh_key', '{0}'.format(jenkins_pem), get_tfvars_file())
 
 
 def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):

@@ -44,7 +44,6 @@ from installer.configurators.common import update_main_terraform_vars
 )
 def install(branch, adminemail, stackprefix, region, tags):
     """Installs the Jazz Stack."""
-    Path('installscripts/sshkeys/dockerkeys').mkdir(parents=True, exist_ok=True)
 
     # Set the passed-in repo root path as an env var here,
     # so subsequent scripts don't need to hardcode absolute paths.

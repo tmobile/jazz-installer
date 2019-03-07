@@ -13,24 +13,12 @@ def get_installer_root():
     return os.environ['JAZZ_INSTALLER_ROOT']
 
 
-def get_script_folder():
-    return get_installer_root() + "/installscripts/"
-
-
 def get_terraform_folder():
-    return get_script_folder() + "/jazz-terraform-unix-noinstances/"
+    return get_installer_root() + "/installer/terraform/jazz-terraform-unix-noinstances/"
 
 
 def get_tfvars_file():
     return get_terraform_folder() + "terraform.tfvars"
-
-
-def get_docker_path():
-    return get_script_folder() + "dockerfiles/"
-
-
-def get_jenkins_pem():
-    return get_docker_path() + "jenkins/jenkinskey.pem"
 
 
 def passwd_generator():
