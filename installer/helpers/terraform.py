@@ -35,8 +35,7 @@ def exec_terraform_apply():
     tfCommand = [
             'terraform', 'apply', '--auto-approve',
             '-var', 'aws_access_key=${AWS_ACCESS_KEY_ID}',
-            '-var', 'aws_secret_key=${AWS_SECRET_ACCESS_KEY}',
-            '-var', 'region=${AWS_DEFAULT_REGION}'
+            '-var', 'aws_secret_key=${AWS_SECRET_ACCESS_KEY}'
     ]
 
     if not tee_check_output(tfCommand, workdir=get_terraform_folder()):
