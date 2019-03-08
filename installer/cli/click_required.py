@@ -41,7 +41,7 @@ class Required(click.Option):
                         "Illegal usage: `%s` is only required if `%s` is not specified" % (
                             self.name, self.required_if_not))
                 else:
-                    self.prompt = False
+                    self.prompt = None
             else:
                 self.prompt = True
 
