@@ -1,4 +1,4 @@
-from .gitlab_personalaccesstoken import generate_personal_access_token
+from gitlab_personalaccesstoken import generate_personal_access_token
 from terraform_external_data import terraform_external_data
 
 import gitlab
