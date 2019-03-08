@@ -49,11 +49,15 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
                   datetime.timedelta(days=1)).strftime("%m/%d/%Y")
 
     # ----------------------------------------------------------
-    # Populate Terraform variables in terraform.tfvars and Chef cookbook
+    # Populate Terraform variables in terraform.tfvars
     # -----------------------------------------------------------
 
     # populating BRANCH name
     replace_tfvars('github_branch', jazz_branch, get_tfvars_file())
+
+    # populating region
+    replace_tfvars('region', region, get_tfvars_file())
+    os.environ['AWS_DEFAULT_REGION'] = region
 
     # Populating Jazz Account ID
     replace_tfvars('jazz_accountid', jazz_account_id, get_tfvars_file())
