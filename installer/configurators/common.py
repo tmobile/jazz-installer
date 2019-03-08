@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 import secrets
 import datetime
@@ -10,7 +11,9 @@ from installer.configurators.validate_tags import prepare_tags, validate_replica
 
 # TODO revisit the use of an env var here, only the destroy script uses it, and it probably shouldn't
 def get_installer_root():
-    return os.environ['JAZZ_INSTALLER_ROOT']
+    # Set the repo root path as an env var here,
+    # so subsequent scripts don't need to hardcode absolute paths.
+    return os.environ.get('JAZZ_INSTALLER_ROOT', str(Path('.').absolute()))
 
 
 def get_terraform_folder():
