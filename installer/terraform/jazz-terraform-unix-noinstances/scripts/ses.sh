@@ -1,15 +1,9 @@
-#!/bin/bash
-#TODO Verify if this script actually needs AWS credentials to be passed in, or if we can
-#do the appropriate AWS commands via the TF AWS module
+#!/bin/sh
 EMAIL_ADDRESS=$1
 REGION=$2
-AWS_SECRET_KEY=$3
-ENV_PREFIX=$4
+ENV_PREFIX=$3
 POLICY_NAME="Policy-$ENV_PREFIX"
 ACCOUNT=$(aws sts get-caller-identity --output text --query 'Account')
-# Python Script create SMTP AUTH PASSWORD of the access key using the secret key
-# the write to default.db in the cook book
-python scripts/GetSESsmtpPassword.py "$AWS_SECRET_KEY"
 
 # SES Validate and register email address
 aws ses verify-email-identity --email-address "$EMAIL_ADDRESS"

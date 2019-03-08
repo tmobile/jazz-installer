@@ -109,7 +109,7 @@ resource "null_resource" "update_jenkins_configs" {
 
   #SES
   provisioner "local-exec" {
-    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.aws_secret_key} ${var.envPrefix}"
+    command = "${var.ses_cmd} ${var.cognito_pool_username} ${var.region} ${var.envPrefix}"
   }
 
   #TODO SORT!

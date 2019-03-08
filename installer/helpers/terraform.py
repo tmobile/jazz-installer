@@ -34,8 +34,7 @@ def exec_terraform_apply():
     # will just use those preconfigured creds without any extra effort
     tfCommand = [
             'terraform', 'apply', '--auto-approve',
-            '-var', 'aws_access_key=${AWS_ACCESS_KEY_ID}',
-            '-var', 'aws_secret_key=${AWS_SECRET_ACCESS_KEY}'
+            '-var', 'aws_access_key=${AWS_ACCESS_KEY_ID}'
     ]
 
     if not tee_check_output(tfCommand, workdir=get_terraform_folder()):
