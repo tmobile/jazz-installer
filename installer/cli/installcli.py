@@ -1,6 +1,4 @@
-import os
 import click
-from pathlib import Path
 from installer.configurators.common import update_main_terraform_vars
 
 
@@ -44,10 +42,6 @@ from installer.configurators.common import update_main_terraform_vars
 )
 def install(branch, adminemail, stackprefix, region, tags):
     """Installs the Jazz Stack."""
-
-    # Set the passed-in repo root path as an env var here,
-    # so subsequent scripts don't need to hardcode absolute paths.
-    os.environ['JAZZ_INSTALLER_ROOT'] = str(Path('.').absolute())
 
     click.secho('\n\nConfiguring install', fg='blue')
     click.secho('\nLogging to `install.log`', fg='green')

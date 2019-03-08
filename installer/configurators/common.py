@@ -8,7 +8,7 @@ import in_place
 from installer.configurators.validate_tags import prepare_tags, validate_replication_tags
 
 
-# TODO revisit the use of an env var here
+# TODO revisit the use of an env var here, only the destroy script uses it, and it probably shouldn't
 def get_installer_root():
     return os.environ['JAZZ_INSTALLER_ROOT']
 

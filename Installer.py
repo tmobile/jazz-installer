@@ -8,7 +8,12 @@ from installer.cli.scenario2cli import scenario2
 from installer.cli.scenario3cli import scenario3
 from installer.cli.installcli import install
 from installer.cli.uninstallcli import uninstall
+import os
+from pathlib import Path
 
+# Set the repo root path as an env var here,
+# so subsequent scripts don't need to hardcode absolute paths.
+os.environ['JAZZ_INSTALLER_ROOT'] = str(Path('.').absolute())
 
 # The top level command line group
 @click.group()
@@ -19,6 +24,7 @@ def cli():
 
 
 if __name__ == '__main__':
+
     # The `install` command - args and actions that are common to all scenarios
     cli.add_command(install)
 
