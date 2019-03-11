@@ -29,14 +29,14 @@ def get_personal_access_token(response_text):
     return personal_token
 
 
-def generate_personal_access_token(name, password):
+def generate_personal_access_token(name, password, endpoint):
     """
         Adapted from: https://gist.github.com/gpocentek/bd4c3fbf8a6ce226ebddc4aad6b46c0a
         Uses authenticity tokens and bs4+html5lib to log into the Gitlab web interface
         and generate a personal access token for API usage
         Assumes initial password has been set for "root" user
     """
-    URL = "http://localhost"
+    URL = 'http://{0}'.format(endpoint)
     SIGN_IN_URL = urljoin(URL, "/users/sign_in")
     PAT_URL = urljoin(URL, "profile/personal_access_tokens")
 

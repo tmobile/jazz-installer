@@ -6,9 +6,9 @@ import gitlab
 
 @terraform_external_data
 def get_gitlab_group(query):
-    token = generate_personal_access_token('mytoken', query['passwd'])
+    token = generate_personal_access_token('mytoken', query['passwd'], query['gitlab-ip'])
 
-    gl = gitlab.Gitlab(query['gitlab_ip'], api_version=4, private_token=token)
+    gl = gitlab.Gitlab('http://'.format(query['gitlab_ip']), api_version=4, private_token=token)
 
     group = gl.groups.create({'name': 'SLF', 'path': 'slf', 'description': 'Jazz framework, templates and services'})
 
