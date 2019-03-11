@@ -129,6 +129,8 @@ data "external" "gitlabconfig" {
   query = {
     passwd = "${var.cognito_pool_password}"
     gitlab_ip = "${aws_lb.alb_ecs_gitlab.dns_name}"
+    gitlab_slfid = "RETVAL"
+    gitlab_token = "RETVAL"
   }
   depends_on = ["null_resource.health_check_gitlab"]
 }
