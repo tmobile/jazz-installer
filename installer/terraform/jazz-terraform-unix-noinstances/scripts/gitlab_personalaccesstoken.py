@@ -38,7 +38,7 @@ def generate_personal_access_token(name, password, endpoint):
     """
     URL = 'http://{0}'.format(endpoint)
     SIGN_IN_URL = urljoin(URL, "/users/sign_in")
-    PAT_URL = urljoin(URL, "profile/personal_access_tokens")
+    PAT_URL = urljoin(URL, "/profile/personal_access_tokens")
 
     session = requests.Session()
 
