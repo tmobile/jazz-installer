@@ -8,7 +8,7 @@ import gitlab
 def get_gitlab_group(query):
     token = generate_personal_access_token('mytoken', query['passwd'], query['gitlab_ip'])
 
-    gl = gitlab.Gitlab('http://'.format(query['gitlab_ip']), api_version=4, private_token=token)
+    gl = gitlab.Gitlab('http://{0}'.format(query['gitlab_ip']), api_version=4, private_token=token)
 
     group = gl.groups.create({'name': 'SLF', 'path': 'slf', 'description': 'Jazz framework, templates and services'})
 
