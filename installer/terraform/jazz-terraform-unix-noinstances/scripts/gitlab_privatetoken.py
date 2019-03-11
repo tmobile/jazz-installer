@@ -1,14 +1,14 @@
 import requests
 from datetime import date
-from urlparse import urljoin
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 
 def find_csrf_token(text):
     soup = BeautifulSoup(text, "lxml")
-    token = soup.find(attrs={"name": u"csrf-token"})
-    param = soup.find(attrs={"name": u"csrf-param"})
-    data = {param.get("content"): token.get(u"content")}
+    token = soup.find(attrs={"name": "csrf-token"})
+    param = soup.find(attrs={"name": "csrf-param"})
+    data = {param.get("content"): token.get("content")}
     return data
 
 
@@ -20,10 +20,10 @@ def obtain_csrf_token(url):
 
 def sign_in(sign_in_url, login, password, csrf, cookies):
     data = {
-        u"user[login]": login,
-        u"user[password]": password,
-        u"user[remember_me]": 0,
-        u"utf8": u"✓"
+        "user[login]": login,
+        "user[password]": password,
+        "user[remember_me]": 0,
+        "utf8": "✓"
     }
     data.update(csrf)
     r = requests.post(sign_in_url, data=data, cookies=cookies)
@@ -34,16 +34,16 @@ def sign_in(sign_in_url, login, password, csrf, cookies):
 def obtain_personal_access_token(pat_url, name, csrf, cookies):
     today = date.today()
     data = {
-        u"personal_access_token[expires_at]": today.replace(year=today.year + 1),
-        u"personal_access_token[name]": name,
-        u"personal_access_token[scopes][]": u"api",
-        u"utf8": u"✓"
+        "personal_access_token[expires_at]": today.replace(year=today.year + 1),
+        "personal_access_token[name]": name,
+        "personal_access_token[scopes][]": "api",
+        "utf8": "✓"
     }
     data.update(csrf)
     r = requests.post(pat_url, data=data, cookies=cookies)
     soup = BeautifulSoup(r.text, u"lxml")
     token = soup.find(
-        u'input', id=u'created-personal-access-token').get('value')
+        'input', id='created-personal-access-token').get('value')
     return token
 
 
