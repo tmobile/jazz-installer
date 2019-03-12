@@ -16,7 +16,7 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
   tags = "${merge(var.additional_tags, local.common_tags, map(
           "Domain", "${var.envPrefix}_elasticsearch_domain",
           ))}"
-          
+
   //vpc_options {
   //  security_group_ids = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"],
   //  subnet_ids = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}"]
@@ -39,6 +39,9 @@ POLICIES
 
 }
 
+#This script is designed to fail if the user did not specify a valid, preexisting sercurity group,
+#we will just create one.
+#TODO Not a huge fan of `on_failure continue`, we need a smarter way to decide if this needs to be run or not
 resource "null_resource" "updateSecurityGroup" {
    provisioner "local-exec" {
     command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 443 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"

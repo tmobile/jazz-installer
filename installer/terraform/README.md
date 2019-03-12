@@ -1,19 +1,17 @@
-## Summary
-- **Installer scripts should only set and pass values to Terraform**
-- **Terraform should only set and pass values to Chef**
-- **Terraform should only instantiate things, Chef should only provision/configure/do things.**
+# Subfolder Layout
 
-**Set Terraform values in /jazz-terraform-unix-noinstances/terraform.tfvars**
-**Set Chef cookbook values in /cookbooks/jenkins/attributes/default.rb**
+* `provisioners` - Everything that touches resources that have already been created by Terraform should live in this folder.
+                   Chef cookbooks, Config scripts for existing Jenkins servers, etc
+* `scripts` - Any _non-provisioning_ external scripts that Terraform needs to run should live in this folder. There should be few of these scripts, and they should be written in Python3.
 
-To keep things tidy recommend we do not break this separation, and reject PRs that do.
+# Terraform Code Best Practices
 
-## Where/how to set Terraform and Chef variables.
-**As of now, the only Chef-related file that should be touched with `sed` is `cookbooks/jenkins/attributes/default.rb`. This is where all the variables and values that Chef is aware of should live, and any values a script needs should be passed in by Chef from those variables, not `sed`ed into the script from Terraform or the installer.**
+1. Keep resource declarations at the top level. This makes it easier to change and delete resources, and track their dependencies.
 
+2. Use modules.
 
-## Adding more 3rd party Chef recipies
-It is easy to add more [3rd party recipes from the Chef Supermarket](https://supermarket.chef.io/) if we need to:
-1. Add the new cookbook you want to use to `cookbooks/Policyfile.rb`
-2. Edit the `metadata.rb` of the cookbook from which you want to use the external cookbook and add a `depends` line.
-3. Use `include_recipe` from your recipe to run the external cookbook's recipe (see `prereqs.rb` recipe for an example of a recipe that includes/runs other recipes).
+3. Keep `resource` creation tasks (pure Terraform) and `provision` tasks (stuff that drops out of Terraform to run external scripts/tools) in separate, purpose-specific files, e.g. `s3bucket.tf` and `jenkins.tf` (one creates buckets, the other uses info from created buckets to configure Jenkins property files)
+
+4. Declare variables in `variables.tf`. Set input (user-created) values for those variables in `terraform.tfvars`.
+
+5. Run `https://github.com/wata727/tflint` to validate your changes.

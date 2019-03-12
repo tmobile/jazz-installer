@@ -31,13 +31,13 @@ do
     fi
 done
 
-# Delete the identity policy  - Created in jazz-terraform-unix-noinstances/scripts/ses.sh
+# Delete the identity policy  - Created in terraform/scripts/ses.sh
 aws ses delete-identity-policy --identity $identity --policy-name Policy-$stack_name
 
 echo " ======================================================="
 echo " The following stack has been marked for deletion in AWS"
 echo " ________________________________________________"
-cd installer/terraform/jazz-terraform-unix-noinstances || exit
+cd installer/terraform || exit
 terraform state list
 
 echo " ======================================================="
@@ -57,11 +57,11 @@ if [ "$1" == "all" ]; then
     python scripts/DeleteStackPlatformServices.py $stack_name true
 
     #Deleting Cloud Front Distributions
-    cd "$JAZZ_INSTALLER_ROOT"/installer/terraform/jazz-terraform-unix-noinstances || exit
+    cd "$JAZZ_INSTALLER_ROOT"/installer/terraform || exit
     python scripts/DeleteStackCloudFrontDists.py $stack_name true
 
     echo "Destroy cloudfronts"
-    cd "$JAZZ_INSTALLER_ROOT"/installer/terraform/jazz-terraform-unix-noinstances || exit
+    cd "$JAZZ_INSTALLER_ROOT"/installer/terraform || exit
     python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
     while [ $loopIndx -le 2 ];

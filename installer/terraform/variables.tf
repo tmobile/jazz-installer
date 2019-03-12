@@ -22,7 +22,7 @@ variable "cognito_pool_password" {type = "string" default = "cognito_pool_passwo
 
 variable "cookbooksSourceDir" {
   type = "string"
-  default = "../cookbooks"
+  default = "./provisioners/cookbooks"
 }
 variable "chefDestDir" {
   type = "string"
@@ -37,11 +37,11 @@ variable "contentRepo" {
 #
 variable "jenkinsjsonpropsfile" {
   type = "string"
-  default = "../cookbooks/jenkins/files/default/jazz-installer-vars.json"
+  default = "./provisioners/cookbooks/jenkins/files/default/jazz-installer-vars.json"
 }
 variable "jenkinsattribsfile" {
   type = "string"
-  default = "../cookbooks/jenkins/attributes/default.rb"
+  default = "./provisioners/cookbooks/jenkins/attributes/default.rb"
 }
 variable "jenkinsservermap" {
   type = "map"
