@@ -17,7 +17,7 @@ def get_installer_root():
 
 
 def get_terraform_folder():
-    return get_installer_root() + "/installer/terraform"
+    return get_installer_root() + "/installer/terraform/"
 
 
 def get_tfvars_file():
