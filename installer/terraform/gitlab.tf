@@ -6,7 +6,7 @@ resource "null_resource" "updategitlabjenkinsconfig" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PRIVATE_TOKEN ${data.external.gitlabconfig.*.result.gitlab_token} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} PRIVATE_TOKEN ${join(" ", data.external.gitlabconfig.*.result.gitlab_token)} ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "local-exec" {

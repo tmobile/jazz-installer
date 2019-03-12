@@ -55,7 +55,7 @@ resource "null_resource" "updateJenkinsChefCookbook" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabtoken'\\''\\].*.|default\\['\\''gitlabtoken'\\''\\]='\\''${data.external.gitlabconfig.*.result.gitlab_token}'\\''|g' ${var.jenkinsattribsfile}"
+    command = "sed -i 's|default\\['\\''gitlabtoken'\\''\\].*.|default\\['\\''gitlabtoken'\\''\\]='\\''${join(" ", data.external.gitlabconfig.*.result.gitlab_token)}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
   provisioner "local-exec" {
