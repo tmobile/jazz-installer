@@ -9,6 +9,7 @@ ACCOUNT=$(aws sts get-caller-identity --output text --query 'Account')
 aws ses verify-email-identity --email-address "$EMAIL_ADDRESS"
 
 # Attaching identity policy
+# We have to do this here because terraform doesn't yet support this specific operation
 # shellcheck disable=SC2086
 aws ses put-identity-policy --identity "$EMAIL_ADDRESS" --policy-name "$POLICY_NAME" --policy '{
     "Version": "2008-10-17",

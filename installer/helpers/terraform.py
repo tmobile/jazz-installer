@@ -20,7 +20,7 @@ def exec_terraform_apply():
     print(
         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
     print(
-        colors.OKBLUE + str(datetime.datetime.now()) + '\n' + colors.ENDC)
+        colors.OKBLUE + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
 
     stackDetails = get_terraform_folder() + '/stack_details.json'
 
@@ -39,7 +39,7 @@ def exec_terraform_apply():
 
     if not tee_check_output(tfCommand, workdir=get_terraform_folder()):
         print(
-            colors.FAIL + datetime.datetime.now() + '\n' + colors.ENDC)
+            colors.FAIL + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
 
         print(
             colors.FAIL + 'Terraform apply failed!' + colors.ENDC)
@@ -60,7 +60,7 @@ def exec_terraform_apply():
         #         sys.stdout.buffer.write(line)  # pass bytes as is
         #         file.write(line)
         print(
-            colors.OKGREEN + str(datetime.datetime.now()) + '\n' + colors.ENDC)
+            colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
 
         print(
             colors.OKGREEN + 'Terraform finished! The following resources have been created in AWS.\n' + colors.ENDC)
@@ -69,3 +69,7 @@ def exec_terraform_apply():
         print(
             colors.OKGREEN + 'Use the following values for checking out Jazz.\n' + colors.ENDC)
         call(['terraform', 'output'], workdir=get_terraform_folder())
+
+
+def exec_terraform_destroy():
+    //todo

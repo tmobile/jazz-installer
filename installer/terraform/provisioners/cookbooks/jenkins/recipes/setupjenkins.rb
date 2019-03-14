@@ -16,7 +16,8 @@ end
 npm_package 'jshint'
 
 # plugin management
-# Fetch the plugins.tar from our content repo TODO replace this with a dynamic plugin install like the dockerized version
+# Fetch the plugins.tar from our content repo
+# TODO replace this with a dynamic plugin install like the dockerized version
 execute 'copyPluginsTar' do
   command "curl -sL #{node['git_content_repo']}/#{node['git_plugin_branch']}/#{node['git_content_plugins']} -o #{node['chef_root']}/plugins.tar; chmod 755 #{node['chef_root']}/plugins.tar"
 end
