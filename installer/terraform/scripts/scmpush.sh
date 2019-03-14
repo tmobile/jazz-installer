@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# TODO Implement in python3, do not add significantly to this file without rewriting it in py3.
+
 #General variables
 scmelb=$1
 scmuser=$2
@@ -25,8 +28,8 @@ git config --global user.name "$scmuser"
 
 
 #Encoded username/password for git clone
-scmuser_encoded=$(python -c "import urllib; print(urllib.quote_plus('$scmuser'))")
-scmpasswd_encoded=$(python -c "import urllib; print(urllib.quote_plus('$scmpasswd'))")
+scmuser_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmuser'))")
+scmpasswd_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmpasswd'))")
 
 if [ ! -d ./jazz-core-scm ] ; then
     mkdir ./jazz-core-scm
@@ -64,7 +67,7 @@ function individual_repopush() {
     cp -rf ../jazz-core/"$1"/. "$reponame"
     cd "$reponame" || exit
     pwd
-    git add --all
+    git add -A :/
     git commit -m 'Code from the standard template'
     git remote -v
     git push -u origin master
