@@ -32,7 +32,7 @@ resource "null_resource" "update_jenkins_configs" {
 
   #Elasticsearch
   provisioner "local-exec" {
-    command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.region}"
+    command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"

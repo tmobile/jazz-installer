@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
+# TODO should be ported to python3 + sed dep dropped
 property_key=$1
 property_value=$2
 property_file_json=$3

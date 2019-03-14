@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import json
 import sys
 import subprocess
@@ -22,12 +22,11 @@ def deleteCFService(servicename):
         stderr=subprocess.STDOUT)
 
 
-#return subprocess.call("aws cloudformation list-stack-resources --stack-name " + servicename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-
 def getServicesList():
     return subprocess.call(
-        'aws cloudformation list-stacks --stack-status-filter "CREATE_IN_PROGRESS" "CREATE_FAILED" "CREATE_COMPLETE" "UPDATE_IN_PROGRESS" "UPDATE_COMPLETE" >> listservice.json',
+        'aws cloudformation list-stacks --stack-status-filter \
+        "CREATE_IN_PROGRESS" "CREATE_FAILED" "CREATE_COMPLETE" "UPDATE_IN_PROGRESS" "UPDATE_COMPLETE" \
+        >> listservice.json',
         shell=True)
 
 
@@ -63,7 +62,7 @@ if (deleteClientServices.lower() != 'true'):
 
 print("\r\nStarting deletion of micro services\r\n\r\n")
 
-## Delete user services Cloud formations
+# Delete user services Cloud formations
 fname = 'listservice.json'
 if os.path.isfile(fname):
     os.remove(fname)
@@ -83,4 +82,4 @@ spLen = len(stackName)
 inval = 0
 for item in ss:
     if (item['StackName'].startswith(stackName)):
-         deleteCloudFormationService(item['StackName'])
+        deleteCloudFormationService(item['StackName'])

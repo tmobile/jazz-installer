@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 BUCKET_NAME=$1
 CANONICAL_ID=$2
