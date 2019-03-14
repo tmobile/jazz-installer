@@ -1,4 +1,5 @@
 #!/bin/bash
+#TODO this should be ported to python
 
 securityGroupIds=$1
 subnetIds=$2
