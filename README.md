@@ -52,7 +52,7 @@ python Installer.py uninstall [all|frameworkonly]
 
 Options:
 ```
-python Installer.py help
+python Installer.py
 ```
 
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
