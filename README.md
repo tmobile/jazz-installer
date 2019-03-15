@@ -40,7 +40,7 @@ git clone git@github.com:tmobile/jazz-installer.git
 cd jazz-installer
 python3 -m virtualenv env && source env/bin/activate
 pip install -r requirements.txt
-python Installer.py install scenario3
+python Installer.py install --stackprefix myteststack --adminemail test@tst.com --region us-east-1 scenario3
 ```
 
 Uninstall:
