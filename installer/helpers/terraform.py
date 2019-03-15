@@ -72,4 +72,5 @@ def exec_terraform_apply():
 
 
 def exec_terraform_destroy():
-    //todo
+    print("TBD")
+    # todo

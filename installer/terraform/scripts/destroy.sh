@@ -3,7 +3,6 @@ date
 
 stack_name=""
 identity=""
-loopIndx=0
 
 if [ "$1" == "" ]; then
      echo "Please provide argument [all or frameworkonly]"
@@ -64,24 +63,13 @@ if [ "$1" == "all" ]; then
     cd "$JAZZ_INSTALLER_ROOT"/installer/terraform || exit
     python scripts/DeleteStackCloudFrontDists.py $stack_name false
 
-    while [ $loopIndx -le 2 ];
-    do
-        ((loopIndx++))
-        nohup terraform destroy --force >> ../../stack_deletion_$loopIndx.out &&
+    terraform destroy --force >> ../../stack_deletion.out
 
-        echo "Waiting for terraform to finish updating the logs for 30 secs"
-        sleep 30s
-        if (grep -q "Error applying plan" ../../stack_deletion_$loopIndx.out); then
-            echo "Found error in terraform destroy. In run=" + $loopIndx + ", starting to destroy again"
-            terraform state list
-        else
-            echo "Terraform destroy success"
-            break
-        fi
-    done
-
-    if [ $loopIndx -ge 3 ]; then
-        exit 1
+    if (grep -q "Error applying plan" ../../stack_deletion.out); then
+      echo "Found error in terraform destroy."
+      terraform state list
+    else
+      echo "Terraform destroy success"
     fi
 
 fi
