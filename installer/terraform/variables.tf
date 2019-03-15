@@ -136,3 +136,15 @@ variable "vpc_cidr_block" {
   default     = "10.0.0.0/16"
 }
 variable "existing_vpc_ecs" { type = "string" }
+variable "acl_db_password" {type = "string"}
+variable "acl_db_name" {type = "string" default = "casbin"}
+variable "acl_db_username" {type = "string" default = "root"}
+variable "acl_db_port" {type = "string" default = "3306"}
+variable "response_parameters_cors" {
+   type = "map"
+   default = {
+     "gatewayresponse.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,Jazz-Service-ID'"
+     "gatewayresponse.header.Access-Control-Allow-Methods" = "'*'"
+     "gatewayresponse.header.Access-Control-Allow-Origin" = "'*'"
+  }
+ }

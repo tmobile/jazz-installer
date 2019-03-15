@@ -29,6 +29,8 @@ default['bbuser'] = 'REPLACEME'
 default['bbpassword'] = 'REPLACEME'
 default['sonaruser'] = 'REPLACEME'
 default['sonarpassword'] = 'REPLACEME'
+default['acl_db_user'] = 'REPLACEME'
+default['acl_db_password'] = 'REPLACEME'
 
 #Maven cookbook property
 default['maven']['version'] = '3.5.2'

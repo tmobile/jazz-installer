@@ -24,6 +24,8 @@ cognitouser=${2}
 cognitopassword=${14}
 scmpath=$4
 jenkinsuser=${15}
+acluser=${16}
+aclpassword=${17}
 curl -sL http://"$jenkinsurl"/jnlpJars/jenkins-cli.jar -o jenkins-cli.jar
 
 if [ "$scm_type" == "bitbucket" ]; then
@@ -55,7 +57,7 @@ fi
 ./provisioners/jenkinscli/credentials/sonar.sh "$jenkins_cli_command" "$sonaruser" "$sonarpassword"
 ./provisioners/jenkinscli/credentials/aws.sh "$jenkins_cli_command" "$aws_access_key" "$aws_secret_key"
 ./provisioners/jenkinscli/credentials/cognitouser.sh "$jenkins_cli_command" "$cognitouser" "$cognitopassword"
-
+./provisioners/jenkinscli/credentials/acl.sh "$jenkins_cli_command" "$acluser" "$aclpassword"
 #Jobs
 ./provisioners/jenkinscli/jobs/job_create-service.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_delete-service.sh "$jenkins_cli_command" "$scmpath"

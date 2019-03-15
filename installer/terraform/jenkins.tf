@@ -128,4 +128,20 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} 'nostring'"
   }
+  // ACL
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} CLUSTER_READER_ENDPOINT ${aws_rds_cluster.casbin.reader_endpoint} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} CLUSTER_WRITER_ENDPOINT ${aws_rds_cluster.casbin.endpoint} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} ENDPOINT ${aws_rds_cluster_instance.casbin-instance.endpoint} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} PORT ${var.acl_db_port} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} NAME ${var.acl_db_name} ${var.jenkinsjsonpropsfile}"
+  }
 }

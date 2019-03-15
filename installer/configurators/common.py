@@ -6,6 +6,7 @@ import datetime
 import string
 import boto3
 import in_place
+import uuid
 from installer.configurators.validate_tags import prepare_tags, validate_replication_tags
 
 
@@ -66,6 +67,10 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
     replace_tfvars('cognito_pool_username', cognito_details[0],
                    get_tfvars_file())
     replace_tfvars('cognito_pool_password', cognito_details[1],
+                   get_tfvars_file())
+
+    # Generate ACL DB password
+    replace_tfvars('acl_db_password', uuid.uuid4().hex,
                    get_tfvars_file())
 
     # Set the default values of scm_username/passwd to the cognito credentials
