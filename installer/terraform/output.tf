@@ -17,6 +17,9 @@ output "jazzusername" {
 output "jazzpassword" {
   value = "${var.cognito_pool_password}"
 }
+output "jazzprefix" {
+  value = "${var.envPrefix}"
+}
 output "region" {
   value = "${var.region}"
 }

@@ -94,17 +94,9 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
             print("Invalid Tag!" + str(err))
             exit(0)
 
-    # TODO replace this with `terraform output` and drop sed
-    # subprocess.call([
-    #     'sed', '-i',
-    #     's|stack_name=.*.$|stack_name="%s"|g' % (prefix),
-    #     "scripts/destroy.sh"
-    # ])
-
 
 # Uses sed to modify the values of key-value pairs within a file
 # (such as a .tfvars file) that follow the form 'key = value'
-
 def replace_tfvars(key, value, fileName, quoteVal=True):
     with in_place.InPlace(fileName) as fileContent:
         for line in fileContent:

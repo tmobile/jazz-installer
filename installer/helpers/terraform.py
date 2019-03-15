@@ -1,8 +1,10 @@
 from pathlib import Path
 # TODO move this here?
 from installer.configurators.common import get_terraform_folder
-from installer.helpers.processwrap import tee_check_output, check_call, call
+from installer.helpers.processwrap import tee_check_output, check_call, check_output, call
 import datetime
+import subprocess
+import sys
 
 
 class colors:
@@ -72,5 +74,27 @@ def exec_terraform_apply():
 
 
 def exec_terraform_destroy():
-    print("TBD")
-    # todo
+    tfCommand = [
+            'terraform', 'destroy', '--auto-approve'
+    ]
+
+    if not tee_check_output(tfCommand, workdir=get_terraform_folder()):
+        print(
+            colors.FAIL + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
+
+        print(
+            colors.FAIL + 'Terraform destroy failed! You can try re-running the uninstall' + colors.ENDC)
+    else:
+        print(
+            colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
+
+        print(
+            colors.OKGREEN + 'Terraform finished! AWS resources destroyed\n' + colors.ENDC)
+
+
+def get_terraform_output_var(varname):
+    try:
+        return check_output(['terraform', 'output', varname], workdir=get_terraform_folder()).rstrip()
+    except subprocess.CalledProcessError:
+        print("Failed getting output variable {0} from terraform!".format(varname))
+        sys.exit()

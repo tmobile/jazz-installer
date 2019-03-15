@@ -1,15 +1,18 @@
-#!/usr/bin/python3
-
 import subprocess
 import json
-import sys
 
 
-def delete_event_source_mapping(event_source_function):
+def delete_event_source_mapping(stackName):
     """
         This method will list out the function mapping and
-        then delet the event source mapping
+        then delete the event source mapping
     """
+
+    print "Deleting EventSourceMappings for StackName:" + stackName
+
+    # Deleting Event Source Mapping for handler dev
+    event_source_function = stackName + "-hndlr-dev"
+
     try:
         print "Listing Event source mapping for function " + event_source_function
         list_event_output = subprocess.check_output([
@@ -34,17 +37,3 @@ def delete_event_source_mapping(event_source_function):
             print "No Event source mapping found"
     except Exception as e:
         print e
-
-
-# Starting point
-if (len(sys.argv) < 2):
-    print("Error - Please provide Stack Name and re-run")
-    print("Sytax: python DeleteEventSourceMapping <stackname>")
-    exit(1)
-
-stackName = sys.argv[1].lower()
-print "StackName:" + stackName
-
-# Deleting Event Source Mapping for handler dev
-event_source_function = stackName + "-hndlr-dev"
-delete_event_source_mapping(event_source_function)
