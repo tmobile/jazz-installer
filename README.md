@@ -50,6 +50,11 @@ source env/bin/activate
 python Installer.py uninstall [all|frameworkonly]
 ```
 
+Options:
+```
+python Installer.py help
+```
+
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
 
 ## Development

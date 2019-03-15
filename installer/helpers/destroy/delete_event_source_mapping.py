@@ -8,7 +8,7 @@ def delete_event_source_mapping(stackName):
         then delete the event source mapping
     """
 
-    print "Deleting EventSourceMappings for StackName:" + stackName
+    print("Deleting EventSourceMappings for StackName: {0}".format(stackName))
 
     # Deleting Event Source Mapping for handler dev
     event_source_function = stackName + "-hndlr-dev"
@@ -34,6 +34,6 @@ def delete_event_source_mapping(stackName):
             ])
             print delete_event_output
         else:
-            print "No Event source mapping found"
+            print("No Event source mapping found")
     except Exception as e:
         print e
