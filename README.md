@@ -38,9 +38,16 @@ Run:
 ```
 git clone git@github.com:tmobile/jazz-installer.git
 cd jazz-installer
-(optional if you want a venv: python3 -m virtualenv env && source env/bin/activate)
+python3 -m virtualenv env && source env/bin/activate
 pip install -r requirements.txt
 python Installer.py install scenario3
+```
+
+Uninstall:
+```
+cd jazz-installer
+source env/bin/activate
+python Installer.py uninstall [all|frameworkonly]
 ```
 
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
