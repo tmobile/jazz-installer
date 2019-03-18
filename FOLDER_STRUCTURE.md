@@ -1,6 +1,7 @@
 Please try to follow these conventions when adding new code:
 
 - jazz-installer
+  - (platform-specific prerequisite installer scripts)
   - feature-extensions
   - installer
     - cli (the installer logic, Click modules and submodules)
