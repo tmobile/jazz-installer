@@ -47,24 +47,26 @@ function individual_repopush() {
     parentfolder="${1%/*}"
 
     if [ "$scm" == "bitbucket" ]; then
+        echo "Pulling from bitbucket"
         # Creating the repo in SLF folder in SCM
         curl -X POST -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$reponame\", \"scmId\": \"git\", \"forkable\": \"true\"}"
         # Adding webhook to the jazz core services
         curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations"  -d "{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone http://"$scmuser_encoded":"$scmpasswd_encoded"@"$scmelb"/scm/SLF/"$reponame".git
+        git clone "http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/scm/SLF/$reponame.git"
 
     elif [ "$scm" == "gitlab" ]; then
+        echo "Pulling from gitlab"
         # Creating the repo in SLF folder in SCM
         repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$reponame&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
         # Adding webhook to the jazz core services
         curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone http://"$scmuser_encoded":"$scmpasswd_encoded"@"$scmelb"/slf/"$reponame".git
+        git clone "http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$reponame.git"
     fi
 
     # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
-    cp -rf ../jazz-core/"$1"/. "$reponame"
+    cp -rf "../jazz-core/$1/." "$reponame"
     cd "$reponame" || exit
     pwd
     git add -A :/
@@ -93,6 +95,8 @@ function individual_repopush() {
 }
 
 function push_to_scm() {
+    echo "pushing $1"
+
     if [[ "$1" == "builds" ]] ; then
         repos=()
         for d in builds/* ; do
