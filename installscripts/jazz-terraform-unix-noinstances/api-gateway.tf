@@ -13,6 +13,49 @@ resource "aws_api_gateway_rest_api" "jazz-prod" {
   description = "PROD API Gateway"
 }
 
+resource "aws_api_gateway_gateway_response" "jazz-dev-4xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-dev.id}"
+  status_code   = ""
+  response_type = "DEFAULT_4XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+resource "aws_api_gateway_gateway_response" "jazz-stg-4xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-stg.id}"
+  status_code   = ""
+  response_type = "DEFAULT_4XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+resource "aws_api_gateway_gateway_response" "jazz-prod-4xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-prod.id}"
+  status_code   = ""
+  response_type = "DEFAULT_4XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+resource "aws_api_gateway_gateway_response" "jazz-dev-5xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-dev.id}"
+  status_code   = ""
+  response_type = "DEFAULT_5XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+resource "aws_api_gateway_gateway_response" "jazz-stg-5xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-stg.id}"
+  status_code   = ""
+  response_type = "DEFAULT_5XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+resource "aws_api_gateway_gateway_response" "jazz-prod-5xx" {
+  rest_api_id   = "${aws_api_gateway_rest_api.jazz-prod.id}"
+  status_code   = ""
+  response_type = "DEFAULT_5XX"
+  response_parameters = "${var.response_parameters_cors}"
+}
+
+
 resource "aws_cloudwatch_log_group" "API-Gateway-Execution-Logs_dev" {
   name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.jazz-dev.id}/dev"
   tags = "${merge(var.additional_tags, local.common_tags)}"
