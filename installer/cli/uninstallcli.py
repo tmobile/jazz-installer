@@ -3,7 +3,7 @@ from installer.helpers.destroyprep import destroyprep
 from installer.helpers.terraform import exec_terraform_destroy, get_terraform_output_var
 
 
-@click.group()
+@click.command()
 @click.option(
     '--mode',
     type=click.Choice(['all', 'frameworkonly']),

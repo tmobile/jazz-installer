@@ -22,11 +22,12 @@ if __name__ == '__main__':
     # The `install` command - args and actions that are common to all scenarios
     cli.add_command(install)
 
+    # Add `uninstall` command as a top level command alongside `install`
+    cli.add_command(uninstall)
+
     # Add scenarios as child commands to `install`
     install.add_command(scenario1)
     install.add_command(scenario2)
     install.add_command(scenario3)
 
-    # Add `uninstall` command as a top level command alongside `install`
-    cli.add_command(uninstall)
     cli()
