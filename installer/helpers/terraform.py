@@ -53,14 +53,6 @@ def exec_terraform_apply():
         print(
             colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
 
-        print(
-            colors.OKGREEN + 'Terraform finished! The following resources have been created in AWS.\n' + colors.ENDC)
-        tee_check_output(['terraform', 'state', 'list'], workdir=get_terraform_folder())
-
-        print(
-            colors.OKGREEN + 'Use the following values for checking out Jazz.\n' + colors.ENDC)
-        tee_check_output(['terraform', 'output'], workdir=get_terraform_folder())
-
 
 def exec_terraform_destroy():
     tfCommand = [
