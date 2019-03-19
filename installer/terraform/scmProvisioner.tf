@@ -26,7 +26,7 @@ resource "null_resource" "copyJazzBuildModule" {
 resource "null_resource" "configureJazzBuildModule" {
   depends_on = ["null_resource.copyJazzBuildModule"]
   provisioner "local-exec" {
-    command = "${var.pushInstallervars_cmd} ${lookup(var.scmmap, "scm_username")} ${urlencode(lookup(var.scmmap, "scm_passwd"))} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_pathext")} ${var.cognito_pool_username}"
+    command = "${var.pushInstallervars_cmd} ${lookup(var.scmmap, "scm_username")} ${urlencode(lookup(var.scmmap, "scm_passwd"))} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_pathext")} ${var.cognito_pool_username} ${lookup(var.scmmap, "scm_type")} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabconfig.*.result.gitlab_token) : lookup(var.scmmap, "scm_privatetoken") }"
   }
 }
 
