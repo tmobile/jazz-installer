@@ -48,29 +48,18 @@ def exec_terraform_apply():
 
         print(
             colors.WARNING + 'Destroying created AWS resources because of failure' + colors.ENDC)
-        check_call(['terraform', 'destroy', '--auto-approve'], workdir=get_terraform_folder())
+        tee_check_output(['terraform', 'destroy', '--auto-approve'], workdir=get_terraform_folder())
     else:
-        # # Use Popen so we can echo to shell and capture log
-        # with Popen(
-        #         tfCommand,
-        #         cwd=get_terraform_folder(),
-        #         stdout=PIPE,
-        #         stderr=STDOUT,
-        #         bufsize=1
-        # ) as p, open('stack_creation.out', 'ab') as file:
-        #     for line in p.stdout:  # b'\n'-separated lines
-        #         sys.stdout.buffer.write(line)  # pass bytes as is
-        #         file.write(line)
         print(
             colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
 
         print(
             colors.OKGREEN + 'Terraform finished! The following resources have been created in AWS.\n' + colors.ENDC)
-        call(['terraform', 'state', 'list'], workdir=get_terraform_folder())
+        tee_check_output(['terraform', 'state', 'list'], workdir=get_terraform_folder())
 
         print(
             colors.OKGREEN + 'Use the following values for checking out Jazz.\n' + colors.ENDC)
-        call(['terraform', 'output'], workdir=get_terraform_folder())
+        tee_check_output(['terraform', 'output'], workdir=get_terraform_folder())
 
 
 def exec_terraform_destroy():
