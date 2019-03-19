@@ -62,7 +62,8 @@ function individual_repopush() {
         # Adding webhook to the jazz core services
         curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone "http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/slf/$reponame.git"
+        # For gitlab we're using the oauth2 token for repo auth.
+        git clone "http://oauth2:$token@$scmelb/slf/$reponame.git"
     fi
 
     # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
