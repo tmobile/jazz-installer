@@ -13,9 +13,9 @@ scmpasswd_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote
 
 rm -rf jazz-build-module
 
-if [ "$scm" == "bitbucket" ]; then
+if [ "$scm" = "bitbucket" ]; then
   git clone http://"$scmuser_encoded":"$scmpasswd_encoded"@"$scm_elb""$scm_path"/slf/jazz-build-module.git --depth 1
-elif [ "$scm" == "gitlab" ]; then
+elif [ "$scm" = "gitlab" ]; then
   git clone "http://oauth2:$gitlab_token@$scm_elb$scm_path/slf/jazz-build-module.git" --depth 1
 fi
 

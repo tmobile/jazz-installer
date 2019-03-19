@@ -47,7 +47,7 @@ Uninstall:
 ```
 cd jazz-installer
 source env/bin/activate
-python Installer.py uninstall [all|frameworkonly]
+python Installer.py uninstall --mode=[all|frameworkonly]
 ```
 
 Options:
