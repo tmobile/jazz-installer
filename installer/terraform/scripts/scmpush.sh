@@ -21,80 +21,6 @@ apikey=${11}
 region=${12}
 jazzbuildmodule=${13}
 
-webhook_url="https://$apikey.execute-api.$region.amazonaws.com/prod/jazz/scm-webhook"
-
-git config --global user.email "$emailid"
-git config --global user.name "$scmuser"
-
-
-#Encoded username/password for git clone
-scmuser_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmuser'))")
-scmpasswd_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmpasswd'))")
-
-if [ ! -d ./jazz-core-scm ] ; then
-    mkdir ./jazz-core-scm
-fi
-
-cd ./jazz-core || exit
-
-# Remove only the "git" related nested files like .gitignore from all the directories in jazz-core
-find . -name ".git*" -exec rm -rf '{}' \;  -print
-
-# Function to push code to individual repos in SLF projects to SCM
-function individual_repopush() {
-    cd ../jazz-core-scm || exit
-    reponame="${1##*/}"
-    parentfolder="${1%/*}"
-
-    if [ "$scm" == "bitbucket" ]; then
-        echo "Pulling from bitbucket"
-        # Creating the repo in SLF folder in SCM
-        curl -X POST -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$reponame\", \"scmId\": \"git\", \"forkable\": \"true\"}"
-        # Adding webhook to the jazz core services
-        curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations"  -d "{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}"
-        # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        git clone "http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/scm/SLF/$reponame.git"
-
-    elif [ "$scm" == "gitlab" ]; then
-        echo "Pulling from gitlab"
-        # Creating the repo in SLF folder in SCM
-        repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$reponame&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
-        # Adding webhook to the jazz core services
-        curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
-        # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
-        # For gitlab we're using the oauth2 token for repo auth.
-        git clone "http://oauth2:$token@$scmelb/slf/$reponame.git"
-    fi
-
-    # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
-    cp -rf "../jazz-core/$1/." "$reponame"
-    cd "$reponame" || exit
-    pwd
-    git add -A :/
-    git commit -m 'Code from the standard template'
-    git remote -v
-    git push -u origin master
-    echo "code has been pushed"
-
-    # Adding a sleep to ensure smaller jenkins boxes do not overload themselves,
-    # and to work around the AWS API Gateway creation limit:
-    # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
-    # since micro services are now only in the core folder, giving sleep for core folder.
-    if [[ $parentfolder == "core" ]]; then
-        sleep 45
-        if [[ $reponame == "jazz_ui" ]]; then
-            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
-        elif [[ $reponame != "jazz-web" ]]; then
-            file=$(find . -type f -name "build.*")
-            file_name=${file#*/}
-            service_type="${file_name:6}"
-            service_name="${reponame:5}"
-            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
-        fi
-    fi
-    cd ../../jazz-core/ || exit
-}
-
 function push_to_scm() {
     echo "pushing $1"
 
@@ -140,5 +66,81 @@ function push_to_scm() {
         done
     fi
 }
+
+# Function to push code to individual repos in SLF projects to SCM
+function individual_repopush() {
+    cd ../jazz-core-scm || exit
+    reponame="${1##*/}"
+    parentfolder="${1%/*}"
+
+    if [ "$scm" == "bitbucket" ]; then
+        echo "Pulling from bitbucket"
+        # Creating the repo in SLF folder in SCM
+        curl -X POST -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/api/1.0/projects/SLF/repos" -d "{\"name\":\"$reponame\", \"scmId\": \"git\", \"forkable\": \"true\"}"
+        # Adding webhook to the jazz core services
+        curl -X PUT -k -v -u "$scmuser:$scmpasswd" -H "Content-Type: application/json" "http://$scmelb/rest/webhook/1.0/projects/SLF/repos/$reponame/configurations"  -d "{\"title\": \"notify-events\", \"url\": \"$webhook_url\" , \"enabled\": true}"
+        # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
+        git clone "http://$scmuser_encoded:$scmpasswd_encoded@$scmelb/scm/SLF/$reponame.git"
+
+    elif [ "$scm" == "gitlab" ]; then
+        echo "Pulling from gitlab"
+        # Creating the repo in SLF folder in SCM
+        repo_id=$(curl -sL --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects?name=$reponame&namespace_id=$ns_id_slf" | awk -F',' '{print $1}'| awk -F':' '{print $2}')
+        # Adding webhook to the jazz core services
+        curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
+        # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
+        # For gitlab we're using the oauth2 token for repo auth.
+        echo "\ncloning repo http://oauth2:$token@$scmelb/slf/$reponame.git \n"
+        git clone "http://oauth2:$token@$scmelb/slf/$reponame.git"
+    fi
+
+    # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
+    cp -rf "../jazz-core/$1/." "$reponame"
+    cd "$reponame" || exit
+    pwd
+    git add -A :/
+    git commit -m 'Code from the standard template'
+    git remote -v
+    git push -u origin master
+    echo "code has been pushed"
+
+    # Adding a sleep to ensure smaller jenkins boxes do not overload themselves,
+    # and to work around the AWS API Gateway creation limit:
+    # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
+    # since micro services are now only in the core folder, giving sleep for core folder.
+    if [[ $parentfolder == "core" ]]; then
+        sleep 45
+        if [[ $reponame == "jazz_ui" ]]; then
+            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
+        elif [[ $reponame != "jazz-web" ]]; then
+            file=$(find . -type f -name "build.*")
+            file_name=${file#*/}
+            service_type="${file_name:6}"
+            service_name="${reponame:5}"
+            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/build-pack-$service_type/buildWithParameters?token=jazz-101-job&service_name=$service_name&domain=jazz&scm_branch=master"
+        fi
+    fi
+    cd ../../jazz-core/ || exit
+}
+
+# Main logic
+webhook_url="https://$apikey.execute-api.$region.amazonaws.com/prod/jazz/scm-webhook"
+
+git config --global user.email "$emailid"
+git config --global user.name "$scmuser"
+
+
+#Encoded username/password for git clone
+scmuser_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmuser'))")
+scmpasswd_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmpasswd'))")
+
+if [ ! -d ./jazz-core-scm ] ; then
+  mkdir ./jazz-core-scm
+fi
+
+cd ./jazz-core || exit
+
+# Remove only the "git" related nested files like .gitignore from all the directories in jazz-core
+find . -name ".git*" -exec rm -rf '{}' \;  -print
 
 push_to_scm "$jazzbuildmodule"
