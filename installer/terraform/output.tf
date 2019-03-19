@@ -53,3 +53,6 @@ output "scmusername" {
 output "scmpasswd" {
   value = "${lookup(var.scmmap, "scm_passwd")}"
 }
+output "scmtoken" {
+  value = ${var.scmgitlab == 1 ? join(" ", data.external.gitlabconfig.*.result.gitlab_token) : lookup(var.scmmap, "scm_privatetoken") }
+}
