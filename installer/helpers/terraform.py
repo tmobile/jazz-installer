@@ -1,7 +1,7 @@
 from pathlib import Path
 # TODO move this here?
 from installer.configurators.common import get_terraform_folder
-from installer.helpers.processwrap import tee_check_output, check_call, check_output, call
+from installer.helpers.processwrap import tee_check_output, check_output, call
 import datetime
 import subprocess
 import sys
@@ -75,7 +75,7 @@ def exec_terraform_destroy():
 
 def get_terraform_output_var(varname):
     try:
-        return check_output(['terraform', 'output', varname], workdir=get_terraform_folder()).rstrip()
+        return check_output(['terraform', 'output', varname], workdir=get_terraform_folder()).rstrip().decode('utf8')
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
