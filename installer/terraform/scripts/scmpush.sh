@@ -90,13 +90,13 @@ function individual_repopush() {
         curl --header "PRIVATE-TOKEN: $token" -X POST "http://$scmelb/api/v4/projects/$repo_id/hooks?enable_ssl_verification=false&push_events=true&url=$webhook_url"
         # Cloning the newly created repo inside jazz-core-scm folder - this sets the upstream remote repo
         # For gitlab we're using the oauth2 token for repo auth.
-        printf "\ncloning repo http://oauth2:$token@$scmelb/slf/$reponame.git \n"
+        printf "\ncloning repo http://oauth2:%s@%s/slf/%s.git \n" "$token" "$scmelb" "$reponame"
         git clone "http://oauth2:$token@$scmelb/slf/$reponame.git"
         echo 'Cloned repo'
     fi
 
     # Updating the contents of repo inside jazz-core-scm folder & pushing them to SLF folder in SCM
-    echo 'Running ../jazz-core/$1/. $reponame'
+    echo "Running ../jazz-core/$1/. $reponame"
     cp -rf "../jazz-core/$1/." "$reponame"
     cd "$reponame" || exit
     pwd
@@ -139,9 +139,11 @@ git config --global user.name "$scmuser"
 scmuser_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmuser'))")
 scmpasswd_encoded=$(python3 -c "from urllib.parse import quote_plus; print(quote_plus('$scmpasswd'))")
 
-if [ ! -d ./jazz-core-scm ] ; then
-  mkdir ./jazz-core-scm
+if [ -d ./jazz-core-scm ] ; then
+  rm -rf ./jazz-core-scm
 fi
+
+mkdir ./jazz-core-scm
 
 cd ./jazz-core || exit
 
