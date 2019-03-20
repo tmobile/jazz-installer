@@ -113,7 +113,7 @@
         },
         "service_tabs": {
             "overview": true,
-            "access_control": false,
+            "access_control": true,
             "metrics": true,
             "logs": true,
             "cost": false
@@ -148,6 +148,19 @@
         "SLACK_TOKEN": "{slack_token}",
         "SLACK_WORKSPACE": "{slack_workspace}",
         "SLACK_SVC_ID": "{slack_svc_acc_id}"
+    },
+    "ACL": {
+        "ENABLED": true,
+        "DATABASE": {
+          "CLUSTER_READER_ENDPOINT": "",
+          "CLUSTER_WRITER_ENDPOINT": "",
+          "ENDPOINT": "",
+          "PORT": "",
+          "NAME": "",
+          "CREDENTIAL_ID": "ACL_DB_CRDENTIAL",
+          "TYPE_DB": "mysql",
+          "TIMEOUT": 100000
+        }
     },
     "SPLUNK": {
         "IS_ENABLED": "{ENABLE_SPLUNK_FEATURE}",

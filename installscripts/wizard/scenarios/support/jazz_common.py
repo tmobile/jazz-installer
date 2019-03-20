@@ -2,6 +2,7 @@
 import os
 import re
 import subprocess
+import uuid
 
 # Global variables
 HOME_FOLDER = "~"
@@ -62,6 +63,9 @@ def parse_and_replace_parameter_list(terraform_folder, parameter_list):
     replace_tfvars('cognito_pool_username', cognito_details[0],
                    get_tfvars_file())
     replace_tfvars('cognito_pool_password', cognito_details[1],
+                   get_tfvars_file())
+
+    replace_tfvars('acl_db_password', uuid.uuid4().hex,
                    get_tfvars_file())
 
     # Populating Jazz Tag env
