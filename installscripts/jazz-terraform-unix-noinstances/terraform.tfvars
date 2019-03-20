@@ -54,3 +54,4 @@ dockerizedSonarqube = false
 autovpc = false
 vpc_cidr_block = "10.0.0.0/16"
 existing_vpc_ecs = "replaceme"
+acl_db_password = "REPLACEME"
