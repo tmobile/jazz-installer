@@ -74,6 +74,7 @@ with open(installervarsparth) as json_file:
             'CODE_QUALITY': config['CODE_QUALITY'],
             'SLACK': config['SLACK'],
             'SPLUNK': config['SPLUNK'],
-            'APIGEE': config['APIGEE']
+            'APIGEE': config['APIGEE'],
+            'ACL': config['ACL']
             }
     )
