@@ -37,10 +37,16 @@ def startJob(args):
             args.jenkins_password, args.account_details)
 
     subprocess.call(jenkins_build_command, shell=True)
-    if jenkins_job_status("delete-resources"):
-        print "Job is Success"
-    else:
-        print "Job is Failed"
+    while True:
+        data = jenkins_job_status("delete-resources", args)
+        if data['result'] == "SUCCESS":
+            print 'Job run Successfully'
+            break
+        elif data['building']:
+            print 'Job is Running'
+            time.sleep(60)
+        else:
+            print 'Unknown Job Status please contact Administrator'
 
 
 def collectUserInput(args):
@@ -67,13 +73,7 @@ def jenkins_job_status(job_name, args):
         url = "http://%s:%s@%s/job/%s/lastBuild/api/json" \
                 % (args.jenkins_username, args.jenkins_password, args.jenkins_url, job_name)
         data = requests.get(url).json()
-        if data['building']:
-            time.sleep(60)
-        else:
-            if data['result'] == "SUCCESS":
-                return True
-            else:
-                return False
+        return data
     except Exception as e:
         print str(e)
         return False
