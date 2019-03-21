@@ -29,7 +29,7 @@ resource "aws_security_group" "vpc_sg" {
         from_port = 80
         to_port = 80
         protocol = "tcp"
-        cidr_blocks = [ "0.0.0.0/0" ]
+        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
     }
     ingress {
         from_port = 9000
@@ -41,7 +41,7 @@ resource "aws_security_group" "vpc_sg" {
         from_port = 9000
         to_port = 9000
         protocol = "tcp"
-        cidr_blocks = [ "0.0.0.0/0" ]
+        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
     }
     ingress {
         from_port = 8080
@@ -53,7 +53,7 @@ resource "aws_security_group" "vpc_sg" {
         from_port = 8080
         to_port = 8080
         protocol = "tcp"
-        cidr_blocks = [ "0.0.0.0/0" ]
+        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
     }
 
     egress {
