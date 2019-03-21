@@ -306,8 +306,7 @@ resource "aws_ecs_service" "ecs_service_jenkins" {
 
   network_configuration {
     security_groups    = ["${aws_security_group.vpc_sg.id}"]
-    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-    assign_public_ip = true
+    subnets            = ["${aws_subnet.subnet_for_ecs_private.*.id}"]
   }
 
   load_balancer {
@@ -330,8 +329,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
 
   network_configuration {
     security_groups    = ["${aws_security_group.vpc_sg.id}"]
-    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-    assign_public_ip = true
+    subnets            = ["${aws_subnet.subnet_for_ecs_private.*.id}"]
   }
 
   load_balancer {
@@ -354,8 +352,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
 
   network_configuration {
     security_groups    = ["${aws_security_group.vpc_sg.id}"]
-    subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
-    assign_public_ip = true
+    subnets            = ["${aws_subnet.subnet_for_ecs_private.*.id}"]
   }
 
   load_balancer {
