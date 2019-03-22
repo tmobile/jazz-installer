@@ -95,8 +95,10 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
             exit(0)
 
 
-# Uses sed to modify the values of key-value pairs within a file
+# Modify the values of key-value pairs within a file
 # (such as a .tfvars file) that follow the form 'key = value'
+# If the value exists in a map (and needs the quotes left off)
+# use quoteVal=False
 def replace_tfvars(key, value, fileName, quoteVal=True):
     with in_place.InPlace(fileName) as fileContent:
         for line in fileContent:
@@ -104,20 +106,6 @@ def replace_tfvars(key, value, fileName, quoteVal=True):
                 fileContent.write(re.sub(r'({0} = )(.*)'.format(key), r'\1"{0}"'.format(value), line))
             else:
                 fileContent.write(re.sub(r'({0} = )(.*)'.format(key), r'\1{0}'.format(value), line))
-
-
-# def replace_tfvars(key, value, fileName):
-#     subprocess.call([
-#         'sed', "-i\'.bak\'",
-#         r's|\(%s = \)\(.*\)|\1\"%s\"|g' % (key, value), fileName
-#     ])
-
-# replace it without double quotes
-# def replace_tfvars_map(key, value, fileName):
-#     subprocess.call([
-#         'sed', "-i\'.bak\'",
-#         r's|\(%s = \)\(.*\)|\1%s|g' % (key, value), fileName
-#     ])
 
 
 def validate_email_id(email_id):

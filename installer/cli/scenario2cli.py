@@ -23,7 +23,7 @@ from installer.helpers.terraform import exec_terraform_apply
 @click.option(
     '--bitbucket_publicip',
     required=True,
-    help='Provide the public IP of the Bitbucket server to be configured.',
+    help='Provide the DNS name of the Bitbucket server to be configured.',
     prompt=True
 )
 # Sonarqube (container)

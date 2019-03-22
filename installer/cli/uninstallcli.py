@@ -7,8 +7,8 @@ from installer.helpers.terraform import exec_terraform_destroy, get_terraform_ou
 @click.option(
     '--mode',
     type=click.Choice(['all', 'frameworkonly']),
-    help='`all` to remove Jazz and all deployed functions, \
-    `frameworkonly` to remove Jazz but leave deployed functions alone',
+    help='`all` to remove Jazz and all deployed services, \
+    `frameworkonly` to remove Jazz but leave deployed services alone',
     required=True
 )
 def uninstall(mode):
