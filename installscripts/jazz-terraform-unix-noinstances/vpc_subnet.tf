@@ -12,6 +12,11 @@ data "aws_vpc" "vpc_data" {
   count = "${var.dockerizedJenkins}"
   id = "${var.autovpc == 1 ? join(" ", aws_vpc.vpc_for_ecs.*.id) : var.existing_vpc_ecs }"
 }
+
+data "external" "instance_ip" {
+  program = ["bash", "-c", "echo \"{\\\"ip\\\" : \\\"$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)\\\"}\""]
+}
+
 # VPC SG
 resource "aws_security_group" "vpc_sg" {
     count = "${var.dockerizedJenkins}"
@@ -29,7 +34,7 @@ resource "aws_security_group" "vpc_sg" {
         from_port = 80
         to_port = 80
         protocol = "tcp"
-        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
+        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32",  "${data.external.instance_ip.result.ip}/32"]
     }
     ingress {
         from_port = 9000
@@ -38,24 +43,11 @@ resource "aws_security_group" "vpc_sg" {
         self = true
     }
     ingress {
-        from_port = 9000
-        to_port = 9000
-        protocol = "tcp"
-        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
-    }
-    ingress {
         from_port = 8080
         to_port = 8080
         protocol = "tcp"
         self = true
-    }
-    ingress {
-        from_port = 8080
-        to_port = 8080
-        protocol = "tcp"
-        cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32" ]
-    }
-
+    }    
     egress {
         from_port = 0
         to_port = 0
