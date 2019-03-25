@@ -32,6 +32,7 @@ resource "aws_security_group" "acl_sg" {
     name_prefix = "${var.envPrefix}"
     description = "Aurora MySQL access"
     revoke_rules_on_delete = true
+    vpc_id = "${data.aws_vpc.vpc_data.id}"
     lifecycle {
      create_before_destroy = true
     }
@@ -45,7 +46,7 @@ resource "aws_security_group" "acl_sg" {
         from_port = 0
         to_port = 0
         protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
+        cidr_blocks = ["${aws_eip.elasticip.public_ip}/32", "${data.aws_vpc.vpc_data.cidr_block}"]
     }
     tags = "${merge(var.additional_tags, local.common_tags)}"
 }

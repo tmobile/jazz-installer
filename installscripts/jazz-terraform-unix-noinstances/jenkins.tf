@@ -100,7 +100,7 @@ resource "null_resource" "update_jenkins_configs" {
   }
   // Modifying subnet replacement before copying cookbooks to Jenkins server.
   provisioner "local-exec" {
-    command = "${var.configureSubnet_cmd} ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
+    command = "${var.configureSubnet_cmd} ${aws_security_group.vpc_sg.id} ${element(aws_subnet.subnet_for_ecs_private.*.id, 1)} ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
   // ACL
   provisioner "local-exec" {

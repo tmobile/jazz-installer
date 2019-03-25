@@ -16,7 +16,7 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
   tags = "${merge(var.additional_tags, local.common_tags, map(
           "Domain", "${var.envPrefix}_elasticsearch_domain",
           ))}"
-          
+
   //vpc_options {
   //  security_group_ids = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"],
   //  subnet_ids = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}"]
@@ -31,7 +31,10 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
             "Principal": {
                 "AWS": "*"
                 },
-            "Effect": "Allow"
+            "Effect": "Allow",
+            "Condition": {
+                "IpAddress": {"aws:SourceIp": "${aws_eip.elasticip.public_ip}/32"}
+            }
         }
     ]
 }
