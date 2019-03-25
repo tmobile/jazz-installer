@@ -4,7 +4,7 @@
 import argparse
 import subprocess
 import requests
-import time
+from retrying import retry
 
 
 def main():
@@ -37,16 +37,10 @@ def startJob(args):
             args.jenkins_password, args.account_details)
 
     subprocess.call(jenkins_build_command, shell=True)
-    while True:
-        data = jenkins_job_status("delete-resources", args)
-        if data['result'] == "SUCCESS":
-            print 'Job run Successfully'
-            break
-        elif data['building']:
-            print 'Job is Running'
-            time.sleep(60)
-        else:
-            print 'Unknown Job Status please contact Administrator'
+    if jenkins_job_status("TriggerJob", args):
+        print "Job Executed Successfully"
+    else:
+        print "Job Execution Failed"
 
 
 def collectUserInput(args):
@@ -68,15 +62,27 @@ def collectUserInput(args):
                       '(Empty will delete all): ') or "all"
 
 
+def retry_if_false(result):
+    if (result):
+        return False
+    else:
+        return True
+
+
+@retry(retry_on_result=retry_if_false, wait_random_min=20000, wait_random_max=30000)
 def jenkins_job_status(job_name, args):
     try:
         url = "http://%s:%s@%s/job/%s/lastBuild/api/json" \
                 % (args.jenkins_username, args.jenkins_password, args.jenkins_url, job_name)
         data = requests.get(url).json()
-        return data
+        if data['result'] == "SUCCESS":
+            return True
+        elif data['building']:
+            return False
+        else:
+            raise Exception("Error ! Please contact Administrator...")
     except Exception as e:
-        print str(e)
-        return False
+        raise Exception(str(e))
 
 
 main()
