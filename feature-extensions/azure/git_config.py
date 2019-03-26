@@ -1,5 +1,7 @@
 import subprocess
 import urllib
+
+
 # TODO drop this whole script once we have API-based config implemented
 
 def clone_git_config_repo(repo, username, password, pathext, folder):
@@ -17,6 +19,7 @@ def clone_git_config_repo(repo, username, password, pathext, folder):
             "--depth",
             "1",
             folder])
+
 
 def commit_git_config(buildFolder, configFile, message):
     subprocess.check_call(["git", "add", configFile], cwd=buildFolder)

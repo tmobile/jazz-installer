@@ -35,7 +35,7 @@ def main(**kwargs):
 @main.command()
 @click.option('--jazz-stackprefix',
               envvar='JAZZ_STACKPREFIX',
-              help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), your existing config will be imported',
+              help='Stackprefix of your Jazz installation (e.g. myjazz), your existing config will be imported',
               prompt=True)
 @click.option('--scm-repo', envvar='SCM_REPO', help='Specify the scm repo url', prompt=True)
 @click.option('--scm-username', envvar='SCM_USERNAME', help='Specify the scm username', prompt=True)
@@ -112,7 +112,7 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
 @main.command()
 @click.option('--jazz-stackprefix',
               envvar='JAZZ_STACKPREFIX',
-              help='Specify the stackprefix of your existing Jazz installation (e.g. myjazz), your existing config will be imported',
+              help='Stackprefix of your Jazz installation (e.g. myjazz), your existing config will be imported',
               prompt=True)
 @click.option('--scm-repo', envvar='SCM_REPO', help='Specify the scm repo url', prompt=True)
 @click.option('--scm-username', envvar='SCM_USERNAME', help='Specify the scm username', prompt=True)
