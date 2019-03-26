@@ -107,6 +107,8 @@ def install(args):
             args.jazz_password,
             args.jazz_apiendpoint
         )
+        # Trigger jazz ui
+        startJob(args, "job/jazz_ui/build?token=jazz-101-job")
 
 
 def collect_userinputs(args):
@@ -166,6 +168,17 @@ def setCredential(args, credential_id):
             args.aws_accesskey,
             args.aws_secretkey
             ])
+
+
+def startJob(args, jobUrl):
+    subprocess.check_call(
+        [
+            "curl",
+            "-X",
+            "POST",
+            ("http://%s:%s@%s/%s") %
+            (args.jenkins_username, args.jenkins_password, args.jenkins_url, jobUrl),
+        ])
 
 
 main()
