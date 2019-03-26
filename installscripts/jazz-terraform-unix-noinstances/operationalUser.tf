@@ -45,7 +45,8 @@ resource "aws_iam_user_policy" "operational_policy" {
         "iam:DeleteRole",
         "iam:AttachRolePolicy",
         "iam:UpdateRole",
-        "iam:PutRolePolicy"
+        "iam:PutRolePolicy",
+        "iam:GetRolePolicy"
       ],
       "Effect": "Allow",
       "Resource": [
