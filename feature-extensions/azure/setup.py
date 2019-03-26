@@ -166,6 +166,7 @@ def update_config(azure_subscription_id, azure_location, azure_client_id, azure_
         data = json.load(f, object_pairs_hook=OrderedDict)
 
     azureConfig = OrderedDict()
+    azureConfig['IS_ENABLED'] = True
     azureConfig['SUBSCRIPTION_ID'] = 'AZ_SUBSCRIPTIONID'
     azureConfig['CLIENT_ID'] = 'AZ_CLIENTID'
     azureConfig["PASSWORD"] = 'AZ_PASSWORD'
@@ -263,8 +264,7 @@ def destroy_terraform(jazzprefix, azure_location, azure_subscription_id, azure_c
 
 def getTerraformOutputVar(varname):
     try:
-        output = subprocess.check_output(['terraform', 'output', varname], cwd='./terraform')
-        return output.strip(' \n\r')
+        return subprocess.check_output(['terraform', 'output', varname], cwd='./terraform').strip(' \n\r')
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()

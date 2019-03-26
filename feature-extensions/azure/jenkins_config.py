@@ -38,8 +38,7 @@ def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
                "    \"description\": \"{0}\",\n"
                "    \"$class\": \"com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl\"\n"
                "  }}\n"
-               "}}")
-    content.format(key, value)
+               "}}").format(key, value)
     data = {'json': content}
     resp = requests.post(url, data=data, auth=basic_auth)
     if resp.status_code != 200:
