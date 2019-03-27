@@ -119,16 +119,18 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_eip" "elasticip" {
+  count = "${var.dockerizedJenkins}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_nat_gateway" "natgtw" {
+  count = "${var.dockerizedJenkins}"
   allocation_id = "${aws_eip.elasticip.id}"
-  subnet_id = "${var.dockerizedJenkins == 1 ? join(" ", aws_subnet.subnet_for_ecs.*.id) : data.external.instance_default_subnet.result.subnet}"
+  subnet_id = "${element(aws_subnet.subnet_for_ecs.*.id, 1)}"
 }
 
 resource "aws_subnet" "subnet_for_ecs_private" {
-  count             = "${length(list("${var.region}a","${var.region}b"))}"
+  count             = "${var.dockerizedJenkins * length(list("${var.region}a","${var.region}b"))}"
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(list("${var.region}a","${var.region}b"), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(4 * 2, 2)), 2 + count.index)}"
@@ -136,6 +138,7 @@ resource "aws_subnet" "subnet_for_ecs_private" {
 }
 
 resource "aws_route_table" "privateroute" {
+  count = "${var.dockerizedJenkins}"
   vpc_id = "${data.aws_vpc.vpc_data.id}"
 
   route {
@@ -146,6 +149,7 @@ resource "aws_route_table" "privateroute" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 resource "aws_route_table_association" "privateroute_assoc" {
+  count = "${var.dockerizedJenkins}"
   route_table_id = "${aws_route_table.privateroute.id}"
   subnet_id      = "${element(aws_subnet.subnet_for_ecs_private.*.id, 1)}"
 }
