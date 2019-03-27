@@ -54,6 +54,6 @@ resource "aws_security_group" "acl_sg" {
 
 resource "aws_db_subnet_group" "casbin_subnet_group" {
     name          = "${var.envPrefix}_casbin_db_subnet_group"
-    subnet_ids    = ["${var.dockerizedJenkins == 1 ? join(" ", aws_subnet.subnet_for_ecs.*.id) : data.external.instance_default_subnet.result.subnet }"]
+    subnet_ids    = ["${split(",", var.dockerizedJenkins == 1 ?  join(",",aws_subnet.subnet_for_ecs.*.id) : join(",",data.aws_subnet_ids.instance_public_subnets.ids))}"]
     tags = "${merge(var.additional_tags, local.common_tags)}"
 }
