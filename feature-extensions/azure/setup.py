@@ -3,6 +3,7 @@ import json
 import os.path
 import subprocess
 import sys
+import urllib
 from collections import OrderedDict
 
 import click
@@ -102,11 +103,17 @@ def install(jazz_stackprefix, scm_repo, scm_username, scm_password, scm_pathext,
                     azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
                     azure_apim_prod_sku)
 
-    update_config(azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id)
+    update_config(azure_location)
     jenkins_config.update_jenkins(jenkins_user, jenkins_host, jenkins_port, jenkins_api_token, azure_client_id,
                                   azure_client_secret,
                                   azure_tenant_id, azure_subscription_id)
     commit_config("Adding Azure deployment feature")
+
+    print(
+        colors.OKGREEN +
+        "Start to redeploy jazz_metrcis.\n"
+        + colors.ENDC)
+    redeploy_metrics(scm_repo, scm_username, scm_password, scm_pathext)
 
 
 @main.command()
@@ -161,7 +168,7 @@ def commit_config(message):
     git_config.commit_git_config(configFolder, jsonConfigFile, message)
 
 
-def update_config(azure_subscription_id, azure_location, azure_client_id, azure_client_secret, azure_tenant_id):
+def update_config(azure_location):
     with open("{}/{}".format(configFolder, jsonConfigFile), 'r') as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
@@ -268,6 +275,35 @@ def getTerraformOutputVar(varname):
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
+
+
+def redeploy_metrics(repo, username, password, pathext):
+    metricsFolder = "module_metrics"
+    message = "add a blank character to README.md to trigger redeployment"
+    fileToUpdate = "README.md"
+
+    subprocess.check_call(["rm", "-rf", metricsFolder])
+    # Clone the SCM
+    subprocess.check_call(
+        [
+            "git",
+            "clone",
+            ("http://%s:%s@%s%s/slf/jazz_metrics.git") %
+            (username,
+             urllib.quote(
+                 password),
+             repo,
+             pathext),
+            "--depth",
+            "1",
+            metricsFolder])
+
+    # append a blank char into a filr
+    f = open("{}/{}".format(metricsFolder, fileToUpdate), "a")
+    f.write(" ")
+    f.close()
+
+    git_config.commit_git_config(metricsFolder, fileToUpdate, message)
 
 
 main()
