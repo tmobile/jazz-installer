@@ -9,6 +9,7 @@ resource "aws_vpc" "vpc_for_ecs" {
 
 # VPC data resource for both new and existing vpc
 data "aws_vpc" "vpc_data" {
+  count = "${var.dockerizedJenkins}"
   id = "${var.autovpc == 1 ? join(" ", aws_vpc.vpc_for_ecs.*.id) : var.existing_vpc_ecs }"
 }
 
@@ -22,6 +23,7 @@ data "external" "instance_default_subnet" {
 
 # VPC SG
 resource "aws_security_group" "vpc_sg" {
+    count = "${var.dockerizedJenkins}"
     name = "${var.envPrefix}_dockerized_sg"
     description = "ECS ALB access"
     vpc_id = "${data.aws_vpc.vpc_data.id}"

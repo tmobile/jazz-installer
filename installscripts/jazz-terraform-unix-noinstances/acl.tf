@@ -41,7 +41,7 @@ resource "aws_security_group" "acl_sg" {
         from_port = "${var.acl_db_port}"
         to_port = "${var.acl_db_port}"
         protocol = "tcp"
-        cidr_blocks = ["${data.aws_vpc.vpc_data.cidr_block}"]
+        cidr_blocks = ["${var.dockerizedJenkins == 1 ? join(" ", data.aws_vpc.vpc_data.*.cidr_block) : "0.0.0.0/0" }"]
     }
     egress {
         from_port = 0
@@ -54,6 +54,6 @@ resource "aws_security_group" "acl_sg" {
 
 resource "aws_db_subnet_group" "casbin_subnet_group" {
     name          = "${var.envPrefix}_casbin_db_subnet_group"
-    subnet_ids    = ["${aws_subnet.subnet_for_ecs.*.id}"]
+    subnet_ids    = ["${var.dockerizedJenkins == 1 ? join(" ", aws_subnet.subnet_for_ecs.*.id) : data.external.instance_default_subnet.result.subnet }"]
     tags = "${merge(var.additional_tags, local.common_tags)}"
 }

@@ -17,10 +17,6 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
           "Domain", "${var.envPrefix}_elasticsearch_domain",
           ))}"
 
-  //vpc_options {
-  //  security_group_ids = ["${lookup(var.jenkinsservermap, "jenkins_security_group")}"],
-  //  subnet_ids = ["${lookup(var.jenkinsservermap, "jenkins_subnet")}"]
-  //}
   access_policies = <<POLICIES
 
 {
@@ -33,7 +29,7 @@ resource "aws_elasticsearch_domain" "elasticsearch_domain" {
                 },
             "Effect": "Allow",
             "Condition": {
-                "IpAddress": {"aws:SourceIp": "${aws_eip.elasticip.public_ip}/32"}
+                "IpAddress": {"aws:SourceIp": "${var.dockerizedJenkins == 1 ? format("%s%s", join(" ", aws_eip.elasticip.*.public_ip), "/32" ) : "0.0.0.0/0" }"}
             }
         }
     ]

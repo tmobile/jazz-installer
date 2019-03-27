@@ -119,13 +119,6 @@ def get_and_add_existing_jenkins_config(terraform_folder):
         'curl', '-sL', jenkins_url + '/jnlpJars/jenkins-cli.jar', '-o',
         'jenkins-cli.jar'
     ])
-    cmd_mac = ['curl', '-s', 'http://169.254.169.254/latest/meta-data/network/interfaces/macs/']
-    subprocess.call(cmd_mac, stdout=open("mac", 'w'), stderr=open("mac", 'w'))
-    mac = open('mac').read()
-    cmd_vpc = ['curl', '-s', 'http://169.254.169.254/latest/meta-data/network/interfaces/macs/%s/vpc-id' % (mac)]
-    subprocess.call(cmd_vpc, stdout=open("vpc", 'w'), stderr=open("vpc", 'w'))
-    vpc = open('vpc').read()
-    replace_tfvars('existing_vpc_ecs', vpc, get_tfvars_file())
     add_jenkins_config_to_files(parameter_list)
 
 
