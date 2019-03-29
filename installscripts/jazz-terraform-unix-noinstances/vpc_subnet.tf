@@ -14,17 +14,16 @@ data "aws_vpc" "vpc_data" {
 }
 
 data "external" "instance_ip" {
-  program = ["bash", "-c", "echo \"{\\\"ip\\\" : \\\"$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)\\\"}\""]
+  program = ["bash", "-c", "echo \"{\\\"ip\\\" : \\\"$(curl -s  checkip.amazonaws.com)\\\"}\""]
 }
 
-data "external" "instance_default_vpc" {
-  program = ["bash", "-c", "echo \"{\\\"vpc\\\" : \\\"$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/)/vpc-id)\\\"}\""]
+data "aws_vpc" "default" {
+  default = true
 }
 
 data "aws_subnet_ids" "instance_public_subnets" {
-  vpc_id = "${data.external.instance_default_vpc.result.vpc}"
+  vpc_id = "${data.aws_vpc.default.id}"
 }
-
 
 # VPC SG
 resource "aws_security_group" "vpc_sg" {
