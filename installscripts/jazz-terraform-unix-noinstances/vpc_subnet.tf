@@ -154,8 +154,13 @@ resource "aws_route_table" "privateroute" {
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
-resource "aws_route_table_association" "privateroute_assoc" {
+resource "aws_route_table_association" "privateroute_assoc1" {
   count = "${var.dockerizedJenkins}"
   route_table_id = "${aws_route_table.privateroute.id}"
   subnet_id      = "${element(aws_subnet.subnet_for_ecs_private.*.id, 1)}"
+}
+resource "aws_route_table_association" "privateroute_assoc2" {
+  count = "${var.dockerizedJenkins}"
+  route_table_id = "${aws_route_table.privateroute.id}"
+  subnet_id      = "${element(aws_subnet.subnet_for_ecs_private.*.id, 2)}"
 }
