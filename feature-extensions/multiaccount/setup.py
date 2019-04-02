@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 import argparse
 import subprocess
+import sys
+sys.path.append('../config')
 from api_config import update_config
 from core import deploy_core_service
 

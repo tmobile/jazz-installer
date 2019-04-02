@@ -2,6 +2,8 @@ import boto3
 import json
 import uuid
 import retrying
+import sys
+sys.path.append('../config')
 from api_config import get_config, update_config_in
 
 
