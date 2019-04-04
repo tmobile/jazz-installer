@@ -115,10 +115,7 @@ def get_and_add_existing_jenkins_config(terraform_folder):
     ]
 
     replace_tfvars_map("dockerizedJenkins", "false", get_tfvars_file())
-    subprocess.call([
-        'curl', '-sL', jenkins_url + '/jnlpJars/jenkins-cli.jar', '-o',
-        'jenkins-cli.jar'
-    ])
+
     add_jenkins_config_to_files(parameter_list)
 
 
