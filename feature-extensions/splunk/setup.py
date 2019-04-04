@@ -2,6 +2,9 @@
 import subprocess
 import argparse
 import urllib
+import sys
+sys.path.append('../config')
+from api_config import *
 
 
 class colors:
@@ -39,20 +42,18 @@ def main():
         help='Specify the splunk index'
     )
     mainParser.add_argument(
-        '--scm-repo',
-        help='Specify the scm repo url'
+        '--jazz-username',
+        help='Specify the Jazz username'
     )
+
     mainParser.add_argument(
-        '--scm-username',
-        help='Specify the scm username'
+        '--jazz-password',
+        help='Specify the Jazz password'
     )
+
     mainParser.add_argument(
-        '--scm-password',
-        help='Specify the scm password'
-    )
-    mainParser.add_argument(
-        '--scm-pathext',
-        help='Specify the scm repo path ext (Use "scm" for bitbucket)'
+        '--jazz-apiendpoint',
+        help='Specify the Jazz password'
     )
 
     args = mainParser.parse_args()
@@ -79,17 +80,14 @@ def configureSplunk(args, splunk_enable):
     if not args.splunk_index:
         args.splunk_index = raw_input("Please enter the Splunk Index: ")
 
-    if not args.scm_repo:
-        args.scm_repo = raw_input("Please enter the SCM Repo: ")
+    if not args.jazz_username:
+        args.jazz_username = raw_input("Please enter the Jazz Admin Username: ")
 
-    if not args.scm_username:
-        args.scm_username = raw_input("Please enter the SCM Username: ")
+    if not args.jazz_password:
+        args.jazz_password = raw_input("Please enter the Jazz Admin Password: ")
 
-    if not args.scm_password:
-        args.scm_password = raw_input("Please enter the SCM Password: ")
-
-    if not args.scm_pathext:
-        args.scm_pathext = raw_input("Please enter the Splunk Pathext (Use \"/scm\" for bitbucket): ") or "/"
+    if not args.jazz_apiendpoint:
+        args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
 
     if not args.splunk_endpoint and not args.splunk_token and not args.splunk_index:
         print(colors.FAIL +
@@ -97,46 +95,24 @@ def configureSplunk(args, splunk_enable):
               + colors.ENDC)
         return True
 
-    replace_config(args)
+    splunk_json = prepare_splunk_json(args)
+    update_config(
+        "SPLUNK",
+        splunk_json,
+        args.jazz_username,
+        args.jazz_password,
+        args.jazz_apiendpoint
+    )
 
 
-def replace_config(args):
-
-    # Clone the SCM
-    subprocess.check_call(
-        [
-            "git",
-            "clone",
-            ("http://%s:%s@%s%s/slf/jazz-build-module.git") %
-            (args.scm_username,
-             urllib.quote(
-                 args.scm_password),
-             args.scm_repo,
-             args.scm_pathext),
-            "--depth",
-            "1"])
-
-    configFile = "jazz-installer-vars.json"
-    buildFolder = './jazz-build-module/'
-    # Read in the file
-    with open(buildFolder+configFile, 'r') as file:
-        filedata = file.read()
-
-    # Replace the target string
-    filedata = filedata.replace('"{ENABLE_SPLUNK_FEATURE}"', 'true')
-    filedata = filedata.replace('{SPLUNK_ENDPOINT}', args.splunk_endpoint)
-    filedata = filedata.replace('{SPLUNK_TOKEN}', args.splunk_token)
-    filedata = filedata.replace('{SPLUNK_INDEX}', args.splunk_index)
-
-    # Write the file out again
-    with open(buildFolder+configFile, 'w') as file:
-        file.write(filedata)
-
-    # Commit the changes
-    subprocess.check_call(["git", "add", configFile], cwd=buildFolder)
-    subprocess.check_call(["git", "commit", "-m", "'Adding Splunk feature'"], cwd=buildFolder)
-    subprocess.check_call(["git", "push", "-u", "origin", "master"], cwd=buildFolder)
-    subprocess.check_call(["rm", "-rf", buildFolder])
+def prepare_splunk_json(args):
+    splunk_json = {
+        "ENDPOINT": args.splunk_endpoint,
+        "HEC_TOKEN": args.splunk_token,
+        "INDEX": args.splunk_index,
+        "IS_ENABLED": True
+    }
+    return splunk_json
 
 
 main()

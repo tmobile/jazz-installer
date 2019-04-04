@@ -3,9 +3,11 @@ import sys
 import subprocess
 import argparse
 import os.path
+import sys
+sys.path.append('../config')
 import terraformBugWorkaround
 from apigeeinstaller.init_apigee_install import install_proxy
-from git_config import replace_config, revert_config
+from api_config import *
 
 
 class colors:
@@ -46,23 +48,18 @@ def main():
     )
 
     mainParser.add_argument(
-        '--scm-repo',
-        help='Specify the scm repo url'
+        '--jazz-username',
+        help='Specify the Jazz username'
     )
 
     mainParser.add_argument(
-        '--scm-username',
-        help='Specify the scm username'
+        '--jazz-password',
+        help='Specify the Jazz password'
     )
 
     mainParser.add_argument(
-        '--scm-password',
-        help='Specify the scm password'
-    )
-
-    mainParser.add_argument(
-        '--scm-pathext',
-        help='Specify the scm repo path ext (Use "scm" for bitbucket)'
+        '--jazz-apiendpoint',
+        help='Specify the Jazz password'
     )
 
     mainParser.add_argument(
@@ -129,22 +126,25 @@ def install(args):
         args.apigee_username,
         args.apigee_password
     )
-
-    replace_config(
+    credential_id = "ApigeeforJazz"
+    apigee_json = prepare_apigee_json(
         args.apigee_host,
-        "ApigeeforJazz",
+        credential_id,
         args.apigee_prod_env,
         args.apigee_dev_env,
         args.apigee_svc_prod_host,
         args.apigee_svc_dev_host,
-        args.apigee_org,
-        args.scm_repo,
-        args.scm_username,
-        args.scm_password,
-        args.scm_pathext
+        args.apigee_org
     )
 
-    credential_id = "ApigeeforJazz"
+    update_config(
+        "APIGEE",
+        apigee_json,
+        args.jazz_username,
+        args.jazz_password,
+        args.jazz_apiendpoint
+    )
+
     # Store the CREDENTIAL_ID in jenkins
     setCredential(args, credential_id)
     # Trigger metrics api
@@ -171,11 +171,12 @@ def uninstall(args):
     terraformBugWorkaround.restoreOldRoleToExistingFunctionWithCLI(getEnvPrefix(args) + "-" + gatewayFunctionName)
 
     runTerraform(getRegion(args), getAWSAccountID(), getEnvPrefix(args), False)
-    revert_config(
-        args.scm_repo,
-        args.scm_username,
-        args.scm_password,
-        args.scm_pathext
+    update_config(
+        "APIGEE.ENABLE_APIGEE",
+        'false',
+        args.jazz_username,
+        args.jazz_password,
+        args.jazz_apiendpoint
     )
     # Trigger metrics api
     metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
@@ -267,17 +268,14 @@ def getAWSAccountID():
 
 
 def collect_userinputs(args):
-    if not args.scm_repo:
-        args.scm_repo = raw_input("Please enter the SCM Repo: ").strip()
+    if not args.jazz_username:
+        args.jazz_username = raw_input("Please enter the Jazz Admin Username: ")
 
-    if not args.scm_username:
-        args.scm_username = raw_input("Please enter the SCM Username: ").strip()
+    if not args.jazz_password:
+        args.jazz_password = raw_input("Please enter the Jazz Admin Password: ")
 
-    if not args.scm_password:
-        args.scm_password = raw_input("Please enter the SCM Password: ").strip()
-
-    if not args.scm_pathext:
-        args.scm_pathext = raw_input("Please enter the SCM Pathext (Use \"/scm\" for bitbucket): ").strip() or "/"
+    if not args.jazz_apiendpoint:
+        args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
 
     if not args.jenkins_url:
         args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ").strip()
@@ -336,6 +334,31 @@ def startJob(args, jobUrl):
             ("http://%s:%s@%s/%s") %
             (args.jenkins_username, args.jenkins_password, args.jenkins_url, jobUrl),
         ])
+
+
+def prepare_apigee_json(apigeeHost, apigeeCredId, apigeeProdEnv, apigeeDevEnv,
+                        apigeeSvcProdHost, apigeeSvcDevHost, apigeeOrg):
+    apigee_json = {
+        "API_ENDPOINTS": {
+          "DEV": {
+            "MGMT_ENV": apigeeDevEnv,
+            "MGMT_HOST": apigeeHost,
+            "MGMT_ORG": apigeeOrg,
+            "SERVICE_HOSTNAME": apigeeSvcDevHost
+          },
+          "PROD": {
+            "MGMT_ENV": apigeeProdEnv,
+            "MGMT_HOST": apigeeHost,
+            "MGMT_ORG": apigeeOrg,
+            "SERVICE_HOSTNAME": apigeeSvcProdHost
+          }
+        },
+        "APIGEE_CRED_ID": apigeeCredId,
+        "BUILD_VERSION": "1.0",
+        "ENABLE_APIGEE": True,
+        "USE_SECURE": False
+    }
+    return apigee_json
 
 
 main()
