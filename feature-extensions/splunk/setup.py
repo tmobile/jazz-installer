@@ -1,10 +1,7 @@
-#!/usr/bin/env python2
-import subprocess
 import argparse
-import urllib
 import sys
-sys.path.append('../config')
-from api_config import *
+sys.path.append('../config')  # noqa: E402
+from api_config import update_config
 
 
 class colors:

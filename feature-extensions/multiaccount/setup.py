@@ -1,8 +1,7 @@
-#!/usr/bin/env python2
 import argparse
 import subprocess
 import sys
-sys.path.append('../config')
+sys.path.append('../config')  # noqa: E402
 from api_config import update_config
 from core import deploy_core_service
 

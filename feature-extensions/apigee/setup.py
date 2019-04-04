@@ -3,11 +3,10 @@ import sys
 import subprocess
 import argparse
 import os.path
-import sys
-sys.path.append('../config')
+sys.path.append('../config')  # noqa: E402
 import terraformBugWorkaround
 from apigeeinstaller.init_apigee_install import install_proxy
-from api_config import *
+from api_config import update_config
 
 
 class colors:

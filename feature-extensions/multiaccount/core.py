@@ -3,7 +3,7 @@ import json
 import uuid
 import retrying
 import sys
-sys.path.append('../config')
+sys.path.append('../config')  # noqa: E402
 from api_config import get_config, update_config_in
 
 
