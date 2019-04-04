@@ -75,7 +75,8 @@
             "API": "build-pack-api",
             "LAMBDA": "build-pack-lambda",
             "WEBSITE": "build-pack-website"
-        }
+        },
+        "DOCKERIZED": ""
     },
     "SCM": {
         "TYPE": "bitbucket",

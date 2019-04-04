@@ -42,7 +42,6 @@ resource "aws_security_group" "vpc_sg" {
         from_port = 80
         to_port = 80
         protocol = "tcp"
-        //cidr_blocks = [ "${aws_eip.elasticip.public_ip}/32",  "${data.external.instance_ip.result.ip}/32"]
         cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
     ingress {

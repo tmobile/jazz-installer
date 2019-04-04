@@ -142,7 +142,6 @@ def get_and_add_docker_jenkins_config(jenkins_docker_path):
 
     network_range = raw_input("Enter the Network range IP (for eg: 10.0.0.0/8,1.2.3.4/32) :") or "0.0.0.0/0"
     replace_tfvars('network_range', network_range, get_tfvars_file())
-
     # Get values to create the array
     parameter_list = ["replaceme", "admin", jenkins_passwd, "replaceme",
                       "root", "2200", "replaceme", "replaceme"]
