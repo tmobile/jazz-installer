@@ -15,13 +15,13 @@ def check_jenkins_pem():
         " Please make sure that you have the ssh login user names of jenkins and bitbucket servers."
     )
     # Check if user dropped the jenkins key into the installer root (scenario 1 only)
-    if not Path.is_file(jenkins_pem):
+    if not Path(jenkins_pem).is_file():
         sys.exit(
             "File jenkinskey.pem not found in installer root directory, kindly add and run the installer again! "
         )
 
     # Make sure the PEM the user dropped in has the right perms
-    subprocess.call('sudo chmod 400 {0}'.format(jenkins_pem))
+    subprocess.call('chmod 400 {0}'.format(jenkins_pem))
 
 
 def check_jenkins_user(url, usernamepw):
@@ -51,8 +51,8 @@ def check_jenkins_user(url, usernamepw):
         return 0
 
 
-def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
-    replace_tfvars('jenkins_elb', ip, get_tfvars_file())
+def update_jenkins_terraform(endpoint, userpw, sshuser, ssh_port, secgrp, subnet):
+    replace_tfvars('jenkins_elb', endpoint, get_tfvars_file())
     replace_tfvars('jenkins_security_group', secgrp, get_tfvars_file())
     replace_tfvars('jenkins_subnet', subnet, get_tfvars_file())
     replace_tfvars('jenkinsuser', userpw[0], get_tfvars_file())
@@ -62,9 +62,9 @@ def update_jenkins_terraform(ip, userpw, sshuser, ssh_port, secgrp, subnet):
     replace_tfvars('jenkins_ssh_key', '{0}'.format(jenkins_pem), get_tfvars_file())
 
 
-def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):
+def configure_jenkins(endpoint, userpw, sshuser, secgrp, subnet):
     # Check is the jenkins user exist in jenkins server
-    if not check_jenkins_user(elb, userpw):
+    if not check_jenkins_user(endpoint, userpw):
         sys.exit(
             "Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!"
         )
@@ -75,4 +75,4 @@ def configure_jenkins(elb, userpw, ip, sshuser, secgrp, subnet):
     ssh_port = "22"
 
     replace_tfvars('dockerizedJenkins', 'false', get_tfvars_file(), quoteVal=False)
-    update_jenkins_terraform(elb, userpw, ip, sshuser, ssh_port, secgrp, subnet)
+    update_jenkins_terraform(endpoint, userpw, sshuser, ssh_port, secgrp, subnet)

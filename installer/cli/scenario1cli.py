@@ -20,13 +20,7 @@ from installer.helpers.terraform import exec_terraform_apply
 @click.option(
     '--jenkins_endpoint',
     required=True,
-    help='Provide the DNS name (without the protocol or port) of the Jenkins server to be configured',
-    prompt=True
-)
-@click.option(
-    '--jenkins_publicip',
-    required=True,
-    help='Provide the public IP of the Jenkins server to be configured.',
+    help='Provide the publicly-accessible DNS name or IP (without the protocol or port) of the Jenkins server to be configured',
     prompt=True
 )
 @click.option(
@@ -99,7 +93,6 @@ def scenario1(
         # Jenkins inputs
         jenkins_userpass,
         jenkins_endpoint,
-        jenkins_publicip,
         jenkins_sshuser,
         jenkins_secgroup,
         jenkins_subnet,
@@ -119,7 +112,6 @@ def scenario1(
     configure_jenkins(
         jenkins_endpoint,
         jenkins_userpass,
-        jenkins_publicip,
         jenkins_sshuser,
         jenkins_secgroup,
         jenkins_subnet

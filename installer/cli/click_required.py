@@ -29,6 +29,8 @@ class Required(click.Option):
                     raise click.UsageError(
                         "Illegal usage: `%s` must be provided if `%s` is specified" % (
                             self.name, self.required_if))
+            else:
+                self.prompt = None
         elif hasattr(self, 'required_if_not'):
             we_are_present = self.name in opts
             other_present = self.required_if_not in opts

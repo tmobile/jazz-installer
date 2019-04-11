@@ -28,7 +28,7 @@ def check_bitbucket_user(url, username, passwd):
     ]
 
     try:
-        output = subprocess.check_output(cmd)
+        output = str(subprocess.check_output(cmd))
 
         if not output.find("created"):
             print(output)
