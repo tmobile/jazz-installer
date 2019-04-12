@@ -76,6 +76,8 @@
             "LAMBDA": "build-pack-lambda",
             "WEBSITE": "build-pack-website"
         },
+        "LAMBDA_SERVICES": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler"],
+        "API_SERVICES": ["acl", "create-serverless-service", "environment-event-handler", "delete-serverless-service"],
         "DOCKERIZED": ""
     },
     "SCM": {
