@@ -37,7 +37,7 @@ def startJob(args):
             args.jenkins_password, args.account_details)
 
     subprocess.call(jenkins_build_command, shell=True)
-    if jenkins_job_status("TriggerJob", args):
+    if jenkins_job_status("delete-resources", args):
         print "Job Executed Successfully"
     else:
         print "Job Execution Failed"
