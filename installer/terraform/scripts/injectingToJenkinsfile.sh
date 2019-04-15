@@ -16,7 +16,8 @@ inject_bootstrap_variables()
   for d in **/*/ ; do
       file=$(find "$d" -type f -name "$file_name")
       if [[ "$file" =~ Jenkinsfile* ]] ; then
-        jenkinsfile_arr=("${jenkinsfile_arr[@]}" "$file")
+        # shellcheck disable=SC2206
+        jenkinsfile_arr=(${jenkinsfile_arr[@]} "$file")
      fi
   done
 
