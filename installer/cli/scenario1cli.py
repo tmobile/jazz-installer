@@ -107,7 +107,9 @@ def scenario1(
         sonarqube_publicip=None
 ):
     """Installs stack with preexisting Jenkins and preexisting Bitbucket"""
-
+    # Fix click bug with nargs=2 and prompting
+    # https://github.com/pallets/click/issues/532
+    jenkins_userpass = ''.join(list(jenkins_userpass)).split()
     click.secho('\n\nConfiguring Jenkins server', fg='blue')
     configure_jenkins(
         jenkins_endpoint,
@@ -119,6 +121,10 @@ def scenario1(
 
     click.secho('\n\nConfiguring Bitbucket server', fg='blue')
     # Get Bitbucket configuration details
+
+    # Fix click bug with nargs=2 and prompting
+    # https://github.com/pallets/click/issues/532
+    bitbucket_userpass = ''.join(list(bitbucket_userpass)).split()
     configure_bitbucket(
         bitbucket_endpoint,
         bitbucket_userpass,

@@ -57,6 +57,10 @@ def scenario2(bitbucket_endpoint, bitbucket_userpass, bitbucket_publicip, existi
 
     click.secho('\n\nConfiguring Bitbucket server', fg='blue')
     # Get Bitbucket configuration details
+
+    # Fix click bug with nargs=2 and prompting
+    # https://github.com/pallets/click/issues/532
+    bitbucket_userpass = ''.join(list(bitbucket_userpass)).split()
     configure_bitbucket(
         bitbucket_endpoint,
         bitbucket_userpass,
