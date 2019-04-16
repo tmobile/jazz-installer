@@ -96,7 +96,7 @@ resource "null_resource" "configureExistingJenkinsServer" {
   depends_on = ["null_resource.updateJenkinsChefCookbook", "aws_s3_bucket.jazz-web", "null_resource.update_jenkins_configs"]
 
   connection {
-    host = "${lookup(var.jenkinsservermap, "jenkins_elb")}"
+    host = "${lookup(var.jenkinsservermap, "jenkins_rawendpoint")}"
     user = "${lookup(var.jenkinsservermap, "jenkins_ssh_login")}"
     port = "${lookup(var.jenkinsservermap, "jenkins_ssh_port")}"
     type = "ssh"

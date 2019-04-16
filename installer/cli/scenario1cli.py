@@ -24,6 +24,13 @@ from installer.helpers.terraform import exec_terraform_apply
     prompt=True
 )
 @click.option(
+    '--jenkins_defaultport',
+    required=False,
+    help='Provide the port the Jenkins server is listening on. Default: 8080',
+    prompt=True,
+    default='8080'
+)
+@click.option(
     '--jenkins_sshuser',
     required=True,
     help='Provide the name of a user that can be used to SSH into the Jenkins server to be configured.',
@@ -93,6 +100,7 @@ def scenario1(
         # Jenkins inputs
         jenkins_userpass,
         jenkins_endpoint,
+        jenkins_defaultport,
         jenkins_sshuser,
         jenkins_secgroup,
         jenkins_subnet,
@@ -113,6 +121,7 @@ def scenario1(
     click.secho('\n\nConfiguring Jenkins server', fg='blue')
     configure_jenkins(
         jenkins_endpoint,
+        jenkins_defaultport,
         jenkins_userpass,
         jenkins_sshuser,
         jenkins_secgroup,

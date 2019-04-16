@@ -51,8 +51,9 @@ def check_jenkins_user(url, usernamepw):
         return 0
 
 
-def update_jenkins_terraform(endpoint, userpw, sshuser, ssh_port, secgrp, subnet):
-    replace_tfvars('jenkins_elb', endpoint, get_tfvars_file())
+def update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, secgrp, subnet):
+    replace_tfvars('jenkins_elb', '{0}:{1}'.format(endpoint, defaultport), get_tfvars_file())
+    replace_tfvars('jenkins_rawendpoint', endpoint, get_tfvars_file())
     replace_tfvars('jenkins_security_group', secgrp, get_tfvars_file())
     replace_tfvars('jenkins_subnet', subnet, get_tfvars_file())
     replace_tfvars('jenkinsuser', userpw[0], get_tfvars_file())
@@ -62,7 +63,7 @@ def update_jenkins_terraform(endpoint, userpw, sshuser, ssh_port, secgrp, subnet
     replace_tfvars('jenkins_ssh_key', '{0}'.format(jenkins_pem), get_tfvars_file())
 
 
-def configure_jenkins(endpoint, userpw, sshuser, secgrp, subnet):
+def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet):
     # Check is the jenkins user exist in jenkins server
     if not check_jenkins_user(endpoint, userpw):
         sys.exit(
@@ -75,4 +76,4 @@ def configure_jenkins(endpoint, userpw, sshuser, secgrp, subnet):
     ssh_port = "22"
 
     replace_tfvars('dockerizedJenkins', 'false', get_tfvars_file(), quoteVal=False)
-    update_jenkins_terraform(endpoint, userpw, sshuser, ssh_port, secgrp, subnet)
+    update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, secgrp, subnet)

@@ -12,6 +12,7 @@ tagsExempt = "REPLACEME"
 #Jenkins server map (set programmatically by wizard, not directly by user or terraform)
 jenkinsservermap = {
   jenkins_elb = "REPLACEME"
+  jenkins_rawendpoint = "REPLACEME"
   jenkinsuser = "REPLACEME"
   jenkinspasswd = "REPLACEME"
   jenkins_ssh_login = "REPLACEME"
