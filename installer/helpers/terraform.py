@@ -1,7 +1,7 @@
 from pathlib import Path
 # TODO move this here?
 from installer.configurators.common import get_terraform_folder
-from installer.helpers.processwrap import tee_check_output, check_output, call
+from installer.helpers.processwrap import tee_check_output, check_output, call, call_outputtofile
 import datetime
 import subprocess
 import sys
@@ -50,8 +50,9 @@ def exec_terraform_apply():
             colors.WARNING + 'Destroying created AWS resources because of failure' + colors.ENDC)
         tee_check_output(['terraform', 'destroy', '--auto-approve'], workdir=get_terraform_folder())
     else:
-        print(
-            colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
+        print(colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
+        print(colors.OKGREEN + 'Install succeded, generating stack_details.json...' + '\n' + colors.ENDC)
+        get_terraform_output_json()
 
 
 def exec_terraform_destroy():
@@ -78,4 +79,12 @@ def get_terraform_output_var(varname):
         return check_output(['terraform', 'output', varname], workdir=get_terraform_folder()).rstrip().decode('utf8')
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
+        sys.exit()
+
+
+def get_terraform_output_json():
+    try:
+        return call_outputtofile(['terraform', 'output', '-json'], 'stack_details.json', workdir=get_terraform_folder())
+    except subprocess.CalledProcessError:
+        print("Failed getting output as JSON from terraform!")
         sys.exit()

@@ -35,14 +35,8 @@ def tee_check_output(args, workdir=None):
                 sys.stdout.buffer.write(line)
                 output.write(line.decode('utf8'))
         return p.returncode == 0
-        # while p.poll() is None:
-        #     line = p.stdout.readline()
-        #     output.write(line)
-        #     output.flush()
-        #     sys.stdout.buffer.write(line)
-        # # Once the process returns, make sure we capture the last bit of output
-        # line = p.stdout.readline()
-        # output.write(line)
-        # output.flush()
-        # sys.stdout.buffer.write(line)
-        # return p.returncode == 0
+
+
+def call_outputtofile(args, filename, workdir=None):
+    with open(filename, 'a') as output:
+        subprocess.call(args, stderr=output, stdout=output, cwd=workdir)

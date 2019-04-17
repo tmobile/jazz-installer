@@ -24,11 +24,11 @@ def check_jenkins_pem():
     subprocess.call('chmod 400 {0}'.format(jenkins_pem))
 
 
-def check_jenkins_user(url, usernamepw):
+def check_jenkins_user(url, defaultport, usernamepw):
     """
         Check if the jenkins user is present in Jenkins server
     """
-    jenkins_url = 'http://' + url + ''
+    jenkins_url = 'http://{0}:{1}'.format(url, defaultport)
     # Download the CLI jar from the jenkins server
     subprocess.call([
         'curl', '-sL', jenkins_url + '/jnlpJars/jenkins-cli.jar', '-o',
@@ -65,7 +65,7 @@ def update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, s
 
 def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet):
     # Check is the jenkins user exist in jenkins server
-    if not check_jenkins_user(endpoint, userpw):
+    if not check_jenkins_user(endpoint, defaultport, userpw):
         sys.exit(
             "Kindly provide an 'Admin' Jenkins user with correct password and run the installer again!"
         )
