@@ -1,10 +1,12 @@
 from pathlib import Path
 # TODO move this here?
 from installer.configurators.common import get_terraform_folder
-from installer.helpers.processwrap import tee_check_output, check_output, call, call_outputtofile
+from installer.helpers.processwrap import tee_check_output, check_output, call
 import datetime
 import subprocess
 import sys
+import json
+from collections import OrderedDict
 
 
 class colors:
@@ -23,12 +25,6 @@ def exec_terraform_apply():
         colors.OKBLUE + 'Initializing and running Terraform.\n' + colors.ENDC)
     print(
         colors.OKBLUE + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
-
-    stackDetails = get_terraform_folder() + '/stack_details.json'
-
-    stackfile = Path(stackDetails)
-    if stackfile.exists():
-        stackfile.unlink()
 
     call(['terraform', 'init'], workdir=get_terraform_folder())
 
@@ -52,7 +48,7 @@ def exec_terraform_apply():
     else:
         print(colors.OKGREEN + datetime.datetime.now().strftime('%c') + '\n' + colors.ENDC)
         print(colors.OKGREEN + 'Install succeded, generating stack_details.json...' + '\n' + colors.ENDC)
-        get_terraform_output_json()
+        generate_stack_details()
 
 
 def exec_terraform_destroy():
@@ -82,9 +78,52 @@ def get_terraform_output_var(varname):
         sys.exit()
 
 
-def get_terraform_output_json():
-    try:
-        return call_outputtofile(['terraform', 'output', '-json'], 'stack_details.json', workdir=get_terraform_folder())
-    except subprocess.CalledProcessError:
-        print("Failed getting output as JSON from terraform!")
-        sys.exit()
+# All we're doing here is taking values already stored as output variables
+# in terraform and translating them to a specific JSON format
+# `terraform output -json` would already do this for us, but we have some internal
+# scripts and tools that rely on this specific old format so we still need this translation logic
+# If those tools are ever updated to handle the terraform output json directly we can drop this
+def generate_stack_details():
+    # Delete old stack_details.json if it's still
+    # hanging around from a previous run
+    stackDetails = get_terraform_folder() + '/stack_details.json'
+
+    stackfile = Path(stackDetails)
+    if stackfile.exists():
+        stackfile.unlink()
+
+    output = OrderedDict()
+    key_common_list = OrderedDict(
+        [("jenkinselb", "Jenkins ELB"), ("jenkinsuser", "Jenkins Username"),
+         ("jenkinspasswd", "Jenkins Password"), ("jazzhome", "Jazz Home"),
+         ("jazzusername", "Jazz Admin Username"), ("jazzpassword",
+                                                   "Jazz Admin Password"),
+         ("region", "Region"), ("apiendpoint", "Jazz API Endpoint")])
+    output = generate_dict(key_common_list, output)
+
+    if get_terraform_output_var("codeq") == "1":
+        key_codeq_list = OrderedDict([("sonarhome", "Sonar Home"),
+                                      ("sonarusername", "Sonar Username"),
+                                      ("sonarpasswd", "Sonar Password")])
+        output = generate_dict(key_codeq_list, output)
+
+    if get_terraform_output_var("scmbb") == "1":
+        key_bb_list = OrderedDict([("scmelb", "Bitbucket ELB"),
+                                   ("scmusername", "Bitbucket Username"),
+                                   ("scmpasswd", "Bitbucket Password")])
+        output = generate_dict(key_bb_list, output)
+
+    if get_terraform_output_var("scmgitlab") == "1":
+        key_gitlab_list = OrderedDict([("scmelb", "Gitlab Home"),
+                                       ("scmusername", "Gitlab Username"),
+                                       ("scmpasswd", "Gitlab Password")])
+        output = generate_dict(key_gitlab_list, output)
+
+    with open("stack_details.json", 'w+') as file:
+        file.write(json.dumps(output, indent=4))
+
+
+def generate_dict(outputkeys, output):
+    for opkey, key in outputkeys.items():
+        output.update({key: get_terraform_output_var(opkey)})
+    return output
