@@ -12,6 +12,14 @@ def get_gitlab_group(query):
 
     group = gl.groups.create({'name': 'SLF', 'path': 'slf', 'description': 'Jazz framework, templates and services'})
 
+    # Update the username from the `root` user to scm_username, because for some
+    # reason downstream stuff needs it.
+    # TODO Downstream stuff should only need the access token, investigate if user
+    # creds can be dropped after this point in favor of the PAT
+    rootUser = gl.users.list(username='root')[0]
+    rootUser.username = query['scm_username']
+    rootUser.save()
+
     return {
         'gitlab_slfid': str(group.id),
         'gitlab_token': str(token)

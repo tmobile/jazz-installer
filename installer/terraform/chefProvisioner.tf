@@ -137,6 +137,7 @@ data "external" "gitlabconfig" {
   query = {
     passwd = "${var.cognito_pool_password}"
     gitlab_ip = "${aws_lb.alb_ecs_gitlab.dns_name}"
+    scm_username = "${lookup(var.scmmap, "scm_username")}"
     gitlab_slfid = "RETVAL"
     gitlab_token = "RETVAL"
   }

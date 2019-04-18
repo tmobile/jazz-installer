@@ -75,8 +75,8 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
 
     # Set the default values of scm_username/passwd to the cognito credentials
     # If using existing SCM instance, that scenario (e.g. 1) will obviously overwrite these values.
-
-    replace_tfvars('scm_username', cognito_details[0], get_tfvars_file())
+    # For some reason Gitlab needs the username to conform to this specific regex
+    replace_tfvars('scm_username', re.sub('[^a-zA-Z0-9_-]', '-', cognito_details[0]), get_tfvars_file())
     replace_tfvars('scm_passwd', cognito_details[1], get_tfvars_file())
 
     # Populating Jazz Tag env
