@@ -21,7 +21,7 @@ def check_jenkins_pem():
         )
 
     # Make sure the PEM the user dropped in has the right perms
-    subprocess.call('chmod 400 {0}'.format(jenkins_pem))
+    subprocess.call(['chmod', '400', '{0}'.format(jenkins_pem)])
 
 
 def check_jenkins_user(url, defaultport, usernamepw):
