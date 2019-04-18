@@ -20,7 +20,7 @@ elif [ "$scm" = "gitlab" ]; then
 fi
 
 cd jazz-build-module || exit
-cp "$JAZZ_INSTALLER_ROOT"/installer/terraform/provisioners/cookbooks/jenkins/files/default/jazz-installer-vars.json .
+cp ../provisioners/cookbooks/jenkins/files/default/jazz-installer-vars.json .
 git add jazz-installer-vars.json
 git config --global user.email "$cognito_pool_username"
 git commit -m 'Adding Json file to repo'
