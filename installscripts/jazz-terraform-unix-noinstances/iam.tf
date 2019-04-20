@@ -43,6 +43,11 @@ resource "aws_iam_role_policy_attachment" "pushtocloudwatchlogs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
 
+resource "aws_iam_role_policy_attachment" "vpcaccess" {
+  role       = "${aws_iam_role.platform_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "${var.envPrefix}_basic_execution"
   tags = "${merge(var.additional_tags, local.common_tags)}"
