@@ -10,6 +10,6 @@ resource "null_resource" "updategitlabjenkinsconfig" {
   }
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} BASE_URL ${lookup(var.scmmap, "scm_publicip")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} BASE_URL ${aws_lb.alb_ecs_gitlab.dns_name} ${var.jenkinsjsonpropsfile}"
   }
 }

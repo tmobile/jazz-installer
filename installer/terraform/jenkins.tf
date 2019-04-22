@@ -21,13 +21,13 @@ resource "null_resource" "update_jenkins_configs" {
 
   #KINESIS
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_DEV ${aws_kinesis_stream.logs_stream_dev.arn} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {KINESIS_LOGS_STREAM_DEV} ${aws_kinesis_stream.logs_stream_dev.arn} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_STG ${aws_kinesis_stream.logs_stream_stg.arn} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {KINESIS_LOGS_STREAM_STG} ${aws_kinesis_stream.logs_stream_stg.arn} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} KINESIS_LOGS_STREAM_PROD ${aws_kinesis_stream.logs_stream_prod.arn} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {KINESIS_LOGS_STREAM_PROD} ${aws_kinesis_stream.logs_stream_prod.arn} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
 
   #Elasticsearch
@@ -40,20 +40,20 @@ resource "null_resource" "update_jenkins_configs" {
 
   # API key
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} AWS_DEV_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-dev.id} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {AWS_DEV_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-dev.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} AWS_STG_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} AWS_PROD_API_ID_DEFAULT ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {AWS_PROD_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   #TODO why do we need these following to values in addition to the previous ones?
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} AWS_STG_API_ID_JAZZ ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_JAZZ} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} AWS_PROD_API_ID_JAZZ ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} {AWS_PROD_API_ID_JAZZ} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} INSTANCE_PREFIX ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
@@ -126,7 +126,7 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} REGION ${var.region} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} 'nostring'"
+    command = "${var.modifyPropertyFile_cmd} TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} ARRAY"
   }
   // ACL
   provisioner "local-exec" {
