@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" {}
 
 resource "aws_rds_cluster" "casbin" {
   cluster_identifier      = "${var.envPrefix}-${var.acl_db_name}-cluster"
-  availability_zones      = ["${data.aws_availability_zones.available.names}"]
+  availability_zones      = ["${slice(data.aws_availability_zones.available.names, 0, 3)}"]
   database_name           = "${var.acl_db_name}"
   master_username         = "${var.acl_db_username}"
   master_password         = "${var.acl_db_password}"
