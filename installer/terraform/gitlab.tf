@@ -2,7 +2,7 @@ resource "null_resource" "updategitlabjenkinsconfig" {
   count = "${var.scmgitlab}"
 
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} TYPE 'gitlab' ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} TYPE \"gitlab\" ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "local-exec" {
