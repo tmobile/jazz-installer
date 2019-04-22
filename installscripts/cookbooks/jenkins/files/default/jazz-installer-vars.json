@@ -66,6 +66,10 @@
           "API": ["aws_apigateway", "gcp_apigee"],
           "FUNCTION": ["aws_lambda"],
           "WEBSITE": ["aws_s3", "aws_cloudfront"]
+        },
+        "VPC_SERVICES": {
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs"],
+          "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         }
     },
     "JENKINS": {
@@ -75,7 +79,8 @@
             "API": "build-pack-api",
             "LAMBDA": "build-pack-lambda",
             "WEBSITE": "build-pack-website"
-        }
+        },
+        "DOCKERIZED": ""
     },
     "SCM": {
         "TYPE": "bitbucket",
