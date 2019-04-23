@@ -82,8 +82,8 @@
         },
         "DOCKERIZED": ""
     },
-    "SCM": {
-        "TYPE": "bitbucket",
+  "SCM": {
+        "TYPE": "{SCM_TYPE}",
         "PRIVATE_TOKEN": "",
         "CAS_NAMESPACE_ID": ""
     },
