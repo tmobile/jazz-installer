@@ -26,11 +26,17 @@ from installer.helpers.terraform import exec_terraform_apply
     required_if_not='vpcid',
     prompt=True
 )
-def scenario3(sonarqube, vpcid, vpc_cidr):
+@click.option(
+    "--ecs_range",
+    help='Specify a CIDR block to define what IPs can access ECS instances (default - 0.0.0.0/0)',
+    default='0.0.0.0/0',
+    prompt=True
+)
+def scenario3(sonarqube, vpcid, vpc_cidr, ecs_range):
     """Installs stack with containerized Jenkins and containerized Gitlab"""
 
     click.secho('\n\nConfiguring Jenkins container', fg='blue')
-    configure_jenkins_container(vpcid, vpc_cidr)
+    configure_jenkins_container(vpcid, vpc_cidr, ecs_range)
     click.secho('\nJenkins server configured!', fg='green')
 
     click.secho('\n\nConfiguring Gitlab container', fg='blue')

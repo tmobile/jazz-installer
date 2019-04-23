@@ -128,6 +128,9 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} TAGS \"${var.aws_tags}\" ${var.jenkinsjsonpropsfile} ARRAY"
   }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} DOCKERIZED ${var.dockerizedJenkins == 1 ? "true": "false" } ${var.jenkinsjsonpropsfile} ARRAY"
+  }
   // ACL
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} CLUSTER_READER_ENDPOINT ${aws_rds_cluster.casbin.reader_endpoint} ${var.jenkinsjsonpropsfile}"
