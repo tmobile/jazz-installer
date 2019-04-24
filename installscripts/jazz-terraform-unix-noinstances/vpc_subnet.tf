@@ -74,9 +74,9 @@ resource "aws_internet_gateway" "igw_for_ecs" {
 # Dynamic Subnet creation
 
 resource "aws_subnet" "subnet_for_ecs" {
-  count             = "${var.dockerizedJenkins * length(list("${var.region}a","${var.region}b"))}"
+  count             = "${var.dockerizedJenkins * length(slice(data.aws_availability_zones.available.names, 0, 2))}"
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
-  availability_zone = "${element(list("${var.region}a","${var.region}b"), count.index)}"
+  availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(2 * 2, 2)), 2 + count.index)}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
@@ -136,9 +136,9 @@ resource "aws_nat_gateway" "natgtw" {
 }
 
 resource "aws_subnet" "subnet_for_ecs_private" {
-  count             = "${var.dockerizedJenkins * length(list("${var.region}a","${var.region}b"))}"
+  count             = "${var.dockerizedJenkins * length(slice(data.aws_availability_zones.available.names, 0, 2))}"
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
-  availability_zone = "${element(list("${var.region}a","${var.region}b"), count.index)}"
+  availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(4 * 2, 2)), 2 + count.index)}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
