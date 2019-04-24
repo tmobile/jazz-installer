@@ -84,8 +84,7 @@
     },
   "SCM": {
         "TYPE": "{SCM_TYPE}",
-        "PRIVATE_TOKEN": "",
-        "CAS_NAMESPACE_ID": ""
+        "PRIVATE_TOKEN": ""
     },
     "UI_CONFIG": {
         "CREATE_SERVICE": {

@@ -11,6 +11,10 @@ resource "null_resource" "createProjectsInBB" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} BASE_URL ${lookup(var.scmmap, "scm_elb")} ${var.jenkinsjsonpropsfile}"
   }
+
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} {SCM_TYPE} bitbucket ${var.jenkinsjsonpropsfile} BY_VALUE"
+  }
 }
 
 // Copy the jazz-build-module to SLF in SCM
