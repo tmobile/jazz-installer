@@ -10,7 +10,8 @@ def get_gitlab_group(query):
 
     gl = gitlab.Gitlab('http://{0}'.format(query['gitlab_ip']), api_version=4, private_token=token)
 
-    group = gl.groups.create({'name': 'SLF', 'path': 'slf', 'description': 'Jazz framework, templates and services'})
+    slfGroup = gl.groups.create({'name': 'SLF', 'path': 'slf', 'description': 'Jazz framework, templates and services'})
+    gl.groups.create({'name': 'CAS', 'path': 'cas', 'description': 'User created services repository'})
 
     # Update the username from the `root` user to scm_username, because for some
     # reason downstream stuff needs it.
@@ -21,7 +22,7 @@ def get_gitlab_group(query):
     rootUser.save()
 
     return {
-        'gitlab_slfid': str(group.id),
+        'gitlab_slfid': str(slfGroup.id),
         'gitlab_token': str(token)
     }
 
