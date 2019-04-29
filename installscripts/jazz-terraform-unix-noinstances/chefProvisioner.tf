@@ -143,7 +143,7 @@ resource "null_resource" "configureJenkins" {
 resource "null_resource" "postJenkinsConfiguration" {
   depends_on = ["null_resource.configureJenkins"]
   provisioner "local-exec" {
-    command = "${var.modifyCodebase_cmd}  ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${aws_iam_role.platform_role.arn} ${var.envPrefix} ${var.cognito_pool_username}"
+    command = "${var.modifyCodebase_cmd}  ${var.dockerizedJenkins == 1 ? join(" ", aws_security_group.vpc_sg.*.id) : lookup(var.jenkinsservermap, "jenkins_security_group") } ${var.dockerizedJenkins == 1 ? join(",", aws_subnet.subnet_for_ecs_private.*.id) : lookup(var.jenkinsservermap, "jenkins_subnet") } ${aws_iam_role.platform_role.arn} ${var.envPrefix} ${var.cognito_pool_username}"
   }
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
