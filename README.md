@@ -13,8 +13,6 @@ Jazz addresses gaps and pain points with serverless, particularly for production
 * **Services** - Today devs can build functions, APIs and static websites. The template-based system makes it easy to define new ones.
 * **Deployment Targets** - Currently we deploy to AWS (Lambda, API gateway and S3). We plan to support Azure Functions.
 
-* Now Jazz supports ECS Fargate
-
 * **Features** - Services seamlessly integrate features like monitoring (CloudWatch), logging (ElasticSearch), authentication (Cognito) and secret management (KMS, Vault coming soon).
 * **Deployment & CI/CD** - We leverage [Serverless Framework](http://www.serverless.com) and Git/Bitbucket/Jenkins.
 
@@ -30,6 +28,32 @@ You can [install Jazz](https://github.com/tmobile/jazz-installer/wiki) in your a
 You can try out public preview version of Jazz by registering with your email address [here](http://try.tmo-jazz.net). You will need a registration code which can be requested by joining [slack](https://tmo-oss-getinvite.herokuapp.com/). Once in slack, go to `#jazz-serverless` channel to get a working registration code.
 
 ## User Guide
+
+Quick version:
+
+Ensure you have a standard install of Python 3.6 or greater, with `pip` and `setuptools`
+
+Run:
+
+```
+git clone git@github.com:tmobile/jazz-installer.git
+cd jazz-installer
+python3 -m virtualenv env && source env/bin/activate
+pip install -r requirements.txt
+python Installer.py install --stackprefix myteststack --adminemail test@tst.com --region us-east-1 scenario3
+```
+
+Uninstall:
+```
+cd jazz-installer
+source env/bin/activate
+python Installer.py uninstall --mode=[all|frameworkonly]
+```
+
+Options:
+```
+python Installer.py
+```
 
 For more details, see the [Wiki](https://github.com/tmobile/jazz-installer/wiki).
 
