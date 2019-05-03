@@ -8,7 +8,7 @@ def destroyprep(stackname, identity, all=False):
     # Delete the identity policy  - Created in terraform/scripts/ses.sh
     client = boto3.client('ses')
     client.delete_identity_policy(
-        Identity='string',
+        Identity=identity,
         PolicyName="Policy-{0}".format(stackname)
     )
 
