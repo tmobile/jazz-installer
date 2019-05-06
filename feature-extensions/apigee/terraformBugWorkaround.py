@@ -44,7 +44,7 @@ def getTerraformOutput(outputVarName):
             'output',
             outputVarName
         ],
-        cwd='./terraform').rstrip()
+        cwd='./terraform', encoding='UTF-8').rstrip()
 
 
 def updateFunctionRole(functionName, roleArn):
@@ -68,4 +68,4 @@ def getFunctionConfig(gatewayFuncName):
         gatewayFuncName,
         '--output',
         'json'
-    ]).rstrip())
+    ], encoding='UTF-8').rstrip())
