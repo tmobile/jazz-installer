@@ -68,7 +68,7 @@
           "WEBSITE": ["aws_s3", "aws_cloudfront"]
         },
         "VPC_SERVICES": {
-          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs"],
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin"],
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         }
     },
