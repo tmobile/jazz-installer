@@ -1,10 +1,17 @@
 import base64
 import json
-import mimetools
+import email.generator
 import os
 import re
-from urllib2 import Request, HTTPError, URLError, urlopen
+import requests
+
+from urllib.request import Request
+from urllib.error import HTTPError
+from urllib.error import URLError
+from urllib.request import urlopen
 from zipfile import ZipFile
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 
 def print_banner(message):
@@ -16,7 +23,7 @@ def print_banner(message):
 # TODO do we really want to rely only on basic auth for admin access to external Apigee?
 def get_basic_auth(username, password):
     up = '%s:%s' % (username, password)
-    return "Basic %s" % base64.b64encode(up).decode()
+    return "Basic %s" % base64.b64encode(up.encode("utf-8")).decode()
 
 
 def create_kvm(secretKey, accessKey, region, lambdaARN, host, org, env, username, password):
@@ -57,8 +64,8 @@ def create_kvm(secretKey, accessKey, region, lambdaARN, host, org, env, username
             print_banner("KVM created successfully for the Common-Jazz API Proxy")
         else:
             print_banner("KVM creation FAILED for the Common-Jazz API Proxy")
-    except HTTPError, e:
-        print "HTTP Error:", e.code
+    except HTTPError as e:
+        print ("HTTP Error:", e.code)
         print_banner("KVM already present for the Common-Jazz API Proxy")
         pass
 
@@ -78,9 +85,9 @@ def get_current_deployed_version(host, org, env, flow, username, password):
                 deployedVersion = e['revision'][0]['name']
                 break
         print("Deployed version: %s" % deployedVersion)
-    except HTTPError, e:
+    except HTTPError as e:
         # To handle very first deployment
-        print "HTTP Error:", e.code
+        print ("HTTP Error:", e.code)
     return deployedVersion
 
 
@@ -95,21 +102,19 @@ def is_api_deployed(host, org, env, name, revision, username, password):
 
 def import_item(zFile, host, org, name, importType, username, password):
     url = "%s/v1/o/%s/%s?action=import&name=%s" % (host, org, importType, name)
-    boundary = mimetools.choose_boundary()
-    with open(zFile, 'rb') as fileHandle:
-        fileContent = fileHandle.read()
+    boundary = email.generator._make_boundary()
+    related = MIMEMultipart('form-data', boundary)
+    file_part = MIMEApplication( open(zFile, 'rb').read(), 'zip')
+    file_part.add_header('Content-disposition', 'form-data; name="appBundle"')
+    related.attach(file_part)
+    data=related.as_string().split('\n\n', 1)[1]
     headers = {
         'Accept': 'application/json',
         'Authorization': get_basic_auth(username, password),
         'Content-Type': "multipart/form-data; boundary=%s" % boundary
     }
-    data = (
-        ("--%s\r\nContent-Disposition: form-data; name=\"file\"; filename=\"%s\"\r\n" +
-            "Content-Type: application/x-zip-compressed\r\n\r\n%s\r\n--%s--")
-        % (boundary, zFile, fileContent, boundary))
-    req = Request(url, data, headers)
-    res = urlopen(req)
-    result = json.load(res)
+    res = requests.post(url, data=data, headers=headers)
+    result = json.loads(res.content)
     return result['revision']
 
 
@@ -205,10 +210,10 @@ def get_content(fileName, baseUrl, branch):
         req = urlopen(fullUrl)
         with open(os.path.basename(fileName), "wb") as local_file:
                 local_file.write(req.read())
-    except HTTPError, e:
-        print "HTTP Error:", e.code, fullUrl
-    except URLError, e:
-        print "URL Error:", e.reason, fullUrl
+    except HTTPError as e:
+        print ("HTTP Error:", e.code, fullUrl)
+    except URLError as e:
+        print ("URL Error:", e.reason, fullUrl)
 
 
 def deploy_common(host, org, env, username, password, contentUrl, contentBranch):

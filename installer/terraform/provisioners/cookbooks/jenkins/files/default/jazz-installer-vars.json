@@ -1,0 +1,195 @@
+{
+    "AWS_CREDENTIAL_ID": "jazz_awscreds",
+    "INSTANCE_PREFIX": "",
+    "AWS": {
+        "SECURITY_GROUP_IDS": "",
+        "SUBNET_IDS": "",
+        "LAMBDA_EXECUTION_ROLE": "",
+        "CLOUDFRONT_ORIGIN_ID": "",
+        "ACCOUNTID": "",
+        "REGION": "",
+        "PLATFORMSERVICES_ROLEID": "",
+        "USERSERVICES_ROLEID": "",
+        "ES_HOSTNAME": "",
+        "COGNITO": {
+            "USER_POOL_ID": "",
+            "CLIENT_ID": ""
+        },
+        "API": {
+            "PROD": {
+                "*": "{AWS_PROD_API_ID_DEFAULT}",
+                "jazz_*": "{AWS_PROD_API_ID_JAZZ}"
+            },
+            "STG": {
+                "*": "{AWS_STG_API_ID_DEFAULT}",
+                "jazz_*": "{AWS_STG_API_ID_JAZZ}"
+            },
+            "DEV": {
+                "*": "{AWS_DEV_API_ID_DEFAULT}"
+            }
+        },
+        "S3": {
+            "API_DOC": "",
+            "DEV_BUCKET": "",
+            "STG_BUCKET": "",
+            "PROD_BUCKET": ""
+        },
+        "KINESIS_LOGS_STREAM": {
+          "DEV": "{KINESIS_LOGS_STREAM_DEV}",
+          "STG": "{KINESIS_LOGS_STREAM_STG}",
+          "PROD": "{KINESIS_LOGS_STREAM_PROD}"
+        },
+        "TAGS": []
+    },
+    "REPOSITORY": {
+        "BASE_URL": "",
+        "CREDENTIAL_ID": "jazz_repocreds",
+        "REPO_BASE_SERVICES": "cas",
+        "REPO_BASE_PLATFORM": "slf"
+    },
+    "JAZZ": {
+        "ADMIN": "",
+        "PASSWD": "",
+        "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
+        "S3_BUCKET_WEB": "",
+        "BUCKET_PER_SERVICE": "false",
+        "API_DETAILED_MONITORING" : "true",
+        "S3": {
+            "WEBSITE_DEV_BUCKET": "",
+            "WEBSITE_STG_BUCKET": "",
+            "WEBSITE_PROD_BUCKET": ""
+        },
+        "SWAGGER": {
+            "EDITOR_URL": "http://editor.swagger.io/?url="
+        },
+        "DEPLOYMENT_TARGETS": {
+          "API": ["aws_apigateway", "gcp_apigee"],
+          "FUNCTION": ["aws_lambda"],
+          "WEBSITE": ["aws_s3", "aws_cloudfront"]
+        },
+        "VPC_SERVICES": {
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin"],
+          "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
+        }
+    },
+    "JENKINS": {
+        "CREDENTIAL_ID": "jobexecutor",
+        "JOB_AUTH_TOKEN": "jazz-101-job",
+        "BUILD_URI": {
+            "API": "build-pack-api",
+            "LAMBDA": "build-pack-lambda",
+            "WEBSITE": "build-pack-website"
+        },
+        "DOCKERIZED": ""
+    },
+  "SCM": {
+        "TYPE": "{SCM_TYPE}",
+        "PRIVATE_TOKEN": ""
+    },
+    "UI_CONFIG": {
+        "CREATE_SERVICE": {
+          "DEPLOYMENT_TARGETS": {
+              "API": {
+                  "active": true,
+                  "options": [
+                      {"label": "AWS API Gateway", "value": "aws_apigateway"},
+                      {"label": "GCP APIGEE", "value": "gcp_apigee"}
+                  ]
+              },
+              "WEBSITE": {
+                  "active": false,
+                  "options": [
+                      {"label": "AWS S3", "value": "aws_s3"},
+                      {"label": "AWS Cloudfront", "value": "aws_cloudfront"}
+                  ]
+              },
+              "FUNCTION": {
+                  "active": false,
+                  "options": [
+                      {"label": "AWS Lambda", "value": "aws_lambda"}
+                  ]
+              }
+          }
+        },
+        "feature": {
+            "multi_env": true,
+            "apigee": "{apigee_support}"
+        },
+        "service_tabs": {
+            "overview": true,
+            "access_control": true,
+            "metrics": true,
+            "logs": true,
+            "cost": false
+        },
+        "environment_tabs": {
+            "overview": true,
+            "deployments": true,
+            "code_quality": "{ENABLE_CODEQUALITY_TAB}",
+            "logs": true,
+            "assets": true
+        }
+    },
+    "CODE_QUALITY": {
+        "SONAR": {
+            "CLEANUP": "true",
+            "KEY_PREFIX": "jazz",
+            "ENABLE_SONAR": "{ENABLE_SONAR}",
+            "JAZZ_PROFILE": "JazzProfile",
+            "ENABLE_VULNERABILITY_SCAN": "{ENABLE_VULNERABILITY_SCAN}",
+            "DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
+            "DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
+            "DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
+            "DEPENDENCY_CHECK_URL": "http://dl.bintray.com/jeremy-long/owasp/dependency-check-2.1.1-release.zip",
+            "HOST_NAME": "{SONAR_HOST_NAME}",
+            "ADMIN_SONAR_CREDENTIAL_ID": "SONAR_ADMIN_CREDENTIAL",
+            "CHECKSTYLE_LIB": "/opt/checkstyle-7.6-all.jar"
+        }
+    },
+    "SLACK": {
+        "ENABLE_SLACK": "false",
+        "SLACK_USER": "{slack_user}",
+        "SLACK_TOKEN": "{slack_token}",
+        "SLACK_WORKSPACE": "{slack_workspace}",
+        "SLACK_SVC_ID": "{slack_svc_acc_id}"
+    },
+    "ACL": {
+        "ENABLED": true,
+        "DATABASE": {
+          "CLUSTER_READER_ENDPOINT": "",
+          "CLUSTER_WRITER_ENDPOINT": "",
+          "ENDPOINT": "",
+          "PORT": "",
+          "NAME": "",
+          "CREDENTIAL_ID": "ACL_DB_CRDENTIAL",
+          "TYPE_DB": "mysql",
+          "TIMEOUT": 100000
+        }
+    },
+    "SPLUNK": {
+        "IS_ENABLED": "{ENABLE_SPLUNK_FEATURE}",
+        "ENDPOINT": "{SPLUNK_ENDPOINT}",
+        "HEC_TOKEN": "{SPLUNK_TOKEN}",
+        "INDEX": "{SPLUNK_INDEX}"
+    },
+    "APIGEE": {
+        "ENABLE_APIGEE": "{ENABLE_APIGEE}",
+        "APIGEE_CRED_ID": "{APIGEE_CREDS}",
+        "BUILD_VERSION": "1.0",
+        "USE_SECURE": false,
+        "API_ENDPOINTS": {
+          "PROD": {
+            "MGMT_ENV": "{MGMT_ENV_PROD}",
+            "MGMT_ORG": "{MGMT_ORG}",
+            "MGMT_HOST": "{MGMT_HOST}",
+            "SERVICE_HOSTNAME": "{SVC_PROD_HOST}"
+          },
+          "DEV": {
+            "MGMT_ENV": "{MGMT_ENV_DEV}",
+            "MGMT_ORG": "{MGMT_ORG}",
+            "MGMT_HOST": "{MGMT_HOST}",
+            "SERVICE_HOSTNAME": "{SVC_DEV_HOST}"
+          }
+        }
+    }
+}

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 echo -e '\n-----> Running terraform validate'
-cd "$TRAVIS_BUILD_DIR/installscripts/jazz-terraform-unix-noinstances"
+cd "$TRAVIS_BUILD_DIR/installer/terraform/"
 terraform init
 terraform validate
 echo -e '\n-----> Success!'

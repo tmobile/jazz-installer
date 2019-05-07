@@ -1,6 +1,6 @@
 import subprocess
-import urllib
 import re
+from urllib.parse import quote
 # TODO drop this whole script once we have API-based config implemented
 
 
@@ -36,8 +36,7 @@ def fetch_configjson(repo, username, password, pathext, configFile, buildFolder)
             "clone",
             ("http://%s:%s@%s%s/slf/jazz-build-module.git") %
             (username,
-             urllib.quote(
-                 password),
+             quote(password),
              repo,
              pathext),
             "--depth",
