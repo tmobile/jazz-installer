@@ -224,7 +224,7 @@ def getTerraformOutputVar(varname):
     try:
         return subprocess.check_output(
             ['terraform', 'output', varname],
-            cwd='./terraform').rstrip()
+            cwd='./terraform', encoding='UTF-8').rstrip()
     except subprocess.CalledProcessError:
         print("Failed getting output variable {0} from terraform!".format(varname))
         sys.exit()
@@ -263,7 +263,7 @@ def getAWSAccountID():
           colors.ENDC)
     return subprocess.check_output([
         'aws', 'sts', 'get-caller-identity', '--output', 'text', '--query', 'Account'
-    ]).rstrip()
+    ], encoding='UTF-8').rstrip()
 
 
 def collect_userinputs(args):
@@ -277,25 +277,25 @@ def collect_userinputs(args):
         args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
 
     if not args.jenkins_url:
-        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ").strip()
+        args.jenkins_url = input("Please enter the Jenkins URL(without http): ").strip()
 
     if not args.jenkins_username:
-        args.jenkins_username = raw_input("Please enter the Jenkins Username: ").strip()
+        args.jenkins_username = input("Please enter the Jenkins Username: ").strip()
 
     if not args.jenkins_password:
-        args.jenkins_password = raw_input("Please enter the Jenkins Password: ").strip()
+        args.jenkins_password = input("Please enter the Jenkins Password: ").strip()
 
     if not args.apigee_prod_env:
-        args.apigee_prod_env = raw_input("Enter apigee env for production you wish to use: ").strip()
+        args.apigee_prod_env = input("Enter apigee env for production you wish to use: ").strip()
 
     if not args.apigee_dev_env:
-        args.apigee_dev_env = raw_input("Enter apigee env for development you wish to use: ").strip()
+        args.apigee_dev_env = input("Enter apigee env for development you wish to use: ").strip()
 
     if not args.apigee_svc_prod_host:
-        args.apigee_svc_prod_host = raw_input("Enter Url of the service API host for production: ").strip()
+        args.apigee_svc_prod_host = input("Enter Url of the service API host for production: ").strip()
 
     if not args.apigee_svc_dev_host:
-        args.apigee_svc_dev_host = raw_input("Enter Url of the service API host for development: ").strip()
+        args.apigee_svc_dev_host = input("Enter Url of the service API host for development: ").strip()
 
     return args
 
