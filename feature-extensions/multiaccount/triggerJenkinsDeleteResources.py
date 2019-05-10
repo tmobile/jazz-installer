@@ -38,28 +38,28 @@ def startJob(args):
 
     subprocess.call(jenkins_build_command, shell=True)
     if jenkins_job_status("delete-resources", args):
-        print "Job Executed Successfully"
+        print("Job Executed Successfully")
     else:
-        print "Job Execution Failed"
+        print("Job Execution Failed")
 
 
 def collectUserInput(args):
     if not args.jenkins_url:
         args.jenkins_url = \
-            raw_input('Please enter the Jenkins URL(without http): ')
+            input('Please enter the Jenkins URL(without http): ')
 
     if not args.jenkins_username:
         args.jenkins_username = \
-            raw_input('Please enter the Jenkins Username: ')
+            input('Please enter the Jenkins Username: ')
 
     if not args.jenkins_password:
         args.jenkins_password = \
-            raw_input('Please enter the Jenkins Password: ')
+            input('Please enter the Jenkins Password: ')
 
     if not args.account_details:
         args.account_details = \
-            raw_input('Please enter the Accounts to delete '
-                      '(Empty will delete all): ') or "all"
+            input('Please enter the Accounts to delete '
+                  '(Empty will delete all): ') or "all"
 
 
 def retry_if_false(result):

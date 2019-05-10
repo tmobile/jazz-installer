@@ -100,7 +100,6 @@ def install(args):
     if account_json != '':
         # Store the CREDENTIAL_ID in jenkins
         setCredential(args, credential_id)
-        print account_json
         update_config(
             "AWS.ACCOUNTS",
             account_json,
@@ -108,41 +107,41 @@ def install(args):
             args.jazz_password,
             args.jazz_apiendpoint
         )
-        # Trigger jazz ui
-        startJob(args, "job/jazz_ui/build?token=jazz-101-job")
+    # Trigger jazz ui
+    startJob(args, "job/jazz_ui/build?token=jazz-101-job")
 
 
 def collect_userinputs(args):
 
     if not args.jazz_stackprefix:
-        args.jazz_stackprefix = raw_input("Please enter the environment prefix you used for your Jazz install: ")
+        args.jazz_stackprefix = input("Please enter the environment prefix you used for your Jazz install: ")
 
     if not args.aws_accesskey:
-        args.aws_accesskey = raw_input("Enter AWS accesskey of the new account:")
+        args.aws_accesskey = input("Enter AWS accesskey of the new account:")
 
     if not args.aws_secretkey:
-        args.aws_secretkey = raw_input("Enter secretkey of the new account:")
+        args.aws_secretkey = input("Enter secretkey of the new account:")
 
     if not args.aws_region:
-        args.aws_region = raw_input("Enter AWS regions with space delimiter:").split()
+        args.aws_region = input("Enter AWS regions with space delimiter:").split()
 
     if not args.jenkins_url:
-        args.jenkins_url = raw_input("Please enter the Jenkins URL(without http): ")
+        args.jenkins_url = input("Please enter the Jenkins URL(without http): ")
 
     if not args.jenkins_username:
-        args.jenkins_username = raw_input("Please enter the Jenkins Username: ")
+        args.jenkins_username = input("Please enter the Jenkins Username: ")
 
     if not args.jenkins_password:
-        args.jenkins_password = raw_input("Please enter the Jenkins Password: ")
+        args.jenkins_password = input("Please enter the Jenkins Password: ")
 
     if not args.jazz_username:
-        args.jazz_username = raw_input("Please enter the Jazz Admin Username: ")
+        args.jazz_username = input("Please enter the Jazz Admin Username: ")
 
     if not args.jazz_password:
-        args.jazz_password = raw_input("Please enter the Jazz Admin Password: ")
+        args.jazz_password = input("Please enter the Jazz Admin Password: ")
 
     if not args.jazz_apiendpoint:
-        args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
+        args.jazz_apiendpoint = input("Please enter the Jazz API Endpoint(Full URL): ")
 
     return args
 
