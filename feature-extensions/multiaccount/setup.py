@@ -1,6 +1,7 @@
 import argparse
 import subprocess
 import sys
+import requests
 sys.path.append('../config')  # noqa: E402
 from api_config import update_config
 from core import deploy_core_service
@@ -147,14 +148,9 @@ def collect_userinputs(args):
 
 
 def setCredential(args, credential_id):
-    subprocess.check_call(
-        [
-            "curl",
-            "-sL",
-            ("http://%s/jnlpJars/jenkins-cli.jar") %
-            (args.jenkins_url),
-            "-o",
-            "jenkins-cli.jar"])
+    response = requests.get("http://%s/jnlpJars/jenkins-cli.jar" % (args.jenkins_url))
+    with open("jenkins-cli.jar", "wb") as file:
+        file.write(response.content)
     jenkins_cli_command = "java -jar jenkins-cli.jar -auth %s:%s -s  http://%s" % (
                           args.jenkins_username,
                           args.jenkins_password,
