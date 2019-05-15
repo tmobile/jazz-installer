@@ -89,7 +89,7 @@ def update_main_terraform_vars(branch, adminemail, stackprefix, region, tags):
         try:
             aws_tags, aws_formatted_tags = validate_replication_tags(input_tags)
             replace_tfvars("aws_tags", str(aws_tags), get_tfvars_file())
-            replace_tfvars("additional_tags", str(aws_tags), get_tfvars_file(), quoteVal=False)
+            replace_tfvars("additional_tags", str(aws_formatted_tags), get_tfvars_file(), quoteVal=False)
         except ValueError as err:
             print("Invalid Tag!" + str(err))
             exit(0)
