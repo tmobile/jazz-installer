@@ -27,7 +27,6 @@ function inArray() {
 }
 
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer" "jazz_cognito-admin-authorizer" "jazz_token-authorizer" "jazz_apigee-proxy-aws")
-nodejs81_service=("jazz_email" "jazz_usermanagement" "jazz_codeq" "jazz_metrics" "jazz_slack-event-handler" "jazz_is-slack-channel-available" "jazz_admin" "jazz_slack-channel" "jazz_deployments-event-handler" "jazz_assets" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer" "jazz_acl" "jazz_cognito-authorizer")
 
 platform_services=()
 cd ./jazz-core || exit
@@ -43,7 +42,7 @@ servicename="_services_prod"
 tablename=$stackprefix$servicename
 timestamp=$(date --utc +%FT%T)
 service_type=""
-provider_runtime=""
+provider_runtime="nodejs8.10"
 deployment_targets=""
 for element in "${platform_services[@]}"
 do
@@ -60,20 +59,10 @@ do
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
 			deployment_targets='{"function": {"S": "aws_lambda"}}'
-			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
-				provider_runtime="nodejs8.10"
-			else
-				provider_runtime="nodejs6.10"
-			fi
- else
+  else
 			service_type="api"
-      		deployment_targets='{"api": {"S": "aws_apigateway"}}'
-			if [[ $(inArray "${nodejs81_service[@]}" "$element") ]]; then
-				provider_runtime="nodejs8.10"
-			else
-				provider_runtime="nodejs6.10"
-			fi
- fi
+      deployment_targets='{"api": {"S": "aws_apigateway"}}'
+  fi
 
 # shellcheck disable=SC2086
 #Updating to service catalog
