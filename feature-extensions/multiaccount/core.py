@@ -32,6 +32,7 @@ role_document = {
 def deploy_core_service(args, tags):
     global role_document
     account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
+    account_name = getAccountName(args.aws_accesskey, args.aws_secretkey)
     credential_id = "MultiAccount"+account_id
     get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
     account_info = get_configjson['data']['config']['AWS']['ACCOUNTS']
@@ -69,7 +70,9 @@ def deploy_core_service(args, tags):
             region_json = {"REGION": existing_item,
                            "API_GATEWAY": region_resources["API_GATEWAY"],
                            "S3": region_resources["S3"],
-                           "LOGS": region_resources["LOGS"]}
+                           "LOGS": region_resources["LOGS"],
+                           "SECURITY_GROUP_IDS": "REPLACEME",
+                           "SUBNET_IDS": "REPLACEME"}
             query_url = '?id=ACCOUNTID&path=AWS.ACCOUNTS&value=%s' % (account_id)
             update_config_in("REGIONS", region_json, args.jazz_username,
                              args.jazz_password, args.jazz_apiendpoint, query_url)
@@ -78,6 +81,7 @@ def deploy_core_service(args, tags):
     # if no, ie no account information is there, then continue
     # prepare account json with account and regions
     account_json = {"ACCOUNTID": account_id,
+                    "ACCOUNTNAME": account_name,
                     "CREDENTIAL_ID": credential_id,
                     "IAM": {},
                     "CLOUDFRONT": {},
@@ -106,7 +110,7 @@ def deploy_core_service(args, tags):
     # Basic IAM role with minimum permissions (cloudwatch:*)
     basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document, tags)
     # One platform IAM role for the new account to use for integrations within the new account
-    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
+    primary_account = get_configjson['data']['config']['AWS']["ACCOUNTS"][0]['ACCOUNTID']
     role_document['Statement'].append({
         "Effect": "Allow",
         "Principal": {
@@ -133,7 +137,9 @@ def deploy_core_service(args, tags):
         account_json["REGIONS"].append({"REGION": item,
                                         "API_GATEWAY": region_resources["API_GATEWAY"],
                                         "S3": region_resources["S3"],
-                                        "LOGS": region_resources["LOGS"]})
+                                        "LOGS": region_resources["LOGS"],
+                                        "SECURITY_GROUP_IDS": "REPLACEME",
+                                        "SUBNET_IDS": "REPLACEME"})
 
     return account_json, credential_id
 
@@ -158,7 +164,7 @@ def create_region_resources(args, region, get_configjson, tags, platform_role_ar
     # Prepare destination arn for regions
     destarn_dict = preparelogdestion(region, args, get_configjson)
 
-    return {"API_GATEWAY": {"PROD": api_prod, "STG": api_stg, "DEV": api_dev},
+    return {"API_GATEWAY": {"PROD": {"*": api_prod}, "STG": {"*": api_stg}, "DEV": {"*": api_dev}},
             "S3": {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev}, "LOGS": destarn_dict}
 
 
@@ -166,6 +172,12 @@ def getAccountId(accessKey, secretKey):
     return boto3.client('sts',
                         aws_access_key_id=accessKey,
                         aws_secret_access_key=secretKey).get_caller_identity().get('Account')
+
+
+def getAccountName(accessKey, secretKey):
+    return boto3.client('iam',
+                        aws_access_key_id=accessKey,
+                        aws_secret_access_key=secretKey).list_account_aliases()['AccountAliases'][0]
 
 
 @retrying.retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
@@ -331,7 +343,7 @@ def createoai(oai_client, name):
 
 
 def preparelogdestion(region, args, get_configjson):
-    primary_account = get_configjson['data']['config']['AWS']['ACCOUNTID']
+    primary_account = get_configjson['data']['config']['AWS']["ACCOUNTS"][0]['ACCOUNTID']
     destarn_prod = preparedestarn(region, primary_account, args.jazz_stackprefix, "prod")
     destarn_dev = preparedestarn(region, primary_account, args.jazz_stackprefix, "dev")
     destarn_stg = preparedestarn(region, primary_account, args.jazz_stackprefix, "stg")

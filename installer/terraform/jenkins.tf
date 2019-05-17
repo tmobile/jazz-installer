@@ -38,16 +38,6 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
   }
 
-  # API key
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} {AWS_DEV_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-dev.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} {AWS_PROD_API_ID_DEFAULT} ${aws_api_gateway_rest_api.jazz-prod.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
-  }
   #TODO why do we need these following to values in addition to the previous ones?
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_JAZZ} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
@@ -59,13 +49,6 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} INSTANCE_PREFIX ${var.envPrefix} ${var.jenkinsjsonpropsfile}"
   }
 
-  # Subnet config
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} SECURITY_GROUP_IDS ${lookup(var.jenkinsservermap, "jenkins_security_group")} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} SUBNET_IDS ${lookup(var.jenkinsservermap, "jenkins_subnet")} ${var.jenkinsjsonpropsfile}"
-  }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} LAMBDA_EXECUTION_ROLE ${var.envPrefix}_basic_execution ${var.jenkinsjsonpropsfile}"
   }
@@ -75,17 +58,9 @@ resource "null_resource" "update_jenkins_configs" {
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} API_DOC ${aws_s3_bucket.jazz_s3_api_doc.bucket} ${var.jenkinsjsonpropsfile}"
   }
+
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} DEV_BUCKET ${aws_s3_bucket.oab-apis-deployment-dev.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} STG_BUCKET ${aws_s3_bucket.oab-apis-deployment-stg.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PROD_BUCKET ${aws_s3_bucket.oab-apis-deployment-prod.bucket} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} S3_BUCKET_WEB ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} BUCKET_WEB ${aws_s3_bucket.jazz-web.bucket} ${var.jenkinsjsonpropsfile}"
   }
 
   provisioner "local-exec" {
@@ -114,10 +89,10 @@ resource "null_resource" "update_jenkins_configs" {
 
   #TODO SORT!
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} STACK_ADMIN ${var.cognito_pool_username} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} PASSWD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} STACK_PASSWORD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ACCOUNTID ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
