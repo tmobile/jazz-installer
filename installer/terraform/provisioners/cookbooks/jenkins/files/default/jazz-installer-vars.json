@@ -29,7 +29,7 @@
             "PROVIDER": "aws"
         },
         "VPC_SERVICES": {
-          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin"],
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin", "deployments"],
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         },
         "ES_HOSTNAME": "",
