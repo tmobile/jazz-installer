@@ -167,6 +167,6 @@ resource "null_resource" "postJenkinsConfiguration" {
   }
   // Injecting bootstrap variables into Jazz-core Jenkinsfiles*
   provisioner "local-exec" {
-    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_type")}"
+    command = "${var.injectingBootstrapToJenkinsfiles_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_type")} ${var.region} ${var.envPrefix}"
   }
 }

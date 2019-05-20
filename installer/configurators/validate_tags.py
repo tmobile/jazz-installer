@@ -68,7 +68,8 @@ def validate_replication_tags(replication_tags):
 
 def prepare_tags(input_tags_param):
     input_tags = []
-    input_tags_rel = input_tags_param.split()
+    input_tags_str = " ".join(input_tags_param)
+    input_tags_rel = input_tags_str.split()
     for item in input_tags_rel:
         input_tags.append(dict(item2.split("=", 1) for item2 in item.split(",")))
     return input_tags
