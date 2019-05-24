@@ -2,44 +2,11 @@
     "AWS_CREDENTIAL_ID": "jazz_awscreds",
     "INSTANCE_PREFIX": "",
     "AWS": {
-        "SECURITY_GROUP_IDS": "",
-        "SUBNET_IDS": "",
-        "LAMBDA_EXECUTION_ROLE": "",
-        "CLOUDFRONT_ORIGIN_ID": "",
-        "ACCOUNTID": "",
-        "REGION": "",
-        "PLATFORMSERVICES_ROLEID": "",
-        "USERSERVICES_ROLEID": "",
-        "ES_HOSTNAME": "",
-        "COGNITO": {
-            "USER_POOL_ID": "",
-            "CLIENT_ID": ""
-        },
-        "API": {
-            "PROD": {
-                "*": "{AWS_PROD_API_ID_DEFAULT}",
-                "jazz_*": "{AWS_PROD_API_ID_JAZZ}"
-            },
-            "STG": {
-                "*": "{AWS_STG_API_ID_DEFAULT}",
-                "jazz_*": "{AWS_STG_API_ID_JAZZ}"
-            },
-            "DEV": {
-                "*": "{AWS_DEV_API_ID_DEFAULT}"
-            }
-        },
-        "S3": {
-            "API_DOC": "",
-            "DEV_BUCKET": "",
-            "STG_BUCKET": "",
-            "PROD_BUCKET": ""
-        },
-        "KINESIS_LOGS_STREAM": {
-          "DEV": "{KINESIS_LOGS_STREAM_DEV}",
-          "STG": "{KINESIS_LOGS_STREAM_STG}",
-          "PROD": "{KINESIS_LOGS_STREAM_PROD}"
-        },
-        "TAGS": []
+        "ACCOUNTS": [],
+        "DEFAULTS": {
+            "REGION": "",
+            "ACCOUNTID": ""
+        }
     },
     "REPOSITORY": {
         "BASE_URL": "",
@@ -48,17 +15,8 @@
         "REPO_BASE_PLATFORM": "slf"
     },
     "JAZZ": {
-        "ADMIN": "",
-        "PASSWD": "",
-        "S3_BUCKET_NAME_SUFFIX": "_BUCKET",
-        "S3_BUCKET_WEB": "",
-        "BUCKET_PER_SERVICE": "false",
-        "API_DETAILED_MONITORING" : "true",
-        "S3": {
-            "WEBSITE_DEV_BUCKET": "",
-            "WEBSITE_STG_BUCKET": "",
-            "WEBSITE_PROD_BUCKET": ""
-        },
+        "STACK_ADMIN": "",
+        "STACK_PASSWORD": "",
         "SWAGGER": {
             "EDITOR_URL": "http://editor.swagger.io/?url="
         },
@@ -68,9 +26,39 @@
           "WEBSITE": ["aws_s3", "aws_cloudfront"],
           "SLS-APP": ["aws_sls-app"]
         },
+        "DEFAULTS": {
+            "PROVIDER": "aws"
+        },
         "VPC_SERVICES": {
-          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin"],
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin", "deployments"],
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
+        },
+        "ES_HOSTNAME": "",
+        "PLATFORM": {
+          "AWS": {
+            "API_GATEWAY": {
+              "DETAILED_MONITORING": true
+            },
+            "COGNITO": {
+                "USER_POOL_ID": "",
+                "CLIENT_ID": ""
+            },
+            "S3": {
+                "WEBSITE_DEV_BUCKET": "",
+                "WEBSITE_STG_BUCKET": "",
+                "WEBSITE_PROD_BUCKET": "",
+                "API_DOC": "",
+                "BUCKET_NAME_SUFFIX": "_BUCKET",
+                "BUCKET_WEB": "",
+                "BUCKET_PER_SERVICE": "false"
+            },
+            "KINESIS_LOGS_STREAM": {
+              "DEV": "{KINESIS_LOGS_STREAM_DEV}",
+              "STG": "{KINESIS_LOGS_STREAM_STG}",
+              "PROD": "{KINESIS_LOGS_STREAM_PROD}"
+            },
+            "TAGS": []
+          }
         }
     },
     "JENKINS": {

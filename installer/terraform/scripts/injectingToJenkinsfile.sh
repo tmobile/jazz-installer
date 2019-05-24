@@ -2,9 +2,12 @@
 
 # This script injects installer-based values into all the Jenkinsfiles* from the core repo.
 repo_credential_id="jazz_repocreds"
+aws_credential_id="jazz_awscreds"
 repo_base=$1
 repo_core="slf"
 scm_type=$2
+region=$3
+instance_prefix=$4
 
 inject_bootstrap_variables()
 {
@@ -24,6 +27,9 @@ inject_bootstrap_variables()
   # SED on the files found by traversing the array. It is assumed that all the jenkinsfiles in the core repository must has these 3 varibales defined.
   for i in "${jenkinsfile_arr[@]}"; do
     sed -i "s,^@Field def repo_credential_id,@Field def repo_credential_id = \"$repo_credential_id\"," "$i"
+    sed -i "s,^@Field def aws_credential_id,@Field def aws_credential_id = \"$aws_credential_id\"," "$i"
+    sed -i "s,^@Field def region,@Field def region = \"$region\"," "$i"
+    sed -i "s,^@Field def instance_prefix,@Field def instance_prefix = \"$instance_prefix\"," "$i"
     sed -i "s,^@Field def repo_base,@Field def repo_base = \"$repo_base\"," "$i"
     sed -i "s,^@Field def repo_core,@Field def repo_core = \"$repo_core\"," "$i"
 	  sed -i "s,^@Field def scm_type,@Field def scm_type = \"$scm_type\"," "$i"
@@ -32,4 +38,4 @@ inject_bootstrap_variables()
   cd ..
 }
 
-inject_bootstrap_variables "$repo_credential_id" "$repo_base" "$repo_core"
+inject_bootstrap_variables "$repo_credential_id" "$aws_credential_id" "$region" "$instance_prefix" "$repo_base" "$repo_core"
