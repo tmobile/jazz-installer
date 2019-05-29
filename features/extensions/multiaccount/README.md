@@ -82,16 +82,16 @@ Please enter the Jazz API Endpoint(Full URL):
 
 ```sh
 cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python triggerJenkinsDeleteResources.py --jenkins-url JENKINSURL
-                                        --jenkins-username JENKINSUSER
-                                        --jenkins-password JENKINSPASSWORD --account-details all
+python teardown.py --jenkins-url JENKINSURL
+                    --jenkins-username JENKINSUSER
+                    --jenkins-password JENKINSPASSWORD --account-details all
 ```
 
 ### With missing parameters as arguments ###
 
 ```sh
 cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python triggerJenkinsDeleteResources
+python teardown.py
 
 # Enter the missing input params
 Please enter the Jenkins URL(without http):

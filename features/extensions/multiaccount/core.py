@@ -2,9 +2,8 @@ import boto3
 import json
 import uuid
 import retrying
-import sys
-sys.path.append('../config')  # noqa: E402
-from api_config import get_config, update_config_in
+
+from utils.api_config import get_config, update_config_in
 
 
 role_document = {
@@ -29,26 +28,27 @@ role_document = {
 }
 
 
-def deploy_core_service(args, tags):
+def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_password, \
+                        jazz_apiendpoint, aws_region, jazz_stackprefix, tags):
     global role_document
-    account_id = getAccountId(args.aws_accesskey, args.aws_secretkey)
-    account_name = getAccountName(args.aws_accesskey, args.aws_secretkey)
+    account_id = getAccountId(aws_accesskey, aws_secretkey)
+    account_name = getAccountName(aws_accesskey, aws_secretkey)
     credential_id = "MultiAccount"+account_id
-    get_configjson = get_config(args.jazz_username, args.jazz_password, args.jazz_apiendpoint)
+    get_configjson = get_config(jazz_username, jazz_password, jazz_apiendpoint)
     account_info = get_configjson['data']['config']['AWS']['ACCOUNTS']
     # Check if the account is already present
     if any(accnt['ACCOUNTID'] == account_id for accnt in account_info):
         match = next((index for (index, accnts) in enumerate(account_info) if accnts["ACCOUNTID"] == account_id), None)
         platform_role_arn = account_info[match]["IAM"]["PLATFORMSERVICES_ROLEID"]
         iam_client = boto3.client('iam',
-                                  aws_access_key_id=args.aws_accesskey,
-                                  aws_secret_access_key=args.aws_secretkey)
+                                  aws_access_key_id=aws_accesskey,
+                                  aws_secret_access_key=aws_secretkey)
         # loop through the REGIONS and call REGIONS append API
-        for existing_item in args.aws_region:
-            region_resources = create_region_resources(args, existing_item, get_configjson, tags, platform_role_arn)
+        for existing_item in aws_region:
+            region_resources = create_region_resources(existing_item, get_configjson, tags, platform_role_arn, aws_accesskey, aws_secretkey, jazz_stackprefix)
             # update IAM Assume policy for new region
             role_det = iam_client.get_role(
-                RoleName='%s_platform_services' % (args.jazz_stackprefix),
+                RoleName='%s_platform_services' % (jazz_stackprefix),
             )
             existing_policy_document = role_det['Role']['AssumeRolePolicyDocument']["Statement"]
             policy_document = {
@@ -64,7 +64,7 @@ def deploy_core_service(args, tags):
             })
 
             iam_client.update_assume_role_policy(
-                RoleName='%s_platform_services' % (args.jazz_stackprefix),
+                RoleName='%s_platform_services' % (jazz_stackprefix),
                 PolicyDocument=json.dumps(policy_document)
             )
             region_json = {"REGION": existing_item,
@@ -74,8 +74,8 @@ def deploy_core_service(args, tags):
                            "SECURITY_GROUP_IDS": "REPLACEME",
                            "SUBNET_IDS": "REPLACEME"}
             query_url = '?id=ACCOUNTID&path=AWS.ACCOUNTS&value=%s' % (account_id)
-            update_config_in("REGIONS", region_json, args.jazz_username,
-                             args.jazz_password, args.jazz_apiendpoint, query_url)
+            update_config_in("REGIONS", region_json, jazz_username,
+                             jazz_password, jazz_apiendpoint, query_url)
         return '', credential_id
 
     # if no, ie no account information is there, then continue
@@ -87,7 +87,7 @@ def deploy_core_service(args, tags):
                     "CLOUDFRONT": {},
                     "REGIONS": []
                     }
-    for item in args.aws_region:
+    for item in aws_region:
         # Prepare assume role for each regions
         # Add a trust policy to the "logs destination"
         role_document['Statement'].append({
@@ -99,31 +99,31 @@ def deploy_core_service(args, tags):
         })
     # New OAI (origin access identity)
     oai_client = boto3.client('cloudfront',
-                              aws_access_key_id=args.aws_accesskey,
-                              aws_secret_access_key=args.aws_secretkey)
-    oai_id = createoai(oai_client, "%soai" % (args.jazz_stackprefix))
+                              aws_access_key_id=aws_accesskey,
+                              aws_secret_access_key=aws_secretkey)
+    oai_id = createoai(oai_client, "%soai" % (jazz_stackprefix))
     account_json["CLOUDFRONT"] = {"CLOUDFRONT_ORIGIN_ID": oai_id}
 
     iam_client = boto3.client('iam',
-                              aws_access_key_id=args.aws_accesskey,
-                              aws_secret_access_key=args.aws_secretkey)
+                              aws_access_key_id=aws_accesskey,
+                              aws_secret_access_key=aws_secretkey)
     # Basic IAM role with minimum permissions (cloudwatch:*)
-    basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (args.jazz_stackprefix), role_document, tags)
+    basic_role_arn = createbasicrole(iam_client, "%s_basic_execution" % (jazz_stackprefix), role_document, tags)
     # One platform IAM role for the new account to use for integrations within the new account
     primary_account = get_configjson['data']['config']['AWS']["ACCOUNTS"][0]['ACCOUNTID']
     role_document['Statement'].append({
         "Effect": "Allow",
         "Principal": {
-            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (primary_account, args.jazz_stackprefix)
+            "AWS": "arn:aws:iam::%s:role/%s_platform_services" % (primary_account, jazz_stackprefix)
         },
         "Action": "sts:AssumeRole"
      })
 
-    platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (args.jazz_stackprefix),
+    platform_role_arn = createplatformrole(iam_client, "%s_platform_services" % (jazz_stackprefix),
                                            role_document, tags)
     # update permission policy on Primary Account
     if(platform_role_arn):
-        updatePrimaryRole(platform_role_arn, args.jazz_stackprefix, account_id)
+        updatePrimaryRole(platform_role_arn, jazz_stackprefix, account_id)
 
     account_json['IAM'] = {
                            "PLATFORMSERVICES_ROLEID": platform_role_arn,
@@ -131,8 +131,8 @@ def deploy_core_service(args, tags):
                            }
     # loop multiple regions and each region-account, create
 
-    for item in args.aws_region:
-        region_resources = create_region_resources(args, item, get_configjson, tags, platform_role_arn)
+    for item in aws_region:
+        region_resources = create_region_resources(item, get_configjson, tags, platform_role_arn, aws_accesskey, aws_secretkey, jazz_stackprefix)
 
         account_json["REGIONS"].append({"REGION": item,
                                         "API_GATEWAY": region_resources["API_GATEWAY"],
@@ -144,25 +144,26 @@ def deploy_core_service(args, tags):
     return account_json, credential_id
 
 
-def create_region_resources(args, region, get_configjson, tags, platform_role_arn):
+def create_region_resources(region, get_configjson, tags, platform_role_arn, \
+                            aws_accesskey, aws_secretkey, jazz_stackprefix):
     api_client = boto3.client('apigateway',
-                              aws_access_key_id=args.aws_accesskey,
-                              aws_secret_access_key=args.aws_secretkey,
+                              aws_access_key_id=aws_accesskey,
+                              aws_secret_access_key=aws_secretkey,
                               region_name=region)
     # 3 API Gateway endpoints (DEV/STG/PROD) per account/region
-    api_prod = createapi('%s-prod' % (args.jazz_stackprefix), 'PROD', api_client)
-    api_stg = createapi('%s-stg' % (args.jazz_stackprefix), 'STG', api_client)
-    api_dev = createapi('%s-dev' % (args.jazz_stackprefix), 'DEV', api_client)
+    api_prod = createapi('%s-prod' % (jazz_stackprefix), 'PROD', api_client)
+    api_stg = createapi('%s-stg' % (jazz_stackprefix), 'STG', api_client)
+    api_dev = createapi('%s-dev' % (jazz_stackprefix), 'DEV', api_client)
     # 3 deployment-buckets (DEV/STG/PROD)  per account/region for sls to store deployment artifacts
     bucket_client = boto3.client('s3',
-                                 aws_access_key_id=args.aws_accesskey,
-                                 aws_secret_access_key=args.aws_secretkey,
+                                 aws_access_key_id=aws_accesskey,
+                                 aws_secret_access_key=aws_secretkey,
                                  region_name=region)
-    bucket_prod = createbucket(args.jazz_stackprefix, 'prod', region, bucket_client, tags, platform_role_arn)
-    bucket_stg = createbucket(args.jazz_stackprefix, 'stg', region, bucket_client, tags, platform_role_arn)
-    bucket_dev = createbucket(args.jazz_stackprefix, 'dev', region, bucket_client, tags, platform_role_arn)
+    bucket_prod = createbucket(jazz_stackprefix, 'prod', region, bucket_client, tags, platform_role_arn)
+    bucket_stg = createbucket(jazz_stackprefix, 'stg', region, bucket_client, tags, platform_role_arn)
+    bucket_dev = createbucket(jazz_stackprefix, 'dev', region, bucket_client, tags, platform_role_arn)
     # Prepare destination arn for regions
-    destarn_dict = preparelogdestion(region, args, get_configjson)
+    destarn_dict = preparelogdestion(region, get_configjson, jazz_stackprefix)
 
     return {"API_GATEWAY": {"PROD": {"*": api_prod}, "STG": {"*": api_stg}, "DEV": {"*": api_dev}},
             "S3": {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev}, "LOGS": destarn_dict}
@@ -342,11 +343,11 @@ def createoai(oai_client, name):
     return response['CloudFrontOriginAccessIdentity']['Id']
 
 
-def preparelogdestion(region, args, get_configjson):
+def preparelogdestion(region, get_configjson, jazz_stackprefix):
     primary_account = get_configjson['data']['config']['AWS']["ACCOUNTS"][0]['ACCOUNTID']
-    destarn_prod = preparedestarn(region, primary_account, args.jazz_stackprefix, "prod")
-    destarn_dev = preparedestarn(region, primary_account, args.jazz_stackprefix, "dev")
-    destarn_stg = preparedestarn(region, primary_account, args.jazz_stackprefix, "stg")
+    destarn_prod = preparedestarn(region, primary_account, jazz_stackprefix, "prod")
+    destarn_dev = preparedestarn(region, primary_account, jazz_stackprefix, "dev")
+    destarn_stg = preparedestarn(region, primary_account, jazz_stackprefix, "stg")
 
     return {"PROD": destarn_prod, "DEV": destarn_dev, "STG": destarn_stg}
 

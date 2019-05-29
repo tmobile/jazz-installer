@@ -44,7 +44,7 @@ def getTerraformOutput(outputVarName):
             'output',
             outputVarName
         ],
-        cwd='./terraform', encoding='UTF-8').rstrip()
+        cwd='extensions/apigee/terraform', encoding='UTF-8').rstrip()
 
 
 def updateFunctionRole(functionName, roleArn):
