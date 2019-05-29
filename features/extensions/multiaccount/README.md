@@ -11,31 +11,34 @@ Installing this extension will allow the user to deploy API, Lambda and Websites
 ## Basic Usage
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python setup.py [-h] [--aws-region AWS_REGION]
-                [--jazz-stackprefix JAZZ_STACKPREFIX] [--aws-accesskey AWS_ACCESSKEY]
-                [--aws-secretkey AWS_SECRETKEY] [--jenkins-url JENKINS_URL]
-                [--jenkins-username JENKINS_USERNAME]
-                [--jenkins-password JENKINS_PASSWORD]
-                [--jazz-username JAZZ_USERNAME]
-                [--jazz-password JAZZ_PASSWORD]
-                [--jazz-apiendpoint JAZZ_APIENDPOINT]
-                {install} ...
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Multiaccount.py install [OPTIONS]
+Options:
+  -r, --regions TEXT          Specify AWS regions you wish to apply on the new
+                              account
+  -p, --stackprefix TEXT      Specify the stackprefix of your existing Jazz
+                              installation (e.g. myjazz),           your
+                              existing config will be imported
+  --aws_accesskey TEXT        AWS accesskey of the new account
+  --aws_secretkey TEXT        AWS secretkey of the new account
+  --jazz_apiendpoint TEXT     Specify the Jazz Endpoint
+  --jazz_userpass TEXT...     Provide the username and password     of the
+                              jazz application separated by a space
+                              [required]
+  --jenkins_url TEXT          Specify the Jenkins url
+  --jenkins_userpass TEXT...  Provide the username and password     of the
+                              jenkins separated by a space  [required]
+  --help                      Show this message and exit.
 ```
 Note:
    - JAZZ_INSTALLER_DIRECTORY - Directory path of jazz installation
-   - Install option will ask user for raw inputs for all the missing arguments (similar to below)
+   - Both the  install/uninstall options will ask user for raw inputs for all the missing arguments (similar to below)
 ```sh
-    Please enter the environment prefix you used for your Jazz install:
-    Enter AWS accesskey of the new account:
-    Enter secretkey of the new account:
-    Enter AWS regions with space delimiter:
-    Please enter the Jenkins URL(without http):
-    Please enter the Jenkins Username:
-    Please enter the Jenkins Password:
-    Please enter the Jazz Admin Username:
-    Please enter the Jazz Admin Password:
-    Please enter the Jazz API Endpoint(Full URL):
+    Regions [()]:
+    Stackprefix:
+    Aws accesskey:
+    Aws secretkey:
+    Jazz apiendpoint:
 ```
 
 ## Example (Install option)
@@ -43,37 +46,33 @@ Note:
 ### With all the parameters as arguments
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python setup.py --aws-region us-east-1 us-west-2
-                --jazz-stackprefix STACKPREFIX
-                --aws-accesskey XXXXX
-                --aws-secretkey XXXXX
-                --jenkins-url JENKINSURL
-                --jenkins-username JENKINSUSER
-                --jenkins-password JENKINSPASSWORD
-                --jazz-username JAZZADMIN
-                --jazz-password JAZZPASSWORD
-                --jazz-apiendpoint JAZZ_APIENDPOINT install
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Multiaccount.py install --regions us-east-1 --regions us-west-2
+                --stackprefix STACKPREFIX
+                --aws_accesskey XXXXX
+                --aws_secretkey XXXXX
+                --jazz_apiendpoint JAZZ_APIENDPOINT
+                --jazz_userpass JAZZADMIN JAZZPASSWORD
+                --jenkins_url JENKINSURL
+                --jenkins_userpass JENKINSUSER JENKINSPASSWORD
 
 ```
 
 ### With missing parameters as arguments ###
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python setup.py install
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Multiaccount.py install
 
 # Enter the missing input params
-Please enter the environment prefix you used for your Jazz install:
-Enter AWS accesskey of the new account:
-Enter secretkey of the new account:
-Enter AWS regions with space delimiter:
-Please enter the Jenkins URL(without http):
-Please enter the Jenkins Username:
-Please enter the Jenkins Password:
-Please enter the Jazz Admin Username:
-Please enter the Jazz Admin Password:
-Please enter the Jazz API Endpoint(Full URL):
+Regions [()]:
+Stackprefix:
+Aws accesskey:
+Aws secretkey:
+Jazz apiendpoint:
+Jazz userpass [()]:
+Jenkins url:
+Jenkins userpass [()]:
 ```
 
 ## Example (Uninstall option)
@@ -81,22 +80,22 @@ Please enter the Jazz API Endpoint(Full URL):
 ### With all the parameters as arguments
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python teardown.py --jenkins-url JENKINSURL
-                    --jenkins-username JENKINSUSER
-                    --jenkins-password JENKINSPASSWORD --account-details all
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Multiaccount.py uninstall
+                    --jenkins_url JENKINSURL
+                    --jenkins_userpass JENKINSUSER JENKINSPASSWORD
+                    --account-details all
 ```
+Note: account-details can be 123XXXXX, 234XXXXX etc
 
 ### With missing parameters as arguments ###
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/multiaccount
-python teardown.py
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Multiaccount.py uninstall
 
 # Enter the missing input params
-Please enter the Jenkins URL(without http):
-Please enter the Jenkins Username:
-Please enter the Jenkins Password:
-Please enter the Accounts to delete '
-            '(Empty will delete all):
+Jenkins url:
+Jenkins userpass [()]:
+Account details [all]:
 ```

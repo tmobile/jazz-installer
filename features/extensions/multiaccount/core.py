@@ -28,7 +28,7 @@ role_document = {
 }
 
 
-def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_password, \
+def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_password,
                         jazz_apiendpoint, aws_region, jazz_stackprefix, tags):
     global role_document
     account_id = getAccountId(aws_accesskey, aws_secretkey)
@@ -45,7 +45,8 @@ def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_passwo
                                   aws_secret_access_key=aws_secretkey)
         # loop through the REGIONS and call REGIONS append API
         for existing_item in aws_region:
-            region_resources = create_region_resources(existing_item, get_configjson, tags, platform_role_arn, aws_accesskey, aws_secretkey, jazz_stackprefix)
+            region_resources = create_region_resources(existing_item, get_configjson, tags, platform_role_arn,
+                                                       aws_accesskey, aws_secretkey, jazz_stackprefix)
             # update IAM Assume policy for new region
             role_det = iam_client.get_role(
                 RoleName='%s_platform_services' % (jazz_stackprefix),
@@ -132,7 +133,8 @@ def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_passwo
     # loop multiple regions and each region-account, create
 
     for item in aws_region:
-        region_resources = create_region_resources(item, get_configjson, tags, platform_role_arn, aws_accesskey, aws_secretkey, jazz_stackprefix)
+        region_resources = create_region_resources(item, get_configjson, tags, platform_role_arn,
+                                                   aws_accesskey, aws_secretkey, jazz_stackprefix)
 
         account_json["REGIONS"].append({"REGION": item,
                                         "API_GATEWAY": region_resources["API_GATEWAY"],
@@ -144,7 +146,7 @@ def deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_passwo
     return account_json, credential_id
 
 
-def create_region_resources(region, get_configjson, tags, platform_role_arn, \
+def create_region_resources(region, get_configjson, tags, platform_role_arn,
                             aws_accesskey, aws_secretkey, jazz_stackprefix):
     api_client = boto3.client('apigateway',
                               aws_access_key_id=aws_accesskey,

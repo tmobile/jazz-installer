@@ -2,7 +2,7 @@
 
 import click
 
-from  extensions.splunk.setup import install
+from extensions.splunk.setup import install
 # The top level command line group
 @click.group()
 @click.version_option()

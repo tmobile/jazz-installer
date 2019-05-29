@@ -1,7 +1,4 @@
 import click
-import sys
-import subprocess
-import os
 import requests
 
 from retrying import retry
@@ -22,6 +19,7 @@ class colors:
 
 
 featureName = "MultiAccount"
+
 
 @click.command()
 @click.option(
@@ -72,9 +70,7 @@ featureName = "MultiAccount"
     help='Provide the username and password \
     of the jenkins separated by a space',
     prompt=True)
-
-
-def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint, \
+def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint,
             jazz_userpass, jenkins_url, jenkins_userpass):
     click.secho('\n\nThis will install {0} functionality into your Jazz deployment'.format(featureName), fg='blue')
     tags = [{
@@ -94,11 +90,11 @@ def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()
     jenkins_username, jenkins_password = jenkins_userpass_list[0], jenkins_userpass_list[1]
-    account_json, credential_id = deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_password, \
-                            jazz_apiendpoint, regions_list, stackprefix, tags)
+    account_json, credential_id = deploy_core_service(aws_accesskey, aws_secretkey, jazz_username, jazz_password,
+                                                      jazz_apiendpoint, regions_list, stackprefix, tags)
     if account_json != '':
         # Store the CREDENTIAL_ID in jenkins
-        setCredential(jenkins_url, jenkins_username, jenkins_password, credential_id, \
+        setCredential(jenkins_url, jenkins_username, jenkins_password, credential_id,
                       aws_accesskey, aws_secretkey, "awskey_cred.sh")
         update_config(
             "AWS.ACCOUNTS",
@@ -126,7 +122,7 @@ def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint
     prompt=True)
 @click.option(
     "--account_details",
-    help='Specify the Jenkins url',
+    help='Specify the Accounts to delete (Empty will delete all)',
     default='all',
     prompt=True
 )

@@ -25,6 +25,7 @@ featureName = "Apigee"
 gatewayFunctionName = "jazz-apigee-proxy-aws-prod"
 terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
 
+
 @click.command()
 @click.option(
     "--region",
@@ -42,7 +43,6 @@ terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
 )
 @click.option(
     "--jazz_apiendpoint",
-    "-p",
     help='Specify the Jazz Endpoint',
     prompt=True
 )
@@ -99,17 +99,17 @@ terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
     '--apigee_userpass',
     nargs=2,
     required=True,
-    help='Provide the username and password \
-    when accessing Apigee separated by a space',
+    help='Provide the username and password when accessing Apigee separated by a space',
     prompt=True)
-
-
-def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url, \
-            jenkins_userpass, apigee_host, apigee_org, apigee_prod_env, apigee_dev_env, \
+def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
+            jenkins_userpass, apigee_host, apigee_org, apigee_prod_env, apigee_dev_env,
             apigee_svc_prod_host, apigee_svc_dev_host, apigee_userpass):
-    click.secho('\n\nThis will install {0} functionality into your Jazz deployment'.format(featureName), fg='blue')
-    click.secho('\nThis installer will use whatever AWS credentials you have configured by running `aws configure`', fg='green')
-    click.secho('\nPlease make sure you are using the same AWS credentials you used to install your Jazz deployment', fg='green')
+    click.secho('\n\nThis will install {0} functionality into your Jazz \
+                deployment'.format(featureName), fg='blue')
+    click.secho('\nThis installer will use whatever AWS credentials you have configured by \
+                running `aws configure`', fg='green')
+    click.secho('\nPlease make sure you are using the same AWS credentials you used to \
+                install your Jazz deployment', fg='green')
     # Run terraform first, as we need it's output
     runTerraform(region, getAWSAccountID(), stackprefix, True)
     # TODO remove this entire module when the terraform bug is fixed
@@ -154,7 +154,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url, \
     )
 
     # Store the CREDENTIAL_ID in jenkins
-    setCredential(jenkins_url, jenkins_username, jenkins_password, credential_id, \
+    setCredential(jenkins_url, jenkins_username, jenkins_password, credential_id,
                   apigee_username, apigee_password)
     # Trigger metrics api
     metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
@@ -188,13 +188,11 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url, \
     prompt=True)
 @click.option(
     "--jazz_apiendpoint",
-    "-p",
     help='Specify the Jazz Endpoint',
     prompt=True
 )
 @click.option(
     "--jenkins_url",
-    "-p",
     help='Specify the Jenkins url',
     prompt=True
 )

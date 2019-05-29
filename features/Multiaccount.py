@@ -2,12 +2,13 @@
 
 import click
 
-from  extensions.multiaccount.setup import install, uninstall
+from extensions.multiaccount.setup import install, uninstall
 # The top level command line group
 @click.group()
 @click.version_option()
 def cli():
-    """Installs the MultiAccount extension for the Jazz Serverless Development Platform (https://github.com/tmobile/jazz)"""
+    """Installs the MultiAccount extension for the Jazz Serverless Development Platform \
+     (https://github.com/tmobile/jazz)"""
     pass
 
 

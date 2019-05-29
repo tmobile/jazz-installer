@@ -13,27 +13,45 @@ Installing this extension will create and configure Apigee resources. Once succe
 ## Basic Usage
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
-python setup.py [-h] [--aws-region AWS_REGION]
-                [--jazz-stackprefix JAZZ_STACKPREFIX] [--jazz-username JAZZ_USERNAME]
-                [--jazz-password JAZZ_PASSWORD]
-                [--jazz-apiendpoint JAZZ_APIENDPOINT] [--jenkins-url JENKINS_URL]
-                [--jenkins-username JENKINS_USERNAME]
-                [--jenkins-password JENKINS_PASSWORD]
-                {install,uninstall} ... apigee_host apigee_org apigee_prod_env
-                apigee_dev_env apigee_svc_prod_host apigee_svc_dev_host
-                apigee_username apigee_password
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Apigee.py install [OPTIONS]
+Options:
+  -r, --region [us-east-1|us-west-2]
+                                  Specify the region where your Jazz
+                                  installation lives
+  -p, --stackprefix TEXT          Specify the stackprefix of your existing
+                                  Jazz installation (e.g. myjazz),
+                                  your existing config will be imported
+  --jazz_apiendpoint TEXT     Specify the Jazz Endpoint
+  --jazz_userpass TEXT...         Provide the username and password     of the
+                                  jazz application separated by a space
+                                  [required]
+  --jenkins_url TEXT              Specify the Jenkins url
+  --jenkins_userpass TEXT...      Provide the username and password     of the
+                                  jenkins separated by a space  [required]
+  --apigee_host TEXT              Url of the Apigee host (e.g. https://my-
+                                  apigee-host)
+  --apigee_org TEXT               Name of the Apigee org you wish to use
+  --apigee_prod_env TEXT          Name of the Apigee env you wish to use (e.g.
+                                  prod)
+  --apigee_dev_env TEXT           Name of the Apigee env you wish to use (e.g.
+                                  dev)
+  --apigee_svc_prod_host TEXT     Url of the service API host (e.g.
+                                  jazz.api.prod.com)
+  --apigee_svc_dev_host TEXT      Url of the service API host (e.g.
+                                  jazz.api.dev.com)
+  --apigee_userpass TEXT...       Provide the username and password     when
+                                  accessing Apigee separated by a space
+                                  [required]
+  --help                          Show this message and exit.
+
 ```
 Note:
    - JAZZ_INSTALLER_DIRECTORY - Directory path of jazz installation
    - Both the  install/uninstall options will ask user for raw inputs for all the missing arguments (similar to below)
 ```sh
-          Please enter the Jazz Admin Username:
-          Please enter the Jazz Admin Password:
-          Please enter the Jazz API Endpoint(Full URL):
-          Please enter the Jenkins URL(without http):
-          Please enter the Jenkins Username:
-          Please enter the Jenkins Password:
+    Stackprefix:
+    Jazz apiendpoint:
 ```
 
 ## Example (Install option)
@@ -41,29 +59,70 @@ Note:
 ### With all the parameters as arguments
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
-python setup.py --aws-region REGION
-                  --jazz-stackprefix STACKPREFIX
-                  --jazz-username JAZZADMIN
-                  --jazz-password JAZZPASSWORD
-                  --jazz-apiendpoint JAZZ_APIENDPOINT
-                  --jenkins-url JENKINSURL
-                  --jenkins-username JENKINSUSER
-                  --jenkins-password JENKINSPASSWORD
-                  install https://api.enterprise.apigee.com APIGEEORG PRODENV DEVENV APIGEE_PROD_SERVICEHOST APIGEE_DEV_SERVICEHOST APIGEEUSERNAME APIGEEPASSWORD
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Apigee.py install --region REGION
+                  --stackprefix STACKPREFIX
+                  --jazz_apiendpoint JAZZ_APIENDPOINT
+                  --jazz_userpass JAZZADMIN JAZZPASSWORD
+                  --jenkins_url JENKINSURL
+                  --jenkins_userpass JENKINSUSER JENKINSPASSWORD
+                  --apigee_host https://api.enterprise.apigee.com
+                  --apigee_org APIGEEORG
+                  --apigee_prod_env PRODENV
+                  --apigee_dev_env DEVENV
+                  --apigee_svc_prod_host APIGEE_PROD_SERVICEHOST
+                  --apigee_svc_dev_host APIGEE_DEV_SERVICEHOST
+                  --apigee_userpass APIGEEUSERNAME APIGEEPASSWORD
+
 ```
 
 ### With missing parameters as arguments ###
 
 ```sh
-cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
-python setup.py install https://api.enterprise.apigee.com APIGEEORG PRODENV DEVENV APIGEE_PROD_SERVICEHOST APIGEE_DEV_SERVICEHOST APIGEEUSERNAME APIGEEPASSWORD
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Apigee.py install
 
 # Enter the missing input params
-Please enter the Jazz Admin Username:
-Please enter the Jazz Admin Password:
-Please enter the Jazz API Endpoint(Full URL):
-Please enter the Jenkins URL(without http):
-Please enter the Jenkins Username:
-Please enter the Jenkins Password:
+Stackprefix:
+Jazz apiendpoint:
+Jazz userpass [()]:
+Jenkins url:
+Jenkins userpass [()]:
+Apigee host:
+Apigee org:
+Apigee prod env:
+Apigee dev env:
+Apigee svc prod host:
+Apigee svc dev host:
+Apigee userpass [()]:
+```
+
+
+## Example (Uninstall option)
+
+### With all the parameters as arguments
+
+```sh
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Apigee.py uninstall --region REGION
+                  --stackprefix STACKPREFIX
+                  --jazz_userpass JAZZADMIN JAZZPASSWORD
+                  --jazz_apiendpoint JAZZ_APIENDPOINT
+                  --jenkins_url JENKINSURL
+                  --jenkins_userpass JENKINSUSER JENKINSPASSWORD
+
+```
+
+### With missing parameters as arguments ###
+
+```sh
+cd JAZZ_INSTALLER_DIRECTORY/features
+python Apigee.py uninstall
+
+# Enter the missing input params
+Stackprefix:
+Jazz userpass [()]:
+Jazz apiendpoint:
+Jenkins url:
+Jenkins userpass [()]:
 ```

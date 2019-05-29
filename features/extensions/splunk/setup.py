@@ -1,7 +1,6 @@
-import argparse
-import sys
-sys.path.append('../config')  # noqa: E402
-from api_config import update_config
+import click
+
+from utils.api_config import update_config
 
 
 class colors:
@@ -18,98 +17,57 @@ class colors:
 featureName = "Splunk"
 
 
-def main():
-    mainParser = argparse.ArgumentParser()
-    mainParser.description = ('Installs the Splunk extension for the Jazz Serverless Development Platform '
-                              '(https://github.com/tmobile/jazz)')
-    subparsers = mainParser.add_subparsers(help='Installation scenarios', dest='command')
-
-    subparsers.add_parser('install', help='Install feature extension').set_defaults(func=install)
-
-    mainParser.add_argument(
-        '--splunk-endpoint',
-        help='Specify the splunk endpoint'
-    )
-    mainParser.add_argument(
-        '--splunk-token',
-        help='Specify the splunk token'
-    )
-    mainParser.add_argument(
-        '--splunk-index',
-        help='Specify the splunk index'
-    )
-    mainParser.add_argument(
-        '--jazz-username',
-        help='Specify the Jazz username'
-    )
-
-    mainParser.add_argument(
-        '--jazz-password',
-        help='Specify the Jazz password'
-    )
-
-    mainParser.add_argument(
-        '--jazz-apiendpoint',
-        help='Specify the Jazz password'
-    )
-
-    args = mainParser.parse_args()
-    args.func(args)
-
-
-def install(args):
-    print(
-        colors.OKGREEN +
-        "\nThis will install {0} functionality into your Jazz deployment.\n".format(featureName)
-        + colors.ENDC)
-
-    configureSplunk(args, True)
-
-
-def configureSplunk(args, splunk_enable):
-
-    if not args.splunk_endpoint:
-        args.splunk_endpoint = raw_input("Please enter the Splunk Endpoint: ")
-
-    if not args.splunk_token:
-        args.splunk_token = raw_input("Please enter the Splunk Token: ")
-
-    if not args.splunk_index:
-        args.splunk_index = raw_input("Please enter the Splunk Index: ")
-
-    if not args.jazz_username:
-        args.jazz_username = raw_input("Please enter the Jazz Admin Username: ")
-
-    if not args.jazz_password:
-        args.jazz_password = raw_input("Please enter the Jazz Admin Password: ")
-
-    if not args.jazz_apiendpoint:
-        args.jazz_apiendpoint = raw_input("Please enter the Jazz API Endpoint(Full URL): ")
-
-    if not args.splunk_endpoint and not args.splunk_token and not args.splunk_index:
-        print(colors.FAIL +
-              'Cannot proceed! No install possible'
-              + colors.ENDC)
-        return True
-
-    splunk_json = prepare_splunk_json(args)
+@click.command()
+@click.option(
+    "--splunk_endpoint",
+    help=('Specify the splunk endpoint'),
+    required=True,
+    prompt=True
+)
+@click.option(
+    "--splunk_token",
+    help=('Specify the splunk token'),
+    required=True,
+    prompt=True
+)
+@click.option(
+    "--splunk_index",
+    help=('Specify the splunk index'),
+    required=True,
+    prompt=True
+)
+@click.option(
+    "--jazz_apiendpoint",
+    help='Specify the Jazz Endpoint',
+    prompt=True
+)
+@click.option(
+    '--jazz_userpass',
+    nargs=2,
+    required=True,
+    help='Provide the username and password \
+    of the jazz application separated by a space',
+    prompt=True
+)
+def install(splunk_endpoint, splunk_token, splunk_index, jazz_apiendpoint, jazz_userpass):
+    click.secho('\n\nThis will install {0} functionality into your Jazz deployment'.format(featureName), fg='blue')
+    jazz_userpass_list = ''.join(list(jazz_userpass)).split()
+    jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
+    splunk_json = prepare_splunk_json(splunk_endpoint, splunk_token, splunk_index)
     update_config(
         "SPLUNK",
         splunk_json,
-        args.jazz_username,
-        args.jazz_password,
-        args.jazz_apiendpoint
+        jazz_username,
+        jazz_password,
+        jazz_apiendpoint
     )
 
 
-def prepare_splunk_json(args):
+def prepare_splunk_json(splunk_endpoint, splunk_token, splunk_index):
     splunk_json = {
-        "ENDPOINT": args.splunk_endpoint,
-        "HEC_TOKEN": args.splunk_token,
-        "INDEX": args.splunk_index,
+        "ENDPOINT": splunk_endpoint,
+        "HEC_TOKEN": splunk_token,
+        "INDEX": splunk_index,
         "IS_ENABLED": True
     }
     return splunk_json
-
-
-main()
