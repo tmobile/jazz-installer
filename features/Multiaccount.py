@@ -2,7 +2,8 @@
 
 import click
 
-from extensions.multiaccount.setup import install, uninstall
+from extensions.multiaccount.install import install
+from extensions.multiaccount.uninstall import uninstall
 # The top level command line group
 @click.group()
 @click.version_option()

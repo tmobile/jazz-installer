@@ -18,14 +18,7 @@ def setCredential(url, username, password,  credential_id, key, value, credfile=
 
 
 def startJob(url, username, password, jobUrl):
-    subprocess.check_call(
-        [
-            "curl",
-            "-X",
-            "POST",
-            ("http://%s:%s@%s/%s") %
-            (username, password, url, jobUrl),
-        ])
+    requests.post(("http://%s:%s@%s/%s") % (username, password, url, jobUrl))
 
 
 def startJobwithInputs(url, username, password, job, input):

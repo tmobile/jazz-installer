@@ -2,7 +2,8 @@
 
 import click
 
-from extensions.apigee.setup import install, uninstall
+from extensions.apigee.install import install
+from extensions.apigee.uninstall import uninstall
 # The top level command line group
 @click.group()
 @click.version_option()
