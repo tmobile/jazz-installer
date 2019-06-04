@@ -15,9 +15,9 @@ Installing this extension will create and configure Apigee resources. Once succe
 ```sh
 cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
 python setup.py [-h] [--aws-region AWS_REGION]
-                [--jazz-stackprefix JAZZ_STACKPREFIX] [--scm-repo SCM_REPO]
-                [--scm-username SCM_USERNAME] [--scm-password SCM_PASSWORD]
-                [--scm-pathext SCM_PATHEXT] [--jenkins-url JENKINS_URL]
+                [--jazz-stackprefix JAZZ_STACKPREFIX] [--jazz-username JAZZ_USERNAME]
+                [--jazz-password JAZZ_PASSWORD]
+                [--jazz-apiendpoint JAZZ_APIENDPOINT] [--jenkins-url JENKINS_URL]
                 [--jenkins-username JENKINS_USERNAME]
                 [--jenkins-password JENKINS_PASSWORD]
                 {install,uninstall} ... apigee_host apigee_org apigee_prod_env
@@ -28,10 +28,9 @@ Note:
    - JAZZ_INSTALLER_DIRECTORY - Directory path of jazz installation
    - Both the  install/uninstall options will ask user for raw inputs for all the missing arguments (similar to below)
 ```sh
-          Please enter the SCM Repo:
-          Please enter the SCM Username:
-          Please enter the SCM Password:
-          Please enter the SCM Pathext (Use "/scm" for bitbucket):
+          Please enter the Jazz Admin Username:
+          Please enter the Jazz Admin Password:
+          Please enter the Jazz API Endpoint(Full URL):
           Please enter the Jenkins URL(without http):
           Please enter the Jenkins Username:
           Please enter the Jenkins Password:
@@ -43,15 +42,14 @@ Note:
 
 ```sh
 cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
-python setup.py --aws-region REGION 
-                  --jazz-stackprefix STACKPREFIX 
-                  --scm-repo SCMREPO 
-                  --scm-username SCMUSERNAME 
-                  --scm-password SCMPASSWORD 
-                  --scm-pathext / 
-                  --jenkins-url JENKINSURL 
-                  --jenkins-username JENKINSUSER 
-                  --jenkins-password JENKINSPASSWORD 
+python setup.py --aws-region REGION
+                  --jazz-stackprefix STACKPREFIX
+                  --jazz-username JAZZADMIN
+                  --jazz-password JAZZPASSWORD
+                  --jazz-apiendpoint JAZZ_APIENDPOINT
+                  --jenkins-url JENKINSURL
+                  --jenkins-username JENKINSUSER
+                  --jenkins-password JENKINSPASSWORD
                   install https://api.enterprise.apigee.com APIGEEORG PRODENV DEVENV APIGEE_PROD_SERVICEHOST APIGEE_DEV_SERVICEHOST APIGEEUSERNAME APIGEEPASSWORD
 ```
 
@@ -62,10 +60,9 @@ cd JAZZ_INSTALLER_DIRECTORY/feature-extensions/apigee
 python setup.py install https://api.enterprise.apigee.com APIGEEORG PRODENV DEVENV APIGEE_PROD_SERVICEHOST APIGEE_DEV_SERVICEHOST APIGEEUSERNAME APIGEEPASSWORD
 
 # Enter the missing input params
-Please enter the SCM Repo:
-Please enter the SCM Username:
-Please enter the SCM Password:
-Please enter the SCM Pathext (Use "/scm" for bitbucket):
+Please enter the Jazz Admin Username:
+Please enter the Jazz Admin Password:
+Please enter the Jazz API Endpoint(Full URL):
 Please enter the Jenkins URL(without http):
 Please enter the Jenkins Username:
 Please enter the Jenkins Password:
