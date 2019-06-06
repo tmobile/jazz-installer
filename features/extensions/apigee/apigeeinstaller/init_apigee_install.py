@@ -189,7 +189,7 @@ def zip_bundle(path, name, build):
 
 def deploy_shared_flows(host, org, env, build, username, password):
     print_banner("Deploying Sharedflows now ............")
-    flowDir = "apigeeinstaller/sharedflows"
+    flowDir = "extensions/apigee/apigeeinstaller/sharedflows"
     for item in os.listdir(flowDir):
         itemPath = os.path.join(flowDir, item)
         if os.path.isdir(itemPath):
