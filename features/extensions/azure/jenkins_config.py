@@ -38,8 +38,21 @@ def add_jenkins_credential(jenkins_host, jenkins_port, basic_auth, key, value):
                "    \"description\": \"{0}\",\n"
                "    \"$class\": \"com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl\"\n"
                "  }}\n"
-               "}}").format(key, value)
-    data = {'json': content}
+               "}}").format(description, key, value)
+    content2 = ("{{\n"
+               "  \"\": \"0\",\n"
+               "  \"credentials\": {{\n"
+               "    \"scope\": \"GLOBAL\",\n"
+               "    \"id\": \"{0}\",\n"
+               "    \"accessKey\": \"{1}\",\n"
+               "    \"secretKey\": \"{2}\",\n"
+               "    \"description\": \"{0}\",\n"
+               "    \"iamRoleArn\": \"\",\n"
+               "    \"iamMfaSerialNumber\": \"\",\n"
+               "    \"$class\": \"com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl\"\n"
+               "  }}\n"
+               "}}").format(description, key, value)
+    data = {'json': content2}
     resp = requests.post(url, data=data, auth=basic_auth)
     if resp.status_code != 200:
         print(colors.FAIL +
