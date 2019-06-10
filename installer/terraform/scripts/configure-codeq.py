@@ -4,9 +4,13 @@ import sys
 import time
 
 
-def updateSonar(url, post_data, password='admin'):
+def updateSonar(url, post_data, password='admin', max_retry=5):
     username = 'admin'
-    requests.post("http://"+url, auth=HTTPBasicAuth(username, password), data=post_data)
+    response = requests.post("http://"+url, auth=HTTPBasicAuth(username, password), data=post_data)
+    if response.status_code != 200 and response.status_code != 204 and max_retry > 0:
+        max_retry -= 1
+        time.sleep(60)
+        updateSonar(url, post_data, password, max_retry)
 
 
 if __name__ == u"__main__":
