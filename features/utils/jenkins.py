@@ -1,5 +1,6 @@
 import requests
 import subprocess
+import sys
 from requests.auth import HTTPBasicAuth
 from utils.helper import colors
 

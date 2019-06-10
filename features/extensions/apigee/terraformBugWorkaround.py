@@ -1,8 +1,6 @@
 import json
 import subprocess
 import retrying
-import os
-import sys
 
 
 from utils.helper import colors
@@ -38,26 +36,6 @@ def runTerraform(region, envPrefix, install):
                                                    gatewayFunctionName))
         ],
         cwd='extensions/apigee/terraform')
-
-
-def terraformStateSanityCheck():
-    print(colors.OKBLUE +
-          'Making sure you have not deleted the Terraform .tfstate file...' +
-          colors.ENDC)
-    if not os.path.isfile('extensions/apigee/terraform/terraform.tfstate'):
-        print(colors.FAIL +
-              'Cannot find the Terraform .tfstate file! No uninstall possible'
-              + colors.ENDC)
-
-
-def getTerraformOutputVar(varname):
-    try:
-        return subprocess.check_output(
-            ['terraform', 'output', varname],
-            cwd='extensions/apigee/terraform', encoding='UTF-8').rstrip()
-    except subprocess.CalledProcessError:
-        print("Failed getting output variable {0} from terraform!".format(varname))
-        sys.exit()
 
 
 # Replaces function's role with one created by Terraform
