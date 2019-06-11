@@ -23,7 +23,8 @@
         "DEPLOYMENT_TARGETS": {
           "API": ["aws_apigateway", "gcp_apigee"],
           "FUNCTION": ["aws_lambda"],
-          "WEBSITE": ["aws_s3", "aws_cloudfront"]
+          "WEBSITE": ["aws_s3", "aws_cloudfront"],
+          "SLS-APP": ["aws_sls-app"]
         },
         "DEFAULTS": {
             "PROVIDER": "aws"
@@ -95,6 +96,12 @@
                   "active": false,
                   "options": [
                       {"label": "AWS Lambda", "value": "aws_lambda"}
+                  ]
+              },
+              "SLS-APP": {
+                  "active": false,
+                  "options": [
+                      {"label": "AWS SLS APP", "value": "aws_sls-app"}
                   ]
               }
           }
