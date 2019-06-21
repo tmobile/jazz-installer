@@ -45,6 +45,42 @@ resource "aws_security_group" "vpc_sg" {
         cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
     ingress {
+        from_port = "${var.es_port_def}"
+        to_port = "${var.es_port_def}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.es_port_def}"
+        to_port = "${var.es_port_def}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.es_port_tcp}"
+        to_port = "${var.es_port_tcp}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.es_port_tcp}"
+        to_port = "${var.es_port_tcp}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.kibana_port_def}"
+        to_port = "${var.kibana_port_def}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.kibana_port_def}"
+        to_port = "${var.kibana_port_def}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
         from_port = 9000
         to_port = 9000
         protocol = "tcp"

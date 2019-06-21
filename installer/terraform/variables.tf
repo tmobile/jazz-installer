@@ -150,3 +150,18 @@ variable "response_parameters_cors" {
      "gatewayresponse.header.Access-Control-Allow-Origin" = "'*'"
   }
  }
+variable "es_port_def" {type = "string" default = "9200"}
+variable "es_port_tcp" {type = "string" default = "9300"}
+variable "kibana_port_def" {type = "string" default = "5601"}
+variable "ecsEscpu" { type = "string" default = "2048" }
+variable "ecsEsmemory" { type = "string" default = "5120" }
+variable "ecsKibanacpu" { type = "string" default = "512" }
+variable "ecsKibanamemory" { type = "string" default = "2048" }
+variable "es_docker_image" {
+  type = "string"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:6.5.0"
+}
+variable "kibana_docker_image" {
+  type = "string"
+  default = "docker.elastic.co/kibana/kibana:6.5.4"
+}

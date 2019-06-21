@@ -35,7 +35,7 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${var.dockerizedJenkins == 1 ? format("%s/%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), "var.es_port_def" ) : aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
   }
 
   #TODO why do we need these following to values in addition to the previous ones?

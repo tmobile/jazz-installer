@@ -1,4 +1,5 @@
 resource "aws_elasticsearch_domain" "elasticsearch_domain" {
+  count = "${1-var.dockerizedJenkins}"
   domain_name           = "${var.envPrefix}"
   elasticsearch_version = "5.1"
   cluster_config {
@@ -42,6 +43,7 @@ POLICIES
 #we will just create one.
 #TODO Not a huge fan of `on_failure continue`, we need a smarter way to decide if this needs to be run or not
 resource "null_resource" "updateSecurityGroup" {
+   count = "${1-var.dockerizedJenkins}"
    provisioner "local-exec" {
     command    = "aws ec2 authorize-security-group-ingress --group-id ${lookup(var.jenkinsservermap, "jenkins_security_group")} --protocol tcp --port 443 --source-group ${lookup(var.jenkinsservermap, "jenkins_security_group")} --region ${var.region}"
     on_failure = "continue"
