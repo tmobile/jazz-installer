@@ -32,7 +32,7 @@ resource "null_resource" "update_jenkins_configs" {
 
   #Elasticsearch
   provisioner "local-exec" {
-    command = "${var.configureESEndpoint_cmd} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/.kibana")}"
+    command = "${var.configureESEndpoint_cmd} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/_plugin/kibana")}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${var.dockerizedJenkins == 1 ? format("%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint)} ${var.jenkinsjsonpropsfile}"

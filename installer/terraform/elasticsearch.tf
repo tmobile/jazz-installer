@@ -1,7 +1,7 @@
 resource "aws_elasticsearch_domain" "elasticsearch_domain" {
   count = "${1-var.dockerizedJenkins}"
   domain_name           = "${var.envPrefix}"
-  elasticsearch_version = "5.1"
+  elasticsearch_version = "6.5"
   cluster_config {
     instance_type = "m3.medium.elasticsearch"
     instance_count =2
