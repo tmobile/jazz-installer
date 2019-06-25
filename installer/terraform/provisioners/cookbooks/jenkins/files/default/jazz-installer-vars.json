@@ -23,7 +23,8 @@
         "DEPLOYMENT_TARGETS": {
           "API": ["aws_apigateway", "gcp_apigee"],
           "FUNCTION": ["aws_lambda"],
-          "WEBSITE": ["aws_s3", "aws_cloudfront"]
+          "WEBSITE": ["aws_s3", "aws_cloudfront"],
+          "SLS-APP": ["aws_sls-app"]
         },
         "DEFAULTS": {
             "PROVIDER": "aws"
@@ -96,6 +97,12 @@
                   "options": [
                       {"label": "AWS Lambda", "value": "aws_lambda"}
                   ]
+              },
+              "SLS-APP": {
+                  "active": false,
+                  "options": [
+                      {"label": "AWS SLS APP", "value": "aws_sls-app"}
+                  ]
               }
           }
         },
@@ -124,7 +131,7 @@
             "KEY_PREFIX": "jazz",
             "ENABLE_SONAR": "{ENABLE_SONAR}",
             "JAZZ_PROFILE": "JazzProfile",
-            "ENABLE_VULNERABILITY_SCAN": "{ENABLE_VULNERABILITY_SCAN}",
+            "ENABLE_VULNERABILITY_SCAN": "false",
             "DEPENDENCY_CHECK_NIST_FILES_LOCATION": "/var/log/depcheck_jazz/nistfiles/",
             "DEPENDENCY_CHECK_NIST_MIRROR_UTILITY": "https://github.com/stevespringett/nist-data-mirror/releases/download/1.1.0/nist-data-mirror.jar",
             "DEPENDENCY_CHECK_ELAPSED_HOURS_BEFORE_UPDATES": "24",
