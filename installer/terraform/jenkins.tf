@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.health_check_kibana"]
 
   #Cloudfront
   provisioner "local-exec" {

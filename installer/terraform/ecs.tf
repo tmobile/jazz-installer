@@ -589,3 +589,11 @@ resource "null_resource" "health_check_es" {
     command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_es.arn}"
   }
 }
+
+resource "null_resource" "health_check_kibana" {
+  count = "${var.dockerizedJenkins}"
+  depends_on = ["aws_ecs_service.ecs_service_kibana"]
+  provisioner "local-exec" {
+    command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_kibana.arn}"
+  }
+}
