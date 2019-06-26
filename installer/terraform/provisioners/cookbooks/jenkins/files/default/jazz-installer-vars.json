@@ -34,6 +34,7 @@
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         },
         "ES_HOSTNAME": "",
+        "KIBANA_HOSTNAME": "",
         "PLATFORM": {
           "AWS": {
             "API_GATEWAY": {

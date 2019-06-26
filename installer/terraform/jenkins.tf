@@ -35,9 +35,11 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.configureESEndpoint_cmd} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/_plugin/kibana")}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${var.dockerizedJenkins == 1 ? format("%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint)} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.jenkinsjsonpropsfile}"
   }
-
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} KIBANA_HOSTNAME ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/_plugin/kibana")} ${var.jenkinsjsonpropsfile}"
+  }
   #TODO why do we need these following to values in addition to the previous ones?
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_JAZZ} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"
