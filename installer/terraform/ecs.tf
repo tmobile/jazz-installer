@@ -1,5 +1,4 @@
 resource "aws_iam_role_policy" "ecs_execution_policy" {
-  count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_execution_policy"
   role = "${aws_iam_role.ecs_execution_role.id}"
 
@@ -25,7 +24,6 @@ EOF
 }
 
 resource "aws_iam_role" "ecs_execution_role" {
-  count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_execution_role"
 
  assume_role_policy = <<EOF
@@ -46,7 +44,6 @@ EOF
 }
 
 resource "aws_cloudwatch_log_group" "ecs_fargates_cwlogs" {
-  count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_log"
   retention_in_days = 7
 }
@@ -73,7 +70,6 @@ resource "aws_ecs_cluster" "ecs_cluster_codeq" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_es_kibana" {
-  count = "${var.dockerizedJenkins}"
   name = "${var.envPrefix}_ecs_cluster_es_kibana"
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
@@ -129,7 +125,6 @@ data "template_file" "ecs_task_codeq" {
 }
 
 data "template_file" "ecs_task_es" {
-  count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_es_task_definition.json")}"
 
   vars {
@@ -146,7 +141,6 @@ data "template_file" "ecs_task_es" {
 }
 
 data "template_file" "ecs_task_kibana" {
-  count = "${var.dockerizedJenkins}"
   template = "${file("${path.module}/ecs_kibana_task_definition.json")}"
 
   vars {
@@ -205,7 +199,6 @@ resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_es" {
-  count = "${var.dockerizedJenkins}"
   family                   = "${var.envPrefix}_ecs_task_definition_es"
   container_definitions    = "${data.template_file.ecs_task_es.rendered}"
   requires_compatibilities = ["FARGATE"]
@@ -219,7 +212,6 @@ resource "aws_ecs_task_definition" "ecs_task_definition_es" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition_kibana" {
-  count = "${var.dockerizedJenkins}"
   family                   = "${var.envPrefix}_ecs_task_definition_kibana"
   container_definitions    = "${data.template_file.ecs_task_kibana.rendered}"
   requires_compatibilities = ["FARGATE"]
@@ -285,7 +277,6 @@ resource "aws_alb_target_group" "alb_target_group_codeq" {
 }
 
 resource "aws_alb_target_group" "alb_target_group_es" {
-  count = "${var.dockerizedJenkins}"
   name     = "${var.envPrefix}-ecs-es-tg"
   port     = 80
   protocol = "HTTP"
@@ -302,7 +293,6 @@ resource "aws_alb_target_group" "alb_target_group_es" {
 }
 
 resource "aws_alb_target_group" "alb_target_group_kibana" {
-  count = "${var.dockerizedJenkins}"
   name     = "${var.envPrefix}-ecs-kibana-tg"
   port     = 80
   protocol = "HTTP"
@@ -349,12 +339,11 @@ resource "aws_lb" "alb_ecs_codeq" {
 }
 
 resource "aws_lb" "alb_ecs_es_kibana" {
-  count = "${var.dockerizedJenkins}"
   name            = "${var.envPrefix}-es-kibana-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.vpc_sg.id}"]
-  subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
+  security_groups    = ["${aws_security_group.vpc_sg_es_kibana.id}"]
+  subnets            = ["${slice(split(",", join(",",aws_subnet.subnet_for_ecs.*.id)), 0, 2)}"]
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -395,7 +384,6 @@ resource "aws_alb_listener" "ecs_alb_listener_codeq" {
 }
 
 resource "aws_alb_listener" "ecs_alb_listener_es" {
-  count = "${var.dockerizedJenkins}"
   load_balancer_arn = "${aws_lb.alb_ecs_es_kibana.arn}"
   port              = "${var.es_port_def}"
   protocol          = "HTTP"
@@ -407,7 +395,6 @@ resource "aws_alb_listener" "ecs_alb_listener_es" {
 }
 
 resource "aws_alb_listener" "ecs_alb_listener_kibana" {
-  count = "${var.dockerizedJenkins}"
   load_balancer_arn = "${aws_lb.alb_ecs_es_kibana.arn}"
   port              = "${var.kibana_port_def}"
   protocol          = "HTTP"
@@ -434,12 +421,10 @@ data "aws_ecs_task_definition" "ecs_task_definition_codeq" {
 }
 
 data "aws_ecs_task_definition" "ecs_task_definition_es" {
-  count = "${var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_es.family}"
 }
 
 data "aws_ecs_task_definition" "ecs_task_definition_kibana" {
-  count = "${var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_kibana.family}"
 }
 
@@ -513,7 +498,6 @@ resource "aws_ecs_service" "ecs_service_codeq" {
 }
 
 resource "aws_ecs_service" "ecs_service_es" {
-  count = "${var.dockerizedJenkins}"
   name            = "${var.envPrefix}_ecs_service_es"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_es.family}:${max("${aws_ecs_task_definition.ecs_task_definition_es.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_es.revision}")}"
   desired_count   = 1
@@ -522,7 +506,7 @@ resource "aws_ecs_service" "ecs_service_es" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_es_kibana.id}"
 
   network_configuration {
-    security_groups    = ["${aws_security_group.vpc_sg.id}"]
+    security_groups    = ["${aws_security_group.vpc_sg_es_kibana.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs_private.*.id}"]
   }
 
@@ -536,7 +520,6 @@ resource "aws_ecs_service" "ecs_service_es" {
 }
 
 resource "aws_ecs_service" "ecs_service_kibana" {
-  count = "${var.dockerizedJenkins}"
   name            = "${var.envPrefix}_ecs_service_kibana"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_kibana.family}:${max("${aws_ecs_task_definition.ecs_task_definition_kibana.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_kibana.revision}")}"
   desired_count   = 1
@@ -545,7 +528,7 @@ resource "aws_ecs_service" "ecs_service_kibana" {
   cluster =       "${aws_ecs_cluster.ecs_cluster_es_kibana.id}"
 
   network_configuration {
-    security_groups    = ["${aws_security_group.vpc_sg.id}"]
+    security_groups    = ["${aws_security_group.vpc_sg_es_kibana.id}"]
     subnets            = ["${aws_subnet.subnet_for_ecs_private.*.id}"]
   }
 
@@ -583,7 +566,6 @@ resource "null_resource" "health_check_codeq" {
 }
 
 resource "null_resource" "health_check_es" {
-  count = "${var.dockerizedJenkins}"
   depends_on = ["aws_ecs_service.ecs_service_es"]
   provisioner "local-exec" {
     command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_es.arn}"
@@ -591,7 +573,6 @@ resource "null_resource" "health_check_es" {
 }
 
 resource "null_resource" "health_check_kibana" {
-  count = "${var.dockerizedJenkins}"
   depends_on = ["aws_ecs_service.ecs_service_kibana"]
   provisioner "local-exec" {
     command = "python ${var.healthCheck_cmd} ${aws_alb_target_group.alb_target_group_kibana.arn}"

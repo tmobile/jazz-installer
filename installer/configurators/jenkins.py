@@ -62,8 +62,7 @@ def update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, s
     replace_tfvars('jenkins_ssh_port', ssh_port, get_tfvars_file())
     replace_tfvars('jenkins_ssh_key', '{0}'.format(jenkins_pem), get_tfvars_file())
 
-
-def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet):
+def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet, existing_vpc_id, vpc_cidr):
     # Check is the jenkins user exist in jenkins server
     if not check_jenkins_user(endpoint, defaultport, userpw):
         sys.exit(
@@ -74,6 +73,11 @@ def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet):
 
     # Default Jenkins instance ssh Port
     ssh_port = "22"
+    if existing_vpc_id:
+        replace_tfvars('existing_vpc_ecs', existing_vpc_id, get_tfvars_file())
+    else:
+        replace_tfvars("autovpc", "true", get_tfvars_file(), False)
+        replace_tfvars("vpc_cidr_block", vpc_cidr, get_tfvars_file())
 
     replace_tfvars('dockerizedJenkins', 'false', get_tfvars_file(), quoteVal=False)
     update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, secgrp, subnet)

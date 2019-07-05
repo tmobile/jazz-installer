@@ -32,13 +32,16 @@ resource "null_resource" "update_jenkins_configs" {
 
   #Elasticsearch
   provisioner "local-exec" {
-    command = "${var.configureESEndpoint_cmd} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/_plugin/kibana")}"
+    command = "${var.configureESEndpoint_cmd} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def)} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def ) : format("http://%s", join(" ",aws_elasticsearch_domain.elasticsearch_domain.*.endpoint))} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_lb.alb_ecs_es_kibana.dns_name} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} KIBANA_HOSTNAME ${var.dockerizedJenkins == 1 ? format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def) : format("https://%s%s", join(" ", aws_elasticsearch_domain.elasticsearch_domain.*.endpoint), "/_plugin/kibana")} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_PORT ${var.es_port_def} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} KIBANA_HOSTNAME ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)} ${var.jenkinsjsonpropsfile}"
   }
   #TODO why do we need these following to values in addition to the previous ones?
   provisioner "local-exec" {
