@@ -62,6 +62,7 @@ def update_jenkins_terraform(endpoint, defaultport, userpw, sshuser, ssh_port, s
     replace_tfvars('jenkins_ssh_port', ssh_port, get_tfvars_file())
     replace_tfvars('jenkins_ssh_key', '{0}'.format(jenkins_pem), get_tfvars_file())
 
+
 def configure_jenkins(endpoint, defaultport, userpw, sshuser, secgrp, subnet, existing_vpc_id, vpc_cidr):
     # Check is the jenkins user exist in jenkins server
     if not check_jenkins_user(endpoint, defaultport, userpw):
