@@ -26,6 +26,51 @@ function inArray() {
    return 0
 }
 
+function pushToCatalog {
+  tablename=$1
+  element=$2
+  service_type=$3
+  deployment_targets=$4
+  securityGroupIds=$5
+  subnetIds=$6
+  iamRoleARN=$7
+  provider_runtime="nodejs8.10"
+
+  timestamp=$(date --utc +%FT%T)
+  uuid=$(uuidgen -t)
+
+  echo -n > "./jazz-core/core/$element/deployment-env.yml"
+  echo "service_id: $uuid" >> "./jazz-core/core/$element/deployment-env.yml"
+
+  if [[ $element =~ ^jazz ]] ; then
+    service_name="${element:5}"
+  else
+    service_name=$element
+  fi
+
+  aws dynamodb put-item --table-name "$tablename" --item "{
+      \"SERVICE_ID\":{\"S\":\"$uuid\"},
+      \"SERVICE_CREATED_BY\":{\"S\":\"$jazz_admin\"},
+      \"SERVICE_DOMAIN\":{\"S\":\"jazz\"},
+      \"SERVICE_NAME\":{\"S\":\"$service_name\"},
+      \"SERVICE_RUNTIME\":{\"S\":\"$provider_runtime\"},
+      \"SERVICE_STATUS\":{\"S\":\"active\"},
+      \"TIMESTAMP\":{\"S\":\"$timestamp\"},
+      \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
+      \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
+      \"SERVICE_METADATA\":{\"M\":{
+                  \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
+                  \"subnetIds\":{\"S\":\"$subnetIds\"},
+                  \"iamRoleARN\":{\"S\":\"$iamRoleARN\"},
+                  \"providerMemorySize\":{\"S\":\"256\"},
+                  \"providerRuntime\":{\"S\":\"$provider_runtime\"},
+                  \"providerTimeout\":{\"S\":\"160\"}
+
+        }
+      }
+    }"
+}
+
 lambda_services=("jazz_cognito-authorizer" "jazz_cloud-logs-streamer" "jazz_services-handler" "jazz_events-handler" "jazz_environment-event-handler" "jazz_deployments-event-handler" "jazz_asset-event-handler" "jazz_slack-event-handler" "jazz_es-kinesis-log-streamer" "jazz_splunk-kinesis-log-streamer" "jazz_cognito-admin-authorizer" "jazz_token-authorizer" "jazz_apigee-proxy-aws")
 
 platform_services=()
@@ -40,22 +85,15 @@ cd ..
 
 servicename="_services_prod"
 tablename=$stackprefix$servicename
-timestamp=$(date --utc +%FT%T)
 service_type=""
-provider_runtime="nodejs8.10"
 deployment_targets=""
+
+#Pushing jazz ui to catalog
+deployment_targets='{"website": {"S": "aws_cloudfront"}}'
+pushToCatalog $tablename "jazz_ui" "ui" $deployment_targets $jazz_admin $securityGroupIds $subnetIds $iamRoleARN "n/a"
+
 for element in "${platform_services[@]}"
 do
-  uuid=$(uuidgen -t)
-  echo -n > "./jazz-core/core/$element/deployment-env.yml"
-  echo "service_id: $uuid" >> "./jazz-core/core/$element/deployment-env.yml"
-
-  if [[ $element =~ ^jazz ]] ; then
-    service_name="${element:5}"
-  else
-    service_name=$element
-  fi
-
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
 			service_type="function"
 			deployment_targets='{"function": {"S": "aws_lambda"}}'
@@ -66,26 +104,7 @@ do
 
 # shellcheck disable=SC2086
 #Updating to service catalog
-	aws dynamodb put-item --table-name "$tablename" --item "{
-	  \"SERVICE_ID\":{\"S\":\"$uuid\"},
-	  \"SERVICE_CREATED_BY\":{\"S\":\"$jazz_admin\"},
-	  \"SERVICE_DOMAIN\":{\"S\":\"jazz\"},
-	  \"SERVICE_NAME\":{\"S\":\"$service_name\"},
-	  \"SERVICE_RUNTIME\":{\"S\":\"nodejs\"},
-	  \"SERVICE_STATUS\":{\"S\":\"active\"},
-	  \"TIMESTAMP\":{\"S\":\"$timestamp\"},
-	  \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
-	  \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
-	  \"SERVICE_METADATA\":{\"M\":{
-				  \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
-				  \"subnetIds\":{\"S\":\"$subnetIds\"},
-				  \"iamRoleARN\":{\"S\":\"$iamRoleARN\"},
-				  \"providerMemorySize\":{\"S\":\"256\"},
-				  \"providerRuntime\":{\"S\":\"$provider_runtime\"},
-				  \"providerTimeout\":{\"S\":\"160\"}
-
-        }
-      }
-    }"
+provider_runtime="nodejs8.10"
+pushToCatalog $tablename $element $service_type $deployment_targets $jazz_admin $securityGroupIds $subnetIds $iamRoleARN $provider_runtime
 
 done

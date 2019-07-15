@@ -7,7 +7,7 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
 resource "aws_cloudfront_distribution" "jazz" {
   origin {
     domain_name = "${aws_s3_bucket.jazz-web.bucket_domain_name}/prod"
-    origin_id   = "${var.envPrefix}-originid-prod"
+    origin_id   = "${var.envPrefix}-prod-static-website-origin-jazz_ui"
 
     s3_origin_config {
       origin_access_identity = "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"
@@ -21,7 +21,7 @@ resource "aws_cloudfront_distribution" "jazz" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${var.envPrefix}-originid-prod"
+    target_origin_id = "${var.envPrefix}-prod-static-website-origin-jazz_ui"
 
     forwarded_values {
       query_string = false
