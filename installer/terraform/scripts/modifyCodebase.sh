@@ -31,10 +31,7 @@ function pushToCatalog {
   element=$2
   service_type=$3
   deployment_targets=$4
-  securityGroupIds=$5
-  subnetIds=$6
-  iamRoleARN=$7
-  provider_runtime="nodejs8.10"
+  provider_runtime=$5
 
   timestamp=$(date --utc +%FT%T)
   uuid=$(uuidgen -t)
@@ -89,22 +86,22 @@ service_type=""
 deployment_targets=""
 
 #Pushing jazz ui to catalog
-deployment_targets='{"website": {"S": "aws_cloudfront"}}'
-pushToCatalog $tablename "jazz_ui" "ui" $deployment_targets $jazz_admin $securityGroupIds $subnetIds $iamRoleARN "n/a"
+deployment_targets='{"website":{"S":"aws_cloudfront"}}'
+pushToCatalog $tablename "jazz_ui" "ui" $deployment_targets "n/a"
 
 for element in "${platform_services[@]}"
 do
   if [[ $(inArray "${lambda_services[@]}" "$element") ]]; then
-			service_type="function"
-			deployment_targets='{"function": {"S": "aws_lambda"}}'
+      service_type="function"
+      deployment_targets='{"function":{"S":"aws_lambda"}}'
   else
-			service_type="api"
-      deployment_targets='{"api": {"S": "aws_apigateway"}}'
+      service_type="api"
+      deployment_targets='{"api":{"S":"aws_apigateway"}}'
   fi
 
 # shellcheck disable=SC2086
 #Updating to service catalog
 provider_runtime="nodejs8.10"
-pushToCatalog $tablename $element $service_type $deployment_targets $jazz_admin $securityGroupIds $subnetIds $iamRoleARN $provider_runtime
+pushToCatalog $tablename $element $service_type $deployment_targets $provider_runtime
 
 done
