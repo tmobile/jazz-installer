@@ -6,8 +6,9 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
 }
 resource "aws_cloudfront_distribution" "jazz" {
   origin {
-    domain_name = "${aws_s3_bucket.jazz-web.bucket_domain_name}/prod"
+    domain_name = "${aws_s3_bucket.jazz-web.bucket_domain_name}"
     origin_id   = "${var.envPrefix}-prod-static-website-origin-jazz_ui"
+    origin_path = "/prod"
 
     s3_origin_config {
       origin_access_identity = "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"
