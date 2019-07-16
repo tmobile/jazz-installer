@@ -145,7 +145,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_username, jenkins_password, metricJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
 
 def prepare_apigee_json(apigeeHost, apigeeCredId, apigeeProdEnv, apigeeDevEnv,
