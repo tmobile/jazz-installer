@@ -1,4 +1,5 @@
 import click
+import os
 from installer.configurators.common import update_main_terraform_vars
 
 
@@ -40,9 +41,12 @@ from installer.configurators.common import update_main_terraform_vars
     help='Specify an admin email address (will be used for Jazz admin login)',
     prompt=True
 )
-def install(branch, adminemail, stackprefix, region, tags):
+@click.option('--aws_access_key', prompt=True, envvar='AWS_ACCESS_KEY_ID')
+@click.option('--aws_secret_key', prompt=True, envvar='AWS_SECRET_ACCESS_KEY')
+def install(branch, adminemail, stackprefix, region, tags, aws_access_key, aws_secret_key):
     """Installs the Jazz Stack."""
-
+    os.environ['AWS_ACCESS_KEY_ID'] = aws_access_key
+    os.environ['AWS_SECRET_ACCESS_KEY'] = aws_secret_key
     click.secho('\n\nConfiguring install', fg='blue')
     click.secho('\nLogging to `install.log`', fg='green')
     update_main_terraform_vars(branch, adminemail, stackprefix, region, tags)
