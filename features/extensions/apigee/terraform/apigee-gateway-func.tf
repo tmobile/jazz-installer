@@ -51,53 +51,6 @@ resource "aws_iam_role_policy" "apigee-lambda-policy" {
 EOF
 }
 
-#Create a new IAM service user for Apigee to use
-#We will hand the creds for this service account off to Apigee.
-resource "aws_iam_user" "apigee-proxy-user" {
-  name = "${var.env_prefix}-jazz-apigee-proxy-lambda"
-  path = "/jazz/${var.env_prefix}/system/"
-  force_destroy = true
-}
-
-resource "aws_iam_access_key" "apigee-proxy-user-key" {
-  user = "${aws_iam_user.apigee-proxy-user.name}"
-}
-
-#The IAM user we're creating should *only* be able to exec the Apigee proxy function
-#we're creating
-resource "aws_iam_user_policy" "apigee-lambda-exec" {
-  name = "${var.env_prefix}-jazz-apigee-proxy-lambda-exec"
-  user = "${aws_iam_user.apigee-proxy-user.name}"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "lambda:InvokeFunction"
-      ],
-      "Effect": "Allow",
-      "Resource": "${var.gateway_func_arn}"
-    }
-  ]
-}
-EOF
-}
-
-output "apigee-lambda-user" {
-  value = "${aws_iam_access_key.apigee-proxy-user-key.user}"
-}
-
-#TODO This will store the Apigee user secret key in the Terraform state file on disk
-#this is not optimal but requiring the user to set up a PGP key to encrypt it is too complex for now
-output "apigee-lambda-user-secret-key" {
-  value = "${aws_iam_access_key.apigee-proxy-user-key.secret}"
-}
-
-output "apigee-lambda-user-id" {
-  value = "${aws_iam_access_key.apigee-proxy-user-key.id}"
-}
-
 output "apigee-lambda-gateway-func-arn" {
   value = "${var.gateway_func_arn}"
 }

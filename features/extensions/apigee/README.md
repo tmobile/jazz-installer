@@ -43,6 +43,8 @@ Options:
   --apigee_userpass TEXT...       Provide the username and password     when
                                   accessing Apigee separated by a space
                                   [required]
+  --accesskey TEXT                AWS accesskey of the apigee user account
+  --secretkey TEXT                AWS secretkey of the apigee user account
   --help                          Show this message and exit.
 
 ```
@@ -73,6 +75,8 @@ python Apigee.py install --region REGION
                   --apigee_svc_prod_host APIGEE_PROD_SERVICEHOST
                   --apigee_svc_dev_host APIGEE_DEV_SERVICEHOST
                   --apigee_userpass APIGEEUSERNAME APIGEEPASSWORD
+                  --accesskey APIGEEAWSACCESSKEY
+                  --secretkey APIGEEAWSSECRETKEY
 
 ```
 
@@ -95,6 +99,8 @@ Apigee dev env:
 Apigee svc prod host:
 Apigee svc dev host:
 Apigee userpass [()]:
+AWS accesskey:
+Aws secretkey:
 ```
 
 
