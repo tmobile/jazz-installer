@@ -54,7 +54,6 @@ resource "aws_s3_bucket" "oab-apis-deployment-prod" {
 resource "aws_s3_bucket" "jazz_s3_api_doc" {
   bucket_prefix = "${var.envPrefix}-jazz-s3-api-doc-"
   request_payer = "BucketOwner"
-  acl = "public-read"
   force_destroy = true
   cors_rule {
     allowed_headers = ["Authorization"]
@@ -319,6 +318,11 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
     ]
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
   }
   statement {
     sid = "jazz-s3-api-doc-get-object"
@@ -332,6 +336,11 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
     ]
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
   }
   statement {
     sid = "jazz-s3-api-doc-list-bucket"
@@ -345,6 +354,11 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}"
     ]
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
   }
 }
 resource "aws_s3_bucket_policy" "jazz-s3-api-doc-bucket-contents-policy" {
