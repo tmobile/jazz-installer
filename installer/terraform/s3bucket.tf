@@ -321,7 +321,7 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+      values = ["${var.dockerizedJenkins == 1 ? format("%s%s", join(" ", aws_eip.elasticip.*.public_ip), "/32" ): var.network_range }", "${concat(list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
   }
   statement {
@@ -339,7 +339,7 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+      values = ["${var.dockerizedJenkins == 1 ? format("%s%s", join(" ", aws_eip.elasticip.*.public_ip), "/32" ): var.network_range }", "${concat(list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
   }
   statement {
@@ -357,7 +357,7 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+      values = ["${var.dockerizedJenkins == 1 ? format("%s%s", join(" ", aws_eip.elasticip.*.public_ip), "/32" ): var.network_range }", "${concat(list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
   }
 }
