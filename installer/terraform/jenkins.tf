@@ -1,5 +1,5 @@
 resource "null_resource" "update_jenkins_configs" {
-  depends_on = ["aws_cognito_user_pool_domain.domain"]
+  depends_on = ["aws_cognito_user_pool_domain.domain", "null_resource.health_check_kibana"]
 
   #Cloudfront
   provisioner "local-exec" {
@@ -32,12 +32,17 @@ resource "null_resource" "update_jenkins_configs" {
 
   #Elasticsearch
   provisioner "local-exec" {
-    command = "${var.configureESEndpoint_cmd} ${aws_elasticsearch_domain.elasticsearch_domain.endpoint}"
+    command = "python ${var.configureESEndpoint_cmd} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def)} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_elasticsearch_domain.elasticsearch_domain.endpoint} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_lb.alb_ecs_es_kibana.dns_name} ${var.jenkinsjsonpropsfile}"
   }
-
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} ES_PORT ${var.es_port_def} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} KIBANA_HOSTNAME ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)} ${var.jenkinsjsonpropsfile}"
+  }
   #TODO why do we need these following to values in addition to the previous ones?
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} {AWS_STG_API_ID_JAZZ} ${aws_api_gateway_rest_api.jazz-stg.id} ${var.jenkinsjsonpropsfile} BY_VALUE"

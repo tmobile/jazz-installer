@@ -1,0 +1,62 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": ${port_def},
+        "hostPort": ${port_def}
+      },
+      {
+        "containerPort": ${port_tcp},
+        "hostPort": ${port_tcp}
+      }
+    ],
+    "environment": [
+        {
+          "name": "allow_mmapfs",
+          "value": "false"
+        },
+        {
+          "name": "bootstrap.memory_lock",
+          "value": "false"
+        },
+        {
+          "name": "ES_JAVA_OPTS",
+          "value": "-Xms4096m -Xmx4096m"
+        },
+        {
+          "name": "MAX_MAP_COUNT",
+          "value": "262144"
+        },
+        {
+          "name": "node.store.allow_mmapfs",
+          "value": "false"
+        }
+      ],
+    "memoryReservation": ${memory},
+    "networkMode": "awsvpc",
+    "cpu": ${cpu},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    },
+    "ulimits": [
+        {
+          "name": "memlock",
+          "softLimit": -1,
+          "hardLimit": -1
+        },
+        {
+          "name": "nofile",
+          "softLimit": 65536,
+          "hardLimit": 65536
+        }
+      ]
+  }
+]
