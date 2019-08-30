@@ -7,25 +7,25 @@ from collections import OrderedDict
 
 def listCFDistributions(fname):
     return subprocess.call(
-        'aws cloudfront list-distributions >> ' + fname, shell=True)
+        'aws cloudfront --region ' + region + ' list-distributions >> ' + fname, shell=True)
 
 
 def checkCloudFrontExists(CFId, fname):
     return subprocess.call(
-        'aws cloudfront get-distribution-config --id ' + CFId + ' >> ' + fname,
+        'aws cloudfront --region ' + region + ' get-distribution-config --id ' + CFId + ' >> ' + fname,
         shell=True)
 
 
 def getCloudFrontStatus(CFId, fname):
     return subprocess.call(
-        'aws cloudfront get-distribution --id ' + CFId + ' >> ' + fname,
+        'aws cloudfront --region ' + region + ' get-distribution --id ' + CFId + ' >> ' + fname,
         shell=True)
 
 
 def deleteCloudFront(CFId, eTAG):
     print("\tcalling delete of CloudFront Dist ( " + CFId + " )")
     retval = subprocess.call(
-        'aws cloudfront delete-distribution --id ' + CFId + ' --if-match ' +
+        'aws cloudfront --region ' + region + ' delete-distribution --id ' + CFId + ' --if-match ' +
         eTAG,
         shell=True)
     if (retval == 0):
@@ -38,7 +38,7 @@ def deleteCloudFront(CFId, eTAG):
 
 def disableCloudFront(CFId, eTAG, fname):
     return subprocess.call(
-        'aws cloudfront update-distribution --id ' + CFId +
+        'aws cloudfront --region ' + region + ' update-distribution --id ' + CFId +
         ' --distribution-config file://' + fname + ' --if-match ' + eTAG,
         shell=True)
 
@@ -57,7 +57,9 @@ def loadJsonFromFile(fileJson):
     return jsonOp
 
 
-def delete_cf_dists(stackname, deletedists=False):
+def delete_cf_dists(stackname, region_name, deletedists=False):
+    global region
+    region = region_name
     fdirectory = os.getcwd()
     fnListContent = fdirectory + "/listdist.json"
     deleteFile(fnListContent)

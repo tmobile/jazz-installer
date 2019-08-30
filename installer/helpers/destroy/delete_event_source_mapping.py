@@ -2,7 +2,7 @@ import subprocess
 import json
 
 
-def delete_event_source_mapping(stackName):
+def delete_event_source_mapping(stackName, region):
     """
         This method will list out the function mapping and
         then delete the event source mapping
@@ -17,7 +17,7 @@ def delete_event_source_mapping(stackName):
         print("Listing Event source mapping for function " + event_source_function)
         list_event_output = subprocess.check_output([
             "aws", "lambda", "list-event-source-mappings", "--function-name",
-            event_source_function
+            event_source_function, "--region", region
         ])
         print(list_event_output)
 
@@ -30,7 +30,7 @@ def delete_event_source_mapping(stackName):
 
             # Deleting the Event source mapping
             delete_event_output = subprocess.check_output([
-                "aws", "lambda", "delete-event-source-mapping", "--uuid", uuid
+                "aws", "lambda", "delete-event-source-mapping", "--uuid", uuid, "--region", region
             ])
             print(delete_event_output)
         else:

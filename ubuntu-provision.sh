@@ -103,7 +103,7 @@ function install_packages () {
 
   # Update apt repo.
   sudo apt update
-  alias python=$PYEXE
+  alias python='echo $PYEXE'
   spin_wheel $! "Update apt repo"
 
   # Install git
@@ -177,7 +177,7 @@ function install_packages () {
   pip3 install virtualenv
   sudo apt-get install -y python3-venv >> "$LOG_FILE" &
   spin_wheel $! "Installing virtualenv"
-  
+
   $PYEXE -m venv jazzenv >> "$LOG_FILE" &
   spin_wheel $! "Creating virtualenv"
 
@@ -227,6 +227,7 @@ while [ $# -gt 0 ] ; do
 
     -ib|--installer-branch)
       shift
+      # shellcheck disable=SC2236
       if [ ! -z "$1" ] ; then
         JAZZ_INSTALLER_BRANCH="$1"
       else

@@ -23,15 +23,15 @@ def uninstall(mode, aws_access_key, aws_secret_key):
     click.secho('\n\n Collecting terraform output vars from existing install...', fg='blue')
     stackprefix = get_terraform_output_var("jazzprefix")
     identity = get_terraform_output_var("jazzusername")
-    os.environ['AWS_DEFAULT_REGION'] = get_terraform_output_var("region")
+    region = get_terraform_output_var("region")
     click.secho(
         '\nRunning destroy prep with option: {0}, prefix: {1}, and identity: {2}'
         .format(mode, stackprefix, identity), fg='green')
 
     if mode == "all":
-        destroyprep(stackprefix, identity, True)
+        destroyprep(stackprefix, identity, region, True)
     else:
-        destroyprep(stackprefix, identity, False)
+        destroyprep(stackprefix, identity, region, False)
 
     click.secho('\nRunning terraform destroy', fg='green')
     exec_terraform_destroy()
