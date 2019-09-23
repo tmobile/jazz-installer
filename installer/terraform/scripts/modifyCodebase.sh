@@ -57,13 +57,23 @@ function pushToCatalog {
       \"TIMESTAMP\":{\"S\":\"$timestamp\"},
       \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
       \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
-      \"SERVICE_DEPLOYMENT_ACCOUNTS\": {\"L\": {\"M\": {
-                  \"accountId\":{\"S\":\"$jazz_accountid\"},
-                  \"primary\":{\"B\":\"true\"},
-                  \"provider\":{\"S\":\"aws\"},
-                  \"region\":{\"S\":\"$region\"}
-          }
-        }
+      \"SERVICE_DEPLOYMENT_ACCOUNTS\": {
+        \"L\": [{
+            \"M\": {
+                \"accountId\": {
+                    \"S\": \"$jazz_accountid\"
+                },
+                \"primary\": {
+                    \"B\": \"true\"
+                },
+                \"provider\": {
+                    \"S\": \"aws\"
+                },
+                \"region\": {
+                    \"S\": \"$region\"
+                }
+            }
+        }]
       },
       \"SERVICE_METADATA\":{\"M\":{
                   \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
