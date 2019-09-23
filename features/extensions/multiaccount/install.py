@@ -91,4 +91,4 @@ def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint
             jazz_apiendpoint
         )
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")

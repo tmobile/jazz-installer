@@ -116,7 +116,7 @@ function individual_repopush() {
     if [[ $parentfolder == "core" ]]; then
         sleep 45
         if [[ $reponame == "jazz_ui" ]]; then
-            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/build?token=jazz-101-job"
+            curl -X POST  "http://$jenkins_user:$jenkins_password@$jenkins_elb/job/jazz_ui/buildWithParameters?token=jazz-101-job&scm_branch=master"
         elif [[ $reponame != "jazz-web" ]]; then
             file=$(find . -type f -name "build.*")
             file_name=${file#*/}
