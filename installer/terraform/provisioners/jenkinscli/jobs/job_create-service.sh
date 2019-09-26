@@ -22,6 +22,11 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "create-service"
           <description></description>
           <defaultValue>admin</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>deployment_descriptor</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
