@@ -116,8 +116,8 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     apigee_userpass_list = ''.join(list(apigee_userpass)).split()
     apigee_username, apigee_password = apigee_userpass_list[0], apigee_userpass_list[1]
     install_proxy(
-        getTerraformOutputVar("apigee-lambda-user-secret-key", "extensions/apigee"),
-        getTerraformOutputVar("apigee-lambda-user-id", "extensions/apigee"),
+        secretkey,
+        accesskey,
         region,
         getTerraformOutputVar("apigee-lambda-gateway-func-arn", "extensions/apigee"),
         apigee_host,
