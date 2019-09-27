@@ -68,7 +68,7 @@ def install(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, jazz
     apply_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
                     azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
                     azure_apim_prod_sku)
-    azure_json = prepare_azure_json(azure_location)
+    azure_json = prepare_azure_json(azure_location, azure_subscription_id)
     update_config(
         "AZURE",
         azure_json,
@@ -83,30 +83,46 @@ def install(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, jazz
         setCredential(jenkins_url, jenkins_user, jenkins_api_token, creds['id'],
                       creds['id'], creds['value'])
 
+
+    # Trigger create-serverless-service api
+    createSSJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=create-serverless-service&domain" \
+                   "=jazz&scm_branch=master"
+    startJob(jenkins_url, jenkins_user, jenkins_api_token, createSSJobUrl)
     # Trigger metrics api
     metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_user, jenkins_api_token, metricJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_user, jenkins_api_token, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_user, jenkins_api_token, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
 
-def prepare_azure_json(azure_location):
+def prepare_azure_json(azure_location, azure_subscription_id):
     extension_base = "extensions/azure"
     azureConfig = OrderedDict()
     azureConfig['IS_ENABLED'] = True
-    azureConfig['SUBSCRIPTION_ID'] = 'AZ_SUBSCRIPTIONID'
-    azureConfig['CLIENT_ID'] = 'AZ_CLIENTID'
-    azureConfig["PASSWORD"] = 'AZ_PASSWORD'
-    azureConfig["TENANT_ID"] = 'AZ_TENANTID'
-    azureConfig['LOCATION'] = azure_location
-    azureConfig['RESOURCE_GROUPS'] = OrderedDict()
-    azureConfig['RESOURCE_GROUPS']['DEVELOPMENT'] = getTerraformOutputVar("dev_resource_group", extension_base)
-    azureConfig['RESOURCE_GROUPS']['STAGING'] = getTerraformOutputVar("stage_resource_group", extension_base)
-    azureConfig['RESOURCE_GROUPS']['PRODUCTION'] = getTerraformOutputVar("prod_resource_group", extension_base)
-    azureConfig['APIM'] = OrderedDict()
-    azureConfig['APIM']['DEVELOPMENT'] = getTerraformOutputVar("dev_apim", extension_base)
-    azureConfig['APIM']['STAGING'] = getTerraformOutputVar("stage_apim", extension_base)
-    azureConfig['APIM']['PRODUCTION'] = getTerraformOutputVar("prod_apim", extension_base)
-
+    azureAccount = OrderedDict()
+    azureAccount['ACCOUNTID'] = azure_subscription_id
+    azureAccount['ACCOUNTNAME'] = 'azureaccount'
+    azureAccount['SUBSCRIPTION_ID'] = 'AZ_SUBSCRIPTIONID'
+    azureAccount['CLIENT_ID'] = 'AZ_CLIENTID'
+    azureAccount["PASSWORD"] = 'AZ_PASSWORD'
+    azureAccount["TENANT_ID"] = 'AZ_TENANTID'
+    azureRegions = OrderedDict()
+    azureRegions['LOCATION'] = azure_location
+    azureRegions['REGION'] = azure_location.lower().replace(' ','')
+    azureRegions['RESOURCE_GROUPS'] = OrderedDict()
+    azureRegions['RESOURCE_GROUPS']['DEV'] = getTerraformOutputVar("dev_resource_group", extension_base)
+    azureRegions['RESOURCE_GROUPS']['PROD'] = getTerraformOutputVar("prod_resource_group", extension_base)
+    azureRegions['RESOURCE_GROUPS']['STG'] = getTerraformOutputVar("stage_resource_group", extension_base)
+    azureRegions['APIM'] = OrderedDict()
+    azureRegions['APIM']['DEV'] = getTerraformOutputVar("dev_apim", extension_base)
+    azureRegions['APIM']['PROD'] = getTerraformOutputVar("prod_apim", extension_base)
+    azureRegions['APIM']['STG'] = getTerraformOutputVar("stage_apim", extension_base)
+    azureAccount['REGIONS'] = [azureRegions]
+    azureConfig['ACCOUNTS'] = [azureAccount]
+    azureDefault = OrderedDict()
+    azureDefault['ACCOUNTID'] = azure_subscription_id
+    azureDefault['PROVIDER'] = 'azure'
+    azureDefault['REGION'] = azure_location.lower().replace(' ','')
+    azureConfig['DEFAULTS'] = azureDefault
     return json.loads(json.dumps(azureConfig))

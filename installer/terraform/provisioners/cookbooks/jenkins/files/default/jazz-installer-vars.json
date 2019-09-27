@@ -21,9 +21,9 @@
             "EDITOR_URL": "http://editor.swagger.io/?url="
         },
         "DEPLOYMENT_TARGETS": {
-          "API": ["aws_apigateway", "gcp_apigee"],
-          "FUNCTION": ["aws_lambda"],
-          "WEBSITE": ["aws_s3", "aws_cloudfront"],
+          "API": ["aws_apigateway", "gcp_apigee", "azure_apigateway"],
+          "FUNCTION": ["aws_lambda", "azure_function"],
+          "WEBSITE": ["aws_s3", "aws_cloudfront", "azure_cdnprofile"],
           "SLS-APP": ["aws_sls-app"]
         },
         "DEFAULTS": {
