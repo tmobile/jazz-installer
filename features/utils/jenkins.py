@@ -43,6 +43,15 @@ def setCredential(jenkins_url, jenkins_user, jenkins_api_token, credential_id, k
         sys.exit(1)
 
 
+def deleteCredential(jenkins_url, jenkins_user, jenkins_api_token, credid):
+    basic_auth = HTTPBasicAuth(jenkins_user, jenkins_api_token)
+    url = "http://{}/credentials/store/system/domain/_/credential/{}/doDelete".format(jenkins_url, credid)
+    resp = requests.post(url, auth=basic_auth)
+    if resp.status_code != 200:
+        print("Failed to delete credential from jenkins.")
+        sys.exit(1)
+
+
 def startJob(url, username, password, jobUrl):
     requests.post(("http://%s:%s@%s/%s") % (username, password, url, jobUrl))
 
