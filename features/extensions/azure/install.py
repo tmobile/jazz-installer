@@ -83,10 +83,9 @@ def install(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, jazz
         setCredential(jenkins_url, jenkins_user, jenkins_api_token, creds['id'],
                       creds['id'], creds['value'])
 
-
     # Trigger create-serverless-service api
-    createSSJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=create-serverless-service&domain" \
-                   "=jazz&scm_branch=master"
+    createSSJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name" \
+                     "=create-serverless-service&domain=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_user, jenkins_api_token, createSSJobUrl)
     # Trigger metrics api
     metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
@@ -109,7 +108,7 @@ def prepare_azure_json(azure_location, azure_subscription_id):
     azureAccount["TENANT_ID"] = 'AZ_TENANTID'
     azureRegions = OrderedDict()
     azureRegions['LOCATION'] = azure_location
-    azureRegions['REGION'] = azure_location.lower().replace(' ','')
+    azureRegions['REGION'] = azure_location.lower().replace(' ', '')
     azureRegions['RESOURCE_GROUPS'] = OrderedDict()
     azureRegions['RESOURCE_GROUPS']['DEV'] = getTerraformOutputVar("dev_resource_group", extension_base)
     azureRegions['RESOURCE_GROUPS']['PROD'] = getTerraformOutputVar("prod_resource_group", extension_base)
@@ -123,6 +122,6 @@ def prepare_azure_json(azure_location, azure_subscription_id):
     azureDefault = OrderedDict()
     azureDefault['ACCOUNTID'] = azure_subscription_id
     azureDefault['PROVIDER'] = 'azure'
-    azureDefault['REGION'] = azure_location.lower().replace(' ','')
+    azureDefault['REGION'] = azure_location.lower().replace(' ', '')
     azureConfig['DEFAULTS'] = azureDefault
     return json.loads(json.dumps(azureConfig))

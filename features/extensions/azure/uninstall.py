@@ -62,8 +62,8 @@ def uninstall(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, ja
     for creds in ['AZ_CLIENTID', 'AZ_PASSWORD', 'AZ_SUBSCRIPTIONID', 'AZ_TENANTID']:
         deleteCredential(jenkins_url, jenkins_user, jenkins_api_token, creds)
     # Trigger create-serverless-service api
-    createSSJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=create-serverless-service&domain" \
-                   "=jazz&scm_branch=master"
+    createSSJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name" \
+                     "=create-serverless-service&domain=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_user, jenkins_api_token, createSSJobUrl)
     # Trigger metrics api
     metricJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=metrics&domain" \
