@@ -68,7 +68,7 @@ def install(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, jazz
     apply_terraform(jazz_stackprefix, azure_location, azure_subscription_id, azure_client_id, azure_client_secret,
                     azure_tenant_id, azure_company_name, azure_company_email, azure_apim_dev_sku, azure_apim_stage_sku,
                     azure_apim_prod_sku)
-    azure_json = prepare_azure_json(azure_location)
+    azure_json = prepare_azure_json(azure_location, azure_subscription_id)
     update_config(
         "AZURE",
         azure_json,
@@ -96,13 +96,12 @@ def install(jazz_stackprefix, jenkins_url, jenkins_user, jenkins_api_token, jazz
     startJob(jenkins_url, jenkins_user, jenkins_api_token, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
 
-def prepare_azure_json(azure_location):
+def prepare_azure_json(azure_location, azure_subscription_id):
     extension_base = "extensions/azure"
-    azure_stat_accnt = 'AZURE_POC_DEV_TEST'
     azureConfig = OrderedDict()
     azureConfig['IS_ENABLED'] = True
     azureAccount = OrderedDict()
-    azureAccount['ACCOUNTID'] = azure_stat_accnt
+    azureAccount['ACCOUNTID'] = azure_subscription_id
     azureAccount['ACCOUNTNAME'] = 'azureaccount'
     azureAccount['SUBSCRIPTION_ID'] = 'AZ_SUBSCRIPTIONID'
     azureAccount['CLIENT_ID'] = 'AZ_CLIENTID'
@@ -122,7 +121,7 @@ def prepare_azure_json(azure_location):
     azureAccount['REGIONS'] = [azureRegions]
     azureConfig['ACCOUNTS'] = [azureAccount]
     azureDefault = OrderedDict()
-    azureDefault['ACCOUNTID'] = azure_stat_accnt
+    azureDefault['ACCOUNTID'] = azure_subscription_id
     azureDefault['PROVIDER'] = 'azure'
     azureDefault['REGION'] = azure_location.lower().replace(' ','')
     azureConfig['DEFAULTS'] = azureDefault
