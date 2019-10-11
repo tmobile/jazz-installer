@@ -8,6 +8,9 @@
             "ACCOUNTID": ""
         }
     },
+    "AZURE": {
+        "IS_ENABLED": false
+    },
     "REPOSITORY": {
         "BASE_URL": "",
         "CREDENTIAL_ID": "jazz_repocreds",
