@@ -17,7 +17,7 @@ class colors:
 
 def azure_installed(jazz_username, jazz_password, jazz_apiendpoint):
     get_configjson = get_config(jazz_username, jazz_password, jazz_apiendpoint)
-    return bool(get_configjson['data']['config']['AZURE'])
+    return get_configjson['data']['config']['AZURE']['IS_ENABLED']
 
 
 def terraformStateSanityCheck(directory):
