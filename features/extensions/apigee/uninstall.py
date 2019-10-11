@@ -74,4 +74,4 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_username, jenkins_password, metricJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")

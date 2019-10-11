@@ -13,76 +13,6 @@ resource "null_resource" "updateJenkinsChefCookbook" {
     command = "sed -i 's|default\\['\\''jenkinselb'\\''\\].*.|default\\['\\''jenkinselb'\\''\\]='\\''${lookup(var.jenkinsservermap, "jenkins_elb")}'\\''|g' ${var.jenkinsattribsfile}"
   }
 
-  # Update cookbook with bitbucket elb
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''scmelb'\\''\\].*.|default\\['\\''scmelb'\\''\\]='\\''${var.scmbb} ${lookup(var.scmmap, "scm_elb")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  # Update git branch and repo in jenkins cookbook
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''git_branch'\\''\\].*.|default\\['\\''git_branch'\\''\\]='\\''${var.github_branch}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''git_repo'\\''\\].*.|default\\['\\''git_repo'\\''\\]='\\''${var.github_repo}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  # Update AWS credentials in Jenkins Chef cookbook attributes
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_access_key'\\''\\].*.|default\\['\\''aws_access_key'\\''\\]='\\''${aws_iam_access_key.operational_key.id}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''aws_secret_key'\\''\\].*.|default\\['\\''aws_secret_key'\\''\\]='\\''${aws_iam_access_key.operational_key.secret}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  # Update cognito attribs in Jenkins Chef cookbook attributes
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''cognitouser'\\''\\].*.|default\\['\\''cognitouser'\\''\\]='\\''${var.cognito_pool_username}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''cognitopassword'\\''\\].*.|default\\['\\''cognitopassword'\\''\\]='\\''${var.cognito_pool_password}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  #Update Gitlab attribs in Jenkins Chef cookbook attributes
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabuser'\\''\\].*.|default\\['\\''gitlabuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabpassword'\\''\\].*.|default\\['\\''gitlabpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''gitlabtoken'\\''\\].*.|default\\['\\''gitlabtoken'\\''\\]='\\''${join(" ", data.external.gitlabconfig.*.result.gitlab_token)}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''bbuser'\\''\\].*.|default\\['\\''bbuser'\\''\\]='\\''${lookup(var.scmmap, "scm_username")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''bbpassword'\\''\\].*.|default\\['\\''bbpassword'\\''\\]='\\''${lookup(var.scmmap, "scm_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  #Update Sonar attribs
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''sonaruser'\\''\\].*.|default\\['\\''sonaruser'\\''\\]='\\''${lookup(var.codeqmap, "sonar_username")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''sonarpassword'\\''\\].*.|default\\['\\''sonarpassword'\\''\\]='\\''${lookup(var.codeqmap, "sonar_passwd")}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''acl_db_user'\\''\\].*.|default\\['\\''acl_db_user'\\''\\]='\\''${var.acl_db_username}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i 's|default\\['\\''acl_db_password'\\''\\].*.|default\\['\\''acl_db_password'\\''\\]='\\''${var.acl_db_password}'\\''|g' ${var.jenkinsattribsfile}"
-  }
-
   #Update Jenkins Chef cookbook attributes
   provisioner "local-exec" {
     command = "sed -i 's|jenkinsuser:jenkinspasswd|${lookup(var.jenkinsservermap, "jenkinsuser")}:${lookup(var.jenkinsservermap, "jenkinspasswd")}|g' ${var.cookbooksSourceDir}/jenkins/files/default/authfile"
@@ -156,7 +86,7 @@ resource "null_resource" "configureJenkins" {
   depends_on = ["null_resource.health_check_jenkins", "null_resource.configureExistingJenkinsServer", "null_resource.update_jenkins_configs"]
   #Jenkins Cli process
   provisioner "local-exec" {
-    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_jenkins.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${var.cognito_pool_username} ${var.dockerizedJenkins} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabconfig.*.result.gitlab_token) : lookup(var.scmmap, "scm_privatetoken") } ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${aws_iam_access_key.operational_key.id} ${aws_iam_access_key.operational_key.secret} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.acl_db_username} ${var.acl_db_password}"
+    command = "bash ${var.configureJenkinsCE_cmd} ${var.dockerizedJenkins == 1 ? join(" ", aws_lb.alb_ecs_jenkins.*.dns_name) : lookup(var.jenkinsservermap, "jenkins_elb") } ${var.cognito_pool_username} ${var.dockerizedJenkins} ${var.scmgitlab == 1 ? join(" ", aws_lb.alb_ecs_gitlab.*.dns_name) : lookup(var.scmmap, "scm_elb") } ${lookup(var.scmmap, "scm_username")} ${lookup(var.scmmap, "scm_passwd")} ${var.scmgitlab == 1 ? join(" ", data.external.gitlabconfig.*.result.gitlab_token) : lookup(var.scmmap, "scm_privatetoken") } ${lookup(var.jenkinsservermap, "jenkinspasswd")} ${lookup(var.scmmap, "scm_type")} ${lookup(var.codeqmap, "sonar_username")} ${lookup(var.codeqmap, "sonar_passwd")} ${var.aws_access_key} ${var.aws_secret_key} ${var.cognito_pool_password} ${lookup(var.jenkinsservermap, "jenkinsuser")} ${var.acl_db_username} ${var.acl_db_password}"
   }
 }
 
