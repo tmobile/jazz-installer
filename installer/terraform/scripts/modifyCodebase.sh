@@ -6,6 +6,8 @@ subnetIds=$2
 iamRoleARN=$3
 stackprefix=$4
 jazz_admin=$5
+jazz_accountid=$6
+region=$7
 
 # Add the stackname to int serverless-config-packs
 sed -i "s/{inst_stack_prefix}/$stackprefix/g" ./jazz-core/builds/serverless-config-pack/serverless-java.yml
@@ -55,6 +57,24 @@ function pushToCatalog {
       \"TIMESTAMP\":{\"S\":\"$timestamp\"},
       \"SERVICE_TYPE\":{\"S\":\"$service_type\"},
       \"SERVICE_DEPLOYMENT_TARGETS\": {\"M\": $deployment_targets},
+      \"SERVICE_DEPLOYMENT_ACCOUNTS\": {
+        \"L\": [{
+            \"M\": {
+                \"accountId\": {
+                    \"S\": \"$jazz_accountid\"
+                },
+                \"primary\": {
+                    \"B\": \"true\"
+                },
+                \"provider\": {
+                    \"S\": \"aws\"
+                },
+                \"region\": {
+                    \"S\": \"$region\"
+                }
+            }
+        }]
+      },
       \"SERVICE_METADATA\":{\"M\":{
                   \"securityGroupIds\":{\"S\":\"$securityGroupIds\"},
                   \"subnetIds\":{\"S\":\"$subnetIds\"},
