@@ -9,7 +9,7 @@ output "jenkinspasswd" {
   value = "${lookup(var.jenkinsservermap, "jenkinspasswd")}"
 }
 output "jazzhome" {
-  value = "http://${aws_cloudfront_distribution.jazz.domain_name}"
+  value = "https://${aws_cloudfront_distribution.jazz.domain_name}"
 }
 output "jazzusername" {
   value = "${var.cognito_pool_username}"
