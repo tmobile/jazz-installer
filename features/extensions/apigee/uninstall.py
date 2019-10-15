@@ -1,12 +1,12 @@
 import click
 
 from extensions.apigee.terraformBugWorkaround import runTerraform,\
-                                                     terraformStateSanityCheck,\
                                                      restoreOldRoleToExistingFunctionWithCLI,\
                                                      featureName,\
                                                      gatewayFunctionName
 from utils.api_config import update_config
 from utils.jenkins import startJob
+from utils.helper import terraformStateSanityCheck
 
 
 @click.command()
@@ -50,7 +50,7 @@ from utils.jenkins import startJob
     prompt=True)
 def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url, jenkins_userpass):
     click.secho('\n\nThis will remove {0} functionality from your Jazz deployment'.format(featureName), fg='blue')
-    terraformStateSanityCheck()
+    terraformStateSanityCheck("extensions/apigee")
 
     # TODO remove this entire module when the terraform bug is fixed
     click.secho('\nRestoring old role to gateway function', fg='blue')
@@ -74,4 +74,4 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_username, jenkins_password, metricJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")

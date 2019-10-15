@@ -1,72 +1,48 @@
-import json
-import os
-import subprocess
 import time
-from collections import OrderedDict
 
 
-def listCFDistributions(fname):
-    return subprocess.call(
-        'aws cloudfront list-distributions >> ' + fname, shell=True)
+def listCFDistributions():
+    return cf_client.list_distributions()
 
 
-def checkCloudFrontExists(CFId, fname):
-    return subprocess.call(
-        'aws cloudfront get-distribution-config --id ' + CFId + ' >> ' + fname,
-        shell=True)
+def checkCloudFrontExists(CFId):
+    try:
+        return cf_client.get_distribution_config(Id=CFId)
+    except Exception:
+        return False
 
 
-def getCloudFrontStatus(CFId, fname):
-    return subprocess.call(
-        'aws cloudfront get-distribution --id ' + CFId + ' >> ' + fname,
-        shell=True)
+def getCloudFrontStatus(CFId):
+    try:
+        return cf_client.get_distribution(Id=CFId)
+    except Exception:
+        return False
 
 
 def deleteCloudFront(CFId, eTAG):
     print("\tcalling delete of CloudFront Dist ( " + CFId + " )")
-    retval = subprocess.call(
-        'aws cloudfront delete-distribution --id ' + CFId + ' --if-match ' +
-        eTAG,
-        shell=True)
-    if (retval == 0):
+    try:
+        cf_client.delete_distribution(Id=CFId, IfMatch=eTAG)
         print("\t\tSuccessfully deleted CloudFront Distribution ( " + CFId +
               " )")
-    else:
+    except Exception:
         print("\t\tError deleting CloudFront Distribution ( " + CFId + " )")
-    return retval
 
 
-def disableCloudFront(CFId, eTAG, fname):
-    return subprocess.call(
-        'aws cloudfront update-distribution --id ' + CFId +
-        ' --distribution-config file://' + fname + ' --if-match ' + eTAG,
-        shell=True)
-
-
-def deleteFile(filenameToDel):
+def disableCloudFront(CFId, eTAG, dconfig):
     try:
-        os.remove(filenameToDel)
-    except OSError:
-        pass
+        return cf_client.update_distribution(Id=CFId, DistributionConfig=dconfig, IfMatch=eTAG)
+    except Exception:
+        return False
 
 
-def loadJsonFromFile(fileJson):
-    fileOp = open(fileJson, 'r')
-    jsonOp = json.load(fileOp, object_pairs_hook=OrderedDict)
-    fileOp.close()
-    return jsonOp
-
-
-def delete_cf_dists(stackname, deletedists=False):
-    fdirectory = os.getcwd()
-    fnListContent = fdirectory + "/listdist.json"
-    deleteFile(fnListContent)
+def delete_cf_dists(stackname, client, deletedists=False):
+    global cf_client
+    cf_client = client
 
     print("Fetching Cloud Front Distributions")
 
-    listCFDistributions(fnListContent)
-
-    jsonCFDists = loadJsonFromFile(fnListContent)
+    jsonCFDists = listCFDistributions()
 
     print("Done Fetching Cloud Front Distributions.")
 
@@ -76,35 +52,21 @@ def delete_cf_dists(stackname, deletedists=False):
 
     for cfDistItem in jsonCFDists['DistributionList']['Items']:
         if (cfDistItem['Origins']['Items'][0]['Id'].startswith(stackname)):
-            filename = fdirectory + cfDistItem['Id'] + ".json"
-            filestatus = fdirectory + cfDistItem['Id'] + "-status.json"
-            deleteFile(filename)
-            deleteFile(filestatus)
 
-            retcode = checkCloudFrontExists(cfDistItem['Id'], filename)
+            cfGetConfigResp = checkCloudFrontExists(cfDistItem['Id'])
             cfReadyToDelete = False
 
-            if (str(retcode).__eq__("0")):
-                jsonCFGetConfig = loadJsonFromFile(filename)
+            if (cfGetConfigResp is not False):
+                jsonCFGetConfig = cfGetConfigResp
 
                 if (jsonCFGetConfig['DistributionConfig']['Enabled'] is True):
                     jsonCFGetConfig['DistributionConfig']['Enabled'] = False
                     print("Found Stack CF Distribution  ( " +
                           cfDistItem['Id'] + " ) that needs to be disabled")
-                    fileDistDisable = cfDistItem['Id'] + ".json"
-                    deleteFile(fileDistDisable)
-
-                    with open(fileDistDisable, 'a') as the_file:
-                        the_file.write(
-                            json.dumps(
-                                jsonCFGetConfig['DistributionConfig'],
-                                sort_keys=False,
-                                indent=4))
-
                     retval = disableCloudFront(cfDistItem['Id'],
                                                jsonCFGetConfig['ETag'],
-                                               fileDistDisable)
-                    if (retval == 0):
+                                               jsonCFGetConfig['DistributionConfig'])
+                    if (retval is not False):
                         print("Dist ( " + cfDistItem['Id'] +
                               " ) Disable has been called successfully..... ")
                     else:
@@ -127,20 +89,13 @@ def delete_cf_dists(stackname, deletedists=False):
     print("Starting deletion of CF Distributions for stack: {0}".format(
         stackname))
 
-    jsonCFDists = loadJsonFromFile(fnListContent)
-
     for cfDistItem in jsonCFDists['DistributionList']['Items']:
         if (cfDistItem['Origins']['Items'][0]['Id'].startswith(stackname)):
-            filename = fdirectory + cfDistItem['Id'] + ".json"
-            filestatus = fdirectory + cfDistItem['Id'] + "-status.json"
-            deleteFile(filename)
-            deleteFile(filestatus)
-
-            retcode = checkCloudFrontExists(cfDistItem['Id'], filename)
+            cfGetConfigResp = checkCloudFrontExists(cfDistItem['Id'])
             cfReadyToDelete = False
 
-            if (str(retcode).__eq__("0")):
-                jsonCFGetConfig = loadJsonFromFile(filename)
+            if (cfGetConfigResp is not False):
+                jsonCFGetConfig = cfGetConfigResp
                 print("\tStarted on CloudFront Distribution ( " +
                       cfDistItem['Id'] + " ) which is enabled==" +
                       str(jsonCFGetConfig['DistributionConfig']['Enabled']))
@@ -150,23 +105,11 @@ def delete_cf_dists(stackname, deletedists=False):
                         "\t\tFirst Disabling the Cloud Front Distribution ( " +
                         cfDistItem['Id'] + " ) set enabled==" + str(
                             jsonCFGetConfig['DistributionConfig']['Enabled']))
-                    cfDistFile = cfDistItem['Id'] + ".json"
-                    deleteFile(cfDistFile)
-
-                    with open(cfDistFile, 'a') as the_file:
-                        the_file.write(
-                            json.dumps(
-                                jsonCFGetConfig['DistributionConfig'],
-                                sort_keys=False,
-                                indent=4))
-
                     disableCloudFront(cfDistItem['Id'],
-                                      jsonCFGetConfig['ETag'], cfDistFile)
+                                      jsonCFGetConfig['ETag'], jsonCFGetConfig['DistributionConfig'])
 
                     while (cfReadyToDelete is False):
-                        deleteFile(filestatus)
-                        getCloudFrontStatus(cfDistItem['Id'], filestatus)
-                        valuesStatus = loadJsonFromFile(filestatus)
+                        valuesStatus = getCloudFrontStatus(cfDistItem['Id'])
                         if (valuesStatus['Distribution']['Status'] ==
                                 "InProgress"):
                             cfReadyToDelete = False
@@ -179,18 +122,11 @@ def delete_cf_dists(stackname, deletedists=False):
                         else:
                             cfReadyToDelete = True
 
-                    retval = deleteCloudFront(cfDistItem['Id'],
-                                              jsonCFGetConfig['ETag'])
+                    deleteCloudFront(cfDistItem['Id'], jsonCFGetConfig['ETag'])
 
                 else:
                     while (cfReadyToDelete is False):
-                        try:
-                            os.remove(filestatus)
-                        except OSError:
-                            pass
-
-                        getCloudFrontStatus(cfDistItem['Id'], filestatus)
-                        valuesStatus = loadJsonFromFile(filestatus)
+                        valuesStatus = getCloudFrontStatus(cfDistItem['Id'])
                         if (valuesStatus['Distribution']['Status'] ==
                                 "InProgress"):
                             cfReadyToDelete = False
@@ -203,8 +139,7 @@ def delete_cf_dists(stackname, deletedists=False):
                         else:
                             cfReadyToDelete = True
 
-                    retval = deleteCloudFront(cfDistItem['Id'],
-                                              jsonCFGetConfig['ETag'])
+                    deleteCloudFront(cfDistItem['Id'], jsonCFGetConfig['ETag'])
 
     print("Completed deleting of CF Distributions for stack {0}".format(
         stackname))

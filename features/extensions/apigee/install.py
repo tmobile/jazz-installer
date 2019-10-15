@@ -2,12 +2,12 @@ import click
 
 from extensions.apigee.terraformBugWorkaround import runTerraform,\
                                                      linkNewRoleToExistingFunctionWithCLI,\
-                                                     getTerraformOutputVar,\
                                                      featureName,\
                                                      gatewayFunctionName
 from extensions.apigee.apigeeinstaller.init_apigee_install import install_proxy
 from utils.api_config import update_config
 from utils.jenkins import setCredential, startJob
+from utils.helper import getTerraformOutputVar
 
 
 @click.command()
@@ -85,9 +85,19 @@ from utils.jenkins import setCredential, startJob
     required=True,
     help='Provide the username and password when accessing Apigee separated by a space',
     prompt=True)
+@click.option(
+    "--accesskey",
+    help='AWS accesskey of the apigee user account',
+    prompt=True
+)
+@click.option(
+    "--secretkey",
+    help='AWS secretkey of the apigee user account',
+    prompt=True
+)
 def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
             jenkins_userpass, apigee_host, apigee_org, apigee_prod_env, apigee_dev_env,
-            apigee_svc_prod_host, apigee_svc_dev_host, apigee_userpass):
+            apigee_svc_prod_host, apigee_svc_dev_host, apigee_userpass, accesskey, secretkey):
     click.secho('\n\nThis will install {0} functionality into your Jazz \
                 deployment'.format(featureName), fg='blue')
     click.secho('\nThis installer will use whatever AWS credentials you have configured by \
@@ -106,10 +116,10 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     apigee_userpass_list = ''.join(list(apigee_userpass)).split()
     apigee_username, apigee_password = apigee_userpass_list[0], apigee_userpass_list[1]
     install_proxy(
-        getTerraformOutputVar("apigee-lambda-user-secret-key"),
-        getTerraformOutputVar("apigee-lambda-user-id"),
+        secretkey,
+        accesskey,
         region,
-        getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
+        getTerraformOutputVar("apigee-lambda-gateway-func-arn", "extensions/apigee"),
         apigee_host,
         apigee_org,
         apigee_prod_env,
@@ -145,7 +155,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_username, jenkins_password, metricJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/build?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
 
 def prepare_apigee_json(apigeeHost, apigeeCredId, apigeeProdEnv, apigeeDevEnv,
