@@ -71,7 +71,7 @@
         "JOB_AUTH_TOKEN": "jazz-101-job",
         "BUILD_URI": {
             "API": "build-pack-api",
-            "LAMBDA": "build-pack-lambda",
+            "FUNCTION": "build-pack-function",
             "WEBSITE": "build-pack-website"
         },
         "DOCKERIZED": ""
