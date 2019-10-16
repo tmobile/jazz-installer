@@ -4,7 +4,7 @@ import sys
 
 
 def create_index(key, endpoint):
-    with open("./jazz-core/core/jazz_cloud-logs-streamer/_ES/%s.json" % key) as json_file:
+    with open("./jazz-core/core/jazz_es-kinesis-log-streamer/_ES/%s.json" % key) as json_file:
         config_data = json.load(json_file)
         requests.post("%s/_template/%s" % (endpoint, key), data=json.dumps(config_data),
                       headers={"Content-Type": "application/json"})
