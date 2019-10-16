@@ -35,10 +35,7 @@ resource "null_resource" "update_jenkins_configs" {
     command = "python ${var.configureESEndpoint_cmd} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def)} ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)}"
   }
   provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${aws_lb.alb_ecs_es_kibana.dns_name} ${var.jenkinsjsonpropsfile}"
-  }
-  provisioner "local-exec" {
-    command = "${var.modifyPropertyFile_cmd} ES_PORT ${var.es_port_def} ${var.jenkinsjsonpropsfile}"
+    command = "${var.modifyPropertyFile_cmd} ES_HOSTNAME ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.es_port_def)} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} KIBANA_HOSTNAME ${format("http://%s:%s", join(" ", aws_lb.alb_ecs_es_kibana.*.dns_name), var.kibana_port_def)} ${var.jenkinsjsonpropsfile}"
