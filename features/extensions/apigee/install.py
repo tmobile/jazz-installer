@@ -2,12 +2,12 @@ import click
 
 from extensions.apigee.terraformBugWorkaround import runTerraform,\
                                                      linkNewRoleToExistingFunctionWithCLI,\
-                                                     getTerraformOutputVar,\
                                                      featureName,\
                                                      gatewayFunctionName
 from extensions.apigee.apigeeinstaller.init_apigee_install import install_proxy
 from utils.api_config import update_config
 from utils.jenkins import setCredential, startJob
+from utils.helper import getTerraformOutputVar
 
 
 @click.command()
@@ -119,7 +119,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
         secretkey,
         accesskey,
         region,
-        getTerraformOutputVar("apigee-lambda-gateway-func-arn"),
+        getTerraformOutputVar("apigee-lambda-gateway-func-arn", "extensions/apigee"),
         apigee_host,
         apigee_org,
         apigee_prod_env,

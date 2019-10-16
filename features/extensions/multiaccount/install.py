@@ -82,7 +82,7 @@ def install(regions, stackprefix, aws_accesskey, aws_secretkey, jazz_apiendpoint
     if account_json != '':
         # Store the CREDENTIAL_ID in jenkins
         setCredential(jenkins_url, jenkins_username, jenkins_password, credential_id,
-                      aws_accesskey, aws_secretkey, "awskey_cred.sh")
+                      aws_accesskey, aws_secretkey, "aws")
         update_config(
             "AWS.ACCOUNTS",
             account_json,

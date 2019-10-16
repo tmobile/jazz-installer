@@ -1,8 +1,4 @@
-import subprocess
-import json
-
-
-def delete_event_source_mapping(stackName):
+def delete_event_source_mapping(stackName, client):
     """
         This method will list out the function mapping and
         then delete the event source mapping
@@ -15,23 +11,18 @@ def delete_event_source_mapping(stackName):
 
     try:
         print("Listing Event source mapping for function " + event_source_function)
-        list_event_output = subprocess.check_output([
-            "aws", "lambda", "list-event-source-mappings", "--function-name",
-            event_source_function
-        ])
+        list_event_output = client.list_event_source_mappings(
+            FunctionName=event_source_function,
+        )
         print(list_event_output)
 
-        # Parser the json payload
-        json_parse = json.loads(list_event_output)
-        if json_parse is not None and len(
-                json_parse['EventSourceMappings']) > 0:
-            uuid = json_parse['EventSourceMappings'][0]['UUID']
+        if list_event_output is not None and len(
+                list_event_output['EventSourceMappings']) > 0:
+            uuid = list_event_output['EventSourceMappings'][0]['UUID']
             print("uuid " + uuid)
 
             # Deleting the Event source mapping
-            delete_event_output = subprocess.check_output([
-                "aws", "lambda", "delete-event-source-mapping", "--uuid", uuid
-            ])
+            delete_event_output = client.delete_event_source_mapping(UUID=uuid)
             print(delete_event_output)
         else:
             print("No Event source mapping found")

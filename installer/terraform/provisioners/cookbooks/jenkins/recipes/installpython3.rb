@@ -1,11 +1,15 @@
 # Install python3 runtime
 bash 'install-python3' do
   code <<-EOH
-  yum install -y https://centos7.iuscommunity.org/ius-release.rpm
-  rm -fr /var/cache/yum/*
-  yum clean all
-  yum update
-  yum install -y python36u python36u-libs python36u-devel python36u-pip
+  version=$(python3 -V 2>&1 | grep -Po '(?<=Python )(.+)')
+  if [[ -z "$version" ]]
+  then
+      yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+      rm -fr /var/cache/yum/*
+      yum clean all
+      yum update
+      yum install -y python36u python36u-libs python36u-devel python36u-pip
+  fi  
   EOH
 end
 
