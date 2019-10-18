@@ -1,0 +1,34 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080
+      }
+    ],
+    "environment": [
+        {
+          "name": "JENKINS_PASS",
+          "value": "${jenkins_passwd}"
+        },
+        {
+          "name": "JENKINS_USER",
+          "value": "${jenkins_user}"
+        }
+      ],
+    "memoryReservation": ${memory},
+    "networkMode": "awsvpc",
+    "cpu": ${cpu},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    }
+  }
+]
