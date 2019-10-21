@@ -24,6 +24,14 @@ data "aws_subnet_ids" "private" {
   }
 }
 
+data "aws_subnet_ids" "public" {
+  vpc_id = "${data.aws_vpc.vpc_data.id}"
+
+  tags = {
+    Tier = "Public"
+  }
+}
+
 resource "aws_security_group" "vpc_sg" {
     name = "${var.envPrefix}_dockerized_tvault_sg"
     description = "ECS ALB access - Tvault"

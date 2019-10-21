@@ -138,7 +138,7 @@ resource "aws_subnet" "subnet_for_ecs" {
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(2 * 2, 2)), 2 + count.index)}"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
+  tags = "${merge(var.public_ref_tag, var.additional_tags, local.common_tags)}"
 }
 
 # For new VPC related resources

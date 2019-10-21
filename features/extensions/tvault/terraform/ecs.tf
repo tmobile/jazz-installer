@@ -55,7 +55,7 @@ resource "aws_lb" "alb_ecs_tvault" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
-  subnets            = ["${data.aws_subnet_ids.private.ids}"]
+  subnets            = ["${data.aws_subnet_ids.public.ids}"]
   tags = "${local.common_tags}"
 }
 

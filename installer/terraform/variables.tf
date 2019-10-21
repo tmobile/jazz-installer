@@ -172,3 +172,7 @@ variable "private_ref_tag" {
   type = "map"
   default = {Tier="Private", }
 }
+variable "public_ref_tag" {
+  type = "map"
+  default = {Tier="Public", }
+}
