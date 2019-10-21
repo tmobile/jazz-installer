@@ -5,18 +5,44 @@
     "essential": true,
     "portMappings": [
       {
-        "containerPort": 8080,
-        "hostPort": 8080
+        "hostPort": 3000,
+        "protocol": "tcp",
+        "containerPort": 3000
+      },
+      {
+        "hostPort": 3001,
+        "protocol": "tcp",
+        "containerPort": 3001
+      },
+      {
+        "hostPort": 80,
+        "protocol": "tcp",
+        "containerPort": 80
+      },
+      {
+        "hostPort": 443,
+        "protocol": "tcp",
+        "containerPort": 443
+      },
+      {
+        "hostPort": 8200,
+        "protocol": "tcp",
+        "containerPort": 8200
+      },
+      {
+        "hostPort": 8201,
+        "protocol": "tcp",
+        "containerPort": 8201
       }
     ],
     "environment": [
         {
-          "name": "JENKINS_PASS",
-          "value": "${jenkins_passwd}"
+          "name": "ADMIN_PASS",
+          "value": "${admin_passwd}"
         },
         {
-          "name": "JENKINS_USER",
-          "value": "${jenkins_user}"
+          "name": "SKIP_SETCAP",
+          "value": "true"
         }
       ],
     "memoryReservation": ${memory},

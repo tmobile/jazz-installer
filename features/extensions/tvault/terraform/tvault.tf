@@ -24,7 +24,7 @@ data "aws_subnet_ids" "private" {
   }
 }
 
-resource "aws_security_group" "vpc_sg_tvault" {
+resource "aws_security_group" "vpc_sg" {
     name = "${var.envPrefix}_dockerized_tvault_sg"
     description = "ECS ALB access - Tvault"
     vpc_id = "${data.aws_vpc.vpc_data.id}"
