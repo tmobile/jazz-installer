@@ -3,6 +3,13 @@
     "name": "${ecs_container_name}",
     "image": "${image}",
     "essential": true,
+    "entryPoint": [
+       "sh",
+       "-c"
+     ],
+     "command": [
+       "sh /tmp/run.sh"
+     ],
     "portMappings": [
       {
         "hostPort": 3000,

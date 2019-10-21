@@ -57,7 +57,7 @@ resource "aws_lb" "alb_ecs_tvault" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
-  subnets            = ["${data.aws_subnet_ids.private.*.ids}"]
+  subnets            = ["${data.aws_subnet_ids.private.ids}"]
   tags = "${local.common_tags}"
 }
 
@@ -86,13 +86,13 @@ resource "aws_ecs_service" "ecs_service_tvault" {
 
   network_configuration {
     security_groups    = ["${aws_security_group.vpc_sg.id}"]
-    subnets            = ["${data.aws_subnet_ids.private.*.ids}"]
+    subnets            = ["${data.aws_subnet_ids.private.ids}"]
   }
 
   load_balancer {
     target_group_arn = "${aws_alb_target_group.alb_target_group_tvault.arn}"
     container_name   = "${var.envPrefix}_ecs_container_tvault"
-    container_port   = "8080"
+    container_port   = "80"
   }
   # Needed the below dependency since there is a bug in AWS provider
   depends_on = ["aws_alb_listener.ecs_alb_listener_tvault"]

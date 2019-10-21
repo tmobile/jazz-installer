@@ -49,10 +49,14 @@ featureName = 'Tvault'
     help='Provide the username and password \
     of the jenkins separated by a space',
     prompt=True)
-
+@click.option(
+    "--network_range",
+    help='Specify the Network Range',
+    prompt=True
+)
 
 def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
-            jenkins_userpass):
+            jenkins_userpass, network_range):
     click.secho('\n\nThis will install {0} functionality into your Jazz \
                 deployment'.format(featureName), fg='blue')
     click.secho('\nThis installer will use whatever AWS credentials you have configured by \
@@ -64,4 +68,4 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()
     jenkins_username, jenkins_password = jenkins_userpass_list[0], jenkins_userpass_list[1]
     # Run terraform first, as we need it's output
-    runTerraform(region, stackprefix, jazz_password, True)
+    runTerraform(region, stackprefix, jazz_password, True, network_range)

@@ -9,7 +9,7 @@ from utils.helper import colors
 featureName = "Tvault"
 
 
-def runTerraform(region, envPrefix, jazzPassword, install):
+def runTerraform(region, envPrefix, jazzPassword, install, network_range='0.0.0.0/0'):
 
     # NOTE the correct way to deal with the preexisting gateway lambda function
     # is to `terraform import` it and reconfigure its role alongside everything else.
@@ -23,8 +23,9 @@ def runTerraform(region, envPrefix, jazzPassword, install):
         [
             'terraform', 'apply' if install else 'destroy', '-auto-approve',
             '-var', 'region={0}'.format(region),
-            '-var', 'env_prefix={0}'.format(envPrefix),
-            '-var', 'jazzPassword={0}'.format(jazzPassword)
+            '-var', 'envPrefix={0}'.format(envPrefix),
+            '-var', 'jazzPassword={0}'.format(jazzPassword),
+            '-var', 'network_range={0}'.format(network_range)
         ],
         cwd='extensions/tvault/terraform')
 

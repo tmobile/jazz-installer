@@ -8,7 +8,7 @@ data "aws_vpc" "vpc_data" {
 data "aws_eip" "eip_data" {
   filter {
     name   = "tag:Name"
-    values = ["sls191015"]
+    values = ["${var.envPrefix}"]
   }
 }
 

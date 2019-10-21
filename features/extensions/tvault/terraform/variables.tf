@@ -8,7 +8,6 @@ variable "tvault_docker_image" {
 }
 variable "ecsTvaultcpu" { type = "string" default = "2048" }
 variable "ecsTvaultmemory" { type = "string" default = "4096" }
-variable "existing_vpc_ecs" { type = "string" }
 variable "tvault_port1" {type = "string" default = "3000"}
 variable "tvault_port2" {type = "string" default = "3001"}
 variable "tvault_port3" {type = "string" default = "80"}
