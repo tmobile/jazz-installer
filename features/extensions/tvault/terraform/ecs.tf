@@ -17,8 +17,6 @@ data "template_file" "ecs_task_tvault" {
     log_group       = "${var.envPrefix}_ecs_log"
     prefix_name     = "${var.envPrefix}_ecs_task_definition_tvault"
     region          = "${var.region}"
-    memory          = "${var.ecsTvaultmemory}"
-    cpu             = "${var.ecsTvaultcpu}"
     admin_passwd    = "${var.jazzPassword}"
   }
 }

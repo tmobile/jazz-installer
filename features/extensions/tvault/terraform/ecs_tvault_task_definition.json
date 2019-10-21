@@ -52,9 +52,7 @@
           "value": "true"
         }
       ],
-    "memoryReservation": ${memory},
     "networkMode": "awsvpc",
-    "cpu": ${cpu},
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -62,6 +60,13 @@
         "awslogs-region": "${region}",
         "awslogs-stream-prefix": "${prefix_name}"
       }
-    }
+    },
+    "ulimits": [
+        {
+          "name": "memlock",
+          "softLimit": -1,
+          "hardLimit": -1
+        }
+      ]
   }
 ]
