@@ -50,9 +50,6 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
     click.secho('\n\nThis will remove {0} functionality from your Jazz deployment'.format(featureName), fg='blue')
     terraformStateSanityCheck("extensions/tvault")
 
-    # TODO remove this entire module when the terraform bug is fixed
-    click.secho('\nRestoring old role to gateway function', fg='blue')
-
     jazz_userpass_list = ''.join(list(jazz_userpass)).split()
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()

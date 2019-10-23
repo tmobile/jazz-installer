@@ -3,43 +3,44 @@
     "name": "${ecs_container_name}",
     "image": "${image}",
     "essential": true,
-    "entryPoint": [
-       "sh",
-       "-c"
-     ],
-     "command": [
-       "sh /tmp/run.sh"
-     ],
     "portMappings": [
       {
-        "hostPort": 3000,
+        "hostPort": 8500,
         "protocol": "tcp",
-        "containerPort": 3000
+        "containerPort": 8500
       },
       {
-        "hostPort": 80,
+        "hostPort": 8502,
         "protocol": "tcp",
-        "containerPort": 80
+        "containerPort": 8502
       },
       {
-        "hostPort": 8200,
+        "hostPort": 8300,
         "protocol": "tcp",
-        "containerPort": 8200
+        "containerPort": 8300
+      },
+      {
+        "hostPort": 8301,
+        "protocol": "tcp",
+        "containerPort": 8301
+      },
+      {
+        "hostPort": 8400,
+        "protocol": "tcp",
+        "containerPort": 8400
+      },
+      {
+        "hostPort": 8600,
+        "protocol": "tcp",
+        "containerPort": 8600
+      },
+      {
+        "hostPort": 8302,
+        "protocol": "tcp",
+        "containerPort": 8302
       }
     ],
     "environment": [
-        {
-          "name": "ADMIN_PASS",
-          "value": "${admin_passwd}"
-        },
-        {
-          "name": "CONSUL_STORAGE_ADDRESS",
-          "value": "${consul_address}"
-        },
-        {
-          "name": "SKIP_SETCAP",
-          "value": "true"
-        }
       ],
     "networkMode": "awsvpc",
     "logConfiguration": {

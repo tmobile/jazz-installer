@@ -6,7 +6,7 @@ import retrying
 from utils.helper import colors
 
 
-featureName = "Tvault"
+featureName = "tvault"
 
 
 def runTerraform(region, envPrefix, jazzPassword, install, network_range='0.0.0.0/0'):

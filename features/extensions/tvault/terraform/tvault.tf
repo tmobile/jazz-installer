@@ -72,39 +72,101 @@ resource "aws_security_group" "vpc_sg" {
         protocol = "tcp"
         cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = "${local.common_tags}"
+}
+
+resource "aws_security_group" "vpc_sg_consul" {
+    name = "${var.envPrefix}_dockerized_consul_sg"
+    description = "ECS ALB access - Consul"
+    vpc_id = "${data.aws_vpc.vpc_data.id}"
     ingress {
-        from_port = "${var.tvault_port4}"
-        to_port = "${var.tvault_port4}"
+        from_port = "${var.consul_port1}"
+        to_port = "${var.consul_port1}"
         protocol = "tcp"
         self = true
     }
     ingress {
-        from_port = "${var.tvault_port4}"
-        to_port = "${var.tvault_port4}"
+        from_port = "${var.consul_port1}"
+        to_port = "${var.consul_port1}"
         protocol = "tcp"
         cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
     ingress {
-        from_port = "${var.tvault_port5}"
-        to_port = "${var.tvault_port5}"
+        from_port = "${var.consul_port2}"
+        to_port = "${var.consul_port2}"
         protocol = "tcp"
         self = true
     }
     ingress {
-        from_port = "${var.tvault_port5}"
-        to_port = "${var.tvault_port5}"
+        from_port = "${var.consul_port2}"
+        to_port = "${var.consul_port2}"
         protocol = "tcp"
         cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }
     ingress {
-        from_port = "${var.tvault_port6}"
-        to_port = "${var.tvault_port6}"
+        from_port = "${var.consul_port3}"
+        to_port = "${var.consul_port3}"
         protocol = "tcp"
         self = true
     }
     ingress {
-        from_port = "${var.tvault_port6}"
-        to_port = "${var.tvault_port6}"
+        from_port = "${var.consul_port3}"
+        to_port = "${var.consul_port3}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.consul_port4}"
+        to_port = "${var.consul_port4}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.consul_port4}"
+        to_port = "${var.consul_port4}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.consul_port5}"
+        to_port = "${var.consul_port5}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.consul_port5}"
+        to_port = "${var.consul_port5}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.consul_port6}"
+        to_port = "${var.consul_port6}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.consul_port6}"
+        to_port = "${var.consul_port6}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.consul_port7}"
+        to_port = "${var.consul_port7}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.consul_port7}"
+        to_port = "${var.consul_port7}"
         protocol = "tcp"
         cidr_blocks = ["${concat(list("${data.aws_eip.eip_data.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
     }

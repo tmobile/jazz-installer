@@ -7,9 +7,6 @@ from utils.jenkins import setCredential, startJob
 from utils.helper import getTerraformOutputVar
 
 
-featureName = 'Tvault'
-
-
 @click.command()
 @click.option(
     "--region",
