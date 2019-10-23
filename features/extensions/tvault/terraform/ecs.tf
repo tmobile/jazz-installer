@@ -159,7 +159,7 @@ resource "aws_ecs_service" "ecs_service_tvault" {
     container_port   = "80"
   }
   # Needed the below dependency since there is a bug in AWS provider
-  depends_on = ["aws_alb_listener.ecs_alb_listener_tvault"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener_tvault", "null_resource.health_check_consul"]
 }
 
 resource "aws_ecs_service" "ecs_service_consul" {
@@ -181,7 +181,7 @@ resource "aws_ecs_service" "ecs_service_consul" {
     container_port   = "8500"
   }
   # Needed the below dependency since there is a bug in AWS provider
-  depends_on = ["aws_alb_listener.ecs_alb_listener_consul", "null_resource.health_check_consul"]
+  depends_on = ["aws_alb_listener.ecs_alb_listener_consul"]
 }
 
 resource "null_resource" "health_check_tvault" {
