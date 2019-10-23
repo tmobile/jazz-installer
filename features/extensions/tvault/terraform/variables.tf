@@ -25,3 +25,4 @@ variable "consul_port4" {type = "string" default = "8301"}
 variable "consul_port5" {type = "string" default = "8400"}
 variable "consul_port6" {type = "string" default = "8600"}
 variable "consul_port7" {type = "string" default = "8302"}
+variable "consul_port8" {type = "string" default = "80"}
