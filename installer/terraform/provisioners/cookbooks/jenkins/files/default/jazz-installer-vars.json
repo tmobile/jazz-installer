@@ -193,7 +193,7 @@
     },
     "TVAULT": {
         "IS_ENABLED": false,
-        "HOSTNAME": "",
+        "HOSTNAME": "{TVAULT_HOSTNAME}",
         "CREDENTIAL_ID": "TVAULT_ADMIN"
     }
 }

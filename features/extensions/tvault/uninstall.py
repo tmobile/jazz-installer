@@ -1,5 +1,6 @@
 import click
 import json
+from collections import OrderedDict
 from extensions.tvault.terraformBugWorkaround import runTerraform,\
                                                      featureName
 from utils.api_config import update_config
@@ -57,24 +58,25 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
     runTerraform(region, stackprefix, jazz_password, False)
     deleteCredential(jenkins_url, jenkins_username, jenkins_password, "TVAULT_ADMIN")
     update_config(
-        "AWS.TVAULT",
+        "TVAULT",
         reset_tvault_json(),
         jazz_username,
         jazz_password,
         jazz_apiendpoint
     )
     # Trigger tvault api
-    tvaultJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=tvault&domain" \
+    tvaultJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=t-vault&domain" \
                    "=jazz&scm_branch=master"
-    startJob(jenkins_url, jenkins_user, jenkins_api_token, tvaultJobUrl)
+    startJob(jenkins_url, jenkins_username, jenkins_password, tvaultJobUrl)
     # Trigger jazz ui
-    startJob(jenkins_url, jenkins_user, jenkins_api_token, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
+    startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
 
 def reset_tvault_json():
     extension_base = "extensions/tvault"
     tvaultConfig = OrderedDict()
     tvaultConfig['IS_ENABLED'] = False
-    tvaultConfig['HOSTNAME'] = ""
+    tvaultConfig['HOSTNAME'] = "{TVAULT_HOSTNAME}"
+    tvaultConfig['CREDENTIAL_ID'] = "TVAULT_ADMIN"
 
     return json.loads(json.dumps(tvaultConfig))
