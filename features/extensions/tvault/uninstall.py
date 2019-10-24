@@ -73,7 +73,6 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
 
 
 def reset_tvault_json():
-    extension_base = "extensions/tvault"
     tvaultConfig = OrderedDict()
     tvaultConfig['IS_ENABLED'] = False
     tvaultConfig['HOSTNAME'] = "{TVAULT_HOSTNAME}"

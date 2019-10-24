@@ -1,10 +1,6 @@
-import json
 import subprocess
-import retrying
-
 
 from utils.helper import colors
-
 
 featureName = "tvault"
 

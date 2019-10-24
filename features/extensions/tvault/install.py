@@ -52,7 +52,6 @@ from utils.helper import getTerraformOutputVar
     help='Specify the Network Range',
     prompt=True
 )
-
 def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
             jenkins_userpass, network_range):
     click.secho('\n\nThis will install {0} functionality into your Jazz \
