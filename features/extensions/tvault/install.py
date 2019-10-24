@@ -1,5 +1,5 @@
 import click
-
+import json
 from extensions.tvault.terraformBugWorkaround import runTerraform,\
                                                      featureName
 from utils.api_config import update_config
@@ -66,3 +66,28 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     jenkins_username, jenkins_password = jenkins_userpass_list[0], jenkins_userpass_list[1]
     # Run terraform first, as we need it's output
     runTerraform(region, stackprefix, jazz_password, True, network_range)
+    # Store the CREDENTIAL_ID in jenkins
+    setCredential(jenkins_url, jenkins_username, jenkins_password, "TVAULT_ADMIN",
+                  "safeadmin", jazz_password)
+    update_config(
+        "AWS.TVAULT",
+        prepare_tvault_json(),
+        jazz_username,
+        jazz_password,
+        jazz_apiendpoint
+    )
+    # Trigger tvault api
+    tvaultJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=tvault&domain" \
+                   "=jazz&scm_branch=master"
+    startJob(jenkins_url, jenkins_user, jenkins_api_token, tvaultJobUrl)
+    # Trigger jazz ui
+    startJob(jenkins_url, jenkins_user, jenkins_api_token, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
+
+
+def prepare_tvault_json():
+    extension_base = "extensions/tvault"
+    tvaultConfig = OrderedDict()
+    tvaultConfig['IS_ENABLED'] = True
+    tvaultConfig['HOSTNAME'] = getTerraformOutputVar("tvault-host", extension_base)
+
+    return json.loads(json.dumps(tvaultConfig))

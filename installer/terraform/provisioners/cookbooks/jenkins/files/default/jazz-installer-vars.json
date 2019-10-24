@@ -190,5 +190,10 @@
             "SERVICE_HOSTNAME": "{SVC_DEV_HOST}"
           }
         }
+    },
+    "TVAULT": {
+        "IS_ENABLED": false,
+        "HOSTNAME": "",
+        "CREDENTIAL_ID": "TVAULT_ADMIN"
     }
 }
