@@ -207,9 +207,9 @@ output "env-prefix" {
 }
 
 output "consul-host" {
-  value = "https://${aws_lb.alb_ecs_consul.dns_name}"
+  value = "http://${aws_lb.alb_ecs_consul.dns_name}"
 }
 
 output "tvault-host" {
-  value = "https://${aws_lb.alb_ecs_tvault.dns_name}"
+  value = "http://${aws_lb.alb_ecs_tvault.dns_name}"
 }
