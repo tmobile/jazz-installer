@@ -389,6 +389,10 @@ def updatePrimaryRole(roleArn, stackprefix, account_id):
 
 
 def putDestinationPolicy(destinatioName, destinatioArn, secId, region):
+    # Get the default profile
+    session = boto3.Session(profile_name='default')
+    logsClient = session.client('logs', region_name=region)
+    listAccount = prepare_destination_policy(logsClient, secId, destinatioName)
     access_policy = {
         "Version": "2012-10-17",
         "Statement": [
@@ -396,17 +400,30 @@ def putDestinationPolicy(destinatioName, destinatioArn, secId, region):
               "Sid": "",
               "Effect": "Allow",
               "Principal": {
-                "AWS": secId
+                "AWS": listAccount
               },
               "Action": "logs:PutSubscriptionFilter",
               "Resource": destinatioArn
             }
         ]
         }
-    # Get the default profile
-    session = boto3.Session(profile_name='default')
-    logsClient = session.client('logs', region_name=region)
     logsClient.put_destination_policy(
         destinationName=destinatioName,
         accessPolicy=json.dumps(access_policy)
     )
+
+
+def prepare_destination_policy(client, secId, destinatioName):
+    retlist = [secId]
+    response = client.describe_destinations(
+        DestinationNamePrefix=destinatioName,
+    )
+    resp = response['destinations'][0]
+    if 'accessPolicy' in resp:
+        accessPolicy = json.loads(resp['accessPolicy'])
+        awsList = accessPolicy["Statement"][0]["Principal"]["AWS"]
+        if isinstance(awsList, list):
+            if secId not in awsList:
+                awsList.append(secId)
+            retlist = awsList
+    return retlist
