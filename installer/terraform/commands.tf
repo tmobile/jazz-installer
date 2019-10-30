@@ -16,7 +16,7 @@ variable "scmpush_cmd" {
 }
 variable "configureESEndpoint_cmd" {
   type = "string"
-  default = "./scripts/configureESEndpoint.sh"
+  default = "./scripts/configureES.py"
 }
 variable "cognito_cmd" {
   type = "string"

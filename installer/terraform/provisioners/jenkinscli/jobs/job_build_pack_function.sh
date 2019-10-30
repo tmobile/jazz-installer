@@ -4,7 +4,7 @@ JENKINS_CLI_CMD=$1
 BITBUCKET_ELB=$2
 
 JENKINS_CREDENTIAL_ID=$($JENKINS_CLI_CMD list-credentials system::system::jenkins | grep "jazz_repocreds"|cut -d" " -f1)
-cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-lambda"
+cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-function"
 <flow-definition plugin="workflow-job@2.12">
   <actions/>
   <description></description>
@@ -44,7 +44,7 @@ cat <<EOF | $JENKINS_CLI_CMD create-job "build-pack-lambda"
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://$BITBUCKET_ELB/slf/jenkins-build-pack-lambda.git</url>
+          <url>http://$BITBUCKET_ELB/slf/jenkins-build-pack-function.git</url>
           <credentialsId>$JENKINS_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
