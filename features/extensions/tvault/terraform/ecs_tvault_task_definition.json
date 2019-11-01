@@ -1,0 +1,61 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "entryPoint": [
+       "sh",
+       "-c"
+     ],
+     "command": [
+       "sh /tmp/run.sh"
+     ],
+    "portMappings": [
+      {
+        "hostPort": 3000,
+        "protocol": "tcp",
+        "containerPort": 3000
+      },
+      {
+        "hostPort": 80,
+        "protocol": "tcp",
+        "containerPort": 80
+      },
+      {
+        "hostPort": 8200,
+        "protocol": "tcp",
+        "containerPort": 8200
+      }
+    ],
+    "environment": [
+        {
+          "name": "ADMIN_PASS",
+          "value": "${admin_passwd}"
+        },
+        {
+          "name": "CONSUL_STORAGE_ADDRESS",
+          "value": "${consul_address}"
+        },
+        {
+          "name": "SKIP_SETCAP",
+          "value": "true"
+        }
+      ],
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    },
+    "ulimits": [
+        {
+          "name": "memlock",
+          "softLimit": -1,
+          "hardLimit": -1
+        }
+      ]
+  }
+]
