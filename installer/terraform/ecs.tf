@@ -405,6 +405,17 @@ resource "aws_alb_listener" "ecs_alb_listener_kibana" {
   }
 }
 
+resource "aws_alb_listener" "ecs_alb_listener_kibana_access" {
+  load_balancer_arn = "${aws_lb.alb_ecs_es_kibana.arn}"
+  port              = "${var.kibana_port_access}"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.alb_target_group_kibana.arn}"
+    type             = "forward"
+  }
+}
+
 data "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
   count = "${var.dockerizedJenkins}"
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_jenkins.family}"
