@@ -69,6 +69,20 @@ from installer.helpers.terraform import exec_terraform_apply
     help='Provide the public IP of the Bitbucket server to be configured.',
     prompt=True
 )
+@click.option(
+    "--vpcid",
+    help='Specify the ID of an existing VPC to use for ECS configuration - Elasticsearch',
+    cls=Required,
+    required_if_not='vpc_cidr'
+)
+@click.option(
+    "--vpc_cidr",
+    help='Specify the desired CIDR block to use for VPC ECS configuration - - Elasticsearch (default - 10.0.0.0/16)',
+    default='10.0.0.0/16',
+    cls=Required,
+    required_if_not='vpcid',
+    prompt=True
+)
 # Sonarqube (standalone)
 @click.option(
     '--sonarqube/--no-sonarqube',
@@ -108,6 +122,9 @@ def scenario1(
         bitbucket_endpoint,
         bitbucket_userpass,
         bitbucket_publicip,
+        # ES in ECS need vpc
+        vpcid,
+        vpc_cidr,
         # Sonarqube
         sonarqube,
         sonarqube_endpoint=None,
@@ -125,7 +142,9 @@ def scenario1(
         jenkins_userpass,
         jenkins_sshuser,
         jenkins_secgroup,
-        jenkins_subnet
+        jenkins_subnet,
+        vpcid,
+        vpc_cidr
     )
 
     click.secho('\n\nConfiguring Bitbucket server', fg='blue')

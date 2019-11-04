@@ -37,6 +37,7 @@
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         },
         "ES_HOSTNAME": "",
+        "KIBANA_HOSTNAME": "",
         "PLATFORM": {
           "AWS": {
             "API_GATEWAY": {
@@ -69,7 +70,7 @@
         "JOB_AUTH_TOKEN": "jazz-101-job",
         "BUILD_URI": {
             "API": "build-pack-api",
-            "LAMBDA": "build-pack-lambda",
+            "FUNCTION": "build-pack-function",
             "WEBSITE": "build-pack-website"
         },
         "DOCKERIZED": ""

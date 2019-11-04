@@ -64,7 +64,7 @@ fi
 ./provisioners/jenkinscli/jobs/job_delete-service.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_build_pack_api.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_cleanup_cloudfront_distributions.sh "$jenkins_cli_command" "$scmpath"
-./provisioners/jenkinscli/jobs/job_build_pack_lambda.sh "$jenkins_cli_command" "$scmpath"
+./provisioners/jenkinscli/jobs/job_build_pack_function.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_build_pack_website.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_jazz_ui.sh "$jenkins_cli_command" "$scmpath"
 ./provisioners/jenkinscli/jobs/job_jenkins_delete_resources.sh "$jenkins_cli_command" "$scmpath"

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": ${port_def},
+        "hostPort": ${port_def}
+      }
+    ],
+    "environment": [
+        {
+         "name": "ELASTICSEARCH_URL",
+         "value": "${esurl}"
+       }
+      ],
+    "memoryReservation": ${memory},
+    "networkMode": "awsvpc",
+    "cpu": ${cpu},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    }
+  }
+]

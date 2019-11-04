@@ -1,6 +1,6 @@
 # For new VPC
 resource "aws_vpc" "vpc_for_ecs" {
-  count = "${var.autovpc * var.dockerizedJenkins}"
+  count = "${var.autovpc}"
   cidr_block                       = "${var.vpc_cidr_block}"
   instance_tenancy                 = "default"
   enable_dns_hostnames             = "true"
@@ -9,7 +9,6 @@ resource "aws_vpc" "vpc_for_ecs" {
 
 # VPC data resource for both new and existing vpc
 data "aws_vpc" "vpc_data" {
-  count = "${var.dockerizedJenkins}"
   id = "${var.autovpc == 1 ? join(" ", aws_vpc.vpc_for_ecs.*.id) : var.existing_vpc_ecs }"
 }
 
@@ -65,8 +64,81 @@ resource "aws_security_group" "vpc_sg" {
     tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
+resource "aws_security_group" "vpc_sg_es_kibana" {
+    name = "${var.envPrefix}_dockerized_es_sg"
+    description = "ECS ALB access - ES"
+    vpc_id = "${data.aws_vpc.vpc_data.id}"
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.es_port_def}"
+        to_port = "${var.es_port_def}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.es_port_def}"
+        to_port = "${var.es_port_def}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.es_port_tcp}"
+        to_port = "${var.es_port_tcp}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.es_port_tcp}"
+        to_port = "${var.es_port_tcp}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.kibana_port_def}"
+        to_port = "${var.kibana_port_def}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.kibana_port_def}"
+        to_port = "${var.kibana_port_def}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.kibana_port_access}"
+        to_port = "${var.kibana_port_access}"
+        protocol = "tcp"
+        self = true
+    }
+    ingress {
+        from_port = "${var.kibana_port_access}"
+        to_port = "${var.kibana_port_access}"
+        protocol = "tcp"
+        cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
 resource "aws_internet_gateway" "igw_for_ecs" {
-  count = "${var.autovpc * var.dockerizedJenkins}"
+  count = "${var.autovpc}"
   vpc_id = "${data.aws_vpc.vpc_data.id}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
@@ -74,7 +146,7 @@ resource "aws_internet_gateway" "igw_for_ecs" {
 # Dynamic Subnet creation
 
 resource "aws_subnet" "subnet_for_ecs" {
-  count             = "${var.dockerizedJenkins * length(slice(data.aws_availability_zones.available.names, 0, 2))}"
+  count             = "${length(slice(data.aws_availability_zones.available.names, 0, 2))}"
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(2 * 2, 2)), 2 + count.index)}"
@@ -83,7 +155,7 @@ resource "aws_subnet" "subnet_for_ecs" {
 
 # For new VPC related resources
 resource "aws_route_table" "route_table_for_ecs" {
-  count = "${var.autovpc * var.dockerizedJenkins}"
+  count = "${var.autovpc}"
   vpc_id = "${data.aws_vpc.vpc_data.id}"
 
   route {
@@ -94,13 +166,13 @@ resource "aws_route_table" "route_table_for_ecs" {
 }
 
 resource "aws_main_route_table_association" "ecs_route_assoc" {
-  count = "${var.autovpc * var.dockerizedJenkins}"
+  count = "${var.autovpc}"
   vpc_id         = "${data.aws_vpc.vpc_data.id}"
   route_table_id = "${aws_route_table.route_table_for_ecs.id}"
 }
 
 resource "aws_network_acl" "public" {
-  count      = "${var.autovpc * var.dockerizedJenkins}"
+  count      = "${var.autovpc}"
   vpc_id     = "${data.aws_vpc.vpc_data.id}"
   subnet_ids = ["${aws_subnet.subnet_for_ecs.*.id}"]
 
@@ -125,18 +197,16 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_eip" "elasticip" {
-  count = "${var.dockerizedJenkins}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
 resource "aws_nat_gateway" "natgtw" {
-  count = "${var.dockerizedJenkins}"
   allocation_id = "${aws_eip.elasticip.id}"
-  subnet_id = "${element(aws_subnet.subnet_for_ecs.*.id, 1)}"
+  subnet_id = "${element(split(",", join(",",aws_subnet.subnet_for_ecs.*.id)), 1)}"
 }
 
 resource "aws_subnet" "subnet_for_ecs_private" {
-  count             = "${var.dockerizedJenkins * length(slice(data.aws_availability_zones.available.names, 0, 2))}"
+  count             = "${length(slice(data.aws_availability_zones.available.names, 0, 2))}"
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(4 * 2, 2)), 2 + count.index)}"
@@ -144,7 +214,6 @@ resource "aws_subnet" "subnet_for_ecs_private" {
 }
 
 resource "aws_route_table" "privateroute" {
-  count = "${var.dockerizedJenkins}"
   vpc_id = "${data.aws_vpc.vpc_data.id}"
 
   route {
@@ -155,12 +224,10 @@ resource "aws_route_table" "privateroute" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 resource "aws_route_table_association" "privateroute_assoc1" {
-  count = "${var.dockerizedJenkins}"
   route_table_id = "${aws_route_table.privateroute.id}"
   subnet_id      = "${element(aws_subnet.subnet_for_ecs_private.*.id, 1)}"
 }
 resource "aws_route_table_association" "privateroute_assoc2" {
-  count = "${var.dockerizedJenkins}"
   route_table_id = "${aws_route_table.privateroute.id}"
   subnet_id      = "${element(aws_subnet.subnet_for_ecs_private.*.id, 2)}"
 }
