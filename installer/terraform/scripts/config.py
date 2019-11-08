@@ -90,6 +90,7 @@ with open(installervarsparth) as json_file:
             'SPLUNK': config['SPLUNK'],
             'APIGEE': config['APIGEE'],
             'ACL': config['ACL'],
-            'AZURE': config['AZURE']
+            'AZURE': config['AZURE'],
+            'TVAULT': config['TVAULT']
             }
     )
