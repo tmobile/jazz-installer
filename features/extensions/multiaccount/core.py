@@ -165,7 +165,8 @@ def create_region_resources(region, get_configjson, tags, platform_role_arn,
     bucket_stg = createbucket(jazz_stackprefix, 'stg', region, bucket_client, tags, platform_role_arn)
     bucket_dev = createbucket(jazz_stackprefix, 'dev', region, bucket_client, tags, platform_role_arn)
     # Prepare destination arn for regions
-    destarn_dict = preparelogdestion(region, get_configjson, jazz_stackprefix)
+    destarn_dict = preparelogdestion(region, get_configjson, jazz_stackprefix,
+                                     getAccountId(aws_accesskey, aws_secretkey))
 
     return {"API_GATEWAY": {"PROD": {"*": api_prod}, "STG": {"*": api_stg}, "DEV": {"*": api_dev}},
             "S3": {"PROD": bucket_prod, "STG": bucket_stg, "DEV": bucket_dev}, "LOGS": destarn_dict}
@@ -345,13 +346,14 @@ def createoai(oai_client, name):
     return response['CloudFrontOriginAccessIdentity']['Id']
 
 
-def preparelogdestion(region, get_configjson, jazz_stackprefix):
+def preparelogdestion(region, get_configjson, jazz_stackprefix, secId):
+    retRes = {}
     primary_account = get_configjson['data']['config']['AWS']["ACCOUNTS"][0]['ACCOUNTID']
-    destarn_prod = preparedestarn(region, primary_account, jazz_stackprefix, "prod")
-    destarn_dev = preparedestarn(region, primary_account, jazz_stackprefix, "dev")
-    destarn_stg = preparedestarn(region, primary_account, jazz_stackprefix, "stg")
-
-    return {"PROD": destarn_prod, "DEV": destarn_dev, "STG": destarn_stg}
+    for stage in ["prod", "dev", "stg"]:
+        dest_arn, dest_name = preparedestarn(region, primary_account, jazz_stackprefix, stage)
+        putDestinationPolicy(dest_name, dest_arn, secId, region)
+        retRes[stage.upper()] = dest_arn
+    return retRes
 
 
 def preparedestarn(region, account, stackprefix, stage):
@@ -359,7 +361,8 @@ def preparedestarn(region, account, stackprefix, stage):
     return "arn:aws:logs:%s:%s:destination:%s-%s-%s-kinesis" % (region,
                                                                 account,
                                                                 stackprefix,
-                                                                stage, region)
+                                                                stage, region),\
+            "%s-%s-%s-kinesis" % (stackprefix, stage, region)
 
 
 def updatePrimaryRole(roleArn, stackprefix, account_id):
@@ -383,3 +386,44 @@ def updatePrimaryRole(roleArn, stackprefix, account_id):
         PolicyName='%s_%s_NonPrimaryAssumePolicy' % (stackprefix, account_id),
         PolicyDocument=json.dumps(permission_policy)
     )
+
+
+def putDestinationPolicy(destinatioName, destinatioArn, secId, region):
+    # Get the default profile
+    session = boto3.Session(profile_name='default')
+    logsClient = session.client('logs', region_name=region)
+    listAccount = prepare_destination_policy(logsClient, secId, destinatioName)
+    access_policy = {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": listAccount
+              },
+              "Action": "logs:PutSubscriptionFilter",
+              "Resource": destinatioArn
+            }
+        ]
+        }
+    logsClient.put_destination_policy(
+        destinationName=destinatioName,
+        accessPolicy=json.dumps(access_policy)
+    )
+
+
+def prepare_destination_policy(client, secId, destinatioName):
+    retlist = [secId]
+    response = client.describe_destinations(
+        DestinationNamePrefix=destinatioName,
+    )
+    resp = response['destinations'][0]
+    if 'accessPolicy' in resp:
+        accessPolicy = json.loads(resp['accessPolicy'])
+        awsList = accessPolicy["Statement"][0]["Principal"]["AWS"]
+        if isinstance(awsList, list):
+            if secId not in awsList:
+                awsList.append(secId)
+            retlist = awsList
+    return retlist
