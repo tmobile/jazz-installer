@@ -39,8 +39,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition_tvault" {
   container_definitions    = "${data.template_file.ecs_task_tvault.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "${var.ecsConsulcpu}"
-  memory                   = "${var.ecsConsulmemory}"
+  cpu                      = "${var.ecsTvaultcpu}"
+  memory                   = "${var.ecsTvaultmemory}"
   execution_role_arn       = "${data.aws_iam_role.ecs_role.arn}"
   task_role_arn            = "${data.aws_iam_role.ecs_role.arn}"
 
