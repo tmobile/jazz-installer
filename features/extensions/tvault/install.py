@@ -1,5 +1,6 @@
 import click
 import json
+import re
 from collections import OrderedDict
 from extensions.tvault.terraformBugWorkaround import runTerraform,\
                                                      featureName
@@ -64,8 +65,9 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()
     jenkins_username, jenkins_password = jenkins_userpass_list[0], jenkins_userpass_list[1]
+    tvault_username = re.sub('[^a-zA-Z0-9_-]', '-', jazz_username)
     # Run terraform first, as we need it's output
-    runTerraform(region, stackprefix, jazz_password, True, network_range)
+    runTerraform(region, stackprefix, jazz_password, tvault_username, True, network_range)
     # Store the CREDENTIAL_ID in jenkins
     setCredential(jenkins_url, jenkins_username, jenkins_password, "TVAULT_ADMIN",
                   "safeadmin", jazz_password)

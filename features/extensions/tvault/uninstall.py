@@ -55,7 +55,8 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()
     jenkins_username, jenkins_password = jenkins_userpass_list[0], jenkins_userpass_list[1]
-    runTerraform(region, stackprefix, jazz_password, False)
+    tvault_username = re.sub('[^a-zA-Z0-9_-]', '-', jazz_username)
+    runTerraform(region, stackprefix, jazz_password, tvault_username, False)
     deleteCredential(jenkins_url, jenkins_username, jenkins_password, "TVAULT_ADMIN")
     update_config(
         "TVAULT",

@@ -18,6 +18,7 @@ data "template_file" "ecs_task_tvault" {
     prefix_name     = "${var.envPrefix}_ecs_task_definition_tvault"
     region          = "${var.region}"
     admin_passwd    = "${var.jazzPassword}"
+    admin_username    = "${var.jazzUsername}"
     consul_address = "${aws_lb.alb_ecs_consul.dns_name}"
   }
 }
