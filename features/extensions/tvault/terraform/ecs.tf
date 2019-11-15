@@ -18,6 +18,7 @@ data "template_file" "ecs_task_tvault" {
     prefix_name     = "${var.envPrefix}_ecs_task_definition_tvault"
     region          = "${var.region}"
     admin_passwd    = "${var.jazzPassword}"
+    admin_username    = "${var.jazzUsername}"
     consul_address = "${aws_lb.alb_ecs_consul.dns_name}"
   }
 }
@@ -39,8 +40,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition_tvault" {
   container_definitions    = "${data.template_file.ecs_task_tvault.rendered}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "${var.ecsConsulcpu}"
-  memory                   = "${var.ecsConsulmemory}"
+  cpu                      = "${var.ecsTvaultcpu}"
+  memory                   = "${var.ecsTvaultmemory}"
   execution_role_arn       = "${data.aws_iam_role.ecs_role.arn}"
   task_role_arn            = "${data.aws_iam_role.ecs_role.arn}"
 

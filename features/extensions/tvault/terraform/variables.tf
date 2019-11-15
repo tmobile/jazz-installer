@@ -12,6 +12,7 @@ variable "tvault_port1" {type = "string" default = "3000"}
 variable "tvault_port2" {type = "string" default = "80"}
 variable "tvault_port3" {type = "string" default = "8200"}
 variable "jazzPassword" {type = "string"}
+variable "jazzUsername" {type = "string"}
 variable "ecsConsulcpu" { type = "string" default = "512" }
 variable "ecsConsulmemory" { type = "string" default = "1024" }
 variable "consul_docker_image" {
