@@ -82,6 +82,10 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     tvaultJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=t-vault&domain" \
                    "=jazz&scm_branch=master"
     startJob(jenkins_url, jenkins_username, jenkins_password, tvaultJobUrl)
+    # Trigger usermanagement api
+    userJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=usermanagement&domain" \
+                 "=jazz&scm_branch=master"
+    startJob(jenkins_url, jenkins_username, jenkins_password, userJobUrl)
     # Trigger jazz ui
     startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
