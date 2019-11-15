@@ -70,7 +70,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     runTerraform(region, stackprefix, jazz_password, tvault_username, True, network_range)
     # Store the CREDENTIAL_ID in jenkins
     setCredential(jenkins_url, jenkins_username, jenkins_password, "TVAULT_ADMIN",
-                  "safeadmin", jazz_password)
+                  tvault_username, jazz_password)
     update_config(
         "TVAULT",
         prepare_tvault_json(),
