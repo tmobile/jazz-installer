@@ -1,5 +1,6 @@
 import click
 import json
+import re
 from collections import OrderedDict
 from extensions.tvault.terraformBugWorkaround import runTerraform,\
                                                      featureName
