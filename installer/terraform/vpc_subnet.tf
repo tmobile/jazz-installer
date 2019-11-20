@@ -211,6 +211,10 @@ resource "aws_subnet" "subnet_for_ecs_private" {
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(4 * 2, 2)), 2 + count.index)}"
   tags = "${merge(var.additional_tags, local.common_tags)}"
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "python ${var.cleanEni_cmd} ${data.aws_vpc.vpc_data.id} ${aws_security_group.vpc_sg.id}"
+  }
 }
 
 resource "aws_route_table" "privateroute" {
