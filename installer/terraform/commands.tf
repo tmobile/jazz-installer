@@ -62,3 +62,7 @@ variable "config_cmd" {
   type = "string"
   default = "./scripts/config.py"
 }
+variable "cleanEni_cmd" {
+  type = "string"
+  default = "./scripts/clean_lambda_eni.py"
+}
