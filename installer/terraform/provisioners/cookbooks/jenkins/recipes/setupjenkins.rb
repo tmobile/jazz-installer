@@ -2,6 +2,21 @@
 apt_update 'update' #force-update apt cache on Debian-derivatives to avoid pkg fetch errors
 package 'git'
 include_recipe 'maven::default'
+
+# Node won't upgrade to latest version in centos if already a version is present.
+if platform_family?('rhel')
+  bash 'uninstall-nodejs' do
+    code <<-EOH
+      if [ -f /etc/os-release ]; then
+         rm -fr /var/cache/yum/*
+         yum remove -y nodejs
+         rm /etc/yum.repos.d/nodesource*
+         yum clean all
+      fi
+   EOH
+  end
+end
+
 include_recipe 'nodejs'
 include_recipe 'cloudcli'
 
