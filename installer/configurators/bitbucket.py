@@ -19,7 +19,7 @@ def check_bitbucket_user(url, username, passwd):
                              data=json.dumps(content),
                              headers={"Content-Type": "application/json"},
                              auth=basic_auth)
-        if resp.status_code != 200:
+        if resp.status_code != 201:
             print(resp.content)
             return False
         else:

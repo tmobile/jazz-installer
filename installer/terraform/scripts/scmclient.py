@@ -9,7 +9,7 @@ def create_project(url, content, basic_auth):
                              data=json.dumps(content),
                              headers={"Content-Type": "application/json"},
                              auth=basic_auth)
-        if resp.status_code != 200:
+        if resp.status_code != 201:
             print(resp.content)
             return False
     except Exception as e:
