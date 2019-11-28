@@ -1,4 +1,5 @@
 import json
+import sys
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -19,10 +20,9 @@ def create_project(url, content, basic_auth):
 if __name__ == u"__main__":
     username = sys.argv[1]
     password = sys.argv[2]
-    bitbucket_url = sys.argv[3].strip("/")
     content_slf = {'key': 'SLF', 'name': 'SLF', 'description': 'To manage Core platform services'}
     content_cas = {'key': 'CAS', 'name': 'CAS', 'description': 'To manage User services'}
-    url = bitbucket_url + '/rest/api/1.0/projects'
-    basic_auth = HTTPBasicAuth(username, passwd)
+    url = 'http://' + sys.argv[3].strip("/") + '/rest/api/1.0/projects'
+    basic_auth = HTTPBasicAuth(username, password)
     create_project(url, content_slf, basic_auth)
     create_project(url, content_cas, basic_auth)
