@@ -25,7 +25,8 @@ def check_bitbucket_user(url, username, passwd):
         else:
             requests.delete(api_project_deleteurl, auth=basic_auth)
             return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 
