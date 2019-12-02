@@ -2,7 +2,7 @@ import click
 import requests
 
 from retrying import retry
-from utils.jenkins import startJobwithInputs, deleteCredential
+from utils.jenkins import startJobwithInputs, deleteCredential, startJob
 from utils.api_config import get_config, delete_config
 
 
@@ -80,6 +80,8 @@ def uninstall(jenkins_url, jenkins_userpass, jazz_apiendpoint, jazz_userpass, ac
                             query_url = '?path=AWS.ACCOUNTS.' + str(index) +\
                                         '.REGIONS&id=REGION&value=%s' % (awsregion['REGION'])
                             delete_config(jazz_username, jazz_password, jazz_apiendpoint, query_url)
+        # Trigger jazz ui
+        startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
     else:
         print("Job Execution Failed")
 
