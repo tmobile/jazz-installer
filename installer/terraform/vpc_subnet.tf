@@ -213,7 +213,8 @@ resource "aws_subnet" "subnet_for_ecs_private" {
   tags = "${merge(var.additional_tags, local.common_tags)}"
   provisioner "local-exec" {
     when    = "destroy"
-    command = "python ${var.cleanEni_cmd} ${data.aws_vpc.vpc_data.id} ${aws_security_group.vpc_sg.id}"
+    command = "python ${var.cleanEni_cmd} ${data.aws_vpc.vpc_data.id} ${var.dockerizedJenkins == 1 ? join(" ", aws_security_group.vpc_sg.*.id) : aws_security_group.vpc_sg_es_kibana.id }"
+    on_failure = "continue"
   }
 }
 
