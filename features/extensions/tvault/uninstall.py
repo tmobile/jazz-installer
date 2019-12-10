@@ -66,14 +66,11 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
         jazz_password,
         jazz_apiendpoint
     )
-    # Trigger tvault api
-    tvaultJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=t-vault&domain" \
-                   "=jazz&scm_branch=master"
-    startJob(jenkins_url, jenkins_username, jenkins_password, tvaultJobUrl)
-    # Trigger usermanagement api
-    userJobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=usermanagement&domain" \
+    # Trigger t-vault, usermanagement, acl api
+    for jobs in ["t-vault", "usermanagement", "acl"]:
+        jobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=" + jobs + "&domain" \
                  "=jazz&scm_branch=master"
-    startJob(jenkins_url, jenkins_username, jenkins_password, userJobUrl)
+        startJob(jenkins_url, jenkins_username, jenkins_password, jobUrl)
     # Trigger jazz ui
     startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
