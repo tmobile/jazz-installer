@@ -71,6 +71,13 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
         jobUrl = "job/build-pack-api/buildWithParameters?token=jazz-101-job&service_name=" + jobs + "&domain" \
                  "=jazz&scm_branch=master"
         startJob(jenkins_url, jenkins_username, jenkins_password, jobUrl)
+
+    # Trigger environment-event-handler function
+    for jobs in ["environment-event-handler"]:
+        jobUrl = "job/build-pack-function/buildWithParameters?token=jazz-101-job&service_name=" + jobs + "&domain" \
+                 "=jazz&scm_branch=master"
+        startJob(jenkins_url, jenkins_username, jenkins_password, jobUrl)
+        
     # Trigger jazz ui
     startJob(jenkins_url, jenkins_username, jenkins_password, "job/jazz_ui/buildWithParameters?token=jazz-101-job")
 
