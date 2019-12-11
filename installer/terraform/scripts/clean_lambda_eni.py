@@ -40,8 +40,6 @@ def cleanup(client, vpc_id, sg_id):
             return True
     except Exception as message:
         print(message)
-        time.sleep(30)
-        cleanup(client, vpc_id, sg_id)
 
 
 if __name__ == u"__main__":

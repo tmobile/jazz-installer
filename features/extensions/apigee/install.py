@@ -108,7 +108,7 @@ def install(region, stackprefix, jazz_apiendpoint, jazz_userpass, jenkins_url,
     runTerraform(region, stackprefix, True)
     # TODO remove this entire module when the terraform bug is fixed
     click.secho('\nLinking new role to existing gateway function', fg='blue')
-    linkNewRoleToExistingFunctionWithCLI(stackprefix + "-" + gatewayFunctionName)
+    linkNewRoleToExistingFunctionWithCLI(stackprefix + "_" + gatewayFunctionName)
     jazz_userpass_list = ''.join(list(jazz_userpass)).split()
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()
