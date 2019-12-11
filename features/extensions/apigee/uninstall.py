@@ -56,7 +56,7 @@ def uninstall(region, stackprefix, jazz_userpass, jazz_apiendpoint, jenkins_url,
     click.secho('\nRestoring old role to gateway function', fg='blue')
 
     # Restore old role first, before we destroy the Terraform resources
-    restoreOldRoleToExistingFunctionWithCLI(stackprefix + "-" + gatewayFunctionName)
+    restoreOldRoleToExistingFunctionWithCLI(stackprefix + "_" + gatewayFunctionName)
     jazz_userpass_list = ''.join(list(jazz_userpass)).split()
     jazz_username, jazz_password = jazz_userpass_list[0], jazz_userpass_list[1]
     jenkins_userpass_list = ''.join(list(jenkins_userpass)).split()

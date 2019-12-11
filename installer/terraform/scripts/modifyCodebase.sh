@@ -121,7 +121,7 @@ do
 
 # shellcheck disable=SC2086
 #Updating to service catalog
-provider_runtime="nodejs8.10"
+provider_runtime="nodejs10.x"
 pushToCatalog "$tablename" "$element" "$service_type" "${deployment_targets[@]}" "$provider_runtime"
 
 done

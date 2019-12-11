@@ -10,8 +10,7 @@ terraformNewGatewayRoleOutput = "apigee-lambda-gateway-role-arn"
 terraformPreviousRoleOutput = "previous-role-arn"
 featureName = "Apigee"
 # The lambda function created has the format of ENVPREFIX-jazz-apigee-proxy-aws-STAGE
-gatewayFunctionName = "jazz-apigee-proxy-aws-prod"
-terraformGatewayResource = "aws_lambda_function.jazz-apigee-proxy"
+gatewayFunctionName = "jazz_apigee-proxy-aws_prod"
 
 
 def runTerraform(region, envPrefix, install):
@@ -30,9 +29,9 @@ def runTerraform(region, envPrefix, install):
             '-var', 'region={0}'.format(region),
             '-var', 'jazz_aws_accountid={0}'.format(getAWSAccountID()),
             '-var', 'env_prefix={0}'.format(envPrefix),
-            '-var', 'gateway_func_arn={0}'.format(getFunctionArn(envPrefix + "-" +
+            '-var', 'gateway_func_arn={0}'.format(getFunctionArn(envPrefix + "_" +
                                                   gatewayFunctionName)),
-            '-var', 'previous_role_arn={0}'.format(getFunctionRole(envPrefix + "-" +
+            '-var', 'previous_role_arn={0}'.format(getFunctionRole(envPrefix + "_" +
                                                    gatewayFunctionName))
         ],
         cwd='extensions/apigee/terraform')
