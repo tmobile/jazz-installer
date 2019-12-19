@@ -23,8 +23,13 @@ oai = sys.argv[15]
 securitygroups = sys.argv[16]
 subnets = sys.argv[17]
 
+accountname = envprefix
+# if we have account aliases configured then we'll use the first alias as the account name
+account_aliases = boto3.client('iam').list_account_aliases()['AccountAliases']
+if len(account_aliases) > 0:
+    accountname = account_aliases[0]
+
 dynamodb = boto3.resource('dynamodb', region_name=region)
-accountname = boto3.client('iam').list_account_aliases()['AccountAliases'][0]
 table = dynamodb.Table(tablename)
 
 with open(installervarsparth) as json_file:
