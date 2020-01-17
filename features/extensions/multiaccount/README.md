@@ -84,6 +84,8 @@ cd JAZZ_INSTALLER_DIRECTORY/features
 python Multiaccount.py uninstall
                     --jenkins_url JENKINSURL
                     --jenkins_userpass JENKINSUSER JENKINSPASSWORD
+                    --jazz_apiendpoint JAZZ_APIENDPOINT
+                    --jazz_userpass JAZZADMIN JAZZPASSWORD
                     --account-details all
 ```
 Note: account-details can be 123XXXXX, 234XXXXX etc
@@ -97,5 +99,7 @@ python Multiaccount.py uninstall
 # Enter the missing input params
 Jenkins url:
 Jenkins userpass [()]:
+Jazz apiendpoint:
+Jazz userpass [()]:
 Account details [all]:
 ```

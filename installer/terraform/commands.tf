@@ -8,7 +8,7 @@ variable "modifyCodebase_cmd" {
 }
 variable "scmclient_cmd" {
   type = "string"
-  default = "./scripts/scmclient.sh"
+  default = "./scripts/scmclient.py"
 }
 variable "scmpush_cmd" {
   type = "string"
