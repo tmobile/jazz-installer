@@ -108,7 +108,6 @@ variable "lambdaCloudWatchProps" {
 variable "scmbb" { default = true }
 variable "scmgitlab" { default = false }
 variable "codeq" { default = false }
-variable "atlassian_jar_path" { type = "string" }
 variable "dockerizedJenkins" {default = true}
 variable "additional_tags" {
   type = "map"
@@ -168,4 +167,12 @@ variable "es_docker_image" {
 variable "kibana_docker_image" {
   type = "string"
   default = "docker.elastic.co/kibana/kibana:6.5.4"
+}
+variable "private_ref_tag" {
+  type = "map"
+  default = {Tier="Private", }
+}
+variable "public_ref_tag" {
+  type = "map"
+  default = {Tier="Public", }
 }

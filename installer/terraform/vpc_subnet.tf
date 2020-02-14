@@ -150,7 +150,7 @@ resource "aws_subnet" "subnet_for_ecs" {
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(2 * 2, 2)), 2 + count.index)}"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
+  tags = "${merge(var.public_ref_tag, var.additional_tags, local.common_tags)}"
 }
 
 # For new VPC related resources
@@ -210,7 +210,7 @@ resource "aws_subnet" "subnet_for_ecs_private" {
   vpc_id            = "${data.aws_vpc.vpc_data.id}"
   availability_zone = "${element(slice(data.aws_availability_zones.available.names, 0, 2), count.index)}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.vpc_data.cidr_block, ceil(log(4 * 2, 2)), 2 + count.index)}"
-  tags = "${merge(var.additional_tags, local.common_tags)}"
+  tags = "${merge(var.private_ref_tag, var.additional_tags, local.common_tags)}"
   provisioner "local-exec" {
     when    = "destroy"
     command = "python ${var.cleanEni_cmd} ${data.aws_vpc.vpc_data.id} ${var.dockerizedJenkins == 1 ? join(" ", aws_security_group.vpc_sg.*.id) : aws_security_group.vpc_sg_es_kibana.id }"

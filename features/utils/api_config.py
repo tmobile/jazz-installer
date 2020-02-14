@@ -32,3 +32,9 @@ def update_config_in(key, value, username, password, endpoint, query_url):
     config_data[key] = value
     requests.post(endpoint+'/jazz/admin/config'+query_url, data=json.dumps(config_data),
                   headers={"Content-Type": "application/json", "Authorization": "%s" % (token)})
+
+
+def delete_config(username, password, endpoint, query_url):
+    token = obtain_token(username, password, endpoint)
+    requests.delete(endpoint+'/jazz/admin/config'+query_url,
+                    headers={"Content-Type": "application/json", "Authorization": "%s" % (token)})

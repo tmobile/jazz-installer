@@ -33,7 +33,7 @@
             "PROVIDER": "aws"
         },
         "VPC_SERVICES": {
-          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin", "deployments"],
+          "APIS": ["acl", "create-serverless-service", "delete-serverless-service", "codeq", "logs", "usermanagement", "admin", "deployments", "t-vault"],
           "FUNCTIONS": ["cloud-logs-streamer", "deployments-event-handler", "environment-event-handler", "es-kinesis-log-streamer"]
         },
         "ES_HOSTNAME": "",
@@ -190,5 +190,10 @@
             "SERVICE_HOSTNAME": "{SVC_DEV_HOST}"
           }
         }
+    },
+    "TVAULT": {
+        "IS_ENABLED": false,
+        "HOSTNAME": "{TVAULT_HOSTNAME}",
+        "CREDENTIAL_ID": "TVAULT_ADMIN"
     }
 }

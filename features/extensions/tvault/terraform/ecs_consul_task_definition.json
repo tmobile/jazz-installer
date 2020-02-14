@@ -1,0 +1,62 @@
+[
+  {
+    "name": "${ecs_container_name}",
+    "image": "${image}",
+    "essential": true,
+    "portMappings": [
+      {
+        "hostPort": 8500,
+        "protocol": "tcp",
+        "containerPort": 8500
+      },
+      {
+        "hostPort": 8502,
+        "protocol": "tcp",
+        "containerPort": 8502
+      },
+      {
+        "hostPort": 8300,
+        "protocol": "tcp",
+        "containerPort": 8300
+      },
+      {
+        "hostPort": 8301,
+        "protocol": "tcp",
+        "containerPort": 8301
+      },
+      {
+        "hostPort": 8400,
+        "protocol": "tcp",
+        "containerPort": 8400
+      },
+      {
+        "hostPort": 8600,
+        "protocol": "tcp",
+        "containerPort": 8600
+      },
+      {
+        "hostPort": 8302,
+        "protocol": "tcp",
+        "containerPort": 8302
+      }
+    ],
+    "environment": [
+      ],
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    },
+    "ulimits": [
+        {
+          "name": "memlock",
+          "softLimit": -1,
+          "hardLimit": -1
+        }
+      ]
+  }
+]
