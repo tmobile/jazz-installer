@@ -55,6 +55,12 @@ resource "aws_security_group" "vpc_sg" {
         protocol = "tcp"
         self = true
     }
+    ingress {
+        from_port = "${var.efs_port}"
+        to_port = "${var.efs_port}"
+        protocol = "nfs"
+        self = true
+    }
     egress {
         from_port = 0
         to_port = 0

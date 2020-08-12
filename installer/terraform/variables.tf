@@ -176,3 +176,4 @@ variable "public_ref_tag" {
   type = "map"
   default = {Tier="Public", }
 }
+variable "efs_port" {type = "string" default = "2049"}

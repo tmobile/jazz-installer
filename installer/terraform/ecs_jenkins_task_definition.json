@@ -19,6 +19,12 @@
           "value": "${jenkins_user}"
         }
       ],
+    "mountPoints": [
+        {
+          "containerPath": "/var/jenkins_home",
+          "sourceVolume": "jenkins"
+        }
+      ],
     "memoryReservation": ${memory},
     "networkMode": "awsvpc",
     "cpu": ${cpu},

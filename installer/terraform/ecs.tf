@@ -167,6 +167,20 @@ resource "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 
+  volume {
+    name = "jenkins"
+
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.jenkins-efs.id}"
+      root_directory          = "/data/jenkins"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.jenkins-efs-ap.id}"
+        iam             = "ENABLED"
+      }
+    }
+  }
+
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -445,6 +459,7 @@ resource "aws_ecs_service" "ecs_service_jenkins" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_jenkins.family}:${max("${aws_ecs_task_definition.ecs_task_definition_jenkins.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_jenkins.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_jenkins.id}"
 
