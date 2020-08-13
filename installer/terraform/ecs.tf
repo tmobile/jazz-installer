@@ -176,6 +176,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
       transit_encryption      = "ENABLED"
       authorization_config {
         access_point_id = "${aws_efs_access_point.jenkins-efs-ap.id}"
+        iam             = "DISABLED"
       }
     }
   }
