@@ -18,7 +18,7 @@ resource "aws_efs_access_point" "jenkins-efs-ap" {
     creation_info = {
       owner_gid = 1000
       owner_uid = 1000
-      permissions = 0777
+      permissions = "0777"
     }
   }
   tags = {
