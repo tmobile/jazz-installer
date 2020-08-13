@@ -15,6 +15,11 @@ resource "aws_efs_access_point" "jenkins-efs-ap" {
   }
   root_directory = {
     path = "/data/jenkins"
+    creation_info = {
+      owner_gid = 1000
+      owner_uid = 1000
+      permissions = 0777
+    }
   }
   tags = {
     Name = "${var.envPrefix}-jenkins-efs-ap"
