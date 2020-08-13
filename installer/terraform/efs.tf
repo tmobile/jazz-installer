@@ -1,7 +1,6 @@
 resource "aws_efs_file_system" "jenkins-efs" {
   count = "${var.dockerizedJenkins}"
   creation_token = "${var.envPrefix}-jenkins-efs"
-  encrypted = true
   tags = {
     Name = "${var.envPrefix}-jenkins-efs-fs"
   }
