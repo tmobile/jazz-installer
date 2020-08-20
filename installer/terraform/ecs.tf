@@ -171,7 +171,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
     name = "jenkins"
 
     efs_volume_configuration {
-      file_system_id          = "${aws_efs_file_system.jenkins-efs.id}"
+      file_system_id          = "${aws_efs_file_system.ecs-efs.id}"
       root_directory          = "/data/jenkins"
       transit_encryption      = "ENABLED"
       authorization_config {
@@ -221,7 +221,19 @@ resource "aws_ecs_task_definition" "ecs_task_definition_es" {
   memory                   = "${var.ecsEsmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
-
+  volume {
+    name = "elasticsearch"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-es-efs.id}"
+      root_directory          = "/data/es"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.es-efs-ap.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+  
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 

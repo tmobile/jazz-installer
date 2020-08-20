@@ -35,6 +35,12 @@
           "value": "false"
         }
       ],
+    "mountPoints": [
+        {
+          "containerPath": "/usr/share/elasticsearch/data",
+          "sourceVolume": "elasticsearch"
+        }
+      ],
     "memoryReservation": ${memory},
     "networkMode": "awsvpc",
     "cpu": ${cpu},
