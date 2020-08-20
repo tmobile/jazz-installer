@@ -540,6 +540,7 @@ resource "aws_ecs_service" "ecs_service_es" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_es.family}:${max("${aws_ecs_task_definition.ecs_task_definition_es.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_es.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_es_kibana.id}"
 
