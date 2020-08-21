@@ -12,7 +12,7 @@
     "environment": [
         {
           "name": "GITLAB_OMNIBUS_CONFIG",
-          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';gitlab_rails['grafana']['enable'] = false;"
+          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';gitlab_rails['grafana']['enable'] = false;gitlab_rails['prometheus_monitoring']['enable'] = false;"
         }
       ],
     "mountPoints": [

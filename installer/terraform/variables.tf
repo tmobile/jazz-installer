@@ -121,7 +121,7 @@ variable "jenkins_docker_image" {
 }
 variable "gitlab_docker_image" {
   type = "string"
-  default = "gitlab/gitlab-ce:latest"
+  default = "gitlab/gitlab-ce:13.1.1-ce.0"
 }
 variable "codeq_docker_image" {
   type = "string"
@@ -130,8 +130,8 @@ variable "codeq_docker_image" {
 variable "dockerizedSonarqube" { default = false }
 variable "ecsJenkinscpu" { type = "string" default = "1024" }
 variable "ecsJenkinsmemory" { type = "string" default = "3072" }
-variable "ecsGitlabcpu" { type = "string" default = "512" }
-variable "ecsGitlabmemory" { type = "string" default = "3072" }
+variable "ecsGitlabcpu" { type = "string" default = "2048" }
+variable "ecsGitlabmemory" { type = "string" default = "4096" }
 variable "ecsSonarqubecpu" { type = "string" default = "256" }
 variable "ecsSonarqubememory" { type = "string" default = "2048" }
 variable "autovpc" { default = false }
