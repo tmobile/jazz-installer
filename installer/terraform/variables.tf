@@ -125,7 +125,7 @@ variable "gitlab_docker_image" {
 }
 variable "codeq_docker_image" {
   type = "string"
-  default = "jazzserverless/jazzoss-sonarqube:1.0.0"
+  default = "jazzserverless/jazzoss-sonarqube:1.0.1"
 }
 variable "dockerizedSonarqube" { default = false }
 variable "ecsJenkinscpu" { type = "string" default = "1024" }

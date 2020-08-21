@@ -59,3 +59,88 @@ resource "aws_efs_mount_target" "es-efs-mt" {
    subnet_id = "${element(aws_subnet.subnet_for_ecs_private.*.id, count.index)}"
    security_groups = ["${aws_security_group.vpc_sg_es_kibana.id}"]
 }
+
+//For CodeQuality
+
+resource "aws_efs_file_system" "ecs-codeq-efs" {
+  count = "${var.dockerizedSonarqube}"
+  creation_token = "${var.envPrefix}-ecs-codeq-efs"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_access_point" "codeq-efs-ap-data" {
+  count = "${var.dockerizedSonarqube}"
+  file_system_id = "${aws_efs_file_system.ecs-codeq-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/data/codeq"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_access_point" "codeq-efs-ap-logs" {
+  count = "${var.dockerizedSonarqube}"
+  file_system_id = "${aws_efs_file_system.ecs-codeq-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/logs/codeq"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+resource "aws_efs_access_point" "codeq-efs-ap-extension" {
+  count = "${var.dockerizedSonarqube}"
+  file_system_id = "${aws_efs_file_system.ecs-codeq-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/extension/codeq"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+resource "aws_efs_access_point" "codeq-efs-ap-config" {
+  count = "${var.dockerizedSonarqube}"
+  file_system_id = "${aws_efs_file_system.ecs-codeq-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/config/codeq"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_mount_target" "codeq-efs-mt" {
+   count = "${var.dockerizedSonarqube * 2}"
+   file_system_id = "${aws_efs_file_system.ecs-codeq-efs.id}"
+   subnet_id = "${element(aws_subnet.subnet_for_ecs_private.*.id, count.index)}"
+   security_groups = ["${aws_security_group.vpc_sg.id}"]
+}
