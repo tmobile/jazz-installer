@@ -144,3 +144,72 @@ resource "aws_efs_mount_target" "codeq-efs-mt" {
    subnet_id = "${element(aws_subnet.subnet_for_ecs_private.*.id, count.index)}"
    security_groups = ["${aws_security_group.vpc_sg.id}"]
 }
+
+//For Gitlab
+
+resource "aws_efs_file_system" "ecs-gitlab-efs" {
+  count = "${var.scmgitlab}"
+  creation_token = "${var.envPrefix}-ecs-gitlab-efs"
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_access_point" "gitlab-efs-ap-data" {
+  count = "${var.scmgitlab}"
+  file_system_id = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/data/gitlab"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_access_point" "gitlab-efs-ap-logs" {
+  count = "${var.scmgitlab}"
+  file_system_id = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/logs/gitlab"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_access_point" "gitlab-efs-ap-config" {
+  count = "${var.scmgitlab}"
+  file_system_id = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+  posix_user = {
+    gid =  0
+    uid = 0
+  }
+  root_directory = {
+    path = "/config/gitlab"
+    creation_info = {
+      owner_gid = 0
+      owner_uid = 0
+      permissions = "0777"
+    }
+  }
+  tags = "${merge(var.additional_tags, local.common_tags)}"
+}
+
+resource "aws_efs_mount_target" "gitlab-efs-mt" {
+   count = "${var.scmgitlab * 2}"
+   file_system_id = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+   subnet_id = "${element(aws_subnet.subnet_for_ecs_private.*.id, count.index)}"
+   security_groups = ["${aws_security_group.vpc_sg.id}"]
+}

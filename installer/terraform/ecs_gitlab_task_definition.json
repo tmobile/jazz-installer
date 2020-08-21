@@ -12,9 +12,23 @@
     "environment": [
         {
           "name": "GITLAB_OMNIBUS_CONFIG",
-          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';"
+          "value": "external_url '${external_url}'; gitlab_rails['initial_root_password'] = '${gitlab_passwd}';gitlab_rails['grafana']['enable'] = false;"
         }
       ],
+    "mountPoints": [
+      {
+        "containerPath": "/etc/gitlab",
+        "sourceVolume": "gitlabdata"
+      },
+      {
+        "containerPath": "/var/log/gitlab",
+        "sourceVolume": "gitlabconfig"
+      },
+      {
+        "containerPath": "/var/opt/gitlab",
+        "sourceVolume": "gitlablogs"
+      }
+    ],
     "memoryReservation": ${memory},
     "networkMode": "awsvpc",
     "cpu": ${cpu},

@@ -195,6 +195,43 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 
+  volume {
+    name = "gitlabdata"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/data/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-data.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "gitlablogs"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/logs/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-logs.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "gitlabconfig"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/config/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-config.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -543,6 +580,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}:${max("${aws_ecs_task_definition.ecs_task_definition_gitlab.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_gitlab.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
 
