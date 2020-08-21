@@ -121,7 +121,7 @@ variable "jenkins_docker_image" {
 }
 variable "gitlab_docker_image" {
   type = "string"
-  default = "gitlab/gitlab-ce:11.3.0-ce.0"
+  default = "gitlab/gitlab-ce:latest"
 }
 variable "codeq_docker_image" {
   type = "string"
