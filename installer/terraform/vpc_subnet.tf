@@ -55,6 +55,12 @@ resource "aws_security_group" "vpc_sg" {
         protocol = "tcp"
         self = true
     }
+    ingress {
+        from_port = "${var.efs_port}"
+        to_port = "${var.efs_port}"
+        protocol = "tcp"
+        self = true
+    }
     egress {
         from_port = 0
         to_port = 0
@@ -127,6 +133,12 @@ resource "aws_security_group" "vpc_sg_es_kibana" {
         to_port = "${var.kibana_port_access}"
         protocol = "tcp"
         cidr_blocks = ["${concat(list("${aws_eip.elasticip.public_ip}/32"), list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
+    }
+    ingress {
+        from_port = "${var.efs_port}"
+        to_port = "${var.efs_port}"
+        protocol = "tcp"
+        self = true
     }
     egress {
         from_port = 0

@@ -9,6 +9,24 @@
         "hostPort": 9000
       }
     ],
+    "mountPoints": [
+      {
+        "containerPath": "/opt/sonarqube/data",
+        "sourceVolume": "codeqdata"
+      },
+      {
+        "containerPath": "/opt/sonarqube/conf",
+        "sourceVolume": "codeqconfig"
+      },
+      {
+        "containerPath": "/opt/sonarqube/extensions",
+        "sourceVolume": "codeqextension"
+      },
+      {
+        "containerPath": "/opt/sonarqube/logs",
+        "sourceVolume": "codeqlogs"
+      }
+    ],
     "memoryReservation": ${memory},
     "networkMode": "awsvpc",
     "cpu": ${cpu},

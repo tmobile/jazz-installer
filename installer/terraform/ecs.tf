@@ -167,6 +167,20 @@ resource "aws_ecs_task_definition" "ecs_task_definition_jenkins" {
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 
+  volume {
+    name = "jenkins"
+
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-efs.id}"
+      root_directory          = "/data/jenkins"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.jenkins-efs-ap.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -181,6 +195,43 @@ resource "aws_ecs_task_definition" "ecs_task_definition_gitlab" {
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
 
+  volume {
+    name = "gitlabdata"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/data/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-data.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "gitlablogs"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/logs/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-logs.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "gitlabconfig"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-gitlab-efs.id}"
+      root_directory          = "/config/gitlab"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.gitlab-efs-ap-config.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -194,6 +245,54 @@ resource "aws_ecs_task_definition" "ecs_task_definition_codeq" {
   memory                   =  "${var.ecsSonarqubememory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
+  volume {
+    name = "codeqdata"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-codeq-efs.id}"
+      root_directory          = "/data/codeq"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.codeq-efs-ap-data.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "codeqextension"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-codeq-efs.id}"
+      root_directory          = "/extension/codeq"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.codeq-efs-ap-extension.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "codeqlogs"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-codeq-efs.id}"
+      root_directory          = "/logs/codeq"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.codeq-efs-ap-logs.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+   volume {
+    name = "codeqconfig"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-codeq-efs.id}"
+      root_directory          = "/config/codeq"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.codeq-efs-ap-config.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
 
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
@@ -207,7 +306,19 @@ resource "aws_ecs_task_definition" "ecs_task_definition_es" {
   memory                   = "${var.ecsEsmemory}"
   execution_role_arn       = "${aws_iam_role.ecs_execution_role.arn}"
   task_role_arn            = "${aws_iam_role.ecs_execution_role.arn}"
-
+  volume {
+    name = "elasticsearch"
+    efs_volume_configuration {
+      file_system_id          = "${aws_efs_file_system.ecs-es-efs.id}"
+      root_directory          = "/data/es"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = "${aws_efs_access_point.es-efs-ap.id}"
+        iam             = "DISABLED"
+      }
+    }
+  }
+  
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -445,6 +556,7 @@ resource "aws_ecs_service" "ecs_service_jenkins" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_jenkins.family}:${max("${aws_ecs_task_definition.ecs_task_definition_jenkins.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_jenkins.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_jenkins.id}"
 
@@ -468,6 +580,7 @@ resource "aws_ecs_service" "ecs_service_gitlab" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_gitlab.family}:${max("${aws_ecs_task_definition.ecs_task_definition_gitlab.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_gitlab.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_gitlab.id}"
 
@@ -491,6 +604,7 @@ resource "aws_ecs_service" "ecs_service_codeq" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_codeq.family}:${max("${aws_ecs_task_definition.ecs_task_definition_codeq.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_codeq.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_codeq.id}"
 
@@ -513,6 +627,7 @@ resource "aws_ecs_service" "ecs_service_es" {
   task_definition = "${aws_ecs_task_definition.ecs_task_definition_es.family}:${max("${aws_ecs_task_definition.ecs_task_definition_es.revision}", "${data.aws_ecs_task_definition.ecs_task_definition_es.revision}")}"
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
   health_check_grace_period_seconds  = 3000
   cluster =       "${aws_ecs_cluster.ecs_cluster_es_kibana.id}"
 
