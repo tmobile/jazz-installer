@@ -121,17 +121,17 @@ variable "jenkins_docker_image" {
 }
 variable "gitlab_docker_image" {
   type = "string"
-  default = "gitlab/gitlab-ce:11.3.0-ce.0"
+  default = "gitlab/gitlab-ce:13.1.1-ce.0"
 }
 variable "codeq_docker_image" {
   type = "string"
-  default = "jazzserverless/jazzoss-sonarqube:1.0.0"
+  default = "jazzserverless/jazzoss-sonarqube:1.0.1"
 }
 variable "dockerizedSonarqube" { default = false }
 variable "ecsJenkinscpu" { type = "string" default = "1024" }
 variable "ecsJenkinsmemory" { type = "string" default = "3072" }
-variable "ecsGitlabcpu" { type = "string" default = "512" }
-variable "ecsGitlabmemory" { type = "string" default = "3072" }
+variable "ecsGitlabcpu" { type = "string" default = "2048" }
+variable "ecsGitlabmemory" { type = "string" default = "4096" }
 variable "ecsSonarqubecpu" { type = "string" default = "256" }
 variable "ecsSonarqubememory" { type = "string" default = "2048" }
 variable "autovpc" { default = false }
@@ -176,3 +176,4 @@ variable "public_ref_tag" {
   type = "map"
   default = {Tier="Public", }
 }
+variable "efs_port" {type = "string" default = "2049"}
