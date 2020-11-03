@@ -4,20 +4,18 @@ bash 'install-python3' do
   version=$(python3 -V 2>&1 | grep -Po '(?<=Python )(.+)')
   if [[ -z "$version" ]]
   then
-      yum install -y https://centos7.iuscommunity.org/ius-release.rpm
-      rm -fr /var/cache/yum/*
-      yum clean all
-      yum update
-      yum install -y python36u python36u-libs python36u-devel python36u-pip
+      yum install -y gcc
+      yum install -y zlib-devel
+      wget -O /opt/Python-3.8.0.tgz https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz && tar xvzf /opt/Python-3.8.0.tgz -C /opt && cd /opt/Python-3.8.0 && ./configure && make && make install && rm /opt/Python-3.8.0.tgz
   fi  
   EOH
 end
 
 #link python3
 link '/usr/bin/python3' do
-  to '/usr/bin/python3.6'
+  to '/usr/local/bin/python3'
 end
 # link pip3
 link '/usr/bin/pip3' do
-  to '/usr/bin/pip3.6'
+  to '/usr/bin/pip3.8'
 end
