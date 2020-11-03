@@ -117,7 +117,7 @@ variable "aws_tags" { type = "string" }
 variable "network_range" { type = "string" default = "0.0.0.0/0"}
 variable "jenkins_docker_image" {
   type = "string"
-  default = "jazzserverless/jazzoss-jenkins:1.0.0"
+  default = "jazzserverless/jazzoss-jenkins:1.0.1"
 }
 variable "gitlab_docker_image" {
   type = "string"
