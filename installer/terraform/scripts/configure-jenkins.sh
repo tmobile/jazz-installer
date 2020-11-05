@@ -38,6 +38,11 @@ c = JenkinsLocationConfiguration.get()
 c.url = 'http://$jenkinsurl'
 c.adminAddress = '$email'
 c.save()
+import jenkins.security.apitoken.ApiTokenPropertyConfiguration
+token = ApiTokenPropertyConfiguration.get()
+token.creationOfLegacyTokenEnabled = true
+token.tokenGenerationOnCreationEnabled = true
+token.save()
 jenkins.model.Jenkins.instance.securityRealm.createAccount("jobexec", "$jpassword")
 EOF
 

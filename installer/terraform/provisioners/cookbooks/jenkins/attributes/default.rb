@@ -19,12 +19,12 @@ default['maven']['version'] = '3.5.2'
 default['maven']['setup_bin'] = true
 
 #Node cookbook property
-default['nodejs']['version'] = '10'
+default['nodejs']['version'] = '12'
 default['nodejs']['install_method'] = 'package'
 #This monkeypatch is necessary because the node cookbook brokenly defaults to a 6.x sources.list otherwise
 case node['platform_family']
 when 'debian'
-  override['nodejs']['repo'] = 'https://deb.nodesource.com/node_10.x'
+  override['nodejs']['repo'] = 'https://deb.nodesource.com/node_12.x'
 when 'rhel', 'amazon'
-  default['nodejs']['repo'] = "https://rpm.nodesource.com/pub_10.x/el/$releasever/$basearch"
+  default['nodejs']['repo'] = "https://rpm.nodesource.com/pub_12.x/el/$releasever/$basearch"
 end
