@@ -11,7 +11,7 @@ def health_check_tg(client, tg_arn, max_tries):
     try:
         response = client.describe_target_health(TargetGroupArn=str(tg_arn))
         if response['TargetHealthDescriptions'][0]['TargetHealth']['State'] == 'healthy':
-            time.sleep(30)
+            time.sleep(300)
             return True
         else:
             time.sleep(30)

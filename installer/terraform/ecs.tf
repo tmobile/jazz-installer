@@ -426,6 +426,10 @@ resource "aws_lb" "alb_ecs_jenkins" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -436,6 +440,10 @@ resource "aws_lb" "alb_ecs_gitlab" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -446,6 +454,10 @@ resource "aws_lb" "alb_ecs_codeq" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg.id}"]
   subnets            = ["${aws_subnet.subnet_for_ecs.*.id}"]
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
@@ -455,6 +467,10 @@ resource "aws_lb" "alb_ecs_es_kibana" {
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.vpc_sg_es_kibana.id}"]
   subnets            = ["${slice(split(",", join(",",aws_subnet.subnet_for_ecs.*.id)), 0, 2)}"]
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
   tags = "${merge(var.additional_tags, local.common_tags)}"
 }
 
