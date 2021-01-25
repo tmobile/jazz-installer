@@ -63,9 +63,6 @@ resource "aws_s3_bucket" "jazz_s3_api_doc" {
   }
   tags = "${merge(var.additional_tags, local.common_tags)}"
 
-  website {
-    index_document = "index.html"
-  }
 }
 
 
@@ -330,17 +327,12 @@ data "aws_iam_policy_document" "jazz_s3_api_doc_bucket_contents" {
       "s3:GetObject"
     ]
     principals  {
-      type="*",
-      identifiers = ["*"]
+      type="AWS",
+      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ element(split( "/",  "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"), 2)}"]
     }
     resources = [
       "${aws_s3_bucket.jazz_s3_api_doc.arn}/*"
     ]
-    condition {
-      test     = "IpAddress"
-      variable = "aws:SourceIp"
-      values = ["${var.dockerizedJenkins == 1 ? format("%s%s", join(" ", aws_eip.elasticip.*.public_ip), "/32" ): var.network_range }", "${concat(list("${data.external.instance_ip.result.ip}/32"), split(",", var.network_range))}"]
-    }
   }
   statement {
     sid = "jazz-s3-api-doc-list-bucket"
