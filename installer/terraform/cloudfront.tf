@@ -48,6 +48,7 @@ resource "aws_cloudfront_distribution" "jazz" {
   }
 
   ordered_cache_behavior  {
+    path_pattern     = "*swagger.json"
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "${var.envPrefix}-s3-api-doc-origin"
