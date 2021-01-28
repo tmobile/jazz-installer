@@ -18,6 +18,7 @@
         "REPO_BASE_PLATFORM": "slf"
     },
     "JAZZ": {
+        "STACK_URL": "",
         "STACK_ADMIN": "",
         "STACK_PASSWORD": "",
         "SWAGGER": {

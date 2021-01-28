@@ -97,6 +97,9 @@ resource "null_resource" "update_jenkins_configs" {
     command = "${var.modifyPropertyFile_cmd} STACK_PASSWORD ${var.cognito_pool_password} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
+    command = "${var.modifyPropertyFile_cmd} STACK_URL ${aws_cloudfront_distribution.jazz.domain_name} ${var.jenkinsjsonpropsfile}"
+  }
+  provisioner "local-exec" {
     command = "${var.modifyPropertyFile_cmd} ACCOUNTID ${var.jazz_accountid} ${var.jenkinsjsonpropsfile}"
   }
   provisioner "local-exec" {
