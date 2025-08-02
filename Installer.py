@@ -13,7 +13,7 @@ from installer.cli.uninstallcli import uninstall
 @click.group()
 @click.version_option()
 def cli():
-    """Installer for the Jazz Serverless Development Platform (https://github.com/tmobile/jazz)"""
+    """Installer for the Jazz Serverless Development Platform hey(https://github.com/tmobile/jazz)"""
     pass
 
 
